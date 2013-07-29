@@ -1,0 +1,1038 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>Note: A conceptual deviation from the original Systematics way of
+handling configuration should be noted</title>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+  {font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:"Invensys Andale";
+	panose-1:2 11 6 3 2 1 4 2 2 3;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:11.0pt;
+	font-family:"Invensys Andale";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:18.0pt;
+	text-align:justify;
+	text-indent:-18.0pt;
+	page-break-after:avoid;
+	font-size:11.0pt;
+	font-family:"Invensys Andale";}
+h2
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:39.6pt;
+	text-align:justify;
+	text-indent:-21.6pt;
+	page-break-after:avoid;
+	font-size:11.0pt;
+	font-family:"Invensys Andale";}
+h3
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:61.2pt;
+	text-align:justify;
+	text-indent:-25.2pt;
+	page-break-after:avoid;
+	font-size:11.0pt;
+	font-family:"Invensys Andale";}
+h5
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	text-align:justify;
+	font-size:13.0pt;
+	font-family:"Invensys Andale";
+	font-style:italic;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:11.0pt;
+	font-family:"Invensys Andale";}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:11.0pt;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:11.0pt;
+	font-family:"Invensys Andale";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p.MsoDocumentMap, li.MsoDocumentMap, div.MsoDocumentMap
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	background:navy;
+	font-size:10.0pt;
+	font-family:Tahoma;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:8.0pt;
+	font-family:Tahoma;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-AU link=blue vlink=purple>
+
+<div class=Section1>
+
+<p class=MsoToc1><b><span lang=EN-US>The Pimpl Idiom Use Cases </span></b></p>
+
+<p class=MsoToc1><b><span lang=EN-US>&nbsp;</span></b></p>
+
+<p class=MsoToc1><b><span lang=EN-US>Contents</span></b></p>
+
+<p class=MsoToc1><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoToc1><span
+lang=EN-US>1.</span><span style='font-size:12.0pt;font-family:"Times New Roman"'>     </span><span
+lang=EN-US>Introduction...................................................................................................................................................... </span><span lang=EN-US>1</span></p>
+
+<p class=MsoToc1><span lang=EN-US>2.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>     </span><span lang=EN-US>Common Framework.................................................................................................................................. </span><span lang=EN-US>1</span></p>
+
+<p class=MsoToc1><span lang=EN-US>3.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>     </span><span lang=EN-US>Use Cases............................................................................................................................................................ </span><span lang=EN-US>2</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.1.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Delegating
+Constructors.................................................................................................................. </span><span lang=EN-US>2</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.2.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Singleton 1
+Simple.............................................................................................................................. </span><span lang=EN-US>2</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.3.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Singleton 1
+Improved........................................................................................................................ </span><span lang=EN-US>2</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.4.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Singleton 2.............................................................................................................................................. </span><span lang=EN-US>4</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.5.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Extendible
+Dictionary........................................................................................................................ </span><span lang=EN-US>5</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.6.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Non-Extendible Dictionary............................................................................................................. </span><span lang=EN-US>6</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.7.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Internal
+(Implementation-Only) Run-Time Polymorphism........................................... </span><span lang=EN-US>6</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.8.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Run-Time
+Polymorphic Class Hierarchy.................................................................................. </span><span lang=EN-US>7</span></p>
+
+<p class=MsoToc2><span lang=EN-US>3.9.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>       </span><span lang=EN-US>Derived Classes
+Overriding the pimpl::operator bool_type()...................................... </span><span lang=EN-US>8</span></p>
+
+<p class=MsoToc1><span lang=EN-US>4.</span><span style='font-size:12.0pt;
+font-family:"Times New Roman"'>     </span><span lang=EN-US>References......................................................................................................................................................... </span><span lang=EN-US>8</span></p>
+
+<p class=MsoToc1><span class=MsoHyperlink><span lang=EN-US><span
+ style='text-decoration:none'>&nbsp;</span></span></span></p>
+
+<h1><a name="_Toc215376523"></a><a name="_Toc197225489"><span lang=EN-US>1.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Introduction</span></a></h1>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>See [1].</span></p>
+
+<h1><a name="_Toc215376524"></a><a name="_Toc197225490"><span lang=EN-US>2.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Common Framework</span></a></h1>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The declaration file book.hpp</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct deleter</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; // Convenience deleter allows
+shared_ptrs to manage objects</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    // without deleting them.</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; struct no { void operator()(void*)
+{}};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct Book : public pimpl&lt;Book&gt;::pointer_semantics</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp;Book();</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The implementation file book.cpp:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>typedef pimpl&lt;Book&gt;::implementation
+implementation;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>template&lt;&gt; struct pimpl&lt;Book&gt;::implementation</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; implementation(parameters);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></p>
+
+<h1><a name="_Toc215376525"></a><a name="_Toc197225491"><span lang=EN-US>3.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Use Cases</span></a><span lang=EN-US>&nbsp;</span></h1>
+
+<h2><a name="_Toc215376526"><span lang=EN-US>3.1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Delegating Constructors</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The feature is scheduled for C++0x. Until
+then the following workaround is available for the pimpl-based classes:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct Foo : public pimpl&lt;Foo&gt;::pointer_semantics</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp;Foo(param1);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp;Foo(param2);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Foo::Foo(param1) : base(param1)</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{ </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Foo::Foo(param2) : base(null()) // Delegating
+constructor</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp;*this = Foo(param1); // Calling the
+target constructor</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc215376527"><span lang=EN-US>3.2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Singleton 1 Simple</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>A really quick singleton implementation
+might look as follows.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book::Book() : base(null())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; static implementation
+impl(parameters);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; reset(&amp;impl, deleter::no());</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>It is not but not a 100% kosher (see the
+following chapter) but for vast majority of singleton applications the
+implementation above is sufficient.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc215376528"><span lang=EN-US>3.3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Singleton 1 Improved</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>In a nut shell, the singleton
+implementation above is not a 100% well-behaved singleton because it passes the
+<i>equality</i> test but fails the <i>equivalence</i> test (see [1] for more
+about equality vs. equivalence). </span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>What that means is that two Book instances
+created with the constructor above will indeed share the same implementation. More,
+those two Book instances will even pass the equality test as</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book book1;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book book2;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>BOOST_ASSERT (book1 == book2); // Equality test
+passed. Good.</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>That is sufficient for vast majority of
+singleton applications. However, if one decides to put <i>book1</i> and <i>book2</i>
+in a <i>std::set</i>, he/she will end up with two entries instead of one even
+though both represent the same singleton book. That is due to these Book
+instances failing the <i>equivalence</i> test required by the standard
+associative containers. That is,</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book book1;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book book2;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>BOOST_ASSERT (!(book1 &lt; book2)); // Equivalence
+test fails. Bad.</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>BOOST_ASSERT (!(book2 &lt; book1)); // Equivalence
+test fails. Bad.</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>It is certainly true to say that it is not
+every day that we need to put a singleton in an associative container. More
+often than not we don't. However, consider us building a bunch of various outputs
+for our logging system.  We would like to provide the user with an ability to
+register a certain output stream (or streams) where he/she would like the
+logging information to go to:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>log my_log; // Create my_log</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>log::out::file file1(some-file); // Create a logging
+stream to &quot;some-file&quot;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>log::out::file file2(some-other-file); // Create
+another logging stream to &quot;some-other-file&quot;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>log::out::stdout console; // Create a logging stream
+on to the console</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>// Register logging streams with our log. Logging will
+go to three places at once.</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>my_log(file1)(file2)(console);</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>To achieve that we might like to do the following:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct log</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{   </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    struct out;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    log&amp; operator()(log::out const&amp; stream)</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    {   </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        streams_.insert(stream);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        return *this;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    }</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    std::set&lt;log::out&gt; streams_;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct log::out : public
+pimpl&lt;log::out&gt;::pointer_semantics</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{   </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    struct file;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    struct stdout;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    void write(string const&amp; msg) { (*this)-&gt;write(msg);
+}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct log::out::file : public log::out { file(char
+const* filename); };</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct log::out::stdout : public log::out { stdout(); };</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>In the example above we might like to be
+able to register many <i>log::out::file</i> logging streams but only one <i>log::out::stdout</i>
+stream even though the user might try registering that stream more than once.
+To achieve that we will need to implement <i>log::out::stdout</i> as a
+equivalence-supporting singleton that would be inserted into the <i>std::set</i>
+only once.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>For those interested to investigate why the
+singleton suggested above fails the equivalence test I just say that this
+happens in <i>boost::shared_ptr::operator&lt;()</i>.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>Now a well-behaved singleton implementation
+might look as follows:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>template&lt;&gt; struct
+pimpl&lt;Book&gt;::implementation</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    static Book create()</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    {</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        // Don't use Book::Book() to avoid recursion.</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        Book single = null();</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        single.reset(new implementation());</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        return single;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    }</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book::Book() : base(null())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; static Book single =
+implementation::create();</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    *this = single;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc215376529"></a><a name="_Toc197225493"><span lang=EN-US>3.4.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Singleton 2</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>A nice property of the singletons above is
+that they preserve the purity of the public interfaces of the respective
+classes. However, that comes at the expense of somewhat laborious implementation.
+One might consider that price to be too high to pay merely for visual neatness
+and instead prefer the following.</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The declaration file:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct Book : public pimpl&lt;Book&gt;::pointer_semantics</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; Book();</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    private:</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    Book(singleton-related-parameters);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The implementation file:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book::Book() : base(null())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    static Book single(</span></b><b><span lang=EN-US
+style='font-size:10.0pt'>singleton-related-parameters</span></b><b><span
+lang=EN-US style='font-size:10.0pt'>);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;   *this = single;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal><a name="_Toc197225494"><span lang=EN-US>&nbsp;</span></a></p>
+
+<h2><a name="_Toc215376530"><span lang=EN-US>3.5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Extendible Dictionary</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The implementation file:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>typedef std::map&lt;string, Book&gt; AllBooks;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>typedef boost::mutex Mutex;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>typedef boost::mutex::scoped_lock Lock;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>typedef std::pair&lt;Books::iterator, bool&gt;
+Inserted;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'> </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>static Mutex mutex;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>static AllBooks books;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'> </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book::Book(string const&amp; title) : base(null())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    std::pair&lt;string, Book&gt; dummy (title, Book::null());</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    Lock lock (mutex);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    Inserted inserted (books.insert(dummy));</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    Book&amp; book (inserted.first-&gt;second);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    if (inserted.second) </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        book.reset(new implementation(parameters));</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    *this = book;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<h2><a name="_Toc215376531"><span lang=EN-US>3.6.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Non-Extendible Dictionary</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The implementation file:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book::Book(string const&amp; title) : base(null())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    Lock lock (mutex);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    AllBooks::iterator it (books.find(title));</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'> </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    // If the title found, return it.</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    // Otherwise, return an invalid book.</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    if (it != books.end()) *this = it-&gt;second;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<h2><a name="_Toc215376532"><span lang=EN-US>3.7.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Internal (Implementation-Only) Run-Time
+Polymorphism</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>See the description of the Non-Virtual
+Interface idiom in [1] and Rule #39 in [2].</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The implementation file:</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>template&lt;&gt; struct pimpl&lt;Book&gt;::implementation</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; implementation(parameters) {}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;&nbsp;&nbsp; virtual ~implementation() {}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct Implementation1 : public implementation</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    Implementation1() : implementation(parameters) {}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct Implementation2 : public implementation</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    Implementation2() : implementation(parameters) {}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>Book:: Book() : base(null())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    reset(</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>        some_condition ? new Implementation1 </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>                                  : new Implementation2);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc215376533"><span lang=EN-US>3.8.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Run-Time Polymorphic Class Hierarchy</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>See the Bridge pattern in [3].</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The declaration file:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct ThickBook : public Book</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    ThickBook(parameters);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct ThickestBook : public ThickBook</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    ThickestBook(parameters);</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>The implementation file:</span></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>typedef pimpl&lt;Book&gt;::implementation implementation;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>template&lt;&gt; struct pimpl&lt;Book&gt;::implementation</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    implementation(parameters) {...}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    virtual ~implementation() {...}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    ...</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'> </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct ThickBookImpl : public implementation</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    ThickBookImpl(parameters) : implementation(parameters)
+{...}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    ...</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'> </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>struct ThickestBookImpl : public ThickBookImpl</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    ThickestBookImpl(parameters) : ThickBookImpl(parameters)
+{...}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    ...</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>};</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>ThickBook:: ThickBook(parameters) :
+Book(null&lt;Book&gt;())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    reset(new ThickBook(parameters));</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>ThickestBook:: ThickestBook(parameters) :
+ThickBook(null&lt;ThickBook&gt;())</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>{</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    reset(new ThickestBook(parameters));</span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>    </span></b></p>
+
+<p class=MsoNormal style='margin-left:14.2pt'><b><span lang=EN-US
+style='font-size:10.0pt'>}</span></b></p>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<h2><a name="_Toc215376534"><span lang=EN-US>3.9.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>Derived Classes Overriding the pimpl::operator
+bool_type()</span></a></h2>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<p class=MsoNormal><span lang=EN-US>TODO</span></p>
+
+<h1><a name="_Toc215376535"></a><a name="_Toc197225495"><span lang=EN-US>4.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US>References</span></a></h1>
+
+<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+<ol style='margin-top:0cm' start=1 type=1>
+ <li class=MsoNormal><span lang=EN-US>V. Batov. Making Pimpl Easy at <a
+     href="http://www.ddj.com/cpp/205918714">http://www.ddj.com/cpp/205918714</a></span></li>
+ <li class=MsoNormal><span lang=EN-US>S. Meyers. Effective STL (Addison-Wesley,
+     2001)</span></li>
+ <li class=MsoNormal><span lang=EN-US>H. Sutter. Virtuality at <a
+     href="http://www.gotw.ca/publications/mill18.htm">http://www.gotw.ca/publications/mill18.htm</a></span></li>
+ <li class=MsoNormal><span lang=EN-US>H. Sutter and A. Alexandrescu. C++ Coding
+     Standards (Addison-Wesley,2005)</span></li>
+ <li class=MsoNormal><span lang=EN-US>Eric Gamma et al. Design Patterns
+     (Addison-Wesley,1995)</span></li>
+</ol>
+
+</div>
+
+</body>
+
+</html>
