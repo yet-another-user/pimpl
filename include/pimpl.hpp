@@ -84,38 +84,30 @@ template<class Interface>
 template<class Impl/*ementation*/>
 class pimpl<Interface>::value_semantics_ptr
 {
+    typedef value_semantics_ptr this_type;
+
     public:
 
    ~value_semantics_ptr () { traits_->destroy(impl_); }
     value_semantics_ptr () : traits_(deep_copy()), impl_(0) {}
     value_semantics_ptr (Impl* p) : traits_(deep_copy()), impl_(p) {}
-    value_semantics_ptr (value_semantics_ptr const& that)
-    : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
-    value_semantics_ptr& operator=(value_semantics_ptr const& that)
-    {
-        traits_->assign(impl_, that.impl_);
-        return *this;
-    }
-    bool operator<(value_semantics_ptr const& that) const
-    {
-        return this->impl_ < that.impl_;
-        // Should it be "*this->impl_ < *that.impl_" instead?
-    }
-    void reset(Impl* p) { value_semantics_ptr(p).swap(*this); }
+    value_semantics_ptr (this_type const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
-    void swap(value_semantics_ptr& that)
-    {
-        std::swap(impl_,   that.impl_);
-        std::swap(traits_, that.traits_);
-    }
-    Impl* get() { return impl_; }
-    Impl const* get() const { return impl_; }
+    this_type& operator= (this_type const& that) { traits_->assign(impl_, that.impl_); return *this; }
+    bool       operator< (this_type const& that) const { return this->impl_ < that.impl_; }
+
+    void      reset (Impl* p) { this_type(p).swap(*this); }
+    void       swap (this_type& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
+    Impl*       get () { return impl_; }
+    Impl const* get () const { return impl_; }
+    long  use_count () const { return 1; }
 
     private:
 
     struct traits
     {
         virtual ~traits() {}
+
         virtual void destroy (Impl*&) const =0;
         virtual Impl*   copy (Impl const*) const =0;
         virtual void  assign (Impl*&, Impl const*) const =0;
@@ -153,25 +145,22 @@ template<template<class> class Manager>
 class pimpl<T>::pimpl_base
 {
     // Use 'pimpl_base_type' internally instead of 'base' to minimize the possibility
-    // of a clash if 'base' is redefined in the derived classes.
+    // of a clash if 'base_type' is redefined in the derived classes.
     typedef typename pimpl<T>::template pimpl_base<Manager> pimpl_base_type;
     typedef typename pimpl<T>::implementation           implementation_type;
     typedef Manager<implementation_type>                       managed_type;
     struct                                                    internal_type {};
-
-    template<class U> friend class is_pimpl; // is_pimpl accesses pimpl_base_type.
 
     public:
 
     typedef aux::safebool<T>             safebool;
     typedef typename safebool::type safebool_type;
     typedef implementation_type    implementation;
-    typedef pimpl_base_type                  base;
+    typedef pimpl_base_type             base_type;
 
-    /// @name Conversion To Boolean (The Safe Bool Idiom)
-    //@{
-    operator safebool_type() const { return safebool(pimpl_base_type::impl_.get()); }
-    //@}
+    bool         operator! () const { return !pimpl_base_type::impl_.get(); }
+    operator safebool_type () const { return safebool(pimpl_base_type::impl_.get()); }
+
     /// @name Invalid Pimpl with NULL Pointer-Like Behavior
     //@{
     /// @details A convenience function that returns an invalid NULL-like
@@ -183,13 +172,13 @@ class pimpl<T>::pimpl_base
     /// or to disable automatic interface-implementation management as for
     /// the delegating-constructors idiom:
     /// @code
-    ///     Foo::Foo(parameters) : base(null())
+    ///     Foo::Foo(parameters) : base_type(null())
     ///     {
     ///         *this = Foo(some-other-parameters);
     ///         ... additional stuff
     ///     }
     ///     or
-    ///     Foo::Foo(parameters) : base(null())
+    ///     Foo::Foo(parameters) : base_type(null())
     ///     {
     ///         reset(new implementation(some-other-parameters));
     ///         ... additional stuff
@@ -226,6 +215,32 @@ class pimpl<T>::pimpl_base
     void swap (pimpl_base_type& that) { pimpl_base_type::impl_.swap(that.pimpl_base_type::impl_); }
     void swap (managed_type& that) { pimpl_base_type::impl_.swap(that); }
     //@}
+    /// @name Explicit Management of Interface-Implementation Associations
+    /// @details Usually internal interface-implementation associations are
+    /// managed automatically by the base class:
+    /// @code
+    ///      Foo::Foo(params) : base_type(params) {...}
+    /// @endcode
+    /// Sometimes, however, it is not what we want. Like for lazy-instantiation
+    /// optimization or pimpl<> deployment as the base of run-time polymorphic
+    /// hierarchies. Then use reset() to explicitly set/reset the internal
+    /// interface-implementation association to point to the supplied
+    /// implementation. The behavior is similar to std::auto_ptr::reset() or
+    /// boost::shared_ptr::reset(). For example, the following technique could be
+    /// used for Non-Virtual Interface idiom:
+    /// @code
+    ///     struct impl1 : public pimpl<Foo>::implementation { ... };
+    ///     struct impl2 : public pimpl<Foo>::implementation { ... };
+    ///
+    ///     Foo::Foo(parameters) : base_type(null())
+    ///     {
+    ///         reset(condition ? new impl1 : new impl2);
+    ///     }
+    /// @endcode
+    //@{
+    void reset(implementation_type* p) { pimpl_base_type::impl_.reset(p); }
+    template<class Y, class D> void reset(Y* p, D d) { pimpl_base_type::impl_.reset(p, d); }
+    //@}
     /// @name Access To Implementation
     /// @details Functions allow access to the underlying implementation. These
     /// methods are only meaningful to the code for which pimpl<>::implementation
@@ -252,54 +267,29 @@ class pimpl<T>::pimpl_base
     implementation_type&       operator *()       { BOOST_ASSERT(pimpl_base_type::impl_.get()); return *pimpl_base_type::impl_.get(); }
     //@}
 
+    long use_count() const { return impl_.use_count(); }
+
     protected:
 
     // The default auto-generated copy constructor and the default assignment
     // operator are just fine (do member-wise copy and assignment respectively).
 
     /// @name Forwarding Constructors
-    /// @details A series of forwarding constructors. These constructors
-    /// dutifully forward arguments to the corresponding constructors of the
-    /// internal 'implementation' class. That is done to encapsulate the
-    /// construction of the 'implementation' instance inside this class and,
-    /// consequently, to *fully* automate memory management (rather than just
-    /// deletion).
+    /// @details A series of forwarding constructors. These constructors forward arguments to the corresponding constructors
+    /// of the internal 'implementation' class. That is done to encapsulate the construction of the 'implementation' instance
+    /// inside this class and, consequently, to *fully* automate memory management (rather than just deletion).
     //@{
     pimpl_base() : impl_(new implementation_type()) {}
 
     BOOST_PIMPL_MANY_MORE_CONSTRUCTORS;
     //@}
-    /// @name Explicit Management of Interface-Implementation Associations
-    /// @details Usually internal interface-implementation associations are
-    /// managed automatically by the base class:
-    /// @code
-    ///      Foo::Foo(params) : base(params) {...}
-    /// @endcode
-    /// Sometimes, however, it is not what we want. Like for lazy-instantiation
-    /// optimization or pimpl<> deployment as the base of run-time polymorphic
-    /// hierarchies. Then use reset() to explicitly set/reset the internal
-    /// interface-implementation association to point to the supplied
-    /// implementation. The behavior is similar to std::auto_ptr::reset() or
-    /// boost::shared_ptr::reset(). For example, the following technique could be
-    /// used for Non-Virtual Interface idiom:
-    /// @code
-    ///     struct impl1 : public pimpl<Foo>::implementation { ... };
-    ///     struct impl2 : public pimpl<Foo>::implementation { ... };
-    ///
-    ///     Foo::Foo(parameters) : base(null())
-    ///     {
-    ///         reset(condition ? new impl1 : new impl2);
-    ///     }
-    /// @endcode
-    //@{
-    void reset(implementation_type* p) { pimpl_base_type::impl_.reset(p); }
-    template<class Y, class D> void reset(Y* p, D d) { pimpl_base_type::impl_.reset(p, d); }
-    //@}
 
     private:
 
+    template<typename> friend class is_pimpl; // is_pimpl accesses pimpl_base_type.
+
     // Creates an invalid (with no implementation) NULL-like instance.
-    // Used internally and solely by pimpl::null().
+    // Used internally by pimpl::null().
     pimpl_base (internal_type) {}
 
     template<class Y> friend struct pimpl;

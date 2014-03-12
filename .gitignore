@@ -1,12 +1,21 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
+*~
+bin.v2/
 
-# Compiled Dynamic libraries
-*.so
+#################
+## Eclipse
+#################
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+.project
+.settings/
+.cproject
+
+Debug/
+Release/
+*.vcxproj*
+*.sln
+*.suo
+*.sdf
+*.opensdf
+
+
+

@@ -45,7 +45,7 @@
 //
 // struct Moo : public pimpl<Moo>::pointer_semantics
 // {
-//      Moo() : base(create_foo()) {}
+//      Moo() : base_type(create_foo()) {}
 // };                ^^^^^^^^^^^^
 // The above passes a temporary parameter (returned by create_foo()) and
 // requires template<A1> pimpl_base(A1 const&) to kick in.
@@ -57,7 +57,7 @@
 // Interestingly, gcc handles the following correctly:
 // struct Moo : public pimpl<Moo>::pointer_semantics
 // {
-//      Moo() : base(Foo()) {}
+//      Moo() : base_type(Foo()) {}
 // };                ^^^^^
 // So, I have to resort to the juggling with consts below.
 
