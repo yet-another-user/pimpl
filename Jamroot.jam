@@ -1,0 +1,38 @@
+#   Copyright 2009-2014 Vladimir Batov
+#
+#   This file is taken from the 'example' sandbox library
+
+##
+##  IMPORTANT NOTE: This file MUST NOT be copied over a boost installation
+##
+
+path-constant top : . ;
+
+import modules ;
+import path ;
+
+local boost-root = [ modules.peek : BOOST_ROOT ] ;
+
+if ! $(boost-root)
+{
+    local boost-search-dirs = [ modules.peek : BOOST_BUILD_PATH ] ;
+
+    for local dir in $(boost-search-dirs)
+    {
+        if [ path.glob $(dir)/../../../ : boost/version.hpp ]
+        {
+            boost-root += $(dir)/../../../ ;
+        }
+    }
+
+    if $(boost-root)
+    {
+        boost-root = [ path.make $(boost-root[1]) ] ;
+    }
+    else
+    {
+        ECHO "Warning: couldn't find BOOST_ROOT in" $(boost-root) ;
+    }
+}
+
+path-constant BOOST_ROOT : $(boost-root) ;

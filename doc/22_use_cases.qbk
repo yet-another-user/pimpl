@@ -1,0 +1,308 @@
+[section The Pimpl Idiom Use Cases]
+
+The declaration file book.hpp
+
+ struct deleter
+ {
+    // Convenience deleter allows shared_ptrs to manage objects
+    // without deleting them.
+
+    struct no { void operator()(void*) {}};
+ };
+
+ struct Book : public pimpl<Book>::pointer_semantics
+ {
+    Book();
+ };
+
+The implementation file book.cpp:
+
+ typedef pimpl<Book>::implementation implementation;
+
+ template<> struct pimpl<Book>::implementation
+ {
+    implementation(parameters);
+    ...
+ }
+
+[section Delegating Constructors]
+
+The feature is scheduled for C++0x. Until then the following workaround is available for the pimpl-based classes:
+
+ struct Foo : public pimpl<Foo>::pointer_semantics
+ {
+    Foo(param1);
+    Foo(param2);
+ };
+
+ Foo::Foo(param1) : base(param1)
+ { ...
+ };
+
+ Foo::Foo(param2) : base(null()) // Delegating constructor
+ {
+   *this = Foo(param1); // Calling the target constructor
+ };
+
+[endsect]
+[section Singleton 1 Simple]
+
+A really quick singleton implementation might look as follows.
+
+ Book::Book() : base(null())
+ {
+    static implementation impl(parameters);
+
+    reset(&impl, deleter::no());
+ }
+
+It is not a 100% kosher (see the following chapter) but for vast majority of singleton applications it is sufficient.
+
+[endsect]
+[section Singleton 1 Improved]
+
+In a nut shell, the singleton implementation above is not a 100% well-behaved singleton because it passes the equality test but fails the equivalence test (see [1] for more about equality vs. equivalence).
+
+What that means is that two Book instances created with the constructor above will indeed share the same implementation. More, those two Book instances will even pass the equality test as
+
+ Book book1;
+ Book book2;
+
+ BOOST_ASSERT (book1 == book2); // Equality test passed. Good.
+
+That is sufficient for vast majority of singleton applications. However, if one decides to put book1 and book2 in a std::set, he/she will end up with two entries instead of one even though both represent the same singleton book. That is due to these Book instances failing the equivalence test required by the standard associative containers. That is,
+
+ Book book1;
+ Book book2;
+
+ BOOST_ASSERT (!(book1 < book2)); // Equivalence test fails. Bad.
+ BOOST_ASSERT (!(book2 < book1)); // Equivalence test fails. Bad.
+
+It is certainly true to say that it is not every day that we need to put a singleton in an associative container. More often than not we don't. However, consider us building a bunch of various outputs for our logging system. We would like to provide the user with an ability to register a certain output stream (or streams) where he/she would like the logging information to go to:
+
+ log my_log; // Create my_log
+ log::out::file file1(some-file); // Create a logging stream to "some-file"
+ log::out::file file2(some-other-file); // Create another logging stream to "some-other-file"
+ log::out::stdout console; // Create a logging stream on to the console
+
+ // Register logging streams with our log. Logging will go to three places at once.
+ my_log(file1)(file2)(console);
+
+To achieve that we might like to do the following:
+
+ struct log
+ { ...
+    struct out;
+    ...
+
+    log& operator()(log::out const& stream)
+    { ...
+        streams_.insert(stream);
+
+        return *this;
+    }
+    std::set<log::out> streams_;
+ };
+
+ struct log::out : public pimpl<log::out>::pointer_semantics
+ { ...
+    struct file;
+    struct stdout;
+
+    void write(string const& msg) { (*this)->write(msg); }
+ };
+
+ struct log::out::file : public log::out { file(char const* filename); };
+ struct log::out::stdout : public log::out { stdout(); };
+
+In the example above we might like to be able to register many log::out::file logging streams but only one log::out::stdout stream even though the user might try registering that stream more than once. To achieve that we will need to implement log::out::stdout as a equivalence-supporting singleton that would be inserted into the std::set only once.
+
+For those interested to investigate why the singleton suggested above fails the equivalence test I just say that this happens in boost::shared_ptr::operator<().
+
+Now a well-behaved singleton implementation might look as follows:
+
+ template<> struct pimpl<Book>::implementation
+ {
+    static Book create()
+    {
+        // Don't use Book::Book() to avoid recursion.
+        Book single = null();
+
+        single.reset(new implementation());
+
+        return single;
+    }
+ };
+
+ Book::Book() : base(null())
+ {
+    static Book single = implementation::create();
+
+    *this = single;
+}
+
+[endsect]
+[section Singleton 2]
+
+A nice property of the singletons above is that they preserve the purity of the public interfaces of the respective classes. However, that comes at the expense of somewhat laborious implementation. One might consider that price to be too high to pay merely for visual neatness and instead prefer the following.
+
+The declaration file:
+
+ struct Book : public pimpl<Book>::pointer_semantics
+ {
+    Book();
+
+    private:
+
+    Book(singleton-related-parameters);
+ };
+
+The implementation file:
+
+ Book::Book() : base(null())
+ {
+    static Book single(singleton-related-parameters);
+
+    *this = single;
+ }
+
+[endsect]
+[section Extendible Dictionary]
+
+The implementation file:
+
+ 
+
+typedef std::map<string, Book> AllBooks;
+
+typedef boost::mutex Mutex;
+
+typedef boost::mutex::scoped_lock Lock;
+
+typedef std::pair<Books::iterator, bool> Inserted;
+
+static Mutex mutex;
+
+static AllBooks books;
+
+ Book::Book(string const& title) : base(null())
+ {
+    std::pair<string, Book> dummy (title, Book::null());
+    Lock lock (mutex);
+    Inserted inserted (books.insert(dummy));
+    Book& book (inserted.first->second);
+
+    if (inserted.second)
+        book.reset(new implementation(parameters));
+
+    *this = book;
+ }
+
+[endsect]
+[section Non-Extendible Dictionary]
+
+The implementation file:
+
+ Book::Book(string const& title) : base(null())
+ {
+    Lock lock (mutex);
+    AllBooks::iterator it (books.find(title));
+    
+// If the title found, return it.
+    // Otherwise, return an invalid book.
+    if (it != books.end()) *this = it->second;
+ }
+
+[endsect]
+[section Internal (Implementation-Only) Run-Time Polymorphism]
+
+See the description of the Non-Virtual Interface idiom in [1] and Rule #39 in [2].
+
+The implementation file:
+
+ template<> struct pimpl<Book>::implementation
+ {
+    implementation(parameters) {...}
+
+    virtual ~implementation() {...}
+ }
+
+ struct Implementation1 : public implementation
+ {
+    Implementation1() : implementation(parameters) {Â…}
+ };
+
+ struct Implementation2 : public implementation
+ {
+    Implementation2() : implementation(parameters) {Â…}
+ };
+
+ Book:: Book() : base(null())
+ {
+    reset(some_condition ? new Implementation1 : new Implementation2);
+ }
+
+[endsect]
+[section Run-Time Polymorphic Class Hierarchy]
+
+See the Bridge pattern in [3].
+
+The declaration file:
+
+ struct ThickBook : public Book
+ {
+    ThickBook(parameters);
+ };
+
+ struct ThickestBook : public ThickBook
+ {
+    ThickestBook(parameters);
+ };
+
+The implementation file:
+
+ typedef pimpl<Book>::implementation implementation;
+
+ template<> struct pimpl<Book>::implementation
+ {
+    implementation(parameters) {...}
+
+    virtual ~implementation() {...}
+    ...
+ };
+ 
+ struct ThickBookImpl : public implementation
+ {
+
+ ThickBookImpl(parameters) : implementation(parameters) {...}
+
+ ...
+
+ };
+
+ struct ThickestBookImpl : public ThickBookImpl
+ {
+    ThickestBookImpl(parameters) : ThickBookImpl(parameters) {...}
+    ...
+ };
+
+ ThickBook:: ThickBook(parameters) : Book(null<Book>())
+ {
+    reset(new ThickBook(parameters));
+    ...
+ }
+
+ ThickestBook:: ThickestBook(parameters) : ThickBook(null<ThickBook>())
+ {
+    reset(new ThickestBook(parameters));
+    ...
+ }
+
+[endsect]
+[section Derived Classes Overriding the pimpl::operator bool_type()]
+
+TODO
+
+[endsect]
+[endsect]
+

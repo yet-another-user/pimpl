@@ -1,0 +1,5 @@
+[section Introduction]
+
+[*Please note that the described framework is not part of the Boost library collection even though in this document it is referred to as ['Boost.Pimpl]. This is done in preparation for potential submission of the library to ['Boost].]
+
+[endsect]

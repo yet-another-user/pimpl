@@ -1,0 +1,13 @@
+[section References]
+
+1. [#1] [@http://www.ddj.com/cpp/205918714 V. Batov. Making Pimpl Easy]
+
+2. [#2] [S. Meyers. Effective STL (Addison-Wesley, 2001)]
+
+3. [#3] [@http://www.gotw.ca/publications/mill18.htm H. Sutter. Virtuality]
+
+4. [#4] [H. Sutter and A. Alexandrescu. C++ Coding Standards (Addison-Wesley,2005)]
+
+5. [#5] [Eric Gamma et al. Design Patterns (Addison-Wesley,1995)]
+
+[endsect]
