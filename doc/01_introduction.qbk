@@ -1,5 +1,16 @@
 [section Introduction]
 
-[*Please note that the described framework is not part of the Boost library collection even though in this document it is referred to as ['Boost.Pimpl]. This is done in preparation for potential submission of the library to ['Boost].]
+[*Note:] This documentation is loosely based on the original article ([link 1 \[1\]]) published in the C/C++ Users Journal (now Dr. Dobb's).
+
+The Pimpl idiom is a simple yet robust technique to minimize coupling via 
+
+* the separation of interface and implementation and then 
+* implementation hiding. 
+
+Successfully popularized by Sutter ([link 2 \[2\]], [link 3 \[3\]]) under the cheeky Pimpl name (as for "pointer to implementation") the technique has been known long before under various names (the Cheshire Cat in [link 4 \[4\]], the Handle/Body in [link 5 \[5\]], the Bridge in [link 6 \[6\]]) and conceptually deployed in C and C++ as far back as at least early eighties ([link 7 \[7\]]).
+
+In the domain of industrial software development where portability, implementation hiding and minimization of compilation dependencies come to the fore, the Pimpl technique can help great deal achieving those goals. Still, it does not seem to be very widely deployed. Sometimes that is due to efficiency considerations (valid or misguided) and probably more often due to additional implementation scaffolding and coding overhead associated with the technique. 
+
+The purpose sof the library is to ease systematize the deployment
 
 [endsect]
