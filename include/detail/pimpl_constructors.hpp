@@ -2,8 +2,23 @@
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef BOOST_PIMPL_CONSTRUCTORS_DETAIL_HEADER_VB
-#define BOOST_PIMPL_CONSTRUCTORS_DETAIL_HEADER_VB
+#ifndef BOOST_PIMPL_DETAIL_PIMPL_CONSTRUCTORS_HPP
+#define BOOST_PIMPL_DETAIL_PIMPL_CONSTRUCTORS_HPP
+
+#include <boost/type_traits.hpp>
+
+// a) The BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED macro makes sure that the one-arg
+//    constructor is not called when the copy constructor is in order.
+// b) The macro uses boost::is_base_of<pimpl_base_type, A> instead of is_pimpl<>::value
+//    as we do not want the respective constructor disabled for any pimpl argument.
+//    We only want it disabled for classes directly derived from this very
+//    pimpl_base so that we deploy the pimpl_base copy-constructor instead.
+// c) The macro uses the 'internal_type' type to uniquely distinguish the
+//    respective constructor from ANY of 2-args constructors.
+#define BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED(A) \
+    typename boost::disable_if<                    \
+        boost::is_base_of<pimpl_base_type,         \
+            typename boost::remove_reference<A>::type>, internal_type*>::type = 0
 
 // Series of constructors forwarding parameters down to the implementation
 // class. That is done to encapsulate object construction inside that implementation
@@ -160,4 +175,4 @@ PIMPL_CONSTRUCTOR_5 (const,const,const,const,const)
 // Hopefully more compilers will be as intelligent as VS C++ 9.0
 
 #endif // _MSC_VER
-#endif // BOOST_PIMPL_CONSTRUCTORS_DETAIL_HEADER_VB
+#endif // BOOST_PIMPL_DETAIL_PIMPL_CONSTRUCTORS_HPP

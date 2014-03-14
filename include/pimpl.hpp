@@ -1,30 +1,22 @@
 // Copyright (c) 2001 Peter Dimov and Multi Media Ltd.
-// Copyright (c) 2006-2010 Vladimir Batov.
+// Copyright (c) 2006-2014 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef BOOST_PIMPL_GENERALIZATION_HEADER_VB
-#define BOOST_PIMPL_GENERALIZATION_HEADER_VB
+#ifndef BOOST_PIMPL_HPP
+#define BOOST_PIMPL_HPP
 
-#include "./detail/pimpl_constructors.hpp"
-#include "./safebool.hpp"
+#include <boost/config.hpp>
+#if defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) || \
+    defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+#include <boost/pimpl/detail/pimpl_constructors.hpp>
+#endif
+#include <boost/pimpl/detail/safebool.hpp>
+#include <boost/assert.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/static_assert.hpp>
 #include <boost/utility.hpp>
-#include <boost/type_traits.hpp>
 #include <boost/serialization/shared_ptr.hpp>
-
-// a) The BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED macro makes sure that the one-arg
-//    constructor is not called when the copy constructor is in order.
-// b) The macro uses boost::is_base_of<pimpl_base_type, A> instead of is_pimpl<>::value
-//    as we do not want the respective constructor disabled for any pimpl argument.
-//    We only want it disabled for classes directly derived from this very
-//    pimpl_base so that we deploy the pimpl_base copy-constructor instead.
-// c) The macro uses the 'internal_type' type to uniquely distinguish the
-//    respective constructor from ANY of 2-args constructors.
-#undef  BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED
-#define BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED(A) \
-    typename boost::disable_if<                    \
-        boost::is_base_of<pimpl_base_type, A>, internal_type*>::type =0
 
 /// @class pimpl
 /// @brief Generalization of the Pimpl idiom
@@ -63,8 +55,8 @@ struct pimpl
 template<class T>
 class is_pimpl
 {
-    typedef ::boost::type_traits::yes_type yes_type;
-    typedef ::boost::type_traits::no_type no_type;
+    typedef boost::type_traits::yes_type yes_type;
+    typedef boost::type_traits::no_type no_type;
     typedef typename boost::remove_reference<T>::type* ptr_type;
 
     template<class Y>
@@ -153,7 +145,7 @@ class pimpl<T>::pimpl_base
 
     public:
 
-    typedef aux::safebool<T>             safebool;
+    typedef boost::detail::safebool<T>   safebool;
     typedef typename safebool::type safebool_type;
     typedef implementation_type    implementation;
     typedef pimpl_base_type             base_type;
@@ -281,7 +273,31 @@ class pimpl<T>::pimpl_base
     //@{
     pimpl_base() : impl_(new implementation_type()) {}
 
+#if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
+    !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+    pimpl_base(const pimpl_base& other)
+        : impl_(other.impl)
+    {
+    }
+
+    pimpl_base(pimpl_base& other)
+        : impl_(other.impl)
+    {
+    }
+
+    pimpl_base(pimpl_base&& other)
+        : impl_(std::move(other.impl))
+    {
+    }
+
+    template<class... Args>
+    pimpl_base(Args&&... args)
+        : impl_(new implementation_type(std::forward<Args>(args)...))
+    {
+    }
+#else
     BOOST_PIMPL_MANY_MORE_CONSTRUCTORS;
+#endif
     //@}
 
     private:
@@ -436,4 +452,4 @@ pimpl<T>::null()
     }                                                                                   \
     BOOST_SERIALIZATION_PIMPL_EXPLICIT_INSTANTIATIONS(THE_CLASS)                        \
 
-#endif // BOOST_PIMPL_GENERALIZATION_HEADER_VB
+#endif // BOOST_PIMPL_PIMPL_HPP

@@ -5,10 +5,13 @@
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef BOOST_SAFEBOOL_HPP
-#define BOOST_SAFEBOOL_HPP
+#ifndef BOOST_PIMPL_DETAIL_SAFEBOOL_HPP
+#define BOOST_PIMPL_DETAIL_SAFEBOOL_HPP
 
-#include <auxiliary/forward.hpp>
+namespace boost
+{
+namespace detail
+{
 
 /// @brief Generalization of the Safe-Bool Technique
 /// @details An implicit conversion to bool (operator bool() const) is very much
@@ -53,7 +56,7 @@
 ///     if (foo == zoo) Valid (but wrong) comparison between unrelated types.
 /// @endcode
 template<class T>
-struct aux::safebool
+struct safebool
 {
     typedef void (safebool::*type)() const;
 
@@ -68,4 +71,7 @@ struct aux::safebool
     type value_;
 };
 
-#endif // BOOST_SAFEBOOL_HPP
+} // namespace detail
+} // namespace boost
+
+#endif // BOOST_PIMPL_DETAIL_SAFEBOOL_HPP

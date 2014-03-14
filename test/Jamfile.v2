@@ -1,0 +1,7 @@
+import testing ;
+
+{
+    test-suite "pimpl"
+        : [ run pimpl_test.cpp ]
+        ;
+}
