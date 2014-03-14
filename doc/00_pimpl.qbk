@@ -22,6 +22,7 @@
 ]
  
 [include 01_introduction.qbk]
+[include 02_getting_started.qbk]
 [include 22_use_cases.qbk]
 [include 97_references.qbk]
 [include 98_acknowledgments.qbk]

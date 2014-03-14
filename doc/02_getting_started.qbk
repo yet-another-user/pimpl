@@ -1,0 +1,43 @@
+[section Getting Started]
+
+Let's say we need to write a ['Pimpl]-based ['Book] class with ['pointer semantics]. That is:
+
+* we want to separate interface and implementation and to hide implementation through the deployment of the ['Pimpl] idiom;
+* our class needs to have pointer semantics, i.e. with regard to the underlying data it will behave in the smart-pointer/proxy fashion by allowing shared access to the underlying implementation data.
+
+In that setting the ['Book] class public declaration will probably look as follows: 
+
+ class Book
+ {
+    public:
+
+    Book(string const& title, string const& author);
+    
+    string const&  title () const;
+    string const& author () const;
+  
+    bool operator== (Book const& other) const { return impl_ == other.impl_; }
+    bool operator!= (Book const& other) const { return !operator==(other); }
+
+    explicit operator bool() const { return impl_; }
+  
+    private:
+  
+    struct implementation;
+    boost::shared_ptr<implementation> impl_;
+ };
+
+So far applying the ['Pimpl] idiom is fairly straightforward as ['boost::shared_ptr] takes care of much of the scaffolding hassle. The auto-generated destructor, copy constructor and assignment operator suffice and writing the comparison operators is child's play. What more could we wish for? 
+
+For one thing, lumping the application interface with the infrastructure scaffolding is messy. Moreover, in our (admittedly simple) ['Book] class more than half of the code is the ['Pimpl]-related scaffolding. For one class in isolation that might not look like that big a deal. On a larger scale, analyzing and maintaining twice as much code, mentally separating the application interface from the infrastructure scaffolding, and making sure nothing is forgotten, misused, or misplaced is a tiring exercise and not exactly fun. The following, therefore, seems like a worthwhile improvement: 
+
+ struct Book : public pimpl<Book>::pointer_semantics
+ {
+    Book(string const& title, string const& author);
+    string const& title() const;
+    string const& author() const;
+ };
+
+It is considerably shorter, application-focused and reasonably self-explanatory. The important quality (from industrial s/w design perspective) is that consists of ['nothing but pure application-specific public interface]. It does not even need to be a class as there is nothing to restrict access to. 
+
+[endsect]

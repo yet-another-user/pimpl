@@ -1,5 +1,7 @@
 [section The Pimpl Idiom Use Cases]
 
+The following common code will be used 
+
 The declaration file book.hpp
 
  struct deleter

@@ -5,10 +5,10 @@
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
-<link rel="next" href="the_boost_pimpl_library/the_pimpl_idiom_use_cases.html" title="The Pimpl Idiom Use Cases">
+<link rel="next" href="the_boost_pimpl_library/getting_started.html" title="Getting Started">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<div class="spirit-nav"><a accesskey="n" href="the_boost_pimpl_library/the_pimpl_idiom_use_cases.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="the_boost_pimpl_library/getting_started.html"><img src="images/next.png" alt="Next"></a></div>
 <div class="chapter">
 <div class="titlepage"><div>
 <div><h2 class="title">
@@ -28,6 +28,7 @@
 <p><b>Table of Contents</b></p>
 <dl>
 <dt><span class="section"><a href="index.html#the_boost_pimpl_library.introduction">Introduction</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/getting_started.html">Getting Started</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases.html">The
     Pimpl Idiom Use Cases</a></span></dt>
 <dd><dl>
@@ -52,7 +53,7 @@
 </dl></dd>
 <dt><span class="section"><a href="the_boost_pimpl_library/references.html">References</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/acknowledgements.html">Acknowledgements</a></span></dt>
-<dt><span class="section"><a href="index/s05.html">Index</a></span></dt>
+<dt><span class="section"><a href="index/s06.html">Index</a></span></dt>
 </dl>
 </div>
 <div class="section">
@@ -60,12 +61,13 @@
 <a name="the_boost_pimpl_library.introduction"></a><a class="link" href="index.html#the_boost_pimpl_library.introduction" title="Introduction">Introduction</a>
 </h2></div></div></div>
 <p>
-      <span class="bold"><strong>Note:</strong></span> This documentation is loosely based
-      on the original article (<a class="link" href="the_boost_pimpl_library/references.html#1">[1]</a>) published in the C/C++
-      Users Journal (now Dr. Dobb's).
+      <span class="bold"><strong>Note:</strong></span> This documentation is based on the original
+      article (<a class="link" href="the_boost_pimpl_library/references.html#1">[1]</a>) published in the C/C++ Users Journal
+      (now Dr. Dobb's).
     </p>
 <p>
-      The Pimpl idiom is a simple yet robust technique to minimize coupling via
+      The <span class="emphasis"><em>Pimpl</em></span> idiom is a simple yet robust technique to minimize
+      coupling via
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
@@ -77,30 +79,47 @@
 </ul></div>
 <p>
       Successfully popularized by Sutter (<a class="link" href="the_boost_pimpl_library/references.html#2">[2]</a>, <a class="link" href="the_boost_pimpl_library/references.html#3">[3]</a>)
-      under the cheeky Pimpl name (as for "pointer to implementation")
+      under the cheeky <span class="emphasis"><em>Pimpl</em></span> name (as for "pointer to implementation")
       the technique has been known long before under various names (the Cheshire
       Cat in <a class="link" href="the_boost_pimpl_library/references.html#4">[4]</a>, the Handle/Body in <a class="link" href="the_boost_pimpl_library/references.html#5">[5]</a>,
-      the Bridge in <a class="link" href="the_boost_pimpl_library/references.html#6">[6]</a>) and conceptually deployed in C
-      and C++ as far back as at least early eighties (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
+      the Bridge in <a class="link" href="the_boost_pimpl_library/references.html#6">[6]</a> and conceptually deployed in C and
+      C++ as far back as at least early eighties (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
     </p>
 <p>
-      In the domain of industrial software development where portability, implementation
-      hiding and minimization of compilation dependencies come to the fore, the Pimpl
-      technique can help great deal achieving those goals. Still, it does not seem
-      to be very widely deployed. Sometimes that is due to efficiency considerations
-      (valid or misguided) and probably more often due to additional implementation
-      scaffolding and coding overhead associated with the technique.
+      In the domain of industrial software development where
+    </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+          consistent pattern-based deployment,
+        </li>
+<li class="listitem">
+          portability and multi-platform support,
+        </li>
+<li class="listitem">
+          implementation hiding and
+        </li>
+<li class="listitem">
+          minimization of compilation and component dependencies
+        </li>
+</ul></div>
+<p>
+      come to the fore, the <span class="emphasis"><em>Pimpl</em></span> technique can help great deal
+      achieving those goals. Still, it does not seem to be sufficiently widely deployed.
+      Sometimes that is due to efficiency considerations (valid or misguided) and
+      probably more often due to additional implementation scaffolding and coding
+      overhead associated with the technique.
     </p>
 <p>
-      The purpose sof the library is to ease systematize the deployment
+      The purpose of this library is to bridge that gap, to ease and to standardize
+      the deployment of the idiom.
     </p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: March 14, 2014 at 02:05:40 GMT</small></p></td>
+<td align="left"><p><small>Last revised: March 14, 2014 at 03:07:13 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>
-<div class="spirit-nav"><a accesskey="n" href="the_boost_pimpl_library/the_pimpl_idiom_use_cases.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="the_boost_pimpl_library/getting_started.html"><img src="images/next.png" alt="Next"></a></div>
 </body>
 </html>

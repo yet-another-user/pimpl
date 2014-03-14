@@ -1,4 +1,5 @@
 index.html
+the_boost_pimpl_library/getting_started.html
 the_boost_pimpl_library/the_pimpl_idiom_use_cases.html
 the_boost_pimpl_library/the_pimpl_idiom_use_cases/singleton_1_simple.html
 the_boost_pimpl_library/the_pimpl_idiom_use_cases/singleton_1_improved.html
@@ -10,4 +11,4 @@ the_boost_pimpl_library/the_pimpl_idiom_use_cases/run_time_polymorphic_class_hie
 the_boost_pimpl_library/the_pimpl_idiom_use_cases/derived_classes_overriding_the_pimpl__operator_bool_type__.html
 the_boost_pimpl_library/references.html
 the_boost_pimpl_library/acknowledgements.html
-index/s05.html
+index/s06.html
