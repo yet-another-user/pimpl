@@ -1,0 +1,64 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Singleton 2</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="up" href="../the_pimpl_idiom_use_cases.html" title="The Pimpl Idiom Use Cases">
+<link rel="prev" href="singleton_1_improved.html" title="Singleton 1 Improved">
+<link rel="next" href="extendible_dictionary.html" title="Extendible Dictionary">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="singleton_1_improved.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../the_pimpl_idiom_use_cases.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="extendible_dictionary.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="the_boost_pimpl_library.the_pimpl_idiom_use_cases.singleton_2"></a><a class="link" href="singleton_2.html" title="Singleton 2">Singleton
+      2</a>
+</h3></div></div></div>
+<p>
+        A nice property of the singletons above is that they preserve the purity
+        of the public interfaces of the respective classes. However, that comes at
+        the expense of somewhat laborious implementation. One might consider that
+        price to be too high to pay merely for visual neatness and instead prefer
+        the following.
+      </p>
+<p>
+        The declaration file:
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span>
+<span class="special">{</span>
+   <span class="identifier">Book</span><span class="special">();</span>
+
+   <span class="keyword">private</span><span class="special">:</span>
+
+   <span class="identifier">Book</span><span class="special">(</span><span class="identifier">singleton</span><span class="special">-</span><span class="identifier">related</span><span class="special">-</span><span class="identifier">parameters</span><span class="special">);</span>
+<span class="special">};</span>
+</pre>
+<p>
+        The implementation file:
+      </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<span class="special">{</span>
+   <span class="keyword">static</span> <span class="identifier">Book</span> <span class="identifier">single</span><span class="special">(</span><span class="identifier">singleton</span><span class="special">-</span><span class="identifier">related</span><span class="special">-</span><span class="identifier">parameters</span><span class="special">);</span>
+
+   <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">single</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="singleton_1_improved.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../the_pimpl_idiom_use_cases.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="extendible_dictionary.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

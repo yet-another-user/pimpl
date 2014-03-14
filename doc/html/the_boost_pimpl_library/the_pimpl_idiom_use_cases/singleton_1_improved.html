@@ -1,0 +1,143 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Singleton 1 Improved</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="up" href="../the_pimpl_idiom_use_cases.html" title="The Pimpl Idiom Use Cases">
+<link rel="prev" href="singleton_1_simple.html" title="Singleton 1 Simple">
+<link rel="next" href="singleton_2.html" title="Singleton 2">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="singleton_1_simple.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../the_pimpl_idiom_use_cases.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="singleton_2.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="the_boost_pimpl_library.the_pimpl_idiom_use_cases.singleton_1_improved"></a><a class="link" href="singleton_1_improved.html" title="Singleton 1 Improved">Singleton
+      1 Improved</a>
+</h3></div></div></div>
+<p>
+        In a nut shell, the singleton implementation above is not a 100% well-behaved
+        singleton because it passes the equality test but fails the equivalence test
+        (see [1] for more about equality vs. equivalence).
+      </p>
+<p>
+        What that means is that two Book instances created with the constructor above
+        will indeed share the same implementation. More, those two Book instances
+        will even pass the equality test as
+      </p>
+<pre class="programlisting"><span class="identifier">Book</span> <span class="identifier">book1</span><span class="special">;</span>
+<span class="identifier">Book</span> <span class="identifier">book2</span><span class="special">;</span>
+
+<span class="identifier">BOOST_ASSERT</span> <span class="special">(</span><span class="identifier">book1</span> <span class="special">==</span> <span class="identifier">book2</span><span class="special">);</span> <span class="comment">// Equality test passed. Good.</span>
+</pre>
+<p>
+        That is sufficient for vast majority of singleton applications. However,
+        if one decides to put book1 and book2 in a std::set, he/she will end up with
+        two entries instead of one even though both represent the same singleton
+        book. That is due to these Book instances failing the equivalence test required
+        by the standard associative containers. That is,
+      </p>
+<pre class="programlisting"><span class="identifier">Book</span> <span class="identifier">book1</span><span class="special">;</span>
+<span class="identifier">Book</span> <span class="identifier">book2</span><span class="special">;</span>
+
+<span class="identifier">BOOST_ASSERT</span> <span class="special">(!(</span><span class="identifier">book1</span> <span class="special">&lt;</span> <span class="identifier">book2</span><span class="special">));</span> <span class="comment">// Equivalence test fails. Bad.</span>
+<span class="identifier">BOOST_ASSERT</span> <span class="special">(!(</span><span class="identifier">book2</span> <span class="special">&lt;</span> <span class="identifier">book1</span><span class="special">));</span> <span class="comment">// Equivalence test fails. Bad.</span>
+</pre>
+<p>
+        It is certainly true to say that it is not every day that we need to put
+        a singleton in an associative container. More often than not we don't. However,
+        consider us building a bunch of various outputs for our logging system. We
+        would like to provide the user with an ability to register a certain output
+        stream (or streams) where he/she would like the logging information to go
+        to:
+      </p>
+<pre class="programlisting"><span class="identifier">log</span> <span class="identifier">my_log</span><span class="special">;</span> <span class="comment">// Create my_log</span>
+<span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span><span class="special">::</span><span class="identifier">file</span> <span class="identifier">file1</span><span class="special">(</span><span class="identifier">some</span><span class="special">-</span><span class="identifier">file</span><span class="special">);</span> <span class="comment">// Create a logging stream to "some-file"</span>
+<span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span><span class="special">::</span><span class="identifier">file</span> <span class="identifier">file2</span><span class="special">(</span><span class="identifier">some</span><span class="special">-</span><span class="identifier">other</span><span class="special">-</span><span class="identifier">file</span><span class="special">);</span> <span class="comment">// Create another logging stream to "some-other-file"</span>
+<span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span><span class="special">::</span><span class="identifier">stdout</span> <span class="identifier">console</span><span class="special">;</span> <span class="comment">// Create a logging stream on to the console</span>
+
+<span class="comment">// Register logging streams with our log. Logging will go to three places at once.</span>
+<span class="identifier">my_log</span><span class="special">(</span><span class="identifier">file1</span><span class="special">)(</span><span class="identifier">file2</span><span class="special">)(</span><span class="identifier">console</span><span class="special">);</span>
+</pre>
+<p>
+        To achieve that we might like to do the following:
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">log</span>
+<span class="special">{</span> <span class="special">...</span>
+   <span class="keyword">struct</span> <span class="identifier">out</span><span class="special">;</span>
+   <span class="special">...</span>
+
+   <span class="identifier">log</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">()(</span><span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">stream</span><span class="special">)</span>
+   <span class="special">{</span> <span class="special">...</span>
+       <span class="identifier">streams_</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="identifier">stream</span><span class="special">);</span>
+
+       <span class="keyword">return</span> <span class="special">*</span><span class="keyword">this</span><span class="special">;</span>
+   <span class="special">}</span>
+   <span class="identifier">std</span><span class="special">::</span><span class="identifier">set</span><span class="special">&lt;</span><span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span><span class="special">&gt;</span> <span class="identifier">streams_</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="keyword">struct</span> <span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span>
+<span class="special">{</span> <span class="special">...</span>
+   <span class="keyword">struct</span> <span class="identifier">file</span><span class="special">;</span>
+   <span class="keyword">struct</span> <span class="identifier">stdout</span><span class="special">;</span>
+
+   <span class="keyword">void</span> <span class="identifier">write</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">msg</span><span class="special">)</span> <span class="special">{</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)-&gt;</span><span class="identifier">write</span><span class="special">(</span><span class="identifier">msg</span><span class="special">);</span> <span class="special">}</span>
+<span class="special">};</span>
+
+<span class="keyword">struct</span> <span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span><span class="special">::</span><span class="identifier">file</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span> <span class="special">{</span> <span class="identifier">file</span><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span><span class="special">*</span> <span class="identifier">filename</span><span class="special">);</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span><span class="special">::</span><span class="identifier">stdout</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">log</span><span class="special">::</span><span class="identifier">out</span> <span class="special">{</span> <span class="identifier">stdout</span><span class="special">();</span> <span class="special">};</span>
+</pre>
+<p>
+        In the example above we might like to be able to register many log::out::file
+        logging streams but only one log::out::stdout stream even though the user
+        might try registering that stream more than once. To achieve that we will
+        need to implement log::out::stdout as a equivalence-supporting singleton
+        that would be inserted into the std::set only once.
+      </p>
+<p>
+        For those interested to investigate why the singleton suggested above fails
+        the equivalence test I just say that this happens in boost::shared_ptr::operator&lt;().
+      </p>
+<p>
+        Now a well-behaved singleton implementation might look as follows:
+      </p>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+<span class="special">{</span>
+   <span class="keyword">static</span> <span class="identifier">Book</span> <span class="identifier">create</span><span class="special">()</span>
+   <span class="special">{</span>
+       <span class="comment">// Don't use Book::Book() to avoid recursion.</span>
+       <span class="identifier">Book</span> <span class="identifier">single</span> <span class="special">=</span> <span class="identifier">null</span><span class="special">();</span>
+
+       <span class="identifier">single</span><span class="special">.</span><span class="identifier">reset</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">implementation</span><span class="special">());</span>
+
+       <span class="keyword">return</span> <span class="identifier">single</span><span class="special">;</span>
+   <span class="special">}</span>
+<span class="special">};</span>
+
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<span class="special">{</span>
+   <span class="keyword">static</span> <span class="identifier">Book</span> <span class="identifier">single</span> <span class="special">=</span> <span class="identifier">implementation</span><span class="special">::</span><span class="identifier">create</span><span class="special">();</span>
+
+   <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">single</span><span class="special">;</span>
+</pre>
+<p>
+        }
+      </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="singleton_1_simple.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../the_pimpl_idiom_use_cases.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="singleton_2.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
