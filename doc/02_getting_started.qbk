@@ -1,11 +1,31 @@
 [section Getting Started]
 
-Let's say we need to write a ['Pimpl]-based ['Book] class with ['pointer semantics]. That is:
+Let's say due to reasons mentioned in the Introduction we need to transform a fairly conventional
 
-* we want to separate interface and implementation and to hide implementation through the deployment of the ['Pimpl] idiom;
-* our class needs to have pointer semantics, i.e. with regard to the underlying data it will behave in the smart-pointer/proxy fashion by allowing shared access to the underlying implementation data.
+ class Book
+ {
+    public:
 
-In that setting the ['Book] class public declaration will probably look as follows: 
+    Book (string const& title, string const& author);
+    
+    string const&  title() const;
+    string const& author() const;
+
+    ...
+    
+    private:
+  
+    string  title_;
+    string author_;
+    int     price_;
+ };
+
+to a ['Pimpl]-based class with ['pointer semantics]. That is:
+
+* we want to hide implementation through the deployment of the ['Pimpl] idiom;
+* we want the class to have pointer semantics, i.e. with regard to the underlying data it will behave in the smart-pointer/proxy fashion by allowing shared access to the actual implementation data.
+
+In that setting the class might probably change to as follows: 
 
  class Book
  {
@@ -13,8 +33,8 @@ In that setting the ['Book] class public declaration will probably look as follo
 
     Book(string const& title, string const& author);
     
-    string const&  title () const;
-    string const& author () const;
+    string const&  title() const;
+    string const& author() const;
   
     bool operator== (Book const& other) const { return impl_ == other.impl_; }
     bool operator!= (Book const& other) const { return !operator==(other); }
@@ -24,20 +44,25 @@ In that setting the ['Book] class public declaration will probably look as follo
     private:
   
     struct implementation;
-    boost::shared_ptr<implementation> impl_;
+    std::shared_ptr<implementation> impl_;
  };
 
-So far applying the ['Pimpl] idiom is fairly straightforward as ['boost::shared_ptr] takes care of much of the scaffolding hassle. The auto-generated destructor, copy constructor and assignment operator suffice and writing the comparison operators is child's play. What more could we wish for? 
+That fairly standard ['Pimpl] deployment pattern splits the original class (accommodating behavior ['and] data) into two distinct classes -- the public interface (the ['Book] class) and the private implementation (the ['Book::implementation] class). 
 
-For one thing, lumping the application interface with the infrastructure scaffolding is messy. Moreover, in our (admittedly simple) ['Book] class more than half of the code is the ['Pimpl]-related scaffolding. For one class in isolation that might not look like that big a deal. On a larger scale, analyzing and maintaining twice as much code, mentally separating the application interface from the infrastructure scaffolding, and making sure nothing is forgotten, misused, or misplaced is a tiring exercise and not exactly fun. The following, therefore, seems like a worthwhile improvement: 
+[note Here the ['Pimpl] idiom seemingly breaks the established Object-Oriented programming paradigm -- the association between data and behavior -- enshrined in the fundamental concept of an ['object] or a ['class] and, consequently, routinely seen/implemented as such -- one class. That one-class approach is not exactly ideal for implementation-hiding purposes. However, the fault-line where the ['Pimpl] splits the conventional class in two is not between data and behavior. It is, in fact, between ['public] and ['private]. That "subtlety" is easily overlooked as quite often "public = interface" and "private = data". In any case, data and behavior (and also public and private) are different views of a system. They serve different purposes and are easier managed when kept separate. The ['Pimpl] technique seems to fit that objective better with ['actual] rather than ['notional] separation.]  
+ 
+So far applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] (or ['boost::shared_ptr] for non-C++11-compliant) takes care of much of the scaffolding hassle. The auto-generated destructor, copy constructor and assignment operator suffice and writing the comparison operators is child's play.
+
+Still, from design perspectives lumping the application logic with the infrastructure scaffolding is messy. Moreover, in our (admittedly simple) ['Book] class more than half of the code is the ['Pimpl]-related scaffolding. For one class in isolation that might not look like that big a deal. On a larger scale, reading, understanding and maintaining extra code, mentally separating the application logic from the infrastructure scaffolding, and making sure nothing is forgotten, misused, or misplaced is a tiring and expensive exercise. The following, therefore, seems like a worthy improvement: 
 
  struct Book : public pimpl<Book>::pointer_semantics
  {
     Book(string const& title, string const& author);
-    string const& title() const;
+    
+    string const&  title() const;
     string const& author() const;
  };
 
-It is considerably shorter, application-focused and reasonably self-explanatory. The important quality (from industrial s/w design perspective) is that consists of ['nothing but pure application-specific public interface]. It does not even need to be a class as there is nothing to restrict access to. 
+With no loss in functionality it is shorter, application-focused and reasonably self-documented. The most important quality though is that it consists of ['nothing but pure application-specific interface]. It does not even need to be a class as often there is nothing to restrict access to. 
 
 [endsect]

@@ -1,0 +1,43 @@
+[section Pimpl with Value Semantics]
+
+['Pimpl] with ['value semantics] exhibits different relationship with the underlying data. It solely owns and manages the data (rather than shares). Consequently, for such ['Pimpls] manual implementation gets more involved and might look as follows:
+
+ class Book
+ {
+    public:
+  
+    Book(string const& title, string const& author);
+
+    Book(Book const&);
+    Book& operator=(Book const&);
+  
+    string const&  title() const;
+    string const& author() const;
+    
+    bool operator==(Book const&) const;
+    bool operator!=(Book const&) const;
+  
+    private:
+  
+    struct implementation;
+    std::unique_ptr<implementation> impl_;
+ };
+
+Again, with ['Boost.Pimpl] the code shrinks down to: 
+
+ struct Book : public pimpl<Book>::value_semantics
+ {
+    Book(string const& title, string const& author);
+    
+    string const&  title() const;
+    string const& author() const;
+    
+    bool operator==(Book const&) const;
+ };
+
+with the same as before benefits -- it is shorter, application-focused and reasonably self-documented.
+
+Both (with pointer and value semantics) ['Pimpl]-based definitions look almost identical and internal implementations (as we'll see later) are as close. A notable addition is that for value-semantics classes the comparison operators are not freebies as with pointer-semantics classes. Well, those operators are never freebies (they are never auto-generated). However, due to the specificity of classes with pointer semantics those comparison operators can be reduced to pointer comparisons and generalized. Clearly, that's not the case with value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the user-provided interface (if such a class needs to be comparable).
+  
+[endsect]
+

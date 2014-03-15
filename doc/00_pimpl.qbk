@@ -16,13 +16,13 @@
     [source-mode c++]
     [license
         Distributed under the Boost Software License, Version 1.0.
-        (See accompanying file LICENSE_1_0.txt or copy at
-        [@http://www.boost.org/LICENSE_1_0.txt])
+        (See copy at [@http://www.boost.org/LICENSE_1_0.txt])
     ]
 ]
  
 [include 01_introduction.qbk]
 [include 02_getting_started.qbk]
+[include 03_value_semantics.qbk]
 [include 22_use_cases.qbk]
 [include 97_references.qbk]
 [include 98_acknowledgments.qbk]
