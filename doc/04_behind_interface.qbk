@@ -2,20 +2,6 @@
 
 The implementation is private. Not only notionally declared as such, not merely separated into another class or a header file, but truly internal and hidden. It is all for developers to implement as they wish, to optimize, to modify, to improve as they need. 
 
-With its ['separation of concerns] (interface and implementation) property ['Pimpl] is ideal for building manageable large-scale systems. 
-
-[note: Designing large-scale systems might probably be described as ['API-centered design]. For such systems considerable effort goes into designing interface specifications -- the communication channels between various modules/components (high-level/architectural design) and classes (low-level/detailed design). Then that API-based contract between the service consumer and provider provide
-
-proceed in parallel.
-
-
-
-
-]
-
-
-
-
 
 
 Still, the deployment pattern is easy to remember and fairly straightforward to follow. Something like the following will be in some for-our-eyes-only book_implementation.cpp file: 
@@ -64,6 +50,6 @@ Notably, ['pimpl<Book>::implementation] is again a ['struct] rather than a ['cla
 
 Another liberating and unifying feature is that we do not need to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and clearly identified as impl.title or (*this)->title or something of that sort.
 
-An important design-related point to note is that the external Book class describes and implements the behavior, while the internal pimpl<Book>::implementation is all about data. I consider that clean separation of data and behavior to be a good code-management technique and good programming style. Data and behavior are different views of a system. They serve different purposes and are easier managed when kept separate. At this point OO fans should not be getting up in arms about that perceived attempt to pull data and behavior apart. Indeed, the association of data with behavior is the cornerstone of the OO programming paradigm. However, in all (that I know of) languages that association is done in the most direct and economical way — by tying data and the behavior together in a class. Straightforward and good for many applications, that kind of data-behavior association is not exactly ideal for implementation hiding purposes. The Pimpl idiom creates data-behavior association in a different way that better suits our implementation-hiding purpose.  
+An important design-related point to note is that the external Book class describes and implements the behavior, while the internal pimpl<Book>::implementation is all about data. I consider that clean separation of data and behavior to be a good code-management technique and good programming style. Data and behavior are different views of a system. They serve different purposes and are easier managed when kept separate. At this point OO fans should not be getting up in arms about that perceived attempt to pull data and behavior apart. Indeed, the association of data with behavior is the cornerstone of the OO programming paradigm. However, in all (that I know of) languages that association is done in the most direct and economical way -- by tying data and the behavior together in a class. Straightforward and good for many applications, that kind of data-behavior association is not exactly ideal for implementation hiding purposes. The Pimpl idiom creates data-behavior association in a different way that better suits our implementation-hiding purpose.  
  
 [endsect]

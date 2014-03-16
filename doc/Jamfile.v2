@@ -34,7 +34,7 @@ else
 
 doxygen pimpl_ref
   :
-    [ glob $(here)/../include/*.hpp ]
+    [ glob $(here)/../include/boost/pimpl/*.hpp ]
   : 
     <doxygen:param>PROJECT_NAME="PIMPL"
     <doxygen:param>PROJECT_NUMBER=3

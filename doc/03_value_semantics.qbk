@@ -23,7 +23,7 @@
     std::unique_ptr<implementation> impl_;
  };
 
-Again, with ['Boost.Pimpl] the code shrinks down to: 
+Again, with ['Boost.Pimpl] the code shrinks down to almost familiar: 
 
  struct Book : public pimpl<Book>::value_semantics
  {
@@ -37,7 +37,9 @@ Again, with ['Boost.Pimpl] the code shrinks down to:
 
 with the same as before benefits -- it is shorter, application-focused and reasonably self-documented.
 
-Both (with pointer and value semantics) ['Pimpl]-based definitions look almost identical and internal implementations (as we'll see later) are as close. A notable addition is that for value-semantics classes the comparison operators are not freebies as with pointer-semantics classes. Well, those operators are never freebies (they are never auto-generated). However, due to the specificity of classes with pointer semantics those comparison operators can be reduced to pointer comparisons and generalized. Clearly, that's not the case with value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the user-provided interface (if such a class needs to be comparable).
+Both ['Pimpl]-based ['Book] class interface definitions (with pointer and value semantics) look almost identical and internal implementations (as we'll see later) are as close. That property is important for commercial large-scale systems as it allows to minimize the impact of a requirement change. Something as inevitable as "death and taxes". 
+
+A notable addition is that for value-semantics classes the comparison operators are not freebies as with pointer-semantics classes. In fact, those operators are never freebies (they are never auto-generated). However, due to the specificity of pointer-semantics classes those comparison operators can be reduced to pointer comparisons and generalized. Clearly, that's not the case with value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the user-provided interface (if such a class needs to be comparable).
   
 [endsect]
 

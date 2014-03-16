@@ -19,8 +19,8 @@
 <div><p class="copyright">Copyright &#169; 2009-2014 Vladimir Batov</p></div>
 <div><div class="legalnotice">
 <a name="pimpl.legal"></a><p>
-        Distributed under the Boost Software License, Version 1.0. (See accompanying
-        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>
 </div></div>
 </div></div>
@@ -29,6 +29,10 @@
 <dl>
 <dt><span class="section"><a href="index.html#the_boost_pimpl_library.introduction">Introduction</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/getting_started.html">Getting Started</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/pimpl_with_value_semantics.html">Pimpl
+    with Value Semantics</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/behind_the_interface.html">Behind the
+    Interface</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases.html">The
     Pimpl Idiom Use Cases</a></span></dt>
 <dd><dl>
@@ -53,7 +57,7 @@
 </dl></dd>
 <dt><span class="section"><a href="the_boost_pimpl_library/references.html">References</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/acknowledgements.html">Acknowledgements</a></span></dt>
-<dt><span class="section"><a href="index/s06.html">Index</a></span></dt>
+<dt><span class="section"><a href="index/s08.html">Index</a></span></dt>
 </dl>
 </div>
 <div class="section">
@@ -86,37 +90,44 @@
       C++ as far back as at least early eighties (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
     </p>
 <p>
-      In the domain of industrial software development where
+      In the domain of commercial large-scale software development, where the following
+      design principles come to the fore:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
-          consistent pattern-based deployment,
+          component-based, modular and API-centered design,
         </li>
 <li class="listitem">
-          portability and multi-platform support,
+          separation of concerns (<a class="link" href="the_boost_pimpl_library/references.html#8">[8]</a>, <a class="link" href="the_boost_pimpl_library/references.html#9">[9]</a>),
         </li>
 <li class="listitem">
-          implementation hiding and
+          implementation hiding,
         </li>
 <li class="listitem">
-          minimization of compilation and component dependencies
+          minimization of compilation and component dependencies,
+        </li>
+<li class="listitem">
+          consistent and recognizable deployment and implementation patterns,
+        </li>
+<li class="listitem">
+          multi-platform support,
         </li>
 </ul></div>
 <p>
-      come to the fore, the <span class="emphasis"><em>Pimpl</em></span> technique can help great deal
-      achieving those goals. Still, it does not seem to be sufficiently widely deployed.
-      Sometimes that is due to efficiency considerations (valid or misguided) and
-      probably more often due to additional implementation scaffolding and coding
-      overhead associated with the technique.
+      the <span class="emphasis"><em>Pimpl</em></span> technique can help great deal achieving those
+      goals. Still, it does not seem to be sufficiently widely deployed. In part
+      that is due to efficiency considerations (valid or misguided) and probably
+      more often due to additional implementation scaffolding and coding overhead
+      associated with the technique.
     </p>
 <p>
-      The purpose of this library is to bridge that gap, to ease and to standardize
-      the deployment of the idiom.
+      This library provides the code and the deployment pattern to bridge that gap,
+      to ease and to formalize the deployment of the idiom.
     </p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: March 14, 2014 at 03:07:13 GMT</small></p></td>
+<td align="left"><p><small>Last revised: March 16, 2014 at 22:00:43 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

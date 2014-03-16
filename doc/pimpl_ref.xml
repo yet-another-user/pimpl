@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="yes"?>
-<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="/home/vbatov/dev/boost.pimpl/include/pimpl.hpp"><class name="pimpl"><template>
+<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="boost/pimpl/pimpl.hpp"><class name="pimpl"><template>
       <template-type-parameter name="Interface"/>
     </template><purpose>Generalization of the Pimpl idiom. </purpose><class name="pimpl_base"><template>
       <template-nontype-parameter name="Manager"><type>template&lt; class &gt; class</type></template-nontype-parameter>

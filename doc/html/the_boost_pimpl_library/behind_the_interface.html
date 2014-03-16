@@ -1,0 +1,117 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Behind the Interface</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="prev" href="pimpl_with_value_semantics.html" title="Pimpl with Value Semantics">
+<link rel="next" href="the_pimpl_idiom_use_cases.html" title="The Pimpl Idiom Use Cases">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="pimpl_with_value_semantics.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="the_pimpl_idiom_use_cases.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="the_boost_pimpl_library.behind_the_interface"></a><a class="link" href="behind_the_interface.html" title="Behind the Interface">Behind the
+    Interface</a>
+</h2></div></div></div>
+<p>
+      The implementation is private. Not only notionally declared as such, not merely
+      separated into another class or a header file, but truly internal and hidden.
+      It is all for developers to implement as they wish, to optimize, to modify,
+      to improve as they need.
+    </p>
+<p>
+      Still, the deployment pattern is easy to remember and fairly straightforward
+      to follow. Something like the following will be in some for-our-eyes-only book_implementation.cpp
+      file:
+    </p>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+<span class="special">{</span>
+   <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">the_title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">the_author</span><span class="special">)</span>
+   <span class="special">:</span>
+       <span class="identifier">title</span><span class="special">(</span><span class="identifier">the_title</span><span class="special">),</span>
+       <span class="identifier">author</span><span class="special">(</span><span class="identifier">the_author</span><span class="special">)</span>
+   <span class="special">{}</span>
+
+   <span class="identifier">string</span>  <span class="identifier">title</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="identifier">author</span><span class="special">;</span>
+   <span class="keyword">int</span>     <span class="identifier">price</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">:</span>
+   <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">{}</span>
+
+<span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span>
+<span class="special">{</span>
+   <span class="identifier">implementation</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">impl</span> <span class="special">=</span> <span class="special">**</span><span class="keyword">this</span><span class="special">;</span>
+   <span class="keyword">return</span> <span class="identifier">impl</span><span class="special">.</span><span class="identifier">author</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="keyword">void</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">set_price</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">new_price</span><span class="special">)</span>
+<span class="special">{</span>
+   <span class="special">(*</span><span class="keyword">this</span><span class="special">)-&gt;</span><span class="identifier">price</span> <span class="special">=</span> <span class="identifier">new_price</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+      In addition, if comparison functionality is required, as mentioned earlier,
+      a class with value semantics will have to implement something like the following:
+    </p>
+<pre class="programlisting"><span class="keyword">bool</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">other</span><span class="special">)</span> <span class="keyword">const</span>
+<span class="special">{</span>
+   <span class="identifier">implementation</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">self</span> <span class="special">=</span> <span class="special">**</span><span class="keyword">this</span><span class="special">;</span>
+   <span class="keyword">return</span> <span class="identifier">self</span><span class="special">.</span><span class="identifier">title</span> <span class="special">=</span> <span class="identifier">other</span><span class="special">.</span><span class="identifier">title</span> <span class="special">&amp;&amp;</span> <span class="identifier">self</span><span class="special">.</span><span class="identifier">author</span> <span class="special">==</span> <span class="identifier">other</span><span class="special">.</span><span class="identifier">author</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+      Notably, <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> is again a
+      <span class="emphasis"><em>struct</em></span> rather than a <span class="emphasis"><em>class</em></span>. As long
+      as the declaration is local to one file, there is generally little value in
+      making it a class (your mileage may vary).
+    </p>
+<p>
+      Another liberating and unifying feature is that we do not need to follow (and
+      fight over) a particular naming convention to draw attention to member variables
+      (like the trailing underscore, the 'm_' prefix or the myriad others). Member
+      variables are accessed and clearly identified as impl.title or (*this)-&gt;title
+      or something of that sort.
+    </p>
+<p>
+      An important design-related point to note is that the external Book class describes
+      and implements the behavior, while the internal pimpl&lt;Book&gt;::implementation
+      is all about data. I consider that clean separation of data and behavior to
+      be a good code-management technique and good programming style. Data and behavior
+      are different views of a system. They serve different purposes and are easier
+      managed when kept separate. At this point OO fans should not be getting up
+      in arms about that perceived attempt to pull data and behavior apart. Indeed,
+      the association of data with behavior is the cornerstone of the OO programming
+      paradigm. However, in all (that I know of) languages that association is done
+      in the most direct and economical way -- by tying data and the behavior together
+      in a class. Straightforward and good for many applications, that kind of data-behavior
+      association is not exactly ideal for implementation hiding purposes. The Pimpl
+      idiom creates data-behavior association in a different way that better suits
+      our implementation-hiding purpose.
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="pimpl_with_value_semantics.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="the_pimpl_idiom_use_cases.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

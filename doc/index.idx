@@ -1,2 +1,2 @@
-!scan ../include/pimpl.hpp
+!scan ../include/boost/pimpl/pimpl.hpp
 
