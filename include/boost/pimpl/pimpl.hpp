@@ -1,10 +1,10 @@
 // Copyright (c) 2001 Peter Dimov and Multi Media Ltd.
-// Copyright (c) 2006-2014 Vladimir Batov.
+// Copyright (c) 2006-2010 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef BOOST_PIMPL_HPP
-#define BOOST_PIMPL_HPP
+#ifndef BOOST_PIMPL_PIMPL_HPP
+#define BOOST_PIMPL_PIMPL_HPP
 
 #include <boost/config.hpp>
 #if defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) || \
@@ -145,7 +145,7 @@ class pimpl<T>::pimpl_base
 
     public:
 
-    typedef boost::detail::safebool<T>   safebool;
+    typedef boost::detail::safebool<T>             safebool;
     typedef typename safebool::type safebool_type;
     typedef implementation_type    implementation;
     typedef pimpl_base_type             base_type;
