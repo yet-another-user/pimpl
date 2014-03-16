@@ -11,7 +11,7 @@ Successfully popularized by Sutter ([link 2 \[2\]], [link 3 \[3\]]) under the ch
 
 In the domain of commercial large-scale software development, where the following design principles come to the fore:
 
-* component-based modular design, 
+* component-based, modular and API-centered design, 
 * separation of concerns ([link 8 \[8\]], [link 9 \[9\]]),
 * implementation hiding, 
 * minimization of compilation and component dependencies, 
