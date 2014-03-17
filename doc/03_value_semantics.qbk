@@ -23,7 +23,7 @@
     std::unique_ptr<implementation> impl_;
  };
 
-Again, with ['Boost.Pimpl] the code shrinks down to almost familiar: 
+Again, the code can be shrunk down to almost familiar: 
 
  struct Book : public pimpl<Book>::value_semantics
  {

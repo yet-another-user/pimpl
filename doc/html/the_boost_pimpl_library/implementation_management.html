@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Implementation Management</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="prev" href="behind_the_interface.html" title="Behind the Interface">
+<link rel="next" href="the_pimpl_idiom_use_cases.html" title="The Pimpl Idiom Use Cases">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="behind_the_interface.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="the_pimpl_idiom_use_cases.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="the_boost_pimpl_library.implementation_management"></a><a class="link" href="implementation_management.html" title="Implementation Management">Implementation
+    Management</a>
+</h2></div></div></div>
+<p>
+      The conventional <span class="emphasis"><em>Pimpl</em></span> deployment pattern ultimately boils
+      down to an opaque pointer to the internal/private implementation (data and
+      potentially behavior). Those data are allocated on the memory heap and need
+      to be managed.
+    </p>
+<p>
+      In that regard <span class="emphasis"><em>Pimpl</em></span> might well be classified as yet another
+      deployment of the smart-pointer idiom. However, the similarity with <span class="emphasis"><em>std::shared_ptr</em></span>
+      and the like should not be over-extended and over-estimated. <span class="emphasis"><em>Pimpl</em></span>'s
+      primary goal is <span class="emphasis"><em>implementation hiding</em></span>. For <span class="emphasis"><em>Pimpl</em></span>
+      the smart-pointer behavior is secondary and somewhat incidental rather than
+      the primary design objective. Due to different design goal, <span class="emphasis"><em>Pimpl</em></span>
+      possesses far stronger association (and deliberate coupling) between the external
+      interface and internal implementation classes.
+    </p>
+<p>
+      Consequently, when the family of smart-pointer classes (like std::unique_ptr,
+      std::shared_ptr and the like) take good care of objects after they are created,
+      <span class="emphasis"><em>Pimpl</em></span> takes it one step further by fully encapsulating/automating
+      internal-data management and leaving less room for user error. For our Book
+      class instead of the more conventional:
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="behind_the_interface.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="the_pimpl_idiom_use_cases.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

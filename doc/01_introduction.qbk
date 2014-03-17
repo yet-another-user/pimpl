@@ -20,6 +20,6 @@ In the domain of commercial large-scale software development, where the followin
 
 the ['Pimpl] technique can help great deal achieving those goals. Still, it does not seem to be sufficiently widely deployed. In part that is due to efficiency considerations (valid or misguided) and probably more often due to additional implementation scaffolding and coding overhead associated with the technique. 
 
-This library provides the code and the deployment pattern to bridge that gap, to ease and to formalize the deployment of the idiom.
+This library provides the code and the deployment pattern in an attempt to bridge that gap, to ease and to formalize the deployment of the idiom.
 
 [endsect]

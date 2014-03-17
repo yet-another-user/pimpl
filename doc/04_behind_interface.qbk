@@ -1,19 +1,16 @@
 [section Behind the Interface]
 
-The implementation is private. Not only notionally declared as such, not merely separated into another class or a header file, but truly internal and hidden. It is all for developers to implement as they wish, to optimize, to modify, to improve as they need. 
+The implementation is private. Not only notionally declared as such, not merely separated into another class or a header file, but truly internal and hidden. Behing the interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
 
-
-
-Still, the deployment pattern is easy to remember and fairly straightforward to follow. Something like the following will be in some for-our-eyes-only book_implementation.cpp file: 
+Still, the deployment pattern is easy to remember and fairly straightforward to follow. Something like the following will be tucked away in an implementation or a private header file separate from the public interface and far from the user eyes: 
 
  template<> struct pimpl<Book>::implementation
  {
     implementation(string const& the_title, string const& the_author)
     :
-        title(the_title),
-        author(the_author)
+        title(the_title), author(the_author), price(0)
     {}
-  
+    ...
     string  title;
     string author;
     int     price;
@@ -27,12 +24,11 @@ Still, the deployment pattern is easy to remember and fairly straightforward to 
  string const&
  Book::author() const
  {
-    implementation const& impl = **this;
-    return impl.author;
+    return (*this)->author;
  }
   
  void
- Book::set_price(int new_price)
+ Book::price(int new_price)
  {
     (*this)->price = new_price;
  }
@@ -42,14 +38,26 @@ In addition, if comparison functionality is required, as mentioned earlier, a cl
  bool
  Book::operator==(Book const& other) const
  {
-    implementation const& self = **this;
-    return self.title = other.title && self.author == other.author;
+    implementation const& impl = **this;
+    return impl.title = other.title && impl.author == other.author;
  }
  
-Notably, ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the declaration is local to one file, there is generally little value in making it a class (your mileage may vary).
+In that simple example ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the declaration is local to one (implementation) file, there is generally little value in making it a class. 
 
-Another liberating and unifying feature is that we do not need to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and clearly identified as impl.title or (*this)->title or something of that sort.
+Another liberating and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and clearly identified as impl.title or (*this)->title or something of that sort.
 
-An important design-related point to note is that the external Book class describes and implements the behavior, while the internal pimpl<Book>::implementation is all about data. I consider that clean separation of data and behavior to be a good code-management technique and good programming style. Data and behavior are different views of a system. They serve different purposes and are easier managed when kept separate. At this point OO fans should not be getting up in arms about that perceived attempt to pull data and behavior apart. Indeed, the association of data with behavior is the cornerstone of the OO programming paradigm. However, in all (that I know of) languages that association is done in the most direct and economical way -- by tying data and the behavior together in a class. Straightforward and good for many applications, that kind of data-behavior association is not exactly ideal for implementation hiding purposes. The Pimpl idiom creates data-behavior association in a different way that better suits our implementation-hiding purpose.  
- 
+In that simple example the public ['Book] class describes and implements the behavior and the internal ['pimpl<Book>::implementation] is all about data. However, as the functionality grows it is not uncommon for ['pimpl<Book>::implementation] to have/implement certain internal behavior:
+
+ template<> struct pimpl<Book>::implementation
+ {  ...
+    bool check_isbn_10_digit();
+ };
+
+ bool
+ Book::some_function() const
+ {  ...
+    bool is_valid = (*this)->check_isbn_10_digit();
+    ...
+ }
+
 [endsect]
