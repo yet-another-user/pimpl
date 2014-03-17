@@ -1,8 +1,10 @@
 [section Implementation Management]
 
-The conventional ['Pimpl] deployment pattern ultimately boils down to an opaque pointer to the internal/private implementation (data and potentially behavior). Those data are allocated on the memory heap and need to be managed. 
+The conventional ['Pimpl] deployment pattern ultimately boils down to an opaque pointer to the internal/private implementation (data and potentially behavior) which is allocated on the memory heap.
 
-In that regard ['Pimpl] might well be classified as yet another deployment of the smart-pointer idiom. However, the similarity with ['std::shared_ptr] and the like should not be over-extended and over-estimated. ['Pimpl]'s primary goal is ['implementation hiding]. For ['Pimpl] the smart-pointer behavior is secondary and somewhat incidental rather than the primary design objective. Due to different design goal, ['Pimpl] possesses far stronger association (and deliberate coupling) between the external interface and internal implementation classes.
+In that regard opaque-pointer-based implementations of the ['Pimpl] idiom might well be classified as yet another variation of the smart-pointer idiom. However, the similarity with ['std::shared_ptr] and the like should not be over-extended and over-estimated. ['Pimpl]'s primary goal is ['implementation hiding]. For ['Pimpl] the smart-pointer behavior is secondary and somewhat incidental rather than the primary design objective. In fact, some unconventional high-efficiency ['Pimpl] implementations are not opaque-pointer-based and memory-heap-based.
+
+Due to different design goal, ['Pimpl] possesses far stronger association (and deliberate coupling) between the external interface and internal implementation classes.
 
 Consequently, when the family of smart-pointer classes (like std::unique_ptr, std::shared_ptr and the like) take good care of objects after they are created, ['Pimpl] takes it one step further by fully encapsulating/automating internal-data management and leaving less room for user error. For our Book class instead of the more conventional: 
 
