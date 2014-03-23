@@ -1,12 +1,68 @@
 [section Implementation Management]
 
-The conventional ['Pimpl] deployment pattern ultimately boils down to an opaque pointer to the internal/private implementation (data and potentially behavior) which is allocated on the memory heap.
+The conventional ['Pimpl] deployment pattern ultimately boils down to an opaque pointer to the internal/private implementation which is allocated on the memory heap.
 
-In that regard opaque-pointer-based implementations of the ['Pimpl] idiom might well be classified as yet another variation of the smart-pointer idiom. However, the similarity with ['std::shared_ptr] and the like should not be over-extended and over-estimated. ['Pimpl]'s primary goal is ['implementation hiding]. For ['Pimpl] the smart-pointer behavior is secondary and somewhat incidental rather than the primary design objective. In fact, some unconventional high-efficiency ['Pimpl] implementations are not opaque-pointer-based and memory-heap-based.
+In that regard opaque-pointer-based implementations of the ['Pimpl] idiom might well be classified as yet another variation of the smart-pointer idiom. However, the similarity with ['std::shared_ptr] and the like should not be over-extended and over-estimated. ['Pimpl]'s primary goal is ['implementation hiding]. For ['Pimpl] the smart-pointer behavior is secondary and somewhat incidental (an implementation detail) rather than the primary design objective. In fact, some unconventional high-efficiency ['Pimpl] implementations are not opaque-pointer-based and memory-heap-based.
 
 Due to different design goal, ['Pimpl] possesses far stronger association (and deliberate coupling) between the external interface and internal implementation classes.
 
-Consequently, when the family of smart-pointer classes (like std::unique_ptr, std::shared_ptr and the like) take good care of objects after they are created, ['Pimpl] takes it one step further by fully encapsulating/automating internal-data management and leaving less room for user error. For our Book class instead of the more conventional: 
+Consequently, when the family of smart-pointer classes (like std::unique_ptr, std::shared_ptr and the like) take good care of objects after they are created, ['Pimpl] takes it one step further by fully hiding, encapsulating, automating internal-data management and leaving less room for user error. Consequently, for our ['Book] class instead of the familiar smart-pointer-style: 
+
+ Book::Book(string const& title, string const& author)
+ :
+    base(new pimpl<Book>::implementation(title, author))
+ {}
+ 
+we write instead:
+
+ Book::Book(string const& title, string const& author)
+ :
+    base_type(title, author)
+ {} 
+ 
+All arguments passed to the ['base_type] will be forwarded to the matching ['pimpl<Book>::implementation] constructor or fail to compile if a suitable constructor is not found. The ['base_type] is an convenience ['typedef] to simplify references to the base class. That ['perfect] forwarding mechanism works for the constructor with no parameters as well. That is, 
+
+ Book::Book() : base_type() {}
+ 
+or the same but not as explicit  
+ 
+ Book::Book() {}
+ 
+will try to call pimpl<Book>::implementation::implementation() and fail if there is no such.
+
+Here it distinctly differs from the smart-pointer idiom approach where an implementation object is created manually and explicitly and then again manually associated with the interface object. The [Pimpl]'s approach demonstrates a considerably stronger (and automatically managed) association between the public [Pimpl]-derived class (the interface) and its internal implementation. Hence, the default behavior is that there is always an implementation data behind every interface object. 
+
+To override this default behavior we might write something like:  
+ 
+ Book::Book() : base(null())
+ {
+    // an invalid Book object is created
+    // that does not have data behind it
+ }
+ 
+ void
+ Book::do_something()
+ {
+    if (!*this)
+    {
+        // implementation is created only when needed.
+        implementation* impl = new implementation(...);
+        this->reset(impl);
+    }
+    // do actual processing
+    ...
+ } 
+ 
+What happens here is that we explicitly (via null()) instruct the underlying pimpl base to be created empty/invalid (like the NULL pointer or an empty boost::shared_ptr()). Later we create an implementation object explicitly and assign the base to manage it. That technique is useful for lazy instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
+
+Above we used null() to create an invalid Book object with no internal data:  
+
+
+
+
+
+
+
 
 [endsect]
 
