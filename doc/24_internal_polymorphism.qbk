@@ -13,12 +13,12 @@ The implementation file:
 
  struct Implementation1 : public implementation
  {
-    Implementation1() : implementation(parameters) {}
+    Implementation1() : implementation(parameters) {}
  };
 
  struct Implementation2 : public implementation
  {
-    Implementation2() : implementation(parameters) {}
+    Implementation2() : implementation(parameters) {}
  };
 
  Book:: Book() : base(null())

@@ -1,10 +1,10 @@
-[section Implementation and Implementation Management]
+[section Implementation Management]
 
-The conventional ['Pimpl] deployment pattern ultimately boils down to an opaque pointer to the internal/private implementation which is allocated on the memory heap.
+As demonstrated in the previous sections the conventional ['Pimpl] idiom deployments (using ['std::shared_ptr] or ['std::unique_ptr]) ultimately boil down to an opaque pointer to the internal/private implementation which is allocated on the memory heap.
 
-In that regard opaque-pointer-based implementations of the ['Pimpl] idiom might well be classified as yet another variation of the smart-pointer idiom. However, the similarity with ['std::shared_ptr] and the like should not be overestimated. ['Pimpl]'s primary goal is ['implementation hiding]. For ['Pimpl] the smart-pointer behavior is secondary and somewhat incidental (an implementation detail) rather than the primary design objective. In fact, some unconventional high-efficiency value-semantics ['Pimpl] implementations are not opaque-pointer-based and memory-heap-based.
+In that regard it might be tempting to see the ['Pimpl] idiom as merely yet another variation of the smart-pointer idiom. However, the similarity with ['std::shared_ptr] and the likes should not be exaggerated. ['Pimpl]'s primary goal is ['implementation hiding]. For ['Pimpl] the smart-pointer behavior is somewhat incidental (an implementation detail) and optional rather than the primary design objective. Indeed, only ['Pimpls] with pointer semantics propagate and make available smart-pointer behavior to the user. More so, some unconventional high-efficiency value-semantics ['Pimpl] implementations are not even opaque-pointer-based and memory-heap-based.
 
-Consequently, ['Pimpl] possesses far stronger association (and deliberate coupling) between the external interface and internal implementation classes. When the family of smart-pointer classes (like std::unique_ptr, std::shared_ptr and the like) take good care of objects after they are created, ['Pimpl] fully hides, encapsulates, automates internal-data management. That is reflected in ['Pimpl]'s deployment pattern. For our ['Book] class instead of the familiar smart-pointer-style: 
+Consequently, ['Pimpl] possesses far stronger association (and deliberate coupling) between the external interface and internal implementation classes. When the family of smart-pointer classes (['std::unique_ptr], ['std::shared_ptr] and the like) take good care of managing objects ['after] they are [manually and explicitly] created, ['Pimpl] fully hides (from the user), encapsulates, automates internal-data management. That is reflected in the ['Pimpl]-based class implementation pattern. For our ['Book] class instead of the smart-pointer style: 
 
  Book::Book(string const& title, string const& author)
  :
@@ -18,11 +18,9 @@ we write instead:
     base_type(title, author)
  {} 
  
-All arguments passed to the ['base_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor or the respective ['Book::Book(...)] fails to compile if a suitable ['pimpl<Book>::implementation] constructor is not found. 
+All arguments passed to the ['base_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor or the respective ['Book] constructor fails to compile if a suitable ['pimpl<Book>::implementation] constructor is not found. 
 
-The ['base_type] is an convenience ['typedef] to simplify references to the base class. 
-
-That ['perfect-forwarding] mechanism works for the constructor with no parameters as well. That is, 
+That ['perfect-forwarding] mechanism is generic and, consequently, works for the default constructor as well. That is, 
 
  Book::Book() : base_type() {}
  
@@ -31,58 +29,6 @@ or the same but not as explicit
  Book::Book() {}
  
 will try to call ['pimpl<Book>::implementation::implementation()] and will fail if there is no such.
-
-Here it distinctly differs from the smart-pointer idiom approach where an implementation object is created manually and explicitly and then again manually associated with the interface object. The [Pimpl]'s approach demonstrates a considerably stronger (and automatically managed) association between the public [Pimpl]-derived class (the interface) and its internal implementation. Hence, the default behavior is that there is always an implementation data behind every interface object. 
-
-To override this default behavior we might write something like:  
- 
- Book::Book() : base(null())
- {
-    // an invalid Book object is created
-    // that does not have data behind it
- }
- 
- void
- Book::do_something()
- {
-    if (!*this)
-    {
-        // implementation is created only when needed.
-        this->reset(new implementation(...));
-    }
-    // do actual work
-    ...
- } 
- 
-What happens here is that initially we explicitly (via null()) instruct the underlying ['pimpl_type] base to be created empty/invalid (like the NULL pointer or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['base_type] to manage it. 
-
-That technique is useful for lazy instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
-
-Above we used ['null()] to create an invalid ['Book] object with no internal data:  
-
- Book::Book() : base(null()) {}
-
-It was done to demonstrate how the default behavior can be overridden if necessary. In actual code there is no need to write code constructing such an invalid object. All ['Pimpl]-based classes have such an invalid instance — that same mentioned ['null()]. Fully qualified for our ['Book] example, it is ['Book::null()] or ['pimpl<Book>::null()]. 
-
-We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as the NULL pointer is used: 
-
- Book
- find_book()
- {  ...
-    // found nothing, return an invalid Book
-    return Book::null();
- }
- 
- ...
- Book book = find_book();
- 
- if (!book) report book-not-found;
-
- 
-
-
-
-
 
 [endsect]
 

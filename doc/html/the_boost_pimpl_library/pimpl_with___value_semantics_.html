@@ -15,8 +15,8 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="the_boost_pimpl_library.pimpl_with_value_semantics"></a><a class="link" href="pimpl_with_value_semantics.html" title="Pimpl with Value Semantics">Pimpl
-    with Value Semantics</a>
+<a name="the_boost_pimpl_library.pimpl_with___value_semantics_"></a><a class="link" href="pimpl_with___value_semantics_.html" title="Pimpl with Value Semantics">Pimpl
+    with <span class="emphasis"><em>Value Semantics</em></span></a>
 </h2></div></div></div>
 <p>
       <span class="emphasis"><em>Pimpl</em></span> with <span class="emphasis"><em>value semantics</em></span> exhibits
@@ -59,25 +59,24 @@
 <span class="special">};</span>
 </pre>
 <p>
-      with no loss in functionality and with the same benefits as before -- shorter,
-      application-focused and reasonably self-documented.
+      with the same as before benefits -- shorter, application-focused and reasonably
+      self-documented.
     </p>
 <p>
-      A notable difference (compared to pointer-semantics classes) is that the <span class="emphasis"><em>Book::operator==()</em></span>
-      is not a freebie. In fact, comparison operators are never freebies (they are
-      never auto-generated). However, in the case of pointer-semantics classes those
-      comparison operators are reduced to pointer comparisons and generalized. Clearly,
-      that's not the case with value-semantics classes. Consequently, for value-semantics
-      classes the comparison operators become part of the user-provided interface
-      (if such a class needs to be comparable).
+      A notable addition is that for value-semantics classes the comparison operators
+      are not freebies as with pointer-semantics classes. In fact, those operators
+      are never freebies (they are never auto-generated). However, due to the specificity
+      of pointer-semantics classes those comparison operators can be reduced to pointer
+      comparisons and generalized. Clearly, that's not the case with value-semantics
+      classes. Consequently, for value-semantics classes the comparison operators
+      become part of the user-provided interface (if such a class needs to be comparable).
     </p>
 <p>
       So far both examples of <span class="emphasis"><em>Pimpl</em></span>-based <span class="emphasis"><em>Book</em></span>
-      classes (with pointer- and value-semantics) look almost identical and internal
+      classes (with pointer and value semantics) look almost identical and internal
       implementations (as we'll see later) are as close. That property is important
-      for orderly and healthy evolution of commercial large-scale systems as it allows
-      to minimize the impact of a requirement change -- something as inevitable as
-      "death and taxes".
+      for commercial large-scale systems as it allows to minimize the impact of a
+      requirement change -- something as inevitable as "death and taxes".
     </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

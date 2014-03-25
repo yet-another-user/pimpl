@@ -35,11 +35,11 @@ Again, the code can be shrunk down to:
     bool operator==(Book const&) const;
  };
 
-with the same as before benefits -- shorter, application-focused and reasonably self-documented.
+with no loss in functionality and with the same benefits as before -- shorter, application-focused and reasonably self-documented.
 
-A notable addition is that for value-semantics classes the comparison operators are not freebies as with pointer-semantics classes. In fact, those operators are never freebies (they are never auto-generated). However, due to the specificity of pointer-semantics classes those comparison operators can be reduced to pointer comparisons and generalized. Clearly, that's not the case with value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the user-provided interface (if such a class needs to be comparable).
+A notable difference (compared to pointer-semantics classes) is that the ['Book::operator==()] is not a freebie. In fact, comparison operators are never freebies (they are never auto-generated). However, in the case of pointer-semantics classes those comparison operators are reduced to pointer comparisons and generalized. Clearly, that's not the case with value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the user-provided interface (if such a class needs to be comparable).
   
-So far both examples of ['Pimpl]-based ['Book] classes (with pointer and value semantics) look almost identical and internal implementations (as we'll see later) are as close. That property is important for commercial large-scale systems as it allows to minimize the impact of a requirement change -- something as inevitable as "death and taxes". 
+So far both examples of ['Pimpl]-based ['Book] classes (with pointer- and value-semantics) look almost identical and internal implementations (as we'll see later) are as close. That property is important for orderly and healthy evolution of commercial large-scale systems as it allows to minimize the impact of a requirement change -- something as inevitable as "death and taxes". 
 
 [endsect]
 

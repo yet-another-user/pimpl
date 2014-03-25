@@ -1,8 +1,8 @@
 [section Behind the Interface]
 
-The key property of the ['Pimpl] idiom is that the implementation is private. Not only notionally declared as such, not merely separated into another class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
+The key property of the ['Pimpl] idiom is that the implementation is private. Not only notionally declared as such, not merely separated into another (as visible) class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
 
-Still, the deployment pattern is self-documented and fairly straightforward to follow. Something like the following will be tucked away in an implementation file separate from the public interface and far from the user eyes: 
+Still, the deployment pattern is reasonably self-documented and fairly straightforward to follow. Something like the following will be tucked away in an implementation file separate from the public interface and far from the user eyes: 
 
  template<> struct pimpl<Book>::implementation
  {
@@ -51,11 +51,11 @@ As mentioned earlier, if comparison functionality is required, a class with valu
     return impl.title = other.title && impl.author == other.author;
  }
  
-The ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the declaration is local to one (implementation) file, there is generally little value in making it a class. 
+Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the declaration is local to one (implementation) file, there is generally little value in making it a class. 
 
 [note Another liberating and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and clearly identified as ['impl.title] or ['(*this)->title] or something of that sort.]
 
-As was mentioned before the public ['Book] class describes and implements the ['public] behavior and the internal ['pimpl<Book>::implementation] encapsulates ['private] implementation (data and behavior).
+Again, the public ['Book] class describes and implements the ['public] behavior and the internal ['pimpl<Book>::implementation] encapsulates ['private] implementation (data and behavior).
 
 
 [endsect]

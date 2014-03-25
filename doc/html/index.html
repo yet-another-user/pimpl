@@ -35,31 +35,32 @@
     Interface</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/implementation_management.html">Implementation
     Management</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases.html">The
-    Pimpl Idiom Use Cases</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/pimpl__null__.html">Pimpl::null()</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom.html">Applications
+    of the Pimpl Idiom</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases.html#the_boost_pimpl_library.the_pimpl_idiom_use_cases.delegating_constructors">Delegating
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom.html#the_boost_pimpl_library.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
       Constructors</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/singleton_1_simple.html">Singleton
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_1_simple.html">Singleton
       1 Simple</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/singleton_1_improved.html">Singleton
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_1_improved.html">Singleton
       1 Improved</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/singleton_2.html">Singleton
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_2.html">Singleton
       2</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/extendible_dictionary.html">Extendible
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
       Dictionary</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/non_extendible_dictionary.html">Non-Extendible
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/non_extendible_dictionary.html">Non-Extendible
       Dictionary</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/internal__implementation_only__run_time_polymorphism.html">Internal
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/internal__implementation_only__run_time_polymorphism.html">Internal
       (Implementation-Only) Run-Time Polymorphism</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/run_time_polymorphic_class_hierarchy.html">Run-Time
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hierarchy.html">Run-Time
       Polymorphic Class Hierarchy</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/the_pimpl_idiom_use_cases/derived_classes_overriding_the_pimpl__operator_bool_type__.html">Derived
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/derived_classes_overriding_the_pimpl__operator_bool_type__.html">Derived
       Classes Overriding the pimpl::operator bool_type()</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="the_boost_pimpl_library/references.html">References</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/acknowledgements.html">Acknowledgements</a></span></dt>
-<dt><span class="section"><a href="index/s09.html">Index</a></span></dt>
+<dt><span class="section"><a href="index/s10.html">Index</a></span></dt>
 </dl>
 </div>
 <div class="section">
@@ -86,10 +87,10 @@
 <p>
       Successfully popularized by Sutter (<a class="link" href="the_boost_pimpl_library/references.html#2">[2]</a>, <a class="link" href="the_boost_pimpl_library/references.html#3">[3]</a>)
       under the cheeky <span class="emphasis"><em>Pimpl</em></span> name (as for "pointer to implementation")
-      the technique has been known long before under various names (the Cheshire
+      the technique has been known long before under various names -- the Cheshire
       Cat in <a class="link" href="the_boost_pimpl_library/references.html#4">[4]</a>, the Handle/Body in <a class="link" href="the_boost_pimpl_library/references.html#5">[5]</a>,
-      the Bridge in <a class="link" href="the_boost_pimpl_library/references.html#6">[6]</a> and conceptually deployed in C and
-      C++ as far back as at least early eighties (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
+      the Bridge in <a class="link" href="the_boost_pimpl_library/references.html#6">[6]</a> -- and conceptually deployed in
+      C and C++ as far back as at least early eighties (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
     </p>
 <p>
       In the domain of commercial large-scale software development, where the following
@@ -129,7 +130,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: March 17, 2014 at 03:09:14 GMT</small></p></td>
+<td align="left"><p><small>Last revised: March 25, 2014 at 22:26:32 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

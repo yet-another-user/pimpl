@@ -1,0 +1,169 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Implementation and Implementation Management</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="prev" href="behind_the_interface.html" title="Behind the Interface">
+<link rel="next" href="applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="behind_the_interface.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="applications_of_the_pimpl_idiom.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="the_boost_pimpl_library.implementation_and_implementation_management"></a><a class="link" href="implementation_and_implementation_management.html" title="Implementation and Implementation Management">Implementation
+    and Implementation Management</a>
+</h2></div></div></div>
+<p>
+      As demonstrated in the previous sections the conventional <span class="emphasis"><em>Pimpl</em></span>
+      deployment pattern ultimately boils down to an opaque pointer to the internal/private
+      implementation which is allocated on the memory heap.
+    </p>
+<p>
+      In that regard opaque-pointer-based implementations of the <span class="emphasis"><em>Pimpl</em></span>
+      idiom might well be classified as yet another variation of the smart-pointer
+      idiom. However, the similarity with <span class="emphasis"><em>std::shared_ptr</em></span> and
+      the like should not be overestimated. <span class="emphasis"><em>Pimpl</em></span>'s primary
+      goal is <span class="emphasis"><em>implementation hiding</em></span>. For <span class="emphasis"><em>Pimpl</em></span>
+      the smart-pointer behavior is secondary and somewhat incidental (an implementation
+      detail) rather than the primary design objective. In fact, some unconventional
+      high-efficiency value-semantics <span class="emphasis"><em>Pimpl</em></span> implementations
+      are not opaque-pointer-based and memory-heap-based.
+    </p>
+<p>
+      Consequently, <span class="emphasis"><em>Pimpl</em></span> possesses far stronger association
+      (and deliberate coupling) between the external interface and internal implementation
+      classes. When the family of smart-pointer classes (like std::unique_ptr, std::shared_ptr
+      and the like) take good care of objects after they are created, <span class="emphasis"><em>Pimpl</em></span>
+      fully hides, encapsulates, automates internal-data management. That is reflected
+      in <span class="emphasis"><em>Pimpl</em></span>'s deployment pattern. For our <span class="emphasis"><em>Book</em></span>
+      class instead of the familiar smart-pointer-style:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">:</span>
+   <span class="identifier">base</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">))</span>
+<span class="special">{}</span>
+</pre>
+<p>
+      we write instead:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">:</span>
+   <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">{}</span>
+</pre>
+<p>
+      All arguments passed to the <span class="emphasis"><em>base_type</em></span> are forwarded to
+      the corresponding <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> constructor
+      or the respective <span class="emphasis"><em>Book::Book(...)</em></span> fails to compile if
+      a suitable <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> constructor
+      is not found.
+    </p>
+<p>
+      The <span class="emphasis"><em>base_type</em></span> is an convenience <span class="emphasis"><em>typedef</em></span>
+      to simplify references to the base class.
+    </p>
+<p>
+      That <span class="emphasis"><em>perfect-forwarding</em></span> mechanism works for the constructor
+      with no parameters as well. That is,
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">()</span> <span class="special">{}</span>
+</pre>
+<p>
+      or the same but not as explicit
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">{}</span>
+</pre>
+<p>
+      will try to call <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation::implementation()</em></span>
+      and will fail if there is no such.
+    </p>
+<p>
+      Here it distinctly differs from the smart-pointer idiom approach where an implementation
+      object is created manually and explicitly and then again manually associated
+      with the interface object. The [Pimpl]'s approach demonstrates a considerably
+      stronger (and automatically managed) association between the public [Pimpl]-derived
+      class (the interface) and its internal implementation. Hence, the default behavior
+      is that there is always an implementation data behind every interface object.
+    </p>
+<p>
+      To override this default behavior we might write something like:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<span class="special">{</span>
+   <span class="comment">// an invalid Book object is created</span>
+   <span class="comment">// that does not have data behind it</span>
+<span class="special">}</span>
+
+<span class="keyword">void</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">do_something</span><span class="special">()</span>
+<span class="special">{</span>
+   <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
+   <span class="special">{</span>
+       <span class="comment">// implementation is created only when needed.</span>
+       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">reset</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">implementation</span><span class="special">(...));</span>
+   <span class="special">}</span>
+   <span class="comment">// do actual work</span>
+   <span class="special">...</span>
+<span class="special">}</span>
+</pre>
+<p>
+      What happens here is that initially we explicitly (via null()) instruct the
+      underlying <span class="emphasis"><em>pimpl_type</em></span> base to be created empty/invalid
+      (like the NULL pointer or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>.
+      Later we create a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> instance
+      explicitly and assign the <span class="emphasis"><em>base_type</em></span> to manage it.
+    </p>
+<p>
+      That technique is useful for lazy instantiation optimization (as in the example
+      above) or to support dynamic polymorphism that is discussed later.
+    </p>
+<p>
+      Above we used <span class="emphasis"><em>null()</em></span> to create an invalid <span class="emphasis"><em>Book</em></span>
+      object with no internal data:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="special">{}</span>
+</pre>
+<p>
+      It was done to demonstrate how the default behavior can be overridden if necessary.
+      In actual code there is no need to write code constructing such an invalid
+      object. All <span class="emphasis"><em>Pimpl</em></span>-based classes have such an invalid instance
+      -- that same mentioned <span class="emphasis"><em>null()</em></span>. Fully qualified for our
+      <span class="emphasis"><em>Book</em></span> example, it is <span class="emphasis"><em>Book::null()</em></span>
+      or <span class="emphasis"><em>pimpl&lt;Book&gt;::null()</em></span>.
+    </p>
+<p>
+      We might use such an invalid <span class="emphasis"><em>Book</em></span> object to indicate a
+      no-book condition in the same fashion as the NULL pointer is used:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span>
+<span class="identifier">find_book</span><span class="special">()</span>
+<span class="special">{</span>  <span class="special">...</span>
+   <span class="comment">// found nothing, return an invalid Book</span>
+   <span class="keyword">return</span> <span class="identifier">Book</span><span class="special">::</span><span class="identifier">null</span><span class="special">();</span>
+<span class="special">}</span>
+
+<span class="special">...</span>
+<span class="identifier">Book</span> <span class="identifier">book</span> <span class="special">=</span> <span class="identifier">find_book</span><span class="special">();</span>
+
+<span class="keyword">if</span> <span class="special">(!</span><span class="identifier">book</span><span class="special">)</span> <span class="identifier">report</span> <span class="identifier">book</span><span class="special">-</span><span class="keyword">not</span><span class="special">-</span><span class="identifier">found</span><span class="special">;</span>
+</pre>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="behind_the_interface.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="applications_of_the_pimpl_idiom.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -19,16 +19,16 @@
     Interface</a>
 </h2></div></div></div>
 <p>
-      The implementation is private. Not only notionally declared as such, not merely
-      separated into another class or a header file, but truly internal and hidden.
-      Behing the interface it is all for developers to implement, to optimize, to
-      modify, to improve as they need.
+      The key property of the <span class="emphasis"><em>Pimpl</em></span> idiom is that the implementation
+      is private. Not only notionally declared as such, not merely separated into
+      another (as visible) class or a header file, but truly internal and hidden
+      (from the user). Behind the public interface it is all for developers to implement,
+      to optimize, to modify, to improve as they need.
     </p>
 <p>
-      Still, the deployment pattern is easy to remember and fairly straightforward
+      Still, the deployment pattern is reasonably self-documented and fairly straightforward
       to follow. Something like the following will be tucked away in an implementation
-      or a private header file separate from the public interface and far from the
-      user eyes:
+      file separate from the public interface and far from the user eyes:
     </p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
@@ -36,6 +36,8 @@
    <span class="special">:</span>
        <span class="identifier">title</span><span class="special">(</span><span class="identifier">the_title</span><span class="special">),</span> <span class="identifier">author</span><span class="special">(</span><span class="identifier">the_author</span><span class="special">),</span> <span class="identifier">price</span><span class="special">(</span><span class="number">0</span><span class="special">)</span>
    <span class="special">{}</span>
+   <span class="special">...</span>
+   <span class="keyword">bool</span> <span class="identifier">check_isbn_10_digit</span><span class="special">();</span>
    <span class="special">...</span>
    <span class="identifier">string</span>  <span class="identifier">title</span><span class="special">;</span>
    <span class="identifier">string</span> <span class="identifier">author</span><span class="special">;</span>
@@ -58,10 +60,17 @@
 <span class="special">{</span>
    <span class="special">(*</span><span class="keyword">this</span><span class="special">)-&gt;</span><span class="identifier">price</span> <span class="special">=</span> <span class="identifier">new_price</span><span class="special">;</span>
 <span class="special">}</span>
+
+<span class="keyword">bool</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">some_function</span><span class="special">()</span> <span class="keyword">const</span>
+<span class="special">{</span>  <span class="special">...</span>
+   <span class="keyword">bool</span> <span class="identifier">is_valid</span> <span class="special">=</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)-&gt;</span><span class="identifier">check_isbn_10_digit</span><span class="special">();</span>
+   <span class="special">...</span>
+<span class="special">}</span>
 </pre>
 <p>
-      In addition, if comparison functionality is required, as mentioned earlier,
-      a class with value semantics will have to implement something like the following:
+      As mentioned earlier, if comparison functionality is required, a class with
+      value semantics will have to implement something like the following:
     </p>
 <pre class="programlisting"><span class="keyword">bool</span>
 <span class="identifier">Book</span><span class="special">::</span><span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">other</span><span class="special">)</span> <span class="keyword">const</span>
@@ -71,37 +80,29 @@
 <span class="special">}</span>
 </pre>
 <p>
-      In that simple example <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-      is again a <span class="emphasis"><em>struct</em></span> rather than a <span class="emphasis"><em>class</em></span>.
-      As long as the declaration is local to one (implementation) file, there is
-      generally little value in making it a class.
+      Here the <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> is again a
+      <span class="emphasis"><em>struct</em></span> rather than a <span class="emphasis"><em>class</em></span>. As long
+      as the declaration is local to one (implementation) file, there is generally
+      little value in making it a class.
     </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+        Another liberating and unifying feature is that we do not have to follow
+        (and fight over) a particular naming convention to draw attention to member
+        variables (like the trailing underscore, the 'm_' prefix or the myriad others).
+        Member variables are accessed and clearly identified as <span class="emphasis"><em>impl.title</em></span>
+        or <span class="emphasis"><em>(*this)-&gt;title</em></span> or something of that sort.
+      </p></td></tr>
+</table></div>
 <p>
-      Another liberating and unifying feature is that we do not have to follow (and
-      fight over) a particular naming convention to draw attention to member variables
-      (like the trailing underscore, the 'm_' prefix or the myriad others). Member
-      variables are accessed and clearly identified as impl.title or (*this)-&gt;title
-      or something of that sort.
+      Again, the public <span class="emphasis"><em>Book</em></span> class describes and implements
+      the <span class="emphasis"><em>public</em></span> behavior and the internal <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
+      encapsulates <span class="emphasis"><em>private</em></span> implementation (data and behavior).
     </p>
-<p>
-      In that simple example the public <span class="emphasis"><em>Book</em></span> class describes
-      and implements the behavior and the internal <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-      is all about data. However, as the functionality grows it is not uncommon for
-      <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> to have/implement certain
-      internal behavior:
-    </p>
-<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
-<span class="special">{</span>  <span class="special">...</span>
-   <span class="keyword">bool</span> <span class="identifier">check_isbn_10_digit</span><span class="special">();</span>
-<span class="special">};</span>
-
-<span class="keyword">bool</span>
-<span class="identifier">Book</span><span class="special">::</span><span class="identifier">some_function</span><span class="special">()</span> <span class="keyword">const</span>
-<span class="special">{</span>  <span class="special">...</span>
-   <span class="keyword">bool</span> <span class="identifier">is_valid</span> <span class="special">=</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)-&gt;</span><span class="identifier">check_isbn_10_digit</span><span class="special">();</span>
-   <span class="special">...</span>
-<span class="special">}</span>
-</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

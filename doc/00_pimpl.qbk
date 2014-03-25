@@ -25,6 +25,7 @@
 [include 03_value_semantics.qbk]
 [include 04_behind_interface.qbk]
 [include 05_implementation_management.qbk]
+[include 06_null.qbk]
 [include 20_applications.qbk]
 [include 21_delegating_constructors.qbk]
 [include 22_singleton.qbk]
