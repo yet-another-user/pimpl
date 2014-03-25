@@ -1,0 +1,56 @@
+[section Run-Time Polymorphic Class Hierarchy]
+
+See the Bridge pattern in [3].
+
+The declaration file:
+
+ struct ThickBook : public Book
+ {
+    ThickBook(parameters);
+ };
+
+ struct ThickestBook : public ThickBook
+ {
+    ThickestBook(parameters);
+ };
+
+The implementation file:
+
+ typedef pimpl<Book>::implementation implementation;
+
+ template<> struct pimpl<Book>::implementation
+ {
+    implementation(parameters) {...}
+
+    virtual ~implementation() {...}
+    ...
+ };
+ 
+ struct ThickBookImpl : public implementation
+ {
+
+ ThickBookImpl(parameters) : implementation(parameters) {...}
+
+ ...
+
+ };
+
+ struct ThickestBookImpl : public ThickBookImpl
+ {
+    ThickestBookImpl(parameters) : ThickBookImpl(parameters) {...}
+    ...
+ };
+
+ ThickBook:: ThickBook(parameters) : Book(null<Book>())
+ {
+    reset(new ThickBook(parameters));
+    ...
+ }
+
+ ThickestBook:: ThickestBook(parameters) : ThickBook(null<ThickBook>())
+ {
+    reset(new ThickestBook(parameters));
+    ...
+ }
+
+[endsect]

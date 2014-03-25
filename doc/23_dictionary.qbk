@@ -1,0 +1,47 @@
+[section Extendible Dictionary]
+
+The implementation file:
+
+ 
+
+typedef std::map<string, Book> AllBooks;
+
+typedef boost::mutex Mutex;
+
+typedef boost::mutex::scoped_lock Lock;
+
+typedef std::pair<Books::iterator, bool> Inserted;
+
+static Mutex mutex;
+
+static AllBooks books;
+
+ Book::Book(string const& title) : base(null())
+ {
+    std::pair<string, Book> dummy (title, Book::null());
+    Lock lock (mutex);
+    Inserted inserted (books.insert(dummy));
+    Book& book (inserted.first->second);
+
+    if (inserted.second)
+        book.reset(new implementation(parameters));
+
+    *this = book;
+ }
+
+[endsect]
+[section Non-Extendible Dictionary]
+
+The implementation file:
+
+ Book::Book(string const& title) : base(null())
+ {
+    Lock lock (mutex);
+    AllBooks::iterator it (books.find(title));
+    
+// If the title found, return it.
+    // Otherwise, return an invalid book.
+    if (it != books.end()) *this = it->second;
+ }
+
+[endsect]

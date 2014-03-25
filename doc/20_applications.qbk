@@ -1,0 +1,30 @@
+[section Applications of the Pimpl Idiom]
+
+The following common code will be used 
+
+The declaration file book.hpp
+
+ struct deleter
+ {
+    // Convenience deleter allows shared_ptrs to manage objects
+    // without deleting them.
+
+    struct no { void operator()(void*) {}};
+ };
+
+ struct Book : public pimpl<Book>::pointer_semantics
+ {
+    Book();
+ };
+
+The implementation file book.cpp:
+
+ typedef pimpl<Book>::implementation implementation;
+
+ template<> struct pimpl<Book>::implementation
+ {
+    implementation(parameters);
+    ...
+ }
+
+
