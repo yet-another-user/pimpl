@@ -1,7 +1,8 @@
-#ifndef UNITTEST_PIMPLE_HEADER_VB
-#define UNITTEST_PIMPLE_HEADER_VB
+#ifndef BOOST_PIMPLE_TEST_HPP
+#define BOOST_PIMPLE_TEST_HPP
 
-#include "pimpl.h"
+#include <boost/pimpl/pimpl.hpp>
+#include <string>
 
 struct singleton_type {};
 struct pass_value_type {};
@@ -78,4 +79,4 @@ struct Derived2 : public Derived1
 };
 
 
-#endif // UNITTEST_PIMPLE_HEADER_VB
+#endif // BOOST_PIMPLE_TEST_HPP

@@ -452,4 +452,13 @@ pimpl<T>::null()
     }                                                                                   \
     BOOST_SERIALIZATION_PIMPL_EXPLICIT_INSTANTIATIONS(THE_CLASS)                        \
 
+//template<class T, class TI, class U, class UI>
+//inline
+//bool operator==(
+//    typename pimpl<T>::template value_semantics_ptr<TI> const& a,
+//    typename pimpl<U>::template value_semantics_ptr<UI> const& b)
+//{
+//    return ssstate<T>(a.get()) == ssstate<U>(b.get());
+//}
+
 #endif // BOOST_PIMPL_PIMPL_HPP
