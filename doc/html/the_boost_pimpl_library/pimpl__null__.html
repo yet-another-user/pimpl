@@ -26,7 +26,7 @@
 <p>
       To override this default behavior we might write something like:
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">Book</span><span class="special">::</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
    <span class="comment">// an invalid Book object is created with no data behind it</span>
 <span class="special">}</span>
@@ -43,29 +43,15 @@
 <span class="special">}</span>
 </pre>
 <p>
-      Here initially we explicitly (via <span class="emphasis"><em>null()</em></span>) instruct the
-      underlying <span class="emphasis"><em>pimpl_type</em></span> base to be created empty/invalid
+      Here initially we explicitly (via <span class="emphasis"><em>Book::null()</em></span>) instruct
+      the underlying <span class="emphasis"><em>pimpl_type</em></span> base to be created empty/invalid
       (like the <span class="emphasis"><em>NULL</em></span> pointer or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>.
       Later we create a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> instance
       explicitly and assign the <span class="emphasis"><em>base_type</em></span> to manage it.
     </p>
 <p>
-      That technique is useful for lazy instantiation optimization (as in the example
+      That technique is useful for lazy-instantiation optimization (as in the example
       above) or to support dynamic polymorphism that is discussed later.
-    </p>
-<p>
-      Above we used <span class="emphasis"><em>null()</em></span> to create an invalid <span class="emphasis"><em>Book</em></span>
-      object with no internal data:
-    </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="special">{}</span>
-</pre>
-<p>
-      It was done to demonstrate how the default behavior can be overridden when
-      necessary. In actual code there is no need to write code constructing such
-      an invalid object. All <span class="emphasis"><em>Pimpl</em></span>-based classes have such an
-      invalid instance -- that same mentioned <span class="emphasis"><em>null()</em></span>. Fully
-      qualified for our <span class="emphasis"><em>Book</em></span> example, it is <span class="emphasis"><em>Book::null()</em></span>
-      or <span class="emphasis"><em>pimpl&lt;Book&gt;::null()</em></span>.
     </p>
 <p>
       We might use such an invalid <span class="emphasis"><em>Book</em></span> object to indicate a

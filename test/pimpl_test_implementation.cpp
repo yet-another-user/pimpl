@@ -1,4 +1,5 @@
-#include "test_pimpl.h"
+#include "./pimpl_test.hpp"
+#include <stdio.h>
 
 #if defined(__linux__) && 1 < 0
 #	include <boost/archive/binary_iarchive.hpp>
@@ -56,7 +57,6 @@ template<> struct pimpl<Test1>::implementation : boost::noncopyable
     implementation (Foo const&, Foo const&) { trace_ =  "Test1::implementation(Foo const&, Foo const&)"; }
     implementation (Foo*)                   { trace_ =  "Test1::implementation(Foo*)"; }
     implementation (Foo const*)             { trace_ =  "Test1::implementation(Foo const*)"; }
-   ~implementation ()                       { trace_ =  "Test1::~implementation()"; }
 
     int int_;
     mutable string trace_;
@@ -73,16 +73,17 @@ template<> struct pimpl<Test1>::implementation : boost::noncopyable
 
 template<> struct pimpl<Test2>::implementation
 {
+    typedef implementation this_type;
+
     implementation () : int_(0)             { trace_ =  "Test2::implementation()"; }
     implementation (int k) : int_(k)        { trace_ =  "Test2::implementation(int)"; }
     implementation (int k, int l) : int_(k) { trace_ =  "Test2::implementation(int, int)"; }
     implementation (Foo&)                   { trace_ =  "Test2::implementation(Foo&)"; }
     implementation (Foo const&)             { trace_ =  "Test2::implementation(Foo const&)"; }
-   ~implementation ()                       { trace_ =  "Test2::~implementation()"; }
 
-    implementation(implementation const& that)
+    implementation(this_type const& other)
     :
-        int_(that.int_), trace_("Test2::implementation(implementation const&)")
+        int_(other.int_), trace_("Test2::implementation(implementation const&)")
     {}
 
     int int_;
@@ -92,8 +93,8 @@ template<> struct pimpl<Test2>::implementation
 
 typedef Foo const& cref;
 
-//Test1::Test1(pass_value_type) : base(Foo::create()) {}
-Test1::Test1(pass_value_type) : base(cref(create_foo())) {}
+//Test1::Test1(pass_value_type) : base_type(Foo::create()) {}
+Test1::Test1(pass_value_type const&) : base_type(cref(create_foo())) {}
 
 int           Test1::  get () const { return (*this)->int_; }
 int           Test2::  get () const { return (*this)->int_; }
@@ -102,24 +103,24 @@ string const& Test2::trace () const { return (*this)->trace_; }
 int           Test1::   id () const { return (*this)->id_; }
 int           Test2::   id () const { return (*this)->id_; }
 
-Test1::Test1 () : base() {}                     // Call implementation::implementation()
-Test2::Test2 () : base() {}                     // ditto
-Test1::Test1 (int k) : base(k) {}               // Call implementation::implementation(int)
-Test2::Test2 (int k) : base(k) {}               // ditto
-Test1::Test1 (int k, int l) : base(k, l) {}     // Call implementation::implementation(int, int)
+Test1::Test1 () : base_type() {}                     // Call implementation::implementation()
+Test2::Test2 () : base_type() {}                     // ditto
+Test1::Test1 (int k) : base_type(k) {}               // Call implementation::implementation(int)
+Test2::Test2 (int k) : base_type(k) {}               // ditto
+Test1::Test1 (int k, int l) : base_type(k, l) {}     // Call implementation::implementation(int, int)
 
-Test1::Test1 (Foo&       foo) : base(foo) {}    // Make sure 'const' handled properly
-Test1::Test1 (Foo const& foo) : base(foo) {}    // Make sure 'const' handled properly
-Test1::Test1 (Foo*       foo) : base(foo) {}    // Make sure 'const' handled properly
-Test1::Test1 (Foo const* foo) : base(foo) {}    // Make sure 'const' handled properly
-Test1::Test1 (Foo      & f1, Foo      & f2) : base(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo      & f1, Foo const& f2) : base(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo const& f1, Foo      & f2) : base(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo const& f1, Foo const& f2) : base(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo&       foo) : base_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo const& foo) : base_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo*       foo) : base_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo const* foo) : base_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo      & f1, Foo      & f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo      & f1, Foo const& f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo const& f1, Foo      & f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo const& f1, Foo const& f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
 
 static Test1 single;
 static Test1 const const_single;
-Test1::Test1 (singleton_type) : base(single) {} // 'single' is used as a Singleton.
+Test1::Test1 (singleton_type const&) : base_type(single) {} // 'single' is used as a Singleton.
 
 void
 Test2::set(int v)
@@ -151,9 +152,9 @@ template<> struct pimpl<Base>::implementation
 
 struct Derived1Impl : public BaseImpl
 {
-    typedef BaseImpl base;
+    typedef BaseImpl base_type;
 
-    Derived1Impl (int k, int l) : base(k), derived_int_(l)
+    Derived1Impl (int k, int l) : base_type(k), derived_int_(l)
     {
         printf("Derived1::implementation(int,int)\n");
     }
@@ -168,9 +169,9 @@ struct Derived1Impl : public BaseImpl
 
 struct Derived2Impl : public Derived1Impl
 {
-    typedef Derived1Impl base;
+    typedef Derived1Impl base_type;
 
-    Derived2Impl (int k, int l, int m) : base(k, l), more_int_(m)
+    Derived2Impl (int k, int l, int m) : base_type(k, l), more_int_(m)
     {
         printf("Derived2::implementation(int, int)\n");
     }
@@ -183,16 +184,16 @@ struct Derived2Impl : public Derived1Impl
     int more_int_;
 };
 
-Base::Base(int k) : base(k)
+Base::Base(int k) : base_type(k)
 {
 }
 
-Derived1::Derived1(int k, int l) : Base(null<Base>())
+Derived1::Derived1(int k, int l) : Base(pimpl<Base>::null())
 {
     reset(new Derived1Impl(k, l));
 }
 
-Derived2::Derived2(int k, int l, int m) : Derived1(null<Derived1>())
+Derived2::Derived2(int k, int l, int m) : Derived1(pimpl<Derived1>::null())
 {
     reset(new Derived2Impl(k, l, m));
 }

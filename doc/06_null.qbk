@@ -4,7 +4,7 @@ Again, ['Pimpl] exhibits a considerably stronger (and automatically managed) ass
 
 To override this default behavior we might write something like:  
  
- Book::Book() : base(null())
+ Book::Book() : base_type(Book::null())
  {
     // an invalid Book object is created with no data behind it
  }
@@ -20,15 +20,9 @@ To override this default behavior we might write something like:
     ...
  } 
  
-Here initially we explicitly (via ['null()]) instruct the underlying ['pimpl_type] base to be created empty/invalid (like the ['NULL] pointer or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['base_type] to manage it. 
+Here initially we explicitly (via ['Book::null()]) instruct the underlying ['base_type] base to be created empty/invalid (like the ['NULL] pointer or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['base_type] to manage it. 
 
-That technique is useful for lazy instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
-
-Above we used ['null()] to create an invalid ['Book] object with no internal data:  
-
- Book::Book() : base(null()) {}
-
-It was done to demonstrate how the default behavior can be overridden when necessary. In actual code there is no need to write code constructing such an invalid object. All ['Pimpl]-based classes have such an invalid instance -- that same mentioned ['null()]. Fully qualified for our ['Book] example, it is ['Book::null()] or ['pimpl<Book>::null()]. 
+That technique is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
 
 We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as the ['NULL] pointer or ['boost::optional] are used: 
 

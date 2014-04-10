@@ -74,22 +74,22 @@
       Constructors</a>
 </h3></div></div></div>
 <p>
-        The feature is scheduled for C++0x. Until then the following workaround is
-        available for the pimpl-based classes:
+        The feature is available in C++11. For older non-C++11-compliant compilers
+        (or for some other reason) such functionality can be implemented using <span class="emphasis"><em>Pimpl</em></span>:
       </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Foo</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span>
 <span class="special">{</span>
-   <span class="identifier">Foo</span><span class="special">(</span><span class="identifier">param1</span><span class="special">);</span>
-   <span class="identifier">Foo</span><span class="special">(</span><span class="identifier">param2</span><span class="special">);</span>
+   <span class="identifier">Foo</span> <span class="special">();</span>
+   <span class="identifier">Foo</span> <span class="special">(</span><span class="keyword">int</span><span class="special">);</span>
 <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="identifier">param1</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">param1</span><span class="special">)</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">v</span><span class="special">)</span>
 <span class="special">{</span> <span class="special">...</span>
 <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="identifier">param2</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
 <span class="special">{</span>
-  <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="identifier">param1</span><span class="special">);</span> <span class="comment">// Calling the target constructor</span>
+  <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="number">42</span><span class="special">);</span> <span class="comment">// Calling the actual (non-delegating) constructor</span>
 <span class="special">};</span>
 </pre>
 </div>

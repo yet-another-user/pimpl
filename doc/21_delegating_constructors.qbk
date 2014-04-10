@@ -1,20 +1,20 @@
 [section Delegating Constructors]
 
-The feature is scheduled for C++0x. Until then the following workaround is available for the pimpl-based classes:
+The feature is available in C++11. For older non-C++11-compliant compilers (or for some other reason) such functionality can be implemented using ['Pimpl]:
 
  struct Foo : public pimpl<Foo>::pointer_semantics
  {
-    Foo(param1);
-    Foo(param2);
+    Foo ();
+    Foo (int);
  };
 
- Foo::Foo(param1) : base(param1)
+ Foo::Foo(int v) : base_type(v)
  { ...
  };
 
- Foo::Foo(param2) : base(null()) // Delegating constructor
+ Foo::Foo() : base_type(null()) // Delegating constructor
  {
-   *this = Foo(param1); // Calling the target constructor
+   *this = Foo(42); // Calling the actual (non-delegating) constructor
  };
 
 [endsect]

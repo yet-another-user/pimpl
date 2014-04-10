@@ -81,11 +81,11 @@ class pimpl<Interface>::value_semantics_ptr
     public:
 
    ~value_semantics_ptr () { traits_->destroy(impl_); }
-    value_semantics_ptr () : traits_(deep_copy()), impl_(0) {}
+    value_semantics_ptr () : traits_(null()), impl_(0) {}
     value_semantics_ptr (Impl* p) : traits_(deep_copy()), impl_(p) {}
     value_semantics_ptr (this_type const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
-    this_type& operator= (this_type const& that) { traits_->assign(impl_, that.impl_); return *this; }
+    this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
     bool       operator< (this_type const& that) const { return this->impl_ < that.impl_; }
 
     void      reset (Impl* p) { this_type(p).swap(*this); }
@@ -104,6 +104,14 @@ class pimpl<Interface>::value_semantics_ptr
         virtual Impl*   copy (Impl const*) const =0;
         virtual void  assign (Impl*&, Impl const*) const =0;
     };
+    struct null : public traits
+    {
+        virtual void destroy (Impl*&) const {}
+        virtual Impl*   copy (Impl const*) const { return 0; }
+        virtual void  assign (Impl*&, Impl const*) const {};
+
+        operator traits const*() { static null impl; return &impl; }
+    };
     struct deep_copy : public traits
     {
         virtual void destroy (Impl*& p) const { boost::checked_delete(p); p = 0; }
@@ -115,11 +123,7 @@ class pimpl<Interface>::value_semantics_ptr
             else if (!a &&  b) a = copy(b);
             else if ( a && !b) destroy(a);
         }
-        operator traits const*()
-        {
-            static deep_copy impl;
-            return &impl;
-        }
+        operator traits const*() { static deep_copy impl; return &impl; }
     };
 
     traits const* traits_;
@@ -145,7 +149,7 @@ class pimpl<T>::pimpl_base
 
     public:
 
-    typedef boost::detail::safebool<T>             safebool;
+    typedef boost::detail::safebool<T>   safebool;
     typedef typename safebool::type safebool_type;
     typedef implementation_type    implementation;
     typedef pimpl_base_type             base_type;
@@ -153,33 +157,6 @@ class pimpl<T>::pimpl_base
     bool         operator! () const { return !pimpl_base_type::impl_.get(); }
     operator safebool_type () const { return safebool(pimpl_base_type::impl_.get()); }
 
-    /// @name Invalid Pimpl with NULL Pointer-Like Behavior
-    //@{
-    /// @details A convenience function that returns an invalid NULL-like
-    /// instance of the T type immediately derived from pimpl<T>.
-    /// Main usages are to return an invalid NULL-like Foo instance with
-    /// @code
-    ///     return Foo::null();
-    /// @endcode
-    /// or to disable automatic interface-implementation management as for
-    /// the delegating-constructors idiom:
-    /// @code
-    ///     Foo::Foo(parameters) : base_type(null())
-    ///     {
-    ///         *this = Foo(some-other-parameters);
-    ///         ... additional stuff
-    ///     }
-    ///     or
-    ///     Foo::Foo(parameters) : base_type(null())
-    ///     {
-    ///         reset(new implementation(some-other-parameters));
-    ///         ... additional stuff
-    ///     }
-    /// @endcode
-    /// As it always returns the T type (the type immediately derived from
-    /// pimpl<T>), it is not good for class hierarchies (say, Base and Derived)
-    /// because Base::null() and Derived::null() both return an instance of Base.
-    /// For class hierarchies use the generic pimpl<Derived>::null() directly.
     static T null() { return pimpl<T>::null(); }
     //@}
     /// @name Comparison Operators
@@ -195,18 +172,16 @@ class pimpl<T>::pimpl_base
     /// Trying to call this pimpl_base::op==() for value_semantics_ptr-based pimpl will
     /// fail to compile (no value_semantics_ptr::op==()) and will indicate that the user
     /// forgot to declare T::operator==(T const&).
-    bool operator==(pimpl_base_type const& that) const { return  (impl_ == that.impl_); }
-    bool operator!=(pimpl_base_type const& that) const { return !(impl_ == that.impl_); }
+    bool operator==(pimpl_base_type const& that) const { return impl_ == that.impl_; }
+    bool operator!=(pimpl_base_type const& that) const { return impl_ != that.impl_; }
 
     /// For pimpl to be used in std associative containers.
     bool operator<(pimpl_base_type const& that) const { return pimpl_base_type::impl_ < that.pimpl_base_type::impl_; }
     //@}
 
-    /// @name Swap the underlying content of two objects
-    //@{
     void swap (pimpl_base_type& that) { pimpl_base_type::impl_.swap(that.pimpl_base_type::impl_); }
     void swap (managed_type& that) { pimpl_base_type::impl_.swap(that); }
-    //@}
+
     /// @name Explicit Management of Interface-Implementation Associations
     /// @details Usually internal interface-implementation associations are
     /// managed automatically by the base class:
@@ -273,8 +248,11 @@ class pimpl<T>::pimpl_base
     //@{
     pimpl_base() : impl_(new implementation_type()) {}
 
+//    pimpl_base(pimpl_base const& other) : impl_(new implementation_type()) {}
+
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
     !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+
     pimpl_base(const pimpl_base& other)
         : impl_(other.impl)
     {
@@ -304,8 +282,7 @@ class pimpl<T>::pimpl_base
 
     template<typename> friend class is_pimpl; // is_pimpl accesses pimpl_base_type.
 
-    // Creates an invalid (with no implementation) NULL-like instance.
-    // Used internally by pimpl::null().
+    // Creates an invalid (with no implementation) instance. Used internally by pimpl::null().
     pimpl_base (internal_type) {}
 
     template<class Y> friend struct pimpl;
@@ -318,21 +295,6 @@ class pimpl<T>::pimpl_base
     managed_type impl_;
 };
 
-/// The function returns an invalid NULL-like instance of a T type derived from
-/// a pimpl. It is to be used primarily for class hierarchies. For the classes
-/// directly derived from pimpl<T> the T::null() variation is shorter and prettier.
-/// Main usages are to disable automatic interface-implementation
-/// management as in
-/// @code
-///     struct Base : public pimpl<Base>::pointer_semantics { ... };
-///     struct Derived : public Base { ... };
-///     Derived::Derived(parameters) : Base(pimpl<Base>::null()) {...}
-/// @endcode
-/// or to return an invalid NULL-like instance with
-/// @code
-///     Derived bad = pimpl<Derived>::null();
-///     return bad;
-/// @endcode
 template<class T>
 inline
 T
