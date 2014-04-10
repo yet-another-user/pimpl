@@ -46,6 +46,8 @@ struct uid
 // (*this)->data or (**this).data.
 template<> struct pimpl<Test1>::implementation : boost::noncopyable
 {
+    typedef implementation this_type;
+
     implementation () : int_(0)             { trace_ =  "Test1::implementation()"; }
     implementation (int k) : int_(k)        { trace_ =  "Test1::implementation(int)"; }
     implementation (int k, int l) : int_(k) { trace_ =  "Test1::implementation(int, int)"; }
@@ -57,10 +59,16 @@ template<> struct pimpl<Test1>::implementation : boost::noncopyable
     implementation (Foo const&, Foo const&) { trace_ =  "Test1::implementation(Foo const&, Foo const&)"; }
     implementation (Foo*)                   { trace_ =  "Test1::implementation(Foo*)"; }
     implementation (Foo const*)             { trace_ =  "Test1::implementation(Foo const*)"; }
+    implementation (this_type const& o)
+    :
+        int_    (o.int_),
+        trace_  ("Test1::implementation(Test1::implementation const&)"),
+        id_     (o.id_)
+    {}
 
-    int int_;
+    int              int_;
     mutable string trace_;
-    uid id_;
+    uid const         id_;
 
     template<class Archive>
     void
@@ -83,12 +91,12 @@ template<> struct pimpl<Test2>::implementation
 
     implementation(this_type const& other)
     :
-        int_(other.int_), trace_("Test2::implementation(implementation const&)")
+        int_(other.int_), trace_("Test2::implementation(Test2::implementation const&)")
     {}
 
-    int int_;
+    int              int_;
     mutable string trace_;
-    uid id_;
+    uid               id_;
 };
 
 typedef Foo const& cref;
@@ -119,7 +127,7 @@ Test1::Test1 (Foo const& f1, Foo      & f2) : base_type(f1, f2) {} // Make sure 
 Test1::Test1 (Foo const& f1, Foo const& f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
 
 static Test1 single;
-static Test1 const const_single;
+
 Test1::Test1 (singleton_type const&) : base_type(single) {} // 'single' is used as a Singleton.
 
 void
@@ -139,30 +147,31 @@ Test2::operator==(Test2 const& that) const
 // Testing polymorphism
 ///////////////////////////////////////////////////
 
-typedef pimpl<Base>::implementation BaseImpl;
-
 template<> struct pimpl<Base>::implementation
 {
-    implementation (int k) : base_int_(k) { printf("Base::implementation(int)\n"); }
+    implementation (int k) : base_int_(k), trace_("Base::implementation(int)") {}
     virtual ~implementation ()            { printf("Base::~implementation()\n"); }
-    virtual void call_virtual()           { printf("Base::call_virtual()\n"); }
 
-    int base_int_;
+    virtual std::string call_virtual() { return("Base::call_virtual()"); }
+
+    int      base_int_;
+    std::string trace_;
 };
 
-struct Derived1Impl : public BaseImpl
+struct Derived1Impl : public pimpl<Base>::implementation
 {
-    typedef BaseImpl base_type;
+    typedef pimpl<Base>::implementation base_type;
 
     Derived1Impl (int k, int l) : base_type(k), derived_int_(l)
     {
-        printf("Derived1::implementation(int,int)\n");
+        BOOST_TEST(trace_ == "Base::implementation(int)");
+        trace_ = "Derived1::implementation(int, int)";
     }
    ~Derived1Impl ()
     {
         printf("Derived1::~implementation()\n");
     }
-    virtual void call_virtual() { printf("Derived1::call_virtual()\n"); }
+    virtual std::string call_virtual() { return ("Derived1::call_virtual()"); }
 
     int derived_int_;
 };
@@ -173,13 +182,14 @@ struct Derived2Impl : public Derived1Impl
 
     Derived2Impl (int k, int l, int m) : base_type(k, l), more_int_(m)
     {
-        printf("Derived2::implementation(int, int)\n");
+        BOOST_TEST(trace_ == "Derived1::implementation(int, int)");
+        trace_ = "Derived2::implementation(int, int, int)";
     }
    ~Derived2Impl ()
     {
         printf("Derived2::~implementation()\n");
     }
-    virtual void call_virtual() { printf("Derived2::call_virtual()\n"); }
+    virtual std::string call_virtual() { return ("Derived2::call_virtual()"); }
 
     int more_int_;
 };
@@ -198,8 +208,14 @@ Derived2::Derived2(int k, int l, int m) : Derived1(pimpl<Derived1>::null())
     reset(new Derived2Impl(k, l, m));
 }
 
-void
+std::string const&
+Base::trace() const
+{
+    return (*this)->trace_;
+}
+
+std::string
 Base::call_virtual()
 {
-    (*this)->call_virtual();
+    return (*this)->call_virtual();
 }

@@ -1,4 +1,3 @@
-#include <boost/detail/lightweight_test.hpp>
 #include "./pimpl_test.hpp"
 
 struct Book : public pimpl<Book>::pointer_semantics
@@ -63,9 +62,9 @@ test_swap()
     singleton_type single;
 
     Test1 pt16 (single);
-    Test1 pt17 (single);              BOOST_TEST(pt16.id() == pt17.id()); // No copying. Implementation shared.
-    Test2 vt12 (5);                      BOOST_TEST(vt12.trace() == "Test2::implementation(int)");
-    Test2 vt13 = vt12;
+    Test1 pt17 (single); BOOST_TEST(pt16.id() == pt17.id()); // No copying. Implementation shared.
+    Test2 vt12 (5);      BOOST_TEST(vt12.trace() == "Test2::implementation(int)");
+    Test2 vt13 = vt12;   BOOST_TEST(vt13.trace() == "Test2::implementation(Test2::implementation const&)");
     Test2 vt14 (vt12);
 
     int pt16_id = pt16.id();
@@ -112,52 +111,52 @@ void
 test_runtime_polymorphic_behavior()
 {
     Base        base1 (1);
-    Derived1 derived1 (2, 3);
-    Derived2 derived2 (2, 3, 4);
-    Base        base2 (derived1); // calls copy constructor
-    Base        base3 (derived2); // calls copy constructor
-    Base        base4 (Derived2(2,3,4)/*const ref to temporary*/); // calls copy copnstructor
-    Derived1     bad1 (pimpl<Derived1>::null());
-    Derived2     bad2 (pimpl<Derived2>::null());
+    Derived1 derived1 (1, 2);
+    Derived2 derived2 (1, 2, 3);
+    Base        base2 (derived1);
+    Base        base3 (derived2);
+    Base        base4 (Derived2(2,3,4)/*const ref to temporary*/);
     Base*         bp1 = &base1;
     Base*         bp2 = &base2;
     Base*         bp3 = &base3;
     Base*         bp4 = &derived1;
     Base*         bp5 = &derived2;
-//    Base*         bp6 = &bad1;
-//    Base*         bp7 = &bad2;
-    Base        bad_base1 = Base::null();
-    Base        bad_base2 = pimpl<Base>::null();
-//  Base        bad_base3 = Base::null<Foo>(); // correctly does not compile.
-//  Foo           bad_foo = null<Foo>(); // correctly does not compile.
-    Derived1 bad_derived1 = pimpl<Derived1>::null();
-    Derived2 bad_derived2 = pimpl<Derived2>::null();
+    Base         bad1 = Base::null();
+    Base         bad2 = pimpl<Base>::null();
+    Base         bad3 = pimpl<Derived1>::null();
+    Base         bad4 = pimpl<Derived2>::null();
+    Derived1     bad5 (pimpl<Derived1>::null());
+    Derived2     bad6 (pimpl<Derived2>::null());
 
-    if (base1 == derived1); // Make sure base-derived comparisons compile and work
-    if (base1 == derived2); // Make sure base-derived comparisons compile and work
-    if (derived1 == base1); // Make sure base-derived comparisons compile and work
-    if (derived2 == base1); // Make sure base-derived comparisons compile and work
+    BOOST_TEST(derived1.trace() == "Derived1::implementation(int, int)");
+    BOOST_TEST(derived2.trace() == "Derived2::implementation(int, int, int)");
 
-    bool bad1_bool1 =   bad1; // Test conversion to bool
-    bool bad1_bool2 = !!bad1; // Test operator!()
-    bool bad2_bool1 =   bad2; // Test conversion to bool
-    bool bad2_bool2 = !!bad2; // Test operator!()
+    BOOST_TEST(base1 != derived1);
+    BOOST_TEST(base1 != derived2);
+    BOOST_TEST(base2 == derived1);
+    BOOST_TEST(base3 == derived2);
+    BOOST_TEST(derived1 != base1);
+    BOOST_TEST(derived2 != base1);
+    BOOST_TEST(derived1 == base2);
+    BOOST_TEST(derived2 == base3);
+
+    bool bad1_bool1 =   bad5; // Test conversion to bool
+    bool bad1_bool2 = !!bad5; // Test operator!()
+    bool bad2_bool1 =   bad6; // Test conversion to bool
+    bool bad2_bool2 = !!bad6; // Test operator!()
 
     BOOST_TEST(!bad1_bool1);
     BOOST_TEST(!bad1_bool2);
     BOOST_TEST(!bad2_bool1);
     BOOST_TEST(!bad2_bool2);
 
-    base2.call_virtual(); // calls Derived1::call_virtual
-    base3.call_virtual(); // calls Derived2::call_virtual
-
-    bp1->call_virtual();    // calls Base::call_virtual
-    bp2->call_virtual();    // calls Derived1::call_virtual
-    bp3->call_virtual();    // calls Derived2::call_virtual
-    bp4->call_virtual();    // calls Derived1::call_virtual
-    bp5->call_virtual();    // calls Derived2::call_virtual
-//  bp6->call_virtual();    // crash. referencing bad1
-//  bp7->call_virtual();    // crash. referencing bad1
+    BOOST_TEST(base2.call_virtual() == "Derived1::call_virtual()");
+    BOOST_TEST(base3.call_virtual() == "Derived2::call_virtual()");
+    BOOST_TEST(bp1->call_virtual() == "Base::call_virtual()");
+    BOOST_TEST(bp2->call_virtual() == "Derived1::call_virtual()");
+    BOOST_TEST(bp3->call_virtual() == "Derived2::call_virtual()");
+    BOOST_TEST(bp4->call_virtual() == "Derived1::call_virtual()");
+    BOOST_TEST(bp5->call_virtual() == "Derived2::call_virtual()");
 }
 
 static
@@ -179,8 +178,10 @@ test_constructors()
     Test2 v12(5);                       BOOST_TEST(v12.trace() == "Test2::implementation(int)");
     Test1 p13 = p12;                    BOOST_TEST(p13.id() == p12.id()); // No copying. Implementation shared.
     Test1 p14(p12);                     BOOST_TEST(p14.id() == p12.id()); // No copying. Implementation shared.
-    Test2 v13 = v12;                    BOOST_TEST(v13.trace() == "Test2::implementation(implementation const&)");
-    Test2 v14(v12);                     BOOST_TEST(v14.trace() == "Test2::implementation(implementation const&)");
+                                        BOOST_TEST(p13.trace() == "Test1::implementation(int)"); // trace state is the same
+                                        BOOST_TEST(p14.trace() == "Test1::implementation(int)"); // trace state is the same
+    Test2 v13 = v12;                    BOOST_TEST(v13.trace() == "Test2::implementation(Test2::implementation const&)");
+    Test2 v14(v12);                     BOOST_TEST(v14.trace() == "Test2::implementation(Test2::implementation const&)");
                                         BOOST_TEST(v13.id() != v12.id()); // Implementation copied.
                                         BOOST_TEST(v14.id() != v12.id()); // Implementation copied.
     Test1 p15(5, 6);                    BOOST_TEST(p15.trace() == "Test1::implementation(int, int)");

@@ -1,6 +1,7 @@
 #ifndef BOOST_PIMPLE_TEST_HPP
 #define BOOST_PIMPLE_TEST_HPP
 
+#include <boost/detail/lightweight_test.hpp>
 #include <boost/pimpl/pimpl.hpp>
 #include <string>
 
@@ -66,8 +67,10 @@ struct Test2 : public pimpl<Test2>::value_semantics
 
 struct Base : public pimpl<Base>::pointer_semantics
 {
-    void call_virtual(); // Non-virtual.
     Base (int);
+
+    std::string call_virtual(); // Non-virtual.
+    std::string const& trace() const;
 };
 
 struct Derived1 : public Base
