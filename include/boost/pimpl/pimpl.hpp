@@ -1,10 +1,10 @@
-// Copyright (c) 2001 Peter Dimov and Multi Media Ltd.
 // Copyright (c) 2006-2014 Vladimir Batov.
+// Copyright (c) 2001 Peter Dimov and Multi Media Ltd.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef BOOST_PIMPL_PIMPL_HPP
-#define BOOST_PIMPL_PIMPL_HPP
+#ifndef BOOST_PIMPL_HPP
+#define BOOST_PIMPL_HPP
 
 #include <boost/config.hpp>
 #if defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) || \
@@ -55,8 +55,8 @@ struct pimpl
 template<class T>
 class is_pimpl
 {
-    typedef boost::type_traits::yes_type yes_type;
-    typedef boost::type_traits::no_type no_type;
+    typedef boost::type_traits::yes_type               yes_type;
+    typedef boost::type_traits::no_type                 no_type;
     typedef typename boost::remove_reference<T>::type* ptr_type;
 
     template<class Y>
@@ -140,8 +140,8 @@ template<class T>
 template<template<class> class Manager>
 class pimpl<T>::pimpl_base
 {
-    // Use 'pimpl_base_type' internally instead of 'base' to minimize the possibility
-    // of a clash if 'base_type' is redefined in the derived classes.
+    template<typename> friend class is_pimpl; // is_pimpl accesses pimpl_base_type.
+    
     typedef typename pimpl<T>::template pimpl_base<Manager> pimpl_base_type;
     typedef typename pimpl<T>::implementation           implementation_type;
     typedef Manager<implementation_type>                       managed_type;
@@ -156,29 +156,26 @@ class pimpl<T>::pimpl_base
 
     bool         operator! () const { return !pimpl_base_type::impl_.get(); }
     operator safebool_type () const { return safebool(pimpl_base_type::impl_.get()); }
-//  explicit operator bool () const { return safebool(pimpl_base_type::impl_.get()); }
+//  explicit operator bool () const { return pimpl_base_type::impl_.get(); }
 
     static T null() { return pimpl<T>::null(); }
-    //@}
-    /// @name Comparison Operators
-    //@{
-    /// @details pimpl_base::op==() simply transfers the comparison down to its
-    /// implementation policy -- boost::shared_ptr or pimpl::value_semantics_ptr.
-    /// Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable
-    /// as there is shared_ptr::op==(). However, a value-semantics
-    /// (value_semantics_ptr-based) pimpl is not comparable by default (the standard
-    /// value-semantics behavior) as there is no pimpl::value_semantics_ptr::op==().
-    /// If a value-semantics class T needs to be comparable, then it has to
-    /// *explicitly* provide T::op==(T const&) as part of its public interface.
-    /// Trying to call this pimpl_base::op==() for value_semantics_ptr-based pimpl will
-    /// fail to compile (no value_semantics_ptr::op==()) and will indicate that the user
-    /// forgot to declare T::operator==(T const&).
+
+    // pimpl_base::op==() simply transfers the comparison down to its
+    // implementation policy -- boost::shared_ptr or pimpl::value_semantics_ptr.
+    // Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable
+    // as there is shared_ptr::op==(). However, a value-semantics
+    // (value_semantics_ptr-based) pimpl is not comparable by default (the standard
+    // value-semantics behavior) as there is no pimpl::value_semantics_ptr::op==().
+    // If a value-semantics class T needs to be comparable, then it has to
+    // *explicitly* provide T::op==(T const&) as part of its public interface.
+    // Trying to call this pimpl_base::op==() for value_semantics_ptr-based pimpl will
+    // fail to compile (no value_semantics_ptr::op==()) and will indicate that the user
+    // forgot to declare T::operator==(T const&).
     bool operator==(pimpl_base_type const& that) const { return impl_ == that.impl_; }
     bool operator!=(T const& that) const { return !((T*) this)->T::operator==(that); }
 
-    /// For pimpl to be used in std associative containers.
+    // For pimpl to be used in std associative containers.
     bool operator<(pimpl_base_type const& that) const { return pimpl_base_type::impl_ < that.pimpl_base_type::impl_; }
-    //@}
 
     void swap (pimpl_base_type& that) { pimpl_base_type::impl_.swap(that.pimpl_base_type::impl_); }
     void swap (managed_type& that) { pimpl_base_type::impl_.swap(that); }
@@ -229,10 +226,10 @@ class pimpl<T>::pimpl_base
     /// behaves like a proxy. Therefore, 'const' instances return 'const'
     /// pointers and references.
     //@{
-    implementation_type const* operator->() const { BOOST_ASSERT(pimpl_base_type::impl_.get()); return  pimpl_base_type::impl_.get(); }
-    implementation_type const& operator *() const { BOOST_ASSERT(pimpl_base_type::impl_.get()); return *pimpl_base_type::impl_.get(); }
-    implementation_type*       operator->()       { BOOST_ASSERT(pimpl_base_type::impl_.get()); return  pimpl_base_type::impl_.get(); }
-    implementation_type&       operator *()       { BOOST_ASSERT(pimpl_base_type::impl_.get()); return *pimpl_base_type::impl_.get(); }
+    implementation_type const* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
+    implementation_type const& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
+    implementation_type*       operator->()       { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
+    implementation_type&       operator *()       { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
     //@}
 
     long use_count() const { return impl_.use_count(); }
@@ -248,8 +245,6 @@ class pimpl<T>::pimpl_base
     /// inside this class and, consequently, to *fully* automate memory management (rather than just deletion).
     //@{
     pimpl_base() : impl_(new implementation_type()) {}
-
-//    pimpl_base(pimpl_base const& other) : impl_(new implementation_type()) {}
 
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
     !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
@@ -280,8 +275,6 @@ class pimpl<T>::pimpl_base
     //@}
 
     private:
-
-    template<typename> friend class is_pimpl; // is_pimpl accesses pimpl_base_type.
 
     // Creates an invalid (with no implementation) instance. Used internally by pimpl::null().
     pimpl_base (internal_type) {}
@@ -424,4 +417,4 @@ pimpl<T>::null()
 //    return ssstate<T>(a.get()) == ssstate<U>(b.get());
 //}
 
-#endif // BOOST_PIMPL_PIMPL_HPP
+#endif // BOOST_PIMPL_HPP
