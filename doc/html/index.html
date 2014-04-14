@@ -16,7 +16,8 @@
 <div><div class="author"><h3 class="author">
 <span class="firstname">Vladimir</span> <span class="surname">Batov</span>
 </h3></div></div>
-<div><p class="copyright">Copyright &#169; 2009-2014 Vladimir Batov</p></div>
+<div><p class="copyright">Copyright &#169; 2006-2014 Vladimir
+      Batov</p></div>
 <div><div class="legalnotice">
 <a name="pimpl.legal"></a><p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
@@ -41,12 +42,12 @@
 <dd><dl>
 <dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom.html#the_boost_pimpl_library.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
       Constructors</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_1_simple.html">Singleton
-      1 Simple</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_1_improved.html">Singleton
-      1 Improved</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_2.html">Singleton
-      2</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/simple_singleton.html">Simple
+      Singleton</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_improved.html">Singleton
+      Improved</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_again.html">Singleton
+      Again</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
       Dictionary</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/non_extendible_dictionary.html">Non-Extendible
@@ -63,22 +64,22 @@
 <dt><span class="section"><a href="index/s10.html">Index</a></span></dt>
 </dl>
 </div>
+<p>
+    <span class="bold"><strong>Note:</strong></span> This documentation is based on the article
+    (<a class="link" href="the_boost_pimpl_library/references.html#1">[1]</a>) originally published in the C/C++ Users Journal
+    (now Dr. Dobb's).
+  </p>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="the_boost_pimpl_library.introduction"></a><a class="link" href="index.html#the_boost_pimpl_library.introduction" title="Introduction">Introduction</a>
 </h2></div></div></div>
 <p>
-      <span class="bold"><strong>Note:</strong></span> This documentation is based on the original
-      article (<a class="link" href="the_boost_pimpl_library/references.html#1">[1]</a>) published in the C/C++ Users Journal
-      (now Dr. Dobb's).
-    </p>
-<p>
-      The <span class="emphasis"><em>Pimpl</em></span> idiom is a simple yet robust technique to minimize
-      coupling via
+      The <span class="emphasis"><em>Pimpl</em></span> idiom is a simple yet robust programming technique
+      to minimize coupling via
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
-          the separation of interface and implementation and then
+          the separation of public interface and private implementation and then
         </li>
 <li class="listitem">
           implementation hiding.
@@ -93,7 +94,7 @@
       C and C++ as far back as at least early eighties (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
     </p>
 <p>
-      In the domain of commercial large-scale software development, where the following
+      In the domain of commercial large-scale software development the following
       design principles come to the fore:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
@@ -113,24 +114,24 @@
           consistent and recognizable deployment and implementation patterns,
         </li>
 <li class="listitem">
-          multi-platform support,
+          multi-platform support.
         </li>
 </ul></div>
 <p>
-      the <span class="emphasis"><em>Pimpl</em></span> technique can help great deal achieving those
-      goals. Still, it does not seem to be sufficiently widely deployed. In part
-      that is due to efficiency considerations (valid or misguided) and probably
-      more often due to additional implementation scaffolding and coding overhead
-      associated with the technique.
+      The <span class="emphasis"><em>Pimpl</em></span> technique can help great deal achieving those
+      goals. Still, it does not seem to be widely deployed. In part that is due to
+      efficiency considerations (valid or misguided) and probably more often due
+      to additional implementation scaffolding and coding overhead associated with
+      the technique.
     </p>
 <p>
-      This library provides the code and the deployment pattern in an attempt to
-      bridge that gap, to ease and to formalize the deployment of the idiom.
+      This library provides a coding framework and a deployment pattern in an attempt
+      to bridge that gap, to ease and to formalize the deployment of the idiom.
     </p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: April 08, 2014 at 00:05:40 GMT</small></p></td>
+<td align="left"><p><small>Last revised: April 14, 2014 at 04:07:48 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

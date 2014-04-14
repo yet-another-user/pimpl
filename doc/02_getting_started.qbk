@@ -19,10 +19,10 @@ Let's start with a fairly basic and conventional
  };
 
 
-Say due to reasons mentioned in the Introduction we need to transform it to a ['Pimpl]-style class with ['pointer semantics]. That is:
+Say, due to reasons mentioned in the ['Introduction] we would like to transform it to a ['Pimpl]-style class with the ['pointer semantics]. That is:
 
-* we want to hide implementation through the deployment of the ['Pimpl] idiom;
-* we want the class to have pointer semantics, i.e. with regard to the underlying data it will behave in the smart-pointer/proxy fashion by allowing shared access to the actual implementation data.
+* we intend to hide implementation through the deployment of the ['Pimpl] idiom;
+* we intend the class to have pointer semantics, i.e. with regard to the underlying data it will behave in the smart-pointer/proxy fashion by allowing shared access to the actual implementation data.
 
 In that setting the ['Book] definition might probably change to as follows: 
 
@@ -52,7 +52,7 @@ That fairly standard ['Pimpl] deployment splits the original class (accommodatin
  
 So far applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] (or ['boost::shared_ptr] for non-C++11-compliant) takes care of much of the scaffolding hassle. The auto-generated destructor, copy constructor and assignment operator suffice and writing the comparison operators is child's play.
 
-Still, from design perspectives lumping the application logic with the infrastructure scaffolding is messy. Moreover, in our (admittedly simple) ['Book] class more than half of the code is the ['Pimpl]-related scaffolding. For one class in isolation that might not look like that big a deal. On a large scale, reading, understanding and maintaining extra code, mentally separating the application logic from the infrastructure scaffolding, repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring and expensive exercise. The following, therefore, seems like an improvement: 
+Still, from design perspectives lumping the application logic with the infrastructure scaffolding is messy. Moreover, in our (admittedly simple) ['Book] class more than half of the code is the ['Pimpl]-related scaffolding. For one class in isolation that might not look like that big a deal. On a larger scale, reading, understanding and maintaining extra code, mentally separating the application logic from the infrastructure scaffolding, repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring and expensive exercise. The following, therefore, seems like an improvement: 
 
  struct Book : public pimpl<Book>::pointer_semantics
  {
@@ -66,6 +66,6 @@ With no loss in functionality it is shorter, application-focused and reasonably 
 
 With such a clean ['separation of concerns] (public interface and private implementation) the technique is ideal for building large-scale systems and then, most importantly, managing evolution of those systems. 
 
-[note Designing large-scale systems in general might probably be described as ['API-centered design]. For such systems considerable initial effort goes into designing interface specifications for modules/components (high-level/architectural design) and/or classes (low-level/detailed design). That allows further development to proceed in parallel -- with the service consumer relying on those contractual obligations (imposed by the API) and with the service provider working towards meeting those contractual obligations. The better/cleaner the interface/implementation separation of concerns is, the fewer there are dependencies and interruptions of that parallel development process.]
+[note Designing large-scale systems in general might probably be described as ['API-centered design]. For such systems considerable initial effort goes into designing interface specifications for modules/components (high-level/architectural design) and/or classes (low-level/detailed design). That allows further development to proceed to a large degree in parallel -- with the service consumer relying on those contractual obligations (imposed by the API) and with the service provider working towards meeting those contractual obligations. The better/cleaner the interface/implementation separation of concerns is, the fewer there are dependencies and interruptions of that parallel development process.]
 
 [endsect]

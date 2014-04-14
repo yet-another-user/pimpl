@@ -37,19 +37,19 @@
 <span class="special">};</span>
 </pre>
 <p>
-      Say due to reasons mentioned in the Introduction we need to transform it to
-      a <span class="emphasis"><em>Pimpl</em></span>-style class with <span class="emphasis"><em>pointer semantics</em></span>.
-      That is:
+      Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span> we would
+      like to transform it to a <span class="emphasis"><em>Pimpl</em></span>-style class with the
+      <span class="emphasis"><em>pointer semantics</em></span>. That is:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
-          we want to hide implementation through the deployment of the <span class="emphasis"><em>Pimpl</em></span>
+          we intend to hide implementation through the deployment of the <span class="emphasis"><em>Pimpl</em></span>
           idiom;
         </li>
 <li class="listitem">
-          we want the class to have pointer semantics, i.e. with regard to the underlying
-          data it will behave in the smart-pointer/proxy fashion by allowing shared
-          access to the actual implementation data.
+          we intend the class to have pointer semantics, i.e. with regard to the
+          underlying data it will behave in the smart-pointer/proxy fashion by allowing
+          shared access to the actual implementation data.
         </li>
 </ul></div>
 <p>
@@ -117,7 +117,7 @@
       scaffolding is messy. Moreover, in our (admittedly simple) <span class="emphasis"><em>Book</em></span>
       class more than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related
       scaffolding. For one class in isolation that might not look like that big a
-      deal. On a large scale, reading, understanding and maintaining extra code,
+      deal. On a larger scale, reading, understanding and maintaining extra code,
       mentally separating the application logic from the infrastructure scaffolding,
       repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring
       and expensive exercise. The following, therefore, seems like an improvement:
@@ -151,18 +151,19 @@
         <span class="emphasis"><em>API-centered design</em></span>. For such systems considerable initial
         effort goes into designing interface specifications for modules/components
         (high-level/architectural design) and/or classes (low-level/detailed design).
-        That allows further development to proceed in parallel -- with the service
-        consumer relying on those contractual obligations (imposed by the API) and
-        with the service provider working towards meeting those contractual obligations.
-        The better/cleaner the interface/implementation separation of concerns is,
-        the fewer there are dependencies and interruptions of that parallel development
-        process.
+        That allows further development to proceed to a large degree in parallel
+        -- with the service consumer relying on those contractual obligations (imposed
+        by the API) and with the service provider working towards meeting those contractual
+        obligations. The better/cleaner the interface/implementation separation of
+        concerns is, the fewer there are dependencies and interruptions of that parallel
+        development process.
       </p></td></tr>
 </table></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2014 Vladimir
+      Batov<p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
         <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

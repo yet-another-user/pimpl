@@ -19,12 +19,22 @@
       Polymorphic Class Hierarchy</a>
 </h3></div></div></div>
 <p>
-        See the Bridge pattern in [3].
+        See the Bridge pattern in <a class="link" href="../references.html#13">[13]</a>.
       </p>
 <p>
         The declaration file:
       </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">ThickBook</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">Book</span>
+<pre class="programlisting"><span class="comment">// If you are not planning on applying dynamic_cast&lt;&gt; to </span>
+<span class="comment">// the public interface base class, then it does not need to be virtual</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span>
+<span class="special">{</span>
+   <span class="identifier">Book</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">);</span>
+
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="keyword">struct</span> <span class="identifier">ThickBook</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">Book</span>
 <span class="special">{</span>
    <span class="identifier">ThickBook</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">);</span>
 <span class="special">};</span>
@@ -49,11 +59,8 @@
 
 <span class="keyword">struct</span> <span class="identifier">ThickBookImpl</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">implementation</span>
 <span class="special">{</span>
-
-<span class="identifier">ThickBookImpl</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">{...}</span>
-
-<span class="special">...</span>
-
+   <span class="identifier">ThickBookImpl</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">{...}</span>
+   <span class="special">...</span>
 <span class="special">};</span>
 
 <span class="keyword">struct</span> <span class="identifier">ThickestBookImpl</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">ThickBookImpl</span>
@@ -62,13 +69,13 @@
    <span class="special">...</span>
 <span class="special">};</span>
 
-<span class="identifier">ThickBook</span><span class="special">::</span> <span class="identifier">ThickBook</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">Book</span><span class="special">(</span><span class="identifier">null</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;())</span>
+<span class="identifier">ThickBook</span><span class="special">::</span> <span class="identifier">ThickBook</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">Book</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
    <span class="identifier">reset</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">ThickBook</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">));</span>
    <span class="special">...</span>
 <span class="special">}</span>
 
-<span class="identifier">ThickestBook</span><span class="special">::</span> <span class="identifier">ThickestBook</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">ThickBook</span><span class="special">(</span><span class="identifier">null</span><span class="special">&lt;</span><span class="identifier">ThickBook</span><span class="special">&gt;())</span>
+<span class="identifier">ThickestBook</span><span class="special">::</span> <span class="identifier">ThickestBook</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">ThickBook</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">ThickBook</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
    <span class="identifier">reset</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">ThickestBook</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">));</span>
    <span class="special">...</span>
@@ -77,7 +84,8 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2014 Vladimir
+      Batov<p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
         <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

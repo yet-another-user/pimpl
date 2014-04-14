@@ -86,8 +86,8 @@ template<> struct pimpl<Test2>::implementation
     implementation () : int_(0)             { trace_ =  "Test2::implementation()"; }
     implementation (int k) : int_(k)        { trace_ =  "Test2::implementation(int)"; }
     implementation (int k, int l) : int_(k) { trace_ =  "Test2::implementation(int, int)"; }
-    implementation (Foo&)                   { trace_ =  "Test2::implementation(Foo&)"; }
-    implementation (Foo const&)             { trace_ =  "Test2::implementation(Foo const&)"; }
+    implementation (Foo&) : int_(0)         { trace_ =  "Test2::implementation(Foo&)"; }
+    implementation (Foo const&) : int_(0)   { trace_ =  "Test2::implementation(Foo const&)"; }
 
     implementation(this_type const& other)
     :
@@ -104,8 +104,6 @@ typedef Foo const& cref;
 //Test1::Test1(pass_value_type) : base_type(Foo::create()) {}
 Test1::Test1(pass_value_type const&) : base_type(cref(create_foo())) {}
 
-int           Test1::  get () const { return (*this)->int_; }
-int           Test2::  get () const { return (*this)->int_; }
 string const& Test1::trace () const { return (*this)->trace_; }
 string const& Test2::trace () const { return (*this)->trace_; }
 int           Test1::   id () const { return (*this)->id_; }
@@ -130,12 +128,6 @@ static Test1 single;
 
 Test1::Test1 (singleton_type const&) : base_type(single) {} // 'single' is used as a Singleton.
 
-void
-Test2::set(int v)
-{
-    (*this)->int_ = v;
-}
-
 bool
 Test2::operator==(Test2 const& that) const
 {
@@ -150,7 +142,7 @@ Test2::operator==(Test2 const& that) const
 template<> struct pimpl<Base>::implementation
 {
     implementation (int k) : base_int_(k), trace_("Base::implementation(int)") {}
-    virtual ~implementation ()            { printf("Base::~implementation()\n"); }
+    virtual ~implementation ()            { /*printf("Base::~implementation()\n"); */ }
 
     virtual std::string call_virtual() { return("Base::call_virtual()"); }
 
@@ -169,7 +161,7 @@ struct Derived1Impl : public pimpl<Base>::implementation
     }
    ~Derived1Impl ()
     {
-        printf("Derived1::~implementation()\n");
+        // printf("Derived1::~implementation()\n");
     }
     virtual std::string call_virtual() { return ("Derived1::call_virtual()"); }
 
@@ -187,7 +179,7 @@ struct Derived2Impl : public Derived1Impl
     }
    ~Derived2Impl ()
     {
-        printf("Derived2::~implementation()\n");
+//        printf("Derived2::~implementation()\n");
     }
     virtual std::string call_virtual() { return ("Derived2::call_virtual()"); }
 

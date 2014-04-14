@@ -44,8 +44,8 @@
 </pre>
 <p>
       Here initially we explicitly (via <span class="emphasis"><em>Book::null()</em></span>) instruct
-      the underlying <span class="emphasis"><em>pimpl_type</em></span> base to be created empty/invalid
-      (like the <span class="emphasis"><em>NULL</em></span> pointer or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>.
+      the underlying <span class="emphasis"><em>base_type</em></span> to be created empty/invalid (like
+      <span class="emphasis"><em>nullptr</em></span> or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>.
       Later we create a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> instance
       explicitly and assign the <span class="emphasis"><em>base_type</em></span> to manage it.
     </p>
@@ -55,8 +55,8 @@
     </p>
 <p>
       We might use such an invalid <span class="emphasis"><em>Book</em></span> object to indicate a
-      no-book condition in the same fashion as the <span class="emphasis"><em>NULL</em></span> pointer
-      or <span class="emphasis"><em>boost::optional</em></span> are used:
+      no-book condition in the same fashion as <span class="emphasis"><em>nullptr</em></span> or <span class="emphasis"><em>boost::optional</em></span>
+      are used:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span>
 <span class="identifier">find_book</span><span class="special">()</span>
@@ -72,7 +72,8 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2014 Vladimir
+      Batov<p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
         <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

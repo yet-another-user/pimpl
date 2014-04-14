@@ -1,5 +1,5 @@
 // Copyright (c) 2001 Peter Dimov and Multi Media Ltd.
-// Copyright (c) 2006-2010 Vladimir Batov.
+// Copyright (c) 2006-2014 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
@@ -156,6 +156,7 @@ class pimpl<T>::pimpl_base
 
     bool         operator! () const { return !pimpl_base_type::impl_.get(); }
     operator safebool_type () const { return safebool(pimpl_base_type::impl_.get()); }
+//  explicit operator bool () const { return safebool(pimpl_base_type::impl_.get()); }
 
     static T null() { return pimpl<T>::null(); }
     //@}
@@ -173,7 +174,7 @@ class pimpl<T>::pimpl_base
     /// fail to compile (no value_semantics_ptr::op==()) and will indicate that the user
     /// forgot to declare T::operator==(T const&).
     bool operator==(pimpl_base_type const& that) const { return impl_ == that.impl_; }
-    bool operator!=(pimpl_base_type const& that) const { return impl_ != that.impl_; }
+    bool operator!=(T const& that) const { return !((T*) this)->T::operator==(that); }
 
     /// For pimpl to be used in std associative containers.
     bool operator<(pimpl_base_type const& that) const { return pimpl_base_type::impl_ < that.pimpl_base_type::impl_; }
@@ -254,17 +255,17 @@ class pimpl<T>::pimpl_base
     !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
 
     pimpl_base(const pimpl_base& other)
-        : impl_(other.impl)
+        : impl_(other.impl_)
     {
     }
 
     pimpl_base(pimpl_base& other)
-        : impl_(other.impl)
+        : impl_(other.impl_)
     {
     }
 
     pimpl_base(pimpl_base&& other)
-        : impl_(std::move(other.impl))
+        : impl_(std::move(other.impl_))
     {
     }
 

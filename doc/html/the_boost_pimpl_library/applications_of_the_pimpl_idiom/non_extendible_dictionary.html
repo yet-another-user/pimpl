@@ -25,15 +25,17 @@
 <span class="special">{</span>
    <span class="identifier">Lock</span> <span class="identifier">lock</span> <span class="special">(</span><span class="identifier">mutex</span><span class="special">);</span>
    <span class="identifier">AllBooks</span><span class="special">::</span><span class="identifier">iterator</span> <span class="identifier">it</span> <span class="special">(</span><span class="identifier">books</span><span class="special">.</span><span class="identifier">find</span><span class="special">(</span><span class="identifier">title</span><span class="special">));</span>
+
+   <span class="comment">// If the title found, return it.</span>
+   <span class="comment">// Otherwise, return an invalid book.</span>
+   <span class="keyword">if</span> <span class="special">(</span><span class="identifier">it</span> <span class="special">!=</span> <span class="identifier">books</span><span class="special">.</span><span class="identifier">end</span><span class="special">())</span> <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">it</span><span class="special">-&gt;</span><span class="identifier">second</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
-<p>
-        // If the title found, return it. // Otherwise, return an invalid book. if
-        (it != books.end()) *this = it-&gt;second; }
-      </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2014 Vladimir Batov<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2014 Vladimir
+      Batov<p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
         <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

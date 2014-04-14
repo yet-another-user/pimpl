@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Simple Singleton</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
+<link rel="up" href="../applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">
+<link rel="prev" href="../applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">
+<link rel="next" href="singleton_improved.html" title="Singleton Improved">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="singleton_improved.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="the_boost_pimpl_library.applications_of_the_pimpl_idiom.simple_singleton"></a><a class="link" href="simple_singleton.html" title="Simple Singleton">Simple
+      Singleton</a>
+</h3></div></div></div>
+<p>
+        A quick singleton implementation might look as follows:
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">deleter</span>
+<span class="special">{</span>
+   <span class="comment">// Convenience deleter allows shared_ptrs to "manage" objects without actually managing them.</span>
+   <span class="keyword">struct</span> <span class="identifier">no</span> <span class="special">{</span> <span class="keyword">void</span> <span class="keyword">operator</span><span class="special">()(</span><span class="keyword">void</span><span class="special">*)</span> <span class="special">{}};</span>
+<span class="special">};</span>
+
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<span class="special">{</span>
+   <span class="keyword">static</span> <span class="identifier">implementation</span> <span class="identifier">impl</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">);</span>
+
+   <span class="identifier">reset</span><span class="special">(&amp;</span><span class="identifier">impl</span><span class="special">,</span> <span class="identifier">deleter</span><span class="special">::</span><span class="identifier">no</span><span class="special">());</span>
+<span class="special">}</span>
+</pre>
+<p>
+        It is not a 100% kosher (see the following chapter) but for vast majority
+        of singleton applications it is sufficient.
+      </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2014 Vladimir
+      Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="singleton_improved.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

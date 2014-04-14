@@ -11,8 +11,7 @@ struct Foo {};
 
 struct Test1 : public pimpl<Test1>::pointer_semantics
 {
-    // Pure interface.
-    // The implementation is hidden in unittest_pimpl_implementation.cpp
+    // Pure interface. The implementation is hidden in unittest_pimpl_implementation.cpp
 
     typedef std::string string;
 
@@ -30,12 +29,8 @@ struct Test1 : public pimpl<Test1>::pointer_semantics
     Test1 (singleton_type const&);
     Test1 (pass_value_type const&);
 
-//    operator int() const { return true; }
-//    bool operator==(int) const { return true; }
-
-    int get() const;
-    string const& trace() const;
-    int id() const;
+    string const& trace () const;
+    int              id () const;
 
     private:
 
@@ -45,8 +40,7 @@ struct Test1 : public pimpl<Test1>::pointer_semantics
 
 struct Test2 : public pimpl<Test2>::value_semantics
 {
-    // Pure interface.
-    // The implementation is hidden in unittest_pimpl_implementation.cpp
+    // Pure interface. The implementation is hidden in unittest_pimpl_implementation.cpp
 
     typedef Test2    this_type;
     typedef std::string string;
@@ -57,12 +51,10 @@ struct Test2 : public pimpl<Test2>::value_semantics
     // Value-semantics Pimpl must explicitly define op==()
     // if it wants to be comparable. The same as normal classes do.
     bool operator==(Test2 const& o) const;
-    bool operator!=(Test2 const& o) const { return !this_type::operator==(o); }
+//  bool operator!=(Test2 const& o) const { return !this_type::operator==(o); } // Not needed
 
-    int get() const;
-    void set(int);
-    string const& trace() const;
-    int id() const;
+    string const& trace () const;
+    int              id () const;
 };
 
 struct Base : public pimpl<Base>::pointer_semantics

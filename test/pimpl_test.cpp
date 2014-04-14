@@ -1,4 +1,5 @@
 #include "./pimpl_test.hpp"
+#include <set>
 
 struct Book : public pimpl<Book>::pointer_semantics
 {
@@ -140,9 +141,9 @@ test_runtime_polymorphic_behavior()
     BOOST_TEST(derived1 == base2);
     BOOST_TEST(derived2 == base3);
 
-    bool bad1_bool1 =   bad5; // Test conversion to bool
+    bool bad1_bool1 =   bad5 ? true : false; // Test conversion to bool
     bool bad1_bool2 = !!bad5; // Test operator!()
-    bool bad2_bool1 =   bad6; // Test conversion to bool
+    bool bad2_bool1 =   bad6 ? true : false; // Test conversion to bool
     bool bad2_bool2 = !!bad6; // Test operator!()
 
     BOOST_TEST(!bad1_bool1);
@@ -212,13 +213,13 @@ test_bool_conversions()
     Test2      v1; BOOST_TEST(v1.trace() == "Test2::implementation()");
     Test1      p2 = pimpl<Test1>::null();
     Test2      v2 = pimpl<Test2>::null();
-    bool p1_bool1 =   p1; // Test conversion to bool
+    bool p1_bool1 =   p1 ? true : false; // Test conversion to bool
     bool p1_bool2 = !!p1; // Test operator!()
-    bool v1_bool1 =   v1; // Test conversion to bool
+    bool v1_bool1 =   v1 ? true : false; // Test conversion to bool
     bool v1_bool2 = !!v1; // Test operator!()
-    bool p2_bool1 =   p2; // Test conversion to bool
+    bool p2_bool1 =   p2 ? true : false; // Test conversion to bool
     bool p2_bool2 = !!p2; // Test operator!()
-    bool v2_bool1 =   v2; // Test conversion to bool
+    bool v2_bool1 =   v2 ? true : false; // Test conversion to bool
     bool v2_bool2 = !!v2; // Test operator!()
 
     BOOST_TEST( p1_bool1);
@@ -235,22 +236,37 @@ static
 void
 test_comparisons()
 {
-    Test1 pt11;
-    Test2 vt11;
-    Test1 pt12(5);
-    Test2 vt12(5);
-    Test1 pt13 = pt12;
-    Test2 vt13 = vt12;
+    Test1 p1;
+    Test2 v1;
+    Test1 p2(5);
+    Test2 v2(5);
+    Test1 p3 = p2;
+    Test2 v3 = v2;
 
-    BOOST_TEST(pt12 == pt13);    // calls pimpl::op==()
-    BOOST_TEST(vt12 == vt13);    // calls Test2::op==()
-    if (pt12 != pt13); // Step through to make sure it calls pimpl::op!=()
-    if (vt12 != vt13); // Step through to make sure it calls pimpl::op!=() and then Test2::op==()
+    BOOST_TEST(p2 == p3); // calls pimpl::op==()
+    BOOST_TEST(v2 == v3);
+    BOOST_TEST(v2.trace() == "Test2::operator==(Test2 const&)");
+    BOOST_TEST(v1 != v2);
+    BOOST_TEST(v1.trace() == "Test2::operator==(Test2 const&)");
+}
 
-    BOOST_TEST(vt12 == vt13);
-    BOOST_TEST(vt12.trace() == "Test2::operator==(Test2 const&)");
-    BOOST_TEST(vt11 != vt12);
-    BOOST_TEST(vt11.trace() == "Test2::operator==(Test2 const&)");
+static
+void
+test_singleton()
+{
+    singleton_type single;
+
+    Test1 p1 (single);
+    Test1 p2 (single);
+    std::set<Test1> collected;
+
+    collected.insert(p1);
+    collected.insert(p2);
+
+    BOOST_TEST(p1 == p2);       // Equality test
+    BOOST_ASSERT (!(p1 < p2));  // Equivalence test
+    BOOST_ASSERT (!(p2 < p1));  // Equivalence test
+    BOOST_TEST(collected.size() == 1);
 }
 
 int
@@ -264,6 +280,7 @@ main(int argc, char const* argv[])
     test_runtime_polymorphic_behavior();
     test_swap();
     test_serialization();
+    test_singleton();
 
     return boost::report_errors();
 }

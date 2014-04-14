@@ -1,8 +1,14 @@
 [section Internal (Implementation-Only) Run-Time Polymorphism]
 
-See the description of the Non-Virtual Interface idiom in [1] and Rule #39 in [2].
+For details and explanations see the ['Non-Virtual Interface] idiom in [link 11 \[11\]] and Rule #39 in [link 12 \[12\]].
 
-The implementation file:
+ struct Book : public pimpl<Book>::pointer_semantics // The public interface class is not virtual
+ {
+    Book(parameters);
+    
+    string const&  title() const;
+    string const& author() const;
+ };
 
  template<> struct pimpl<Book>::implementation
  {
@@ -11,19 +17,19 @@ The implementation file:
     virtual ~implementation() {...}
  }
 
- struct Implementation1 : public implementation
+ struct Implementation1 : public pimpl<Book>::implementation
  {
     Implementation1() : implementation(parameters) {}
  };
 
- struct Implementation2 : public implementation
+ struct Implementation2 : public pimpl<Book>::implementation
  {
     Implementation2() : implementation(parameters) {}
  };
 
- Book:: Book() : base(null())
+ Book::Book(parameters) : base_type(null())
  {
-    reset(some_condition ? new Implementation1 : new Implementation2);
+    reset(some_condition ? new Implementation1(parameters) : new Implementation2(parameters));
  }
 
 [endsect]

@@ -20,11 +20,11 @@ To override this default behavior we might write something like:
     ...
  } 
  
-Here initially we explicitly (via ['Book::null()]) instruct the underlying ['base_type] base to be created empty/invalid (like the ['NULL] pointer or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['base_type] to manage it. 
+Here initially we explicitly (via ['Book::null()]) instruct the underlying ['base_type] to be created empty/invalid (like ['nullptr] or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['base_type] to manage it. 
 
 That technique is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
 
-We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as the ['NULL] pointer or ['boost::optional] are used: 
+We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as ['nullptr] or ['boost::optional] are used: 
 
  Book
  find_book()

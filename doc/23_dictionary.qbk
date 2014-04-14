@@ -2,23 +2,17 @@
 
 The implementation file:
 
- 
+ typedef std::map<std::string, Book> AllBooks;
+ typedef boost::mutex Mutex;
+ typedef boost::mutex::scoped_lock Lock;
+ typedef std::pair<Books::iterator, bool> Inserted;
 
-typedef std::map<string, Book> AllBooks;
+ static Mutex mutex;
+ static AllBooks books;
 
-typedef boost::mutex Mutex;
-
-typedef boost::mutex::scoped_lock Lock;
-
-typedef std::pair<Books::iterator, bool> Inserted;
-
-static Mutex mutex;
-
-static AllBooks books;
-
- Book::Book(string const& title) : base(null())
+ Book::Book(std::string const& title) : base_type(pimpl<Book>::null())
  {
-    std::pair<string, Book> dummy (title, Book::null());
+    std::pair<std::string, Book> dummy (title, pimpl<Book>::null());
     Lock lock (mutex);
     Inserted inserted (books.insert(dummy));
     Book& book (inserted.first->second);
@@ -39,7 +33,7 @@ The implementation file:
     Lock lock (mutex);
     AllBooks::iterator it (books.find(title));
     
-// If the title found, return it.
+    // If the title found, return it.
     // Otherwise, return an invalid book.
     if (it != books.end()) *this = it->second;
  }

@@ -4,28 +4,26 @@
 
 2. [#2] [@http://www.gotw.ca/gotw/024.htm H. Sutter. Guru of the Week #24]
 
-3. [#3] H. Sutter. Exceptional C++ (Addison-Wesley, 1999)
+3. [#3] H. Sutter. Exceptional C++. Addison-Wesley, 1999
 
-4. [#4] J. Carolan. Constructing bullet-proof classes. In Proceedings C++ at Work'89 (SIGS Publications, 1989)
+4. [#4] J. Carolan. Constructing bullet-proof classes. In Proceedings C++ at Work'89. SIGS Publications, 1989
 
-5. [#5] James O. Coplien. Advanced C++ Programming Styles and Idioms (Addison-Wesley, 1992)
+5. [#5] James O. Coplien. Advanced C++ Programming Styles and Idioms. Addison-Wesley, 1992
 
-6. [#6] Eric Gamma et al. Design Patterns (Addison-Wesley,1995)
+6. [#6] Eric Gamma et al. Design Patterns. Addison-Wesley,1995
 
-7. [#7] Paul J. Asente & Ralph R. Swick. X Window System Toolkit (Butterworth-Heinemann, 1985)
+7. [#7] Paul J. Asente & Ralph R. Swick. X Window System Toolkit. Butterworth-Heinemann, 1985
 
 8. [#8] [@http://en.wikipedia.org/wiki/Separation_of_concerns Wikipedia. Separation of Concerns]
 
 9. [#9] [@http://c2.com/cgi/wiki?SeparationOfConcerns Portland Pattern Repository's Wiki. Separation of Concerns]
 
+10. [#10] S. Meyers. Effective STL. Addison-Wesley, 2001
 
+11. [#11] [@http://www.gotw.ca/publications/mill18.htm H. Sutter. Virtuality]
 
-91. [#2] [S. Meyers. Effective STL (Addison-Wesley, 2001)]
+12. [#12] H. Sutter and A. Alexandrescu. C++ Coding Standards. Addison-Wesley, 2005
 
-92. [#3] [@http://www.gotw.ca/publications/mill18.htm H. Sutter. Virtuality]
-
-93. [#4] [H. Sutter and A. Alexandrescu. C++ Coding Standards (Addison-Wesley,2005)]
-
-94. [#5] [Eric Gamma et al. Design Patterns (Addison-Wesley,1995)]
+13. [#13] Eric Gamma et al. Design Patterns. Addison-Wesley, 1995
 
 [endsect]
