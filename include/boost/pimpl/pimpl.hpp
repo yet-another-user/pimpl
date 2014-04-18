@@ -41,9 +41,9 @@ template<class Interface>
 struct pimpl
 {
     struct implementation;
-    template<class> class value_semantics_ptr;
+    template<class> class value_ptr;
     template<template<class> class> class pimpl_base;
-    typedef pimpl_base<value_semantics_ptr> value_semantics;
+    typedef pimpl_base<value_ptr> value_semantics;
     typedef pimpl_base<boost::shared_ptr> pointer_semantics;
 
     static Interface null();
@@ -74,16 +74,16 @@ class is_pimpl
 /// Dimov (see http://tech.groups.yahoo.com/group/boost/files/impl_ptr).
 template<class Interface>
 template<class Impl/*ementation*/>
-class pimpl<Interface>::value_semantics_ptr
+class pimpl<Interface>::value_ptr
 {
-    typedef value_semantics_ptr this_type;
+    typedef value_ptr this_type;
 
     public:
 
-   ~value_semantics_ptr () { traits_->destroy(impl_); }
-    value_semantics_ptr () : traits_(null()), impl_(0) {}
-    value_semantics_ptr (Impl* p) : traits_(deep_copy()), impl_(p) {}
-    value_semantics_ptr (this_type const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
+   ~value_ptr () { traits_->destroy(impl_); }
+    value_ptr () : traits_(null()), impl_(0) {}
+    value_ptr (Impl* p) : traits_(deep_copy()), impl_(p) {}
+    value_ptr (this_type const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
     this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
     bool       operator< (this_type const& that) const { return this->impl_ < that.impl_; }
@@ -160,17 +160,14 @@ class pimpl<T>::pimpl_base
 
     static T null() { return pimpl<T>::null(); }
 
-    // pimpl_base::op==() simply transfers the comparison down to its
-    // implementation policy -- boost::shared_ptr or pimpl::value_semantics_ptr.
-    // Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable
-    // as there is shared_ptr::op==(). However, a value-semantics
-    // (value_semantics_ptr-based) pimpl is not comparable by default (the standard
-    // value-semantics behavior) as there is no pimpl::value_semantics_ptr::op==().
-    // If a value-semantics class T needs to be comparable, then it has to
-    // *explicitly* provide T::op==(T const&) as part of its public interface.
-    // Trying to call this pimpl_base::op==() for value_semantics_ptr-based pimpl will
-    // fail to compile (no value_semantics_ptr::op==()) and will indicate that the user
-    // forgot to declare T::operator==(T const&).
+    // pimpl_base::op==() simply transfers the comparison down to its implementation policy --
+    // boost::shared_ptr or pimpl::value_ptr. Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable
+    // as there is shared_ptr::op==(). However, a value-semantics (value_ptr-based) pimpl is not comparable by default
+    // (the standard value-semantics behavior) as there is no pimpl::value_ptr::op==().
+    // If a value-semantics class T needs to be comparable, then it has to *explicitly* provide T::op==(T const&)
+    // as part of its public interface. Trying to call this pimpl_base::op==() for value_ptr-based pimpl will fail
+    // to compile (no value_ptr::op==()) and will indicate that the user forgot to declare T::operator==(T const&).
+
     bool operator==(pimpl_base_type const& that) const { return impl_ == that.impl_; }
     bool operator!=(T const& that) const { return !((T*) this)->T::operator==(that); }
 
@@ -181,18 +178,15 @@ class pimpl<T>::pimpl_base
     void swap (managed_type& that) { pimpl_base_type::impl_.swap(that); }
 
     /// @name Explicit Management of Interface-Implementation Associations
-    /// @details Usually internal interface-implementation associations are
-    /// managed automatically by the base class:
+    /// @details Usually internal interface-implementation associations are managed automatically by the base class:
     /// @code
     ///      Foo::Foo(params) : base_type(params) {...}
     /// @endcode
-    /// Sometimes, however, it is not what we want. Like for lazy-instantiation
-    /// optimization or pimpl<> deployment as the base of run-time polymorphic
-    /// hierarchies. Then use reset() to explicitly set/reset the internal
-    /// interface-implementation association to point to the supplied
-    /// implementation. The behavior is similar to std::auto_ptr::reset() or
-    /// boost::shared_ptr::reset(). For example, the following technique could be
-    /// used for Non-Virtual Interface idiom:
+    /// Sometimes, however, it is not what we want. Like for lazy-instantiation optimization or pimpl<> deployment as
+    /// the base of run-time polymorphic hierarchies. Then use reset() to explicitly set/reset the internal
+    /// interface-implementation association to point to the supplied implementation. The behavior is similar to
+    /// std::auto_ptr::reset() or boost::shared_ptr::reset(). For example, the following technique could be
+    /// used for the Non-Virtual Interface idiom:
     /// @code
     ///     struct impl1 : public pimpl<Foo>::implementation { ... };
     ///     struct impl2 : public pimpl<Foo>::implementation { ... };
@@ -206,24 +200,19 @@ class pimpl<T>::pimpl_base
     void reset(implementation_type* p) { pimpl_base_type::impl_.reset(p); }
     template<class Y, class D> void reset(Y* p, D d) { pimpl_base_type::impl_.reset(p, d); }
     //@}
+
     /// @name Access To Implementation
-    /// @details Functions allow access to the underlying implementation. These
-    /// methods are only meaningful to the code for which pimpl<>::implementation
-    /// has been made visible. For example, the derived classes which extend the
-    /// base implementation or the code inside *implementation* files.
-    /// Methods are to be used as follows:
+    /// @details Functions allow access to the underlying implementation. These methods are only meaningful to the code
+    /// for which pimpl<>::implementation has been made visible. For example, the derived classes which extend the base
+    /// implementation or the code inside *implementation* files. Methods are to be used as follows:
     /// @code
     ///      implementation& impl = **this;
     ///      implementation const& impl = **this; // inside 'const' methods
-    /// @endcode
-    /// then implementation data are accessed as
-    /// @code
-    ///      implementation& impl = **this;
+    ///
     ///      impl.data = ...;
     /// @endcode
-    /// Pimpl does *not* behave like a pointer, where, say, 'const shared_ptr'
-    /// still allows modifications of the underlying data. Instead, Pimpl
-    /// behaves like a proxy. Therefore, 'const' instances return 'const'
+    /// Pimpl does *not* behave like a pointer, where, say, 'const shared_ptr' still allows modifications of
+    /// the underlying data. Instead, Pimpl behaves like a proxy. Therefore, 'const' instances return 'const'
     /// pointers and references.
     //@{
     implementation_type const* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
@@ -239,11 +228,10 @@ class pimpl<T>::pimpl_base
     // The default auto-generated copy constructor and the default assignment
     // operator are just fine (do member-wise copy and assignment respectively).
 
-    /// @name Forwarding Constructors
-    /// @details A series of forwarding constructors. These constructors forward arguments to the corresponding constructors
-    /// of the internal 'implementation' class. That is done to encapsulate the construction of the 'implementation' instance
-    /// inside this class and, consequently, to *fully* automate memory management (rather than just deletion).
-    //@{
+    // Forwarding Constructors. Forward arguments to the corresponding constructors of the internal 'implementation' class.
+    // That is done to encapsulate the construction of the 'implementation' instance inside this class and, consequently,
+    // to *fully* automate memory management (rather than just deletion).
+
     pimpl_base() : impl_(new implementation_type()) {}
 
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
@@ -272,7 +260,6 @@ class pimpl<T>::pimpl_base
 #else
     BOOST_PIMPL_MANY_MORE_CONSTRUCTORS;
 #endif
-    //@}
 
     private:
 
@@ -407,14 +394,5 @@ pimpl<T>::null()
         a & BOOST_SERIALIZATION_NVP(**this);                                            \
     }                                                                                   \
     BOOST_SERIALIZATION_PIMPL_EXPLICIT_INSTANTIATIONS(THE_CLASS)                        \
-
-//template<class T, class TI, class U, class UI>
-//inline
-//bool operator==(
-//    typename pimpl<T>::template value_semantics_ptr<TI> const& a,
-//    typename pimpl<U>::template value_semantics_ptr<UI> const& b)
-//{
-//    return ssstate<T>(a.get()) == ssstate<U>(b.get());
-//}
 
 #endif // BOOST_PIMPL_HPP

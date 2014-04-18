@@ -25,11 +25,9 @@
   
     struct implementation;
     implementation* impl_;
-
- // std::unique_ptr<implementation> const impl_;
  };
 
-Again, the code can be shrunk down to almost identical: 
+In the example above it might be tempting to deploy ['std::unique_ptr<implementation>] instead of the raw ['implementation*]. That does not work. The ['std::unique_ptr] (as its predecessor ['std::auto_ptr]) have been developed with very different goals in mind and require ['Book::implementation] to be a complete type. ['std::shared_ptr] does not have this restriction and was successfully deployed in the previous chapter for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl::value_ptr] also implements the incomplete-type management technique (originally by Peter Dimov) and deployed for the ['Pimpls] with value semantics. Consequently, the code can be shrunk down to almost identical: 
 
  struct Book : public pimpl<Book>::value_semantics
  {
