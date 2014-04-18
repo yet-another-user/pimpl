@@ -1,4 +1,4 @@
-[section Pimpl::null()]
+[section Pimpl::null() and Strongly Exception-Safe Constructors]
 
 Again, ['Pimpl] exhibits a considerably stronger (and automatically managed) association between the external interface and internal implementation. Hence, the default behavior is that there is always an implementation data behind every interface object. 
 
@@ -24,7 +24,7 @@ Here initially we explicitly (via ['Book::null()]) instruct the underlying ['bas
 
 That technique is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
 
-We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as ['nullptr] or ['boost::optional] are used: 
+We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as ['nullptr] or ['boost::optional] might be used: 
 
  Book
  find_book()
@@ -36,6 +36,28 @@ We might use such an invalid ['Book] object to indicate a no-book condition in t
  Book book = find_book();
  
  if (!book) report book-not-found;
+ 
+The advantage of the "built-in" ['Book::null()] compared with
+
+ boost::optional<Book>
+ find_book()
+ {  ...
+    return boost::optional<Book>(); // found nothing, return an invalid Book
+ }
+
+is that it makes possible an implementation of strongly exception-safe constructors, the copy constructor and assignment operator:
+
+ Book::Book(parameters) : base_type(Book::null())
+ {
+    try
+    {
+        reset(new implementation(parameters));
+    }
+    catch (...)
+    {
+        // Leave the instance invalid.
+    }
+ }
 
 [endsect] 
 
