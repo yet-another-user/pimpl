@@ -48,10 +48,10 @@ As mentioned earlier, if comparison functionality is required, a class with valu
  Book::operator==(Book const& other) const
  {
     implementation const& impl = **this;
-    return impl.title = other.title && impl.author == other.author;
+    return impl.title = other->title && impl.author == other->author;
  }
  
-Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the declaration is local to one (implementation) file, there is generally little value in making it a class. 
+Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the declaration is local to one file, there is generally little value in making it a class. 
 
 [note Another liberating and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and clearly identified as ['impl.title] or ['(*this)->title] or something of that sort.]
 

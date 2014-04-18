@@ -68,7 +68,7 @@
    <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">==</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">other</span><span class="special">)</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">impl_</span> <span class="special">==</span> <span class="identifier">other</span><span class="special">.</span><span class="identifier">impl_</span><span class="special">;</span> <span class="special">}</span>
    <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">!=</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">other</span><span class="special">)</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="special">!</span><span class="keyword">operator</span><span class="special">==(</span><span class="identifier">other</span><span class="special">);</span> <span class="special">}</span>
 
-   <span class="keyword">explicit</span> <span class="keyword">operator</span> <span class="keyword">bool</span><span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">impl_</span><span class="special">;</span> <span class="special">}</span>
+   <span class="keyword">explicit</span> <span class="keyword">operator</span> <span class="keyword">bool</span><span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="keyword">bool</span><span class="special">(</span><span class="identifier">impl_</span><span class="special">);</span> <span class="special">}</span>
 
    <span class="keyword">private</span><span class="special">:</span>
 
@@ -77,11 +77,11 @@
 <span class="special">};</span>
 </pre>
 <p>
-      That fairly standard <span class="emphasis"><em>Pimpl</em></span> deployment splits the original
-      class (accommodating behavior <span class="emphasis"><em>and</em></span> data, public <span class="emphasis"><em>and</em></span>
-      private) into two classes -- the public interface (the <span class="emphasis"><em>Book</em></span>
-      class) and the private implementation (the <span class="emphasis"><em>Book::implementation</em></span>
-      class).
+      That fairly standard <span class="emphasis"><em>Pimpl</em></span> idiom deployment splits the
+      original class (accommodating behavior <span class="emphasis"><em>and</em></span> data, public
+      <span class="emphasis"><em>and</em></span> private) into two classes -- the public interface
+      (the <span class="emphasis"><em>Book</em></span> class) and the private implementation (the
+      <span class="emphasis"><em>Book::implementation</em></span> class).
     </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -89,11 +89,11 @@
 <th align="left">Note</th>
 </tr>
 <tr><td align="left" valign="top"><p>
-        At first glance, the <span class="emphasis"><em>Pimpl</em></span> idiom appears to break the
-        established Object-Oriented programming paradigm -- the association between
+        At first glance, the <span class="emphasis"><em>Pimpl</em></span> idiom might appear breaking
+        the established Object-Oriented programming paradigm -- the association between
         data and behavior -- enshrined in the fundamental concept of an <span class="emphasis"><em>object</em></span>
-        or a <span class="emphasis"><em>class</em></span> and, consequently, routinely seen/implemented
-        as such -- one class. That one-class approach is not exactly ideal for <span class="emphasis"><em>implementation-hiding</em></span>
+        or a <span class="emphasis"><em>class</em></span> and routinely seen/implemented as such --
+        one class. That one-class approach is not exactly ideal for <span class="emphasis"><em>implementation-hiding</em></span>
         purposes. However, the fault-line where the <span class="emphasis"><em>Pimpl</em></span> splits
         the conventional class in two is not between data and behavior. It is, in
         fact, between <span class="emphasis"><em>public interface</em></span> (behavior) and <span class="emphasis"><em>private
@@ -150,7 +150,7 @@
         Designing large-scale systems in general might probably be described as
         <span class="emphasis"><em>API-centered design</em></span>. For such systems considerable initial
         effort goes into designing interface specifications for modules/components
-        (high-level/architectural design) and/or classes (low-level/detailed design).
+        (high-level/architectural design) and classes (low-level/detailed design).
         That allows further development to proceed to a large degree in parallel
         -- with the service consumer relying on those contractual obligations (imposed
         by the API) and with the service provider working towards meeting those contractual

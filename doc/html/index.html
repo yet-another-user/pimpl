@@ -75,26 +75,6 @@
 <a name="the_boost_pimpl_library.introduction"></a><a class="link" href="index.html#the_boost_pimpl_library.introduction" title="Introduction">Introduction</a>
 </h2></div></div></div>
 <p>
-      The <span class="emphasis"><em>Pimpl</em></span> idiom is a simple yet robust programming technique
-      to minimize coupling via
-    </p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem">
-          the separation of public interface and private implementation and then
-        </li>
-<li class="listitem">
-          implementation hiding.
-        </li>
-</ul></div>
-<p>
-      Successfully popularized by Sutter (<a class="link" href="the_boost_pimpl_library/references.html#2">[2]</a>, <a class="link" href="the_boost_pimpl_library/references.html#3">[3]</a>)
-      under the cheeky <span class="emphasis"><em>Pimpl</em></span> name (as for "pointer to implementation")
-      the technique has been known long before under various names -- the Cheshire
-      Cat in <a class="link" href="the_boost_pimpl_library/references.html#4">[4]</a>, the Handle/Body in <a class="link" href="the_boost_pimpl_library/references.html#5">[5]</a>,
-      the Bridge in <a class="link" href="the_boost_pimpl_library/references.html#6">[6]</a> -- and conceptually deployed in
-      C and C++ as far back as at least early eighties (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
-    </p>
-<p>
       In the domain of commercial large-scale software development the following
       design principles come to the fore:
     </p>
@@ -119,11 +99,30 @@
         </li>
 </ul></div>
 <p>
-      The <span class="emphasis"><em>Pimpl</em></span> technique can help great deal achieving those
-      goals. Still, it does not seem to be widely deployed. In part that is due to
-      efficiency considerations (valid or misguided) and probably more often due
-      to additional implementation scaffolding and coding overhead associated with
-      the technique.
+      The <span class="emphasis"><em>Pimpl</em></span> idiom can help great deal achieving those goals.
+      It is a simple yet robust programming technique to minimize coupling via
+    </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+          the separation of public interface and private implementation and then
+        </li>
+<li class="listitem">
+          implementation hiding.
+        </li>
+</ul></div>
+<p>
+      Successfully popularized by Sutter (<a class="link" href="the_boost_pimpl_library/references.html#2">[2]</a>, <a class="link" href="the_boost_pimpl_library/references.html#3">[3]</a>)
+      under the cheeky <span class="emphasis"><em>Pimpl</em></span> name (as for "pointer to implementation"
+      in Hungarian notation) the technique has been known long before under various
+      names -- the Cheshire Cat in <a class="link" href="the_boost_pimpl_library/references.html#4">[4]</a>, the Handle/Body
+      in <a class="link" href="the_boost_pimpl_library/references.html#5">[5]</a>, the Bridge in <a class="link" href="the_boost_pimpl_library/references.html#6">[6]</a>
+      -- and conceptually deployed in C and C++ as far back as at least early eighties
+      (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
+    </p>
+<p>
+      Still, it does not seem to be widely deployed. In part that is due to efficiency
+      considerations (valid or misguided) and probably more often due to additional
+      implementation scaffolding and coding overhead associated with the technique.
     </p>
 <p>
       This library provides a coding framework and a deployment pattern in an attempt
@@ -132,7 +131,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: April 18, 2014 at 04:18:12 GMT</small></p></td>
+<td align="left"><p><small>Last revised: April 18, 2014 at 23:53:37 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

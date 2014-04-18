@@ -6,9 +6,9 @@
  {
     public:
   
-    Book(string const& title, string const& author);
-
-    Book(Book const&);
+   ~Book ();
+    Book (string const& title, string const& author);
+    Book (Book const&);
     Book& operator=(Book const&);
   
     string const&  title() const;
@@ -17,17 +17,14 @@
     bool operator==(Book const&) const;
     bool operator!=(Book const&) const;
   
-   ~Book ();
-    Book (Book const&);
-    Book& operator=(Book const&);
-
     private:
   
     struct implementation;
     implementation* impl_;
  };
 
-In the example above it might be tempting to deploy ['std::unique_ptr<implementation>] instead of the raw ['implementation*]. In fact, that is what H. Sutter advocates in [link 13 \[13\]]. Unfortunately, that does not work without much hassle which greatly diminishes the benefits of ['std::unique_ptr] deployment in this particular context. The ['std::unique_ptr] (as its predecessor ['std::auto_ptr]) have been developed with very different goals in mind and require ['Book::implementation] to be a complete type (more precisely, ['std::unique_ptr::~unique_ptr]). ['std::shared_ptr] does not have this restriction and was successfully deployed in the previous chapter for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl::value_ptr] also implements the incomplete-type management technique (originally by Peter Dimov) and is deployed for the ['Pimpls] with value semantics. Consequently, the code can be shrunk down to almost identical: 
+In the example above it is tempting to deploy ['std::unique_ptr<implementation>] instead of the raw ['implementation*]. In fact, that is what H. Sutter advocates in [link 13 \[13\]]. Unfortunately, 
+['std::unique_ptr] deployment only marginally reduces the amount of manually-written code which greatly diminishes the benefits of ['std::unique_ptr] deployment in this particular context. The ['std::unique_ptr] (as its predecessor ['std::auto_ptr]) have been developed with very different goals in mind and require ['Book::implementation] to be a complete type (see [link 13 \[13\]] for details). ['std::shared_ptr] does not have such a restriction and was deployed in the previous chapter for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl::value_ptr] also implements the incomplete-type management technique (originally by Peter Dimov) and is deployed for the ['Pimpls] with value semantics. Consequently, the code can be shrunk down to: 
 
  struct Book : public pimpl<Book>::value_semantics
  {
@@ -41,7 +38,7 @@ In the example above it might be tempting to deploy ['std::unique_ptr<implementa
 
 with no loss in functionality and with the same benefits as before -- shorter, application-focused and reasonably self-documented.
 
-A notable difference (compared to pointer-semantics classes) is that the ['Book::operator==()] is not a freebie. In fact, those comparison operators are never freebies (they are never auto-generated). However, in the case of pointer-semantics classes those comparison operators are reduced to pointer comparisons and generalized. Clearly, that's not the case with value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the user-provided interface (if such a class needs to be comparable).
+A notable difference (compared to pointer-semantics classes) is that the ['Book::operator==()] is not a freebie. In fact, the comparison operators are never freebies (they are never auto-generated). However, in the case of pointer-semantics classes those comparison operators are reduced to pointer comparisons and generalized. Clearly, that's not the case with value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the user-provided interface (if such a class needs to be comparable).
   
 So far both examples of ['Pimpl]-based ['Book] classes (with pointer- and value-semantics) look almost identical and internal implementations (as we'll see later) are as close. That property is important for orderly and healthy evolution of commercial large-scale systems as it allows to minimize the impact of a requirement change -- something as inevitable as "death and taxes". 
 

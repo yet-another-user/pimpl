@@ -76,14 +76,14 @@
 <span class="identifier">Book</span><span class="special">::</span><span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">other</span><span class="special">)</span> <span class="keyword">const</span>
 <span class="special">{</span>
    <span class="identifier">implementation</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">impl</span> <span class="special">=</span> <span class="special">**</span><span class="keyword">this</span><span class="special">;</span>
-   <span class="keyword">return</span> <span class="identifier">impl</span><span class="special">.</span><span class="identifier">title</span> <span class="special">=</span> <span class="identifier">other</span><span class="special">.</span><span class="identifier">title</span> <span class="special">&amp;&amp;</span> <span class="identifier">impl</span><span class="special">.</span><span class="identifier">author</span> <span class="special">==</span> <span class="identifier">other</span><span class="special">.</span><span class="identifier">author</span><span class="special">;</span>
+   <span class="keyword">return</span> <span class="identifier">impl</span><span class="special">.</span><span class="identifier">title</span> <span class="special">=</span> <span class="identifier">other</span><span class="special">-&gt;</span><span class="identifier">title</span> <span class="special">&amp;&amp;</span> <span class="identifier">impl</span><span class="special">.</span><span class="identifier">author</span> <span class="special">==</span> <span class="identifier">other</span><span class="special">-&gt;</span><span class="identifier">author</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
 <p>
       Here the <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> is again a
       <span class="emphasis"><em>struct</em></span> rather than a <span class="emphasis"><em>class</em></span>. As long
-      as the declaration is local to one (implementation) file, there is generally
-      little value in making it a class.
+      as the declaration is local to one file, there is generally little value in
+      making it a class.
     </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
