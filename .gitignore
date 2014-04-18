@@ -9,6 +9,7 @@ bin.v2/
 .project
 .settings/
 .cproject
+a.out
 
 Debug/
 Release/

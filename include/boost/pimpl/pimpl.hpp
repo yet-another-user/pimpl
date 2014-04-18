@@ -282,6 +282,7 @@ T
 pimpl<T>::null()
 {
     BOOST_STATIC_ASSERT(is_pimpl<T>::value);
+    BOOST_STATIC_ASSERT(sizeof(T) == sizeof(typename T::pimpl_base_type));
 
     typename T::internal_type null_arg;
     typename T::pimpl_base_type null_pimpl(null_arg);
