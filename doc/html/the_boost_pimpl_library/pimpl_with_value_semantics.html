@@ -51,15 +51,19 @@
 </pre>
 <p>
       In the example above it might be tempting to deploy <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
-      instead of the raw <span class="emphasis"><em>implementation*</em></span>. That does not work.
+      instead of the raw <span class="emphasis"><em>implementation*</em></span>. In fact, that is what
+      H. Sutter advocates in <a class="link" href="references.html#13">[13]</a>. Unfortunately, that
+      does not work without much hassle which greatly diminishes the benefits of
+      <span class="emphasis"><em>std::unique_ptr</em></span> deployment in this particular context.
       The <span class="emphasis"><em>std::unique_ptr</em></span> (as its predecessor <span class="emphasis"><em>std::auto_ptr</em></span>)
       have been developed with very different goals in mind and require <span class="emphasis"><em>Book::implementation</em></span>
-      to be a complete type. <span class="emphasis"><em>std::shared_ptr</em></span> does not have this
-      restriction and was successfully deployed in the previous chapter for the
-      <span class="emphasis"><em>Pimpls</em></span> with pointer semantics. Similarly the internal
-      <span class="emphasis"><em>pimpl::value_ptr</em></span> also implements the incomplete-type management
-      technique (originally by Peter Dimov) and deployed for the <span class="emphasis"><em>Pimpls</em></span>
-      with value semantics. Consequently, the code can be shrunk down to almost identical:
+      to be a complete type (more precisely, <span class="emphasis"><em>std::unique_ptr::~unique_ptr</em></span>).
+      <span class="emphasis"><em>std::shared_ptr</em></span> does not have this restriction and was
+      successfully deployed in the previous chapter for the <span class="emphasis"><em>Pimpls</em></span>
+      with pointer semantics. Similarly the internal <span class="emphasis"><em>pimpl::value_ptr</em></span>
+      also implements the incomplete-type management technique (originally by Peter
+      Dimov) and is deployed for the <span class="emphasis"><em>Pimpls</em></span> with value semantics.
+      Consequently, the code can be shrunk down to almost identical:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">value_semantics</span>
 <span class="special">{</span>
