@@ -5,7 +5,7 @@ The ['Pimpl] idiom is a simple yet robust programming technique to minimize coup
 * the separation of public interface and private implementation and then 
 * implementation hiding. 
 
-Successfully popularized by Sutter ([link 2 \[2\]], [link 3 \[3\]]) under the cheeky ['Pimpl] name (as for "pointer to implementation") the technique has been known long before under various names -- the Cheshire Cat in [link 4 \[4\]], the Handle/Body in [link 5 \[5\]], the Bridge in [link 6 \[6\]] -- and conceptually deployed in C and C++ as far back as at least early eighties ([link 7 \[7\]]).
+Successfully popularized by Sutter ([link 2 \[2\]], [link 3 \[3\]]) under the cheeky ['Pimpl] name (as for "pointer to implementation" in Hungarian notation) the technique has been known long before under various names -- the Cheshire Cat in [link 4 \[4\]], the Handle/Body in [link 5 \[5\]], the Bridge in [link 6 \[6\]] -- and conceptually deployed in C and C++ as far back as at least early eighties ([link 7 \[7\]]).
 
 In the domain of commercial large-scale software development the following design principles come to the fore:
 
