@@ -18,7 +18,7 @@ we write instead:
     base_type(title, author)
  {} 
  
-All arguments passed to the ['base_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor or the respective ['Book] constructor fails to compile if a suitable ['pimpl<Book>::implementation] constructor is not found. 
+All arguments passed to the ['base_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor. Otherwise, the respective ['Book] constructor fails to compile if a suitable ['pimpl<Book>::implementation] constructor is not found. 
 
 That ['perfect-forwarding] mechanism is generic and, consequently, works for the default constructor as well. That is, 
 
