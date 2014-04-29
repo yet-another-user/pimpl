@@ -2,23 +2,8 @@
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef BOOST_PIMPL_DETAIL_PIMPL_CONSTRUCTORS_HPP
-#define BOOST_PIMPL_DETAIL_PIMPL_CONSTRUCTORS_HPP
-
-#include <boost/type_traits.hpp>
-
-// a) The BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED macro makes sure that the one-arg
-//    constructor is not called when the copy constructor is in order.
-// b) The macro uses boost::is_base_of<pimpl_base_type, A> instead of is_pimpl<>::value
-//    as we do not want the respective constructor disabled for any pimpl argument.
-//    We only want it disabled for classes directly derived from this very
-//    pimpl_base so that we deploy the pimpl_base copy-constructor instead.
-// c) The macro uses the 'internal_type' type to uniquely distinguish the
-//    respective constructor from ANY of 2-args constructors.
-#define BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED(A) \
-    typename boost::disable_if<                    \
-        boost::is_base_of<pimpl_base_type,         \
-            typename boost::remove_reference<A>::type>, internal_type*>::type = 0
+#ifndef BOOST_PIMPL_DETAIL_CXX03_FORWARDING_CONSTRUCTORS_HPP
+#define BOOST_PIMPL_DETAIL_CXX03_FORWARDING_CONSTRUCTORS_HPP
 
 // Series of constructors forwarding parameters down to the implementation
 // class. That is done to encapsulate object construction inside that implementation
@@ -26,11 +11,8 @@
 
 #if defined(_MSC_VER) && 1500 <= _MSC_VER // Tested with Visual Studio 2008 v9.0.
 
-#define BOOST_PIMPL_MANY_MORE_CONSTRUCTORS                                              \
+#define BOOST_PIMPL_CXX03_FORWARDING_CONSTRUCTORS                                       \
                                                                                         \
-    template<class A>                                                                   \
-    explicit pimpl_base(A& a, BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED(A))               \
-    : impl_(new implementation(a)) {}                                                   \
     template<class A, class B>                                                          \
     pimpl_base(A& a, B& b)                                                              \
     : impl_(new implementation(a,b)) {}                                                 \
@@ -61,7 +43,7 @@
 // struct Moo : public pimpl<Moo>::pointer_semantics
 // {
 //      Moo() : base_type(create_foo()) {}
-// };                ^^^^^^^^^^^^
+// };                     ^^^^^^^^^^^^
 // The above passes a temporary parameter (returned by create_foo()) and
 // requires template<A1> pimpl_base(A1 const&) to kick in.
 // However, gcc 4.2.4 gets confused as it tries to find a constructor for
@@ -69,12 +51,13 @@
 // Consequently, it fails to pick the matching constructor
 //      template<class A> pimpl_base::pimpl_base(A&)
 // with A = "Foo const".
-// Interestingly, gcc handles the following correctly:
+// So, I have to resort to the juggling with consts below.
+//
+// Interestingly, despite the above gcc handles the following correctly:
 // struct Moo : public pimpl<Moo>::pointer_semantics
 // {
 //      Moo() : base_type(Foo()) {}
-// };                ^^^^^
-// So, I have to resort to the juggling with consts below.
+// };                     ^^^^^
 
 #undef  PIMPL_CONSTRUCTOR_2
 #undef  PIMPL_CONSTRUCTOR_3
@@ -101,14 +84,7 @@
     pimpl_base(A1 c1& a1, A2 c2& a2, A3 c3& a3, A4 c4& a4, A5 c5& a5)   \
     : impl_(new implementation(a1,a2,a3,a4,a5)) {}
 
-#define BOOST_PIMPL_MANY_MORE_CONSTRUCTORS                                  \
-                                                                            \
-template<class A>                                                           \
-explicit pimpl_base(A& a, BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED(A))       \
-: impl_(new implementation(a)) {}                                           \
-template<class A>                                                           \
-explicit pimpl_base(A const& a, BOOST_PIMPL_DEPLOY_IF_NOT_PIMPL_DERIVED(A)) \
-: impl_(new implementation(a)) {}                                           \
+#define BOOST_PIMPL_CXX03_FORWARDING_CONSTRUCTORS                           \
                                                                             \
 PIMPL_CONSTRUCTOR_2 (     ,     )                                           \
 PIMPL_CONSTRUCTOR_2 (     ,const)                                           \
@@ -175,4 +151,4 @@ PIMPL_CONSTRUCTOR_5 (const,const,const,const,const)
 // Hopefully more compilers will be as intelligent as VS C++ 9.0
 
 #endif // _MSC_VER
-#endif // BOOST_PIMPL_DETAIL_PIMPL_CONSTRUCTORS_HPP
+#endif // BOOST_PIMPL_DETAIL_CXX03_FORWARDING_CONSTRUCTORS_HPP
