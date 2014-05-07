@@ -20,7 +20,7 @@
     ]
 ]
  
-[*Note:] This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal (now Dr. Dobb's).
+[note This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal (now Dr. Dobb's).]
 
 [include 01_introduction.qbk]
 [include 02_getting_started.qbk]
