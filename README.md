@@ -1,6 +1,3 @@
-[Documentation](http://yet-another-user.github.io/boost.pimpl)
-========================
-
 In the domain of commercial large-scale software development the following design principles come to the fore:
 
 * component-based, modular and API-centered design, 
@@ -15,5 +12,5 @@ The Pimpl idiom can help great deal achieving those goals. It is a simple yet ro
 * the separation of public interface and private implementation and then 
 * implementation hiding. 
 
-**The full documentation is available [here](http://yet-another-user.github.io/boost.pimpl).**
+**Full documentation is available [here](http://yet-another-user.github.io/boost.pimpl).**
 
