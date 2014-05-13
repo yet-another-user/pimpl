@@ -15,3 +15,5 @@ The Pimpl idiom can help great deal achieving those goals. It is a simple yet ro
 * the separation of public interface and private implementation and then 
 * implementation hiding. 
 
+**The full documentation is available [here](http://yet-another-user.github.io/boost.pimpl).**
+
