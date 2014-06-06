@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Chapter&#160;1.&#160;The Boost Pimpl Library 1.0</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
 <link rel="home" href="index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
 <link rel="next" href="the_boost_pimpl_library/getting_started.html" title="Getting Started">
 </head>
@@ -27,7 +27,7 @@
 </div></div>
 <div class="toc">
 <p><b>Table of Contents</b></p>
-<dl class="toc">
+<dl>
 <dt><span class="section"><a href="index.html#the_boost_pimpl_library.introduction">Introduction</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/getting_started.html">Getting Started</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/pimpl_with_value_semantics.html">Pimpl
@@ -36,8 +36,7 @@
     Interface</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/implementation_management.html">Implementation
     Management</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/pimpl__null___and_strongly_exception_safe_constructors.html">Pimpl::null()
-    and Strongly Exception-Safe Constructors</a></span></dt>
+<dt><span class="section"><a href="the_boost_pimpl_library/pimpl__null__.html">Pimpl::null()</a></span></dt>
 <dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom.html">Applications
     of the Pimpl Idiom</a></span></dt>
 <dd><dl>
@@ -65,11 +64,16 @@
 <dt><span class="section"><a href="index/s10.html">Index</a></span></dt>
 </dl>
 </div>
-<p>
-    <span class="bold"><strong>Note:</strong></span> This documentation is based on the article
-    (<a class="link" href="the_boost_pimpl_library/references.html#1">[1]</a>) originally published in the C/C++ Users Journal
-    (now Dr. Dobb's).
-  </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+      This documentation is based on the article (<a class="link" href="the_boost_pimpl_library/references.html#1">[1]</a>) originally
+      published in the C/C++ Users Journal (now Dr. Dobb's).
+    </p></td></tr>
+</table></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="the_boost_pimpl_library.introduction"></a><a class="link" href="index.html#the_boost_pimpl_library.introduction" title="Introduction">Introduction</a>
@@ -78,7 +82,7 @@
       In the domain of commercial large-scale software development the following
       design principles come to the fore:
     </p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
           component-based, modular and API-centered design,
         </li>
@@ -102,7 +106,7 @@
       The <span class="emphasis"><em>Pimpl</em></span> idiom can help great deal achieving those goals.
       It is a simple yet robust programming technique to minimize coupling via
     </p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
           the separation of public interface and private implementation and then
         </li>
@@ -131,7 +135,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: April 18, 2014 at 23:53:37 GMT</small></p></td>
+<td align="left"><p><small>Last revised: June 06, 2014 at 01:29:50 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>
