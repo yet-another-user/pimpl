@@ -1,18 +1,6 @@
 #include "./pimpl_test.hpp"
 #include <stdio.h>
 
-#if defined(__linux__) && 1 < 0
-#	include <boost/archive/binary_iarchive.hpp>
-#	include <boost/archive/binary_oarchive.hpp>
-#	include <boost/archive/text_iarchive.hpp>
-#	include <boost/archive/text_oarchive.hpp>
-#	include <boost/archive/xml_iarchive.hpp>
-#	include <boost/archive/xml_oarchive.hpp>
-
-BOOST_SERIALIZATION_PIMPL_REPLACE(Test1);
-
-#endif
-
 typedef std::string string;
 
 Foo
@@ -69,14 +57,6 @@ template<> struct pimpl<Test1>::implementation : boost::noncopyable
     int              int_;
     mutable string trace_;
     uid const         id_;
-
-    template<class Archive>
-    void
-    serialize(Archive& a, unsigned int file_version)
-    {
-        trace_ =  "pimpl<Test1>::implementation::serialize()";
-        a & BOOST_SERIALIZATION_NVP(int_);
-    }
 };
 
 template<> struct pimpl<Test2>::implementation
@@ -101,32 +81,32 @@ template<> struct pimpl<Test2>::implementation
 
 typedef Foo const& cref;
 
-//Test1::Test1(pass_value_type) : base_type(Foo::create()) {}
-Test1::Test1(pass_value_type const&) : base_type(cref(create_foo())) {}
+//Test1::Test1(pass_value_type) : pimpl_type(Foo::create()) {}
+Test1::Test1(pass_value_type const&) : pimpl_type(cref(create_foo())) {}
 
 string const& Test1::trace () const { return (*this)->trace_; }
 string const& Test2::trace () const { return (*this)->trace_; }
 int           Test1::   id () const { return (*this)->id_; }
 int           Test2::   id () const { return (*this)->id_; }
 
-Test1::Test1 () : base_type() {}                     // Call implementation::implementation()
-Test2::Test2 () : base_type() {}                     // ditto
-Test1::Test1 (int k) : base_type(k) {}               // Call implementation::implementation(int)
-Test2::Test2 (int k) : base_type(k) {}               // ditto
-Test1::Test1 (int k, int l) : base_type(k, l) {}     // Call implementation::implementation(int, int)
+Test1::Test1 () : pimpl_type() {}                     // Call implementation::implementation()
+Test2::Test2 () : pimpl_type() {}                     // ditto
+Test1::Test1 (int k) : pimpl_type(k) {}               // Call implementation::implementation(int)
+Test2::Test2 (int k) : pimpl_type(k) {}               // ditto
+Test1::Test1 (int k, int l) : pimpl_type(k, l) {}     // Call implementation::implementation(int, int)
 
-Test1::Test1 (Foo&       foo) : base_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo const& foo) : base_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo*       foo) : base_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo const* foo) : base_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo      & f1, Foo      & f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo      & f1, Foo const& f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo const& f1, Foo      & f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo const& f1, Foo const& f2) : base_type(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo&       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo const& foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo*       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo const* foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test1::Test1 (Foo      & f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo      & f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo const& f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
+Test1::Test1 (Foo const& f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
 
 static Test1 single;
 
-Test1::Test1 (singleton_type const&) : base_type(single) {} // 'single' is used as a Singleton.
+Test1::Test1 (singleton_type const&) : pimpl_type(single) {} // 'single' is used as a Singleton.
 
 bool
 Test2::operator==(Test2 const& that) const
@@ -152,9 +132,9 @@ template<> struct pimpl<Base>::implementation
 
 struct Derived1Impl : public pimpl<Base>::implementation
 {
-    typedef pimpl<Base>::implementation base_type;
+    typedef pimpl<Base>::implementation pimpl_type;
 
-    Derived1Impl (int k, int l) : base_type(k), derived_int_(l)
+    Derived1Impl (int k, int l) : pimpl_type(k), derived_int_(l)
     {
         BOOST_TEST(trace_ == "Base::implementation(int)");
         trace_ = "Derived1::implementation(int, int)";
@@ -170,9 +150,9 @@ struct Derived1Impl : public pimpl<Base>::implementation
 
 struct Derived2Impl : public Derived1Impl
 {
-    typedef Derived1Impl base_type;
+    typedef Derived1Impl pimpl_type;
 
-    Derived2Impl (int k, int l, int m) : base_type(k, l), more_int_(m)
+    Derived2Impl (int k, int l, int m) : pimpl_type(k, l), more_int_(m)
     {
         BOOST_TEST(trace_ == "Derived1::implementation(int, int)");
         trace_ = "Derived2::implementation(int, int, int)";
@@ -186,7 +166,7 @@ struct Derived2Impl : public Derived1Impl
     int more_int_;
 };
 
-Base::Base(int k) : base_type(k)
+Base::Base(int k) : pimpl_type(k)
 {
 }
 

@@ -1,8 +1,8 @@
 #ifndef BOOST_PIMPLE_TEST_HPP
 #define BOOST_PIMPLE_TEST_HPP
 
+#include "../include/pimpl.hpp"
 #include <boost/detail/lightweight_test.hpp>
-#include <boost/pimpl/pimpl.hpp>
 #include <string>
 
 struct singleton_type {};
@@ -31,11 +31,6 @@ struct Test1 : public pimpl<Test1>::pointer_semantics
 
     string const& trace () const;
     int              id () const;
-
-    private:
-
-    friend class boost::serialization::access;
-    template<class Archive> void serialize(Archive&, unsigned int);
 };
 
 struct Test2 : public pimpl<Test2>::value_semantics
@@ -51,7 +46,7 @@ struct Test2 : public pimpl<Test2>::value_semantics
     // Value-semantics Pimpl must explicitly define op==()
     // if it wants to be comparable. The same as normal classes do.
     bool operator==(Test2 const& o) const;
-//  bool operator!=(Test2 const& o) const { return !this_type::operator==(o); } // Not needed
+    bool operator!=(Test2 const& o) const { return !this_type::operator==(o); }
 
     string const& trace () const;
     int              id () const;

@@ -17,12 +17,12 @@ struct pimpl<Book>::implementation
         title(the_title), author(the_author)
     {
     }
-  
+
     std::string  title;
     std::string author;
 };
-  
-Book::Book(std::string const& title, std::string const& author) : pimpl_base(title, author)
+
+Book::Book(std::string const& title, std::string const& author) : base(title, author)
 {
 }
 
@@ -43,17 +43,17 @@ static
 void
 test_is_pimpl()
 {
-    BOOST_TEST(false == is_pimpl<Foo>::value);
-    BOOST_TEST(false == is_pimpl<int>::value);
-    BOOST_TEST(false == is_pimpl<int*>::value);
-    BOOST_TEST(false == is_pimpl<int const&>::value);
-    BOOST_TEST(true  == is_pimpl<Test1>::value);
-    BOOST_TEST(false == is_pimpl<Test1*>::value);
-    BOOST_TEST(true  == is_pimpl<Test2>::value);
-    BOOST_TEST(true  == is_pimpl<Base>::value);
-    BOOST_TEST(true  == is_pimpl<Derived1>::value);
-    BOOST_TEST(true  == is_pimpl<Derived1 const>::value);
-    BOOST_TEST(true  == is_pimpl<Derived1 const&>::value);
+    BOOST_TEST(false == pimpl<Foo>::value);
+    BOOST_TEST(false == pimpl<int>::value);
+    BOOST_TEST(false == pimpl<int*>::value);
+    BOOST_TEST(false == pimpl<int const&>::value);
+    BOOST_TEST(true  == pimpl<Test1>::value);
+    BOOST_TEST(false == pimpl<Test1*>::value);
+    BOOST_TEST(true  == pimpl<Test2>::value);
+    BOOST_TEST(true  == pimpl<Base>::value);
+    BOOST_TEST(true  == pimpl<Derived1>::value);
+    BOOST_TEST(true  == pimpl<Derived1 const>::value);
+    BOOST_TEST(true  == pimpl<Derived1 const&>::value);
 }
 
 static
@@ -80,31 +80,6 @@ test_swap()
     BOOST_TEST(pt17.id() == pt16_id);
     BOOST_TEST(vt13.id() == vt14_id);
     BOOST_TEST(vt14.id() == vt13_id);
-}
-
-static
-void
-test_serialization()
-{
-#ifdef DISABLED_NOR_NOW
-    printf("BEG: Testing pimpl and boost::serialization.\n");
-    Test1                      saved (12345);
-    std::ofstream                ofs ("filename");
-    boost::archive::text_oarchive oa (ofs);
-
-    printf("Calling boost::archive::test_oarchive << Test1.\n");
-    oa << *(Test1 const*) &saved; // write class instance to archive
-    ofs.close();
-
-    std::ifstream                ifs ("filename", std::ios::binary);
-    boost::archive::text_iarchive ia (ifs);
-    Test1                   restored (Test1::null()); // Implementation will be replaced.
-
-    printf("Calling boost::archive::test_iarchive >> Test1.\n");
-    ia >> restored; // read class state from archive
-    assert(saved.get() == restored.get());
-    printf("END: Testing pimpl and boost::serialization.\n");
-#endif
 }
 
 static
@@ -279,7 +254,6 @@ main(int argc, char const* argv[])
     test_comparisons();
     test_runtime_polymorphic_behavior();
     test_swap();
-    test_serialization();
     test_singleton();
 
     return boost::report_errors();
