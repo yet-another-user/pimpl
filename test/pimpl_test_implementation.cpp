@@ -59,19 +59,19 @@ template<> struct pimpl<Test1>::implementation : boost::noncopyable
     uid const         id_;
 };
 
-template<> struct pimpl<Test2>::implementation
+template<> struct pimpl<Value>::implementation
 {
     typedef implementation this_type;
 
-    implementation () : int_(0)             { trace_ =  "Test2::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ =  "Test2::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ =  "Test2::implementation(int, int)"; }
-    implementation (Foo&) : int_(0)         { trace_ =  "Test2::implementation(Foo&)"; }
-    implementation (Foo const&) : int_(0)   { trace_ =  "Test2::implementation(Foo const&)"; }
+    implementation () : int_(0)             { trace_ =  "Value::implementation()"; }
+    implementation (int k) : int_(k)        { trace_ =  "Value::implementation(int)"; }
+    implementation (int k, int l) : int_(k) { trace_ =  "Value::implementation(int, int)"; }
+    implementation (Foo&) : int_(0)         { trace_ =  "Value::implementation(Foo&)"; }
+    implementation (Foo const&) : int_(0)   { trace_ =  "Value::implementation(Foo const&)"; }
 
     implementation(this_type const& other)
     :
-        int_(other.int_), trace_("Test2::implementation(Test2::implementation const&)")
+        int_(other.int_), trace_("Value::implementation(Value::implementation const&)")
     {}
 
     int              int_;
@@ -85,14 +85,14 @@ typedef Foo const& cref;
 Test1::Test1(pass_value_type const&) : pimpl_type(cref(create_foo())) {}
 
 string const& Test1::trace () const { return (*this)->trace_; }
-string const& Test2::trace () const { return (*this)->trace_; }
+string const& Value::trace () const { return (*this)->trace_; }
 int           Test1::   id () const { return (*this)->id_; }
-int           Test2::   id () const { return (*this)->id_; }
+int           Value::   id () const { return (*this)->id_; }
 
 Test1::Test1 () : pimpl_type() {}                     // Call implementation::implementation()
-Test2::Test2 () : pimpl_type() {}                     // ditto
+Value::Value () : pimpl_type() {}                     // ditto
 Test1::Test1 (int k) : pimpl_type(k) {}               // Call implementation::implementation(int)
-Test2::Test2 (int k) : pimpl_type(k) {}               // ditto
+Value::Value (int k) : pimpl_type(k) {}               // ditto
 Test1::Test1 (int k, int l) : pimpl_type(k, l) {}     // Call implementation::implementation(int, int)
 
 Test1::Test1 (Foo&       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
@@ -109,9 +109,9 @@ static Test1 single;
 Test1::Test1 (singleton_type const&) : pimpl_type(single) {} // 'single' is used as a Singleton.
 
 bool
-Test2::operator==(Test2 const& that) const
+Value::operator==(Value const& that) const
 {
-    (*this)->trace_ = "Test2::operator==(Test2 const&)";
+    (*this)->trace_ = "Value::operator==(Value const&)";
     return (*this)->int_ == that->int_;
 }
 

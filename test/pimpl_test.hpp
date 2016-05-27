@@ -33,20 +33,20 @@ struct Test1 : public pimpl<Test1>::pointer_semantics
     int              id () const;
 };
 
-struct Test2 : public pimpl<Test2>::value_semantics
+struct Value : public pimpl<Value>::value_semantics
 {
     // Pure interface. The implementation is hidden in unittest_pimpl_implementation.cpp
 
-    typedef Test2    this_type;
+    typedef Value    this_type;
     typedef std::string string;
 
-    Test2 ();
-    Test2 (int);
+    Value ();
+    Value (int);
 
-    // Value-semantics Pimpl must explicitly define op==()
+    // Value-semantics Pimpl must explicitly define comparison operators
     // if it wants to be comparable. The same as normal classes do.
-    bool operator==(Test2 const& o) const;
-    bool operator!=(Test2 const& o) const { return !this_type::operator==(o); }
+    bool operator==(Value const& o) const;
+    bool operator!=(Value const& o) const { return !this_type::operator==(o); }
 
     string const& trace () const;
     int              id () const;
