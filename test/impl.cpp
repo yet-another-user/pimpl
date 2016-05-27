@@ -1,7 +1,4 @@
-#include "./pimpl_test.hpp"
-#include <stdio.h>
-
-typedef std::string string;
+#include "./test.hpp"
 
 Foo
 create_foo()
@@ -30,27 +27,27 @@ struct uid
 // This internal implementation usually only have destructor, constructors,
 // data and probably internal methods. Given it is already internal by design,
 // it does not need to be a 'class'. All public methods are declared in the
-// external visible Test1 class. Then, data in this structure are accessed as
+// external visible Test class. Then, data in this structure are accessed as
 // (*this)->data or (**this).data.
-template<> struct pimpl<Test1>::implementation : boost::noncopyable
+template<> struct pimpl<Test>::implementation : boost::noncopyable
 {
     typedef implementation this_type;
 
-    implementation () : int_(0)             { trace_ =  "Test1::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ =  "Test1::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ =  "Test1::implementation(int, int)"; }
-    implementation (Foo&)                   { trace_ =  "Test1::implementation(Foo&)"; }
-    implementation (Foo const&)             { trace_ =  "Test1::implementation(Foo const&)"; }
-    implementation (Foo      &, Foo      &) { trace_ =  "Test1::implementation(Foo&, Foo&)"; }
-    implementation (Foo      &, Foo const&) { trace_ =  "Test1::implementation(Foo&, Foo const&)"; }
-    implementation (Foo const&, Foo      &) { trace_ =  "Test1::implementation(Foo const&, Foo&)"; }
-    implementation (Foo const&, Foo const&) { trace_ =  "Test1::implementation(Foo const&, Foo const&)"; }
-    implementation (Foo*)                   { trace_ =  "Test1::implementation(Foo*)"; }
-    implementation (Foo const*)             { trace_ =  "Test1::implementation(Foo const*)"; }
+    implementation () : int_(0)             { trace_ =  "Test::implementation()"; }
+    implementation (int k) : int_(k)        { trace_ =  "Test::implementation(int)"; }
+    implementation (int k, int l) : int_(k) { trace_ =  "Test::implementation(int, int)"; }
+    implementation (Foo&)                   { trace_ =  "Test::implementation(Foo&)"; }
+    implementation (Foo const&)             { trace_ =  "Test::implementation(Foo const&)"; }
+    implementation (Foo      &, Foo      &) { trace_ =  "Test::implementation(Foo&, Foo&)"; }
+    implementation (Foo      &, Foo const&) { trace_ =  "Test::implementation(Foo&, Foo const&)"; }
+    implementation (Foo const&, Foo      &) { trace_ =  "Test::implementation(Foo const&, Foo&)"; }
+    implementation (Foo const&, Foo const&) { trace_ =  "Test::implementation(Foo const&, Foo const&)"; }
+    implementation (Foo*)                   { trace_ =  "Test::implementation(Foo*)"; }
+    implementation (Foo const*)             { trace_ =  "Test::implementation(Foo const*)"; }
     implementation (this_type const& o)
     :
         int_    (o.int_),
-        trace_  ("Test1::implementation(Test1::implementation const&)"),
+        trace_  ("Test::implementation(Test::implementation const&)"),
         id_     (o.id_)
     {}
 
@@ -81,32 +78,32 @@ template<> struct pimpl<Value>::implementation
 
 typedef Foo const& cref;
 
-//Test1::Test1(pass_value_type) : pimpl_type(Foo::create()) {}
-Test1::Test1(pass_value_type const&) : pimpl_type(cref(create_foo())) {}
+//Test::Test(pass_value_type) : pimpl_type(Foo::create()) {}
+Test::Test(pass_value_type const&) : pimpl_type(cref(create_foo())) {}
 
-string const& Test1::trace () const { return (*this)->trace_; }
+string const& Test::trace () const { return (*this)->trace_; }
 string const& Value::trace () const { return (*this)->trace_; }
-int           Test1::   id () const { return (*this)->id_; }
+int           Test::   id () const { return (*this)->id_; }
 int           Value::   id () const { return (*this)->id_; }
 
-Test1::Test1 () : pimpl_type() {}                     // Call implementation::implementation()
+Test::Test () : pimpl_type() {}                     // Call implementation::implementation()
 Value::Value () : pimpl_type() {}                     // ditto
-Test1::Test1 (int k) : pimpl_type(k) {}               // Call implementation::implementation(int)
+Test::Test (int k) : pimpl_type(k) {}               // Call implementation::implementation(int)
 Value::Value (int k) : pimpl_type(k) {}               // ditto
-Test1::Test1 (int k, int l) : pimpl_type(k, l) {}     // Call implementation::implementation(int, int)
+Test::Test (int k, int l) : pimpl_type(k, l) {}     // Call implementation::implementation(int, int)
 
-Test1::Test1 (Foo&       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo const& foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo*       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo const* foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test1::Test1 (Foo      & f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo      & f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo const& f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
-Test1::Test1 (Foo const& f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
+Test::Test (Foo&       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test::Test (Foo const& foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test::Test (Foo*       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test::Test (Foo const* foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
+Test::Test (Foo      & f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
+Test::Test (Foo      & f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
+Test::Test (Foo const& f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
+Test::Test (Foo const& f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
 
-static Test1 single;
+static Test single;
 
-Test1::Test1 (singleton_type const&) : pimpl_type(single) {} // 'single' is used as a Singleton.
+Test::Test (singleton_type const&) : pimpl_type(single) {} // 'single' is used as a Singleton.
 
 bool
 Value::operator==(Value const& that) const
@@ -124,10 +121,10 @@ template<> struct pimpl<Base>::implementation
     implementation (int k) : base_int_(k), trace_("Base::implementation(int)") {}
     virtual ~implementation ()            { /*printf("Base::~implementation()\n"); */ }
 
-    virtual std::string call_virtual() { return("Base::call_virtual()"); }
+    virtual string call_virtual() { return("Base::call_virtual()"); }
 
     int      base_int_;
-    std::string trace_;
+    string trace_;
 };
 
 struct Derived1Impl : public pimpl<Base>::implementation
@@ -143,7 +140,7 @@ struct Derived1Impl : public pimpl<Base>::implementation
     {
         // printf("Derived1::~implementation()\n");
     }
-    virtual std::string call_virtual() { return ("Derived1::call_virtual()"); }
+    virtual string call_virtual() { return ("Derived1::call_virtual()"); }
 
     int derived_int_;
 };
@@ -161,7 +158,7 @@ struct Derived2Impl : public Derived1Impl
     {
 //        printf("Derived2::~implementation()\n");
     }
-    virtual std::string call_virtual() { return ("Derived2::call_virtual()"); }
+    virtual string call_virtual() { return ("Derived2::call_virtual()"); }
 
     int more_int_;
 };
@@ -180,13 +177,13 @@ Derived2::Derived2(int k, int l, int m) : Derived1(pimpl<Derived1>::null())
     reset(new Derived2Impl(k, l, m));
 }
 
-std::string const&
+string const&
 Base::trace() const
 {
     return (*this)->trace_;
 }
 
-std::string
+string
 Base::call_virtual()
 {
     return (*this)->call_virtual();
