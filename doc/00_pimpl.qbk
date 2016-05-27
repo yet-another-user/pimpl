@@ -1,15 +1,15 @@
 [/==============================================================================
-    Copyright (C) 2009-2014 Vladimir Batov
+    Copyright (C) 2009-2016 Vladimir Batov
 
     Use, modification and distribution is subject to the Boost Software
     License, Version 1.0. (See a copy at http://www.boost.org/LICENSE_1_0.txt)
 ===============================================================================/]
-[library The Boost Pimpl Library
+[library The Pimpl Library
     [quickbook 1.5]
     [version 1.0]
     [id pimpl]
     [dirname pimpl]
-    [copyright 2006-2014 Vladimir Batov]
+    [copyright 2006-2016 Vladimir Batov]
     [purpose Generalization of The Pimpl Idiom]
     [category generic]
     [authors [Batov, Vladimir]]
