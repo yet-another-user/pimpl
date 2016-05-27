@@ -32,14 +32,13 @@ struct pimpl
     BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(0)))));
 };
 
-// Smart-pointer with the value-semantics behavior
-// It complements std::shared_ptr which takes care of the pointer
-// semantics behavior. The incomplete-type management technique is by Peter
-// Dimov (see http://tech.groups.yahoo.com/group/boost/files/impl_ptr).
 template<class user_type>
 template<class impl_type>
 struct pimpl<user_type>::value_ptr
 {
+    // Smart-pointer with the value-semantics behavior.
+    // The incomplete-type management technique is by Peter Dimov.
+
    ~value_ptr () { traits_->destroy(impl_); }
     value_ptr () : traits_(null()), impl_(0) {}
     value_ptr (impl_type* p) : traits_(deep_copy()), impl_(p) {}
@@ -165,8 +164,8 @@ pimpl<user_type>::null()
     static_assert(pimpl<user_type>::value, "");
     static_assert(sizeof(user_type) == sizeof(typename user_type::pimpl_type), "");
 
-    typename user_type::null_type null_arg;
-    typename user_type::pimpl_type    null (null_arg);
+    typename user_type::null_type   arg;
+    typename user_type::pimpl_type null (arg);
 
     return *(user_type*) &null;
 }
