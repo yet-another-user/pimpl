@@ -1,7 +1,7 @@
 #include "./test.hpp"
 #include <set>
 
-struct Book : public pimpl<Book>::pointer_semantics
+struct Book : public pimpl<Book>::shared
 {
     Book(string const& title, string const& author);
 
@@ -48,6 +48,7 @@ test_is_pimpl()
     BOOST_TEST(false == pimpl<int*>::value);
     BOOST_TEST(false == pimpl<int const&>::value);
     BOOST_TEST(true  == pimpl<Test>::value);
+    BOOST_TEST(true  == pimpl<Test const>::value);
     BOOST_TEST(false == pimpl<Test*>::value);
     BOOST_TEST(true  == pimpl<Value>::value);
     BOOST_TEST(true  == pimpl<Base>::value);
@@ -62,11 +63,15 @@ test_swap()
 {
     singleton_type single;
 
-    Test pt16 (single);
-    Test pt17 (single); BOOST_TEST(pt16.id() == pt17.id()); // No copying. Implementation shared.
-    Value vt12 (5);      BOOST_TEST(vt12.trace() == "Value::implementation(int)");
-    Value vt13 = vt12;   BOOST_TEST(vt13.trace() == "Value::implementation(Value::implementation const&)");
+    Test  pt16 (single);
+    Test  pt17 (single);
+    Value vt12 (5);
+    Value vt13 = vt12;
     Value vt14 (vt12);
+
+    BOOST_TEST(pt16.id() == pt17.id()); // No copying. Implementation shared.
+    BOOST_TEST(vt12.trace() == "Value::implementation(int)");
+    BOOST_TEST(vt13.trace() == "Value::implementation(Value::implementation const&)");
 
     int pt16_id = pt16.id();
     int pt17_id = pt17.id();
@@ -149,17 +154,17 @@ test_constructors()
     Foo const* const_ptr = &const_foo;
 
     Test p11;                          BOOST_TEST(p11.trace() == "Test::implementation()");
-    Value v11;                          BOOST_TEST(v11.trace() == "Value::implementation()");
+    Value v11;                         BOOST_TEST(v11.trace() == "Value::implementation()");
     Test p12(5);                       BOOST_TEST(p12.trace() == "Test::implementation(int)");
-    Value v12(5);                       BOOST_TEST(v12.trace() == "Value::implementation(int)");
+    Value v12(5);                      BOOST_TEST(v12.trace() == "Value::implementation(int)");
     Test p13 = p12;                    BOOST_TEST(p13.id() == p12.id()); // No copying. Implementation shared.
     Test p14(p12);                     BOOST_TEST(p14.id() == p12.id()); // No copying. Implementation shared.
-                                        BOOST_TEST(p13.trace() == "Test::implementation(int)"); // trace state is the same
-                                        BOOST_TEST(p14.trace() == "Test::implementation(int)"); // trace state is the same
-    Value v13 = v12;                    BOOST_TEST(v13.trace() == "Value::implementation(Value::implementation const&)");
-    Value v14(v12);                     BOOST_TEST(v14.trace() == "Value::implementation(Value::implementation const&)");
-                                        BOOST_TEST(v13.id() != v12.id()); // Implementation copied.
-                                        BOOST_TEST(v14.id() != v12.id()); // Implementation copied.
+                                       BOOST_TEST(p13.trace() == "Test::implementation(int)"); // trace state is the same
+                                       BOOST_TEST(p14.trace() == "Test::implementation(int)"); // trace state is the same
+    Value v13 = v12;                   BOOST_TEST(v13.trace() == "Value::implementation(Value::implementation const&)");
+    Value v14(v12);                    BOOST_TEST(v14.trace() == "Value::implementation(Value::implementation const&)");
+                                       BOOST_TEST(v13.id() != v12.id()); // Implementation copied.
+                                       BOOST_TEST(v14.id() != v12.id()); // Implementation copied.
     Test p15(5, 6);                    BOOST_TEST(p15.trace() == "Test::implementation(int, int)");
     Test p16(singleton);
     Test p17(singleton);               BOOST_TEST(p16.id() == p17.id()); // No copying. Implementation shared.
@@ -184,18 +189,18 @@ static
 void
 test_bool_conversions()
 {
-    Test      p1; BOOST_TEST(p1.trace() == "Test::implementation()");
+    Test       p1; BOOST_TEST(p1.trace() == "Test::implementation()");
     Value      v1; BOOST_TEST(v1.trace() == "Value::implementation()");
-    Test      p2 = pimpl<Test>::null();
+    Test       p2 = pimpl<Test>::null();
     Value      v2 = pimpl<Value>::null();
-    bool p1_bool1 =   p1 ? true : false; // Test conversion to bool
-    bool p1_bool2 = !!p1; // Test operator!()
-    bool v1_bool1 =   v1 ? true : false; // Test conversion to bool
-    bool v1_bool2 = !!v1; // Test operator!()
-    bool p2_bool1 =   p2 ? true : false; // Test conversion to bool
-    bool p2_bool2 = !!p2; // Test operator!()
-    bool v2_bool1 =   v2 ? true : false; // Test conversion to bool
-    bool v2_bool2 = !!v2; // Test operator!()
+    bool p1_bool1 = bool(p1);   // Test conversion to bool
+    bool p1_bool2 = !!p1;       // Test operator!()
+    bool v1_bool1 = bool(v1);   // Test conversion to bool
+    bool v1_bool2 = !!v1;       // Test operator!()
+    bool p2_bool1 = bool(p2);   // Test conversion to bool
+    bool p2_bool2 = !!p2;       // Test operator!()
+    bool v2_bool1 = bool(v2);   // Test conversion to bool
+    bool v2_bool2 = !!v2;       // Test operator!()
 
     BOOST_TEST( p1_bool1);
     BOOST_TEST( p1_bool2);

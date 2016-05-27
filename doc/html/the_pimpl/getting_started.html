@@ -41,7 +41,8 @@
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
-          we intend to hide implementation through the deployment of the <span class="emphasis"><em>Pimpl</em></span>
+          we intend to separate the interface from the implementation and to hide
+          implementation through the deployment of the <span class="emphasis"><em>Pimpl</em></span>
           idiom;
         </li>
 <li class="listitem">
@@ -95,22 +96,24 @@
 <p>
         That one-class approach is not exactly ideal for reasons mentioned in the
         <span class="emphasis"><em>Introduction</em></span>. However, the fault-line where the <span class="emphasis"><em>Pimpl</em></span>
-        splits the conventional class in two is not between <span class="emphasis"><em>data and behavior</em></span>.
-        It is, in fact, between <span class="emphasis"><em>public interface</em></span> (behavior)
-        and <span class="emphasis"><em>private implementation</em></span> (data and behavior). Public
-        interface and private implementation are different views of a system. They
-        serve different purposes and are easier managed when kept separate. The
-        <span class="emphasis"><em>Pimpl</em></span> technique seems to fit that objective better with
-        <span class="emphasis"><em>actual</em></span> rather than <span class="emphasis"><em>notional</em></span> separation.
+        splits the conventional class in two is not <span class="emphasis"><em>exactly</em></span>
+        between <span class="emphasis"><em>data and behavior</em></span>. It is, rather, between <span class="emphasis"><em>public
+        interface</em></span> (public behavior) and <span class="emphasis"><em>private implementation</em></span>
+        (private data and behavior) -- two different views of a system. They serve
+        different purposes and are better managed when kept separate.
+      </p>
+<p>
+        The <span class="emphasis"><em>Pimpl</em></span> technique seems to fit that objective better
+        with <span class="emphasis"><em>actual</em></span> rather than <span class="emphasis"><em>notional</em></span>
+        separation.
       </p>
 </td></tr>
 </table></div>
 <p>
       So far applying the <span class="emphasis"><em>Pimpl</em></span> idiom is fairly straightforward
-      as <span class="emphasis"><em>std::shared_ptr</em></span> (or <span class="emphasis"><em>boost::shared_ptr</em></span>
-      for non-C++11-compliant) takes care of much of the scaffolding hassle. The
-      auto-generated destructor, copy constructor and assignment operator suffice
-      and writing the comparison operators is child's play.
+      as <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the scaffolding
+      hassle. The auto-generated destructor, copy constructor and assignment operator
+      suffice and writing the comparison operators is child's play.
     </p>
 <p>
       Still, from design perspectives lumping the application logic with the infrastructure

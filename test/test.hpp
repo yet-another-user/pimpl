@@ -11,7 +11,7 @@ struct Foo {};
 
 using string = std::string;
 
-struct Test : public pimpl<Test>::pointer_semantics
+struct Test : public pimpl<Test>::shared
 {
     // Pure interface. The implementation is hidden in pimpl_test_implementation.cpp
 
@@ -33,7 +33,7 @@ struct Test : public pimpl<Test>::pointer_semantics
     int              id () const;
 };
 
-struct Value : public pimpl<Value>::value_semantics
+struct Value : public pimpl<Value>::unique
 {
     // Pure interface. The implementation is hidden in pimpl_test_implementation.cpp
 
@@ -49,7 +49,7 @@ struct Value : public pimpl<Value>::value_semantics
     int              id () const;
 };
 
-struct Base : public pimpl<Base>::pointer_semantics
+struct Base : public pimpl<Base>::shared
 {
     Base (int);
 

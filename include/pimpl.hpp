@@ -20,11 +20,11 @@ struct pimpl
     template<class> class            value_ptr;
     template<template<class> class> class base;
 
-    using   value_semantics = base<value_ptr>;
-    using pointer_semantics = base<std::shared_ptr>;
-    using          yes_type = boost::type_traits::yes_type;
-    using           no_type = boost::type_traits::no_type;
-    using          ptr_type = typename std::remove_reference<user_type>::type*;
+    using   unique = base<value_ptr>;
+    using   shared = base<std::shared_ptr>;
+    using yes_type = boost::type_traits::yes_type;
+    using  no_type = boost::type_traits::no_type;
+    using ptr_type = typename std::remove_reference<user_type>::type*;
 
     template<class Y> static yes_type test (Y const*, typename Y::pimpl_type const* =0);
     /***************/ static no_type  test (...);
