@@ -1,0 +1,86 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Pimpl::null()</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="prev" href="implementation_management.html" title="Implementation Management">
+<link rel="next" href="applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="implementation_management.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="applications_of_the_pimpl_idiom.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="the_pimpl.pimpl__null__"></a><a class="link" href="pimpl__null__.html" title="Pimpl::null()">Pimpl::null()</a>
+</h2></div></div></div>
+<p>
+      Again, <span class="emphasis"><em>Pimpl</em></span> exhibits a considerably stronger (and automatically
+      managed) association between the external interface and internal implementation.
+      Hence, the default behavior is that there is always an implementation data
+      behind every interface object.
+    </p>
+<p>
+      To override this default behavior we might write something like:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">Book</span><span class="special">::</span><span class="identifier">null</span><span class="special">())</span>
+<span class="special">{</span>
+   <span class="comment">// an invalid Book object is created with no data behind it</span>
+<span class="special">}</span>
+
+<span class="keyword">void</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">do_something</span><span class="special">()</span>
+<span class="special">{</span>
+   <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
+   <span class="special">{</span>
+       <span class="comment">// implementation is created only when needed.</span>
+       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">reset</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">implementation</span><span class="special">(...));</span>
+   <span class="special">}</span>
+   <span class="special">...</span>
+<span class="special">}</span>
+</pre>
+<p>
+      Here initially we explicitly (via <span class="emphasis"><em>Book::null()</em></span>) instruct
+      the underlying <span class="emphasis"><em>base_type</em></span> to be created empty/invalid (like
+      <span class="emphasis"><em>nullptr</em></span> or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>.
+      Later we create a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> instance
+      explicitly and assign the <span class="emphasis"><em>base_type</em></span> to manage it.
+    </p>
+<p>
+      That technique is useful for lazy-instantiation optimization (as in the example
+      above) or to support dynamic polymorphism that is discussed later.
+    </p>
+<p>
+      We might use such an invalid <span class="emphasis"><em>Book</em></span> object to indicate a
+      no-book condition in the same fashion as <span class="emphasis"><em>nullptr</em></span> or <span class="emphasis"><em>boost::optional</em></span>
+      might be used:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span>
+<span class="identifier">find_book</span><span class="special">()</span>
+<span class="special">{</span>  <span class="special">...</span>
+   <span class="keyword">return</span> <span class="identifier">Book</span><span class="special">::</span><span class="identifier">null</span><span class="special">();</span> <span class="comment">// found nothing, return an invalid Book</span>
+<span class="special">}</span>
+<span class="special">...</span>
+
+<span class="identifier">Book</span> <span class="identifier">book</span> <span class="special">=</span> <span class="identifier">find_book</span><span class="special">();</span>
+
+<span class="keyword">if</span> <span class="special">(!</span><span class="identifier">book</span><span class="special">)</span> <span class="identifier">report</span> <span class="identifier">book</span><span class="special">-</span><span class="keyword">not</span><span class="special">-</span><span class="identifier">found</span><span class="special">;</span>
+</pre>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2016 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="implementation_management.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="applications_of_the_pimpl_idiom.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

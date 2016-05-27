@@ -1,23 +1,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Chapter&#160;1.&#160;The Boost Pimpl Library 1.0</title>
+<title>Chapter&#160;1.&#160;The Pimpl C++11</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="Chapter&#160;1.&#160;The Boost Pimpl Library 1.0">
-<link rel="next" href="the_boost_pimpl_library/getting_started.html" title="Getting Started">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="next" href="the_pimpl/getting_started.html" title="Getting Started">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<div class="spirit-nav"><a accesskey="n" href="the_boost_pimpl_library/getting_started.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="the_pimpl/getting_started.html"><img src="images/next.png" alt="Next"></a></div>
 <div class="chapter">
 <div class="titlepage"><div>
 <div><h2 class="title">
-<a name="pimpl"></a>Chapter&#160;1.&#160;The Boost Pimpl Library 1.0</h2></div>
+<a name="pimpl"></a>Chapter&#160;1.&#160;The Pimpl C++11</h2></div>
 <div><div class="author"><h3 class="author">
 <span class="firstname">Vladimir</span> <span class="surname">Batov</span>
 </h3></div></div>
-<div><p class="copyright">Copyright &#169; 2006-2014 Vladimir
-      Batov</p></div>
+<div><p class="copyright">Copyright &#169; 2006-2016 Vladimir Batov</p></div>
 <div><div class="legalnotice">
 <a name="pimpl.legal"></a><p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
@@ -27,40 +26,38 @@
 </div></div>
 <div class="toc">
 <p><b>Table of Contents</b></p>
-<dl>
-<dt><span class="section"><a href="index.html#the_boost_pimpl_library.introduction">Introduction</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/getting_started.html">Getting Started</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/pimpl_with_value_semantics.html">Pimpl
-    with Value Semantics</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/behind_the_interface.html">Behind the
-    Interface</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/implementation_management.html">Implementation
-    Management</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/pimpl__null__.html">Pimpl::null()</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom.html">Applications
+<dl class="toc">
+<dt><span class="section"><a href="index.html#the_pimpl.introduction">Introduction</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/getting_started.html">Getting Started</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/pimpl_with_value_semantics.html">Pimpl with Value
+    Semantics</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/behind_the_interface.html">Behind the Interface</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/implementation_management.html">Implementation Management</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/pimpl__null__.html">Pimpl::null()</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom.html">Applications
     of the Pimpl Idiom</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom.html#the_boost_pimpl_library.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom.html#the_pimpl.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
       Constructors</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/simple_singleton.html">Simple
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/simple_singleton.html">Simple
       Singleton</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_improved.html">Singleton
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/singleton_improved.html">Singleton
       Improved</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/singleton_again.html">Singleton
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/singleton_again.html">Singleton
       Again</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
       Dictionary</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/non_extendible_dictionary.html">Non-Extendible
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/non_extendible_dictionary.html">Non-Extendible
       Dictionary</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/internal__implementation_only__run_time_polymorphism.html">Internal
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/internal__implementation_only__run_time_polymorphism.html">Internal
       (Implementation-Only) Run-Time Polymorphism</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hierarchy.html">Run-Time
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hierarchy.html">Run-Time
       Polymorphic Class Hierarchy</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/applications_of_the_pimpl_idiom/derived_classes_overriding_the_pimpl__operator_bool_type__.html">Derived
+<dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom/derived_classes_overriding_the_pimpl__operator_bool_type__.html">Derived
       Classes Overriding the pimpl::operator bool_type()</a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="the_boost_pimpl_library/references.html">References</a></span></dt>
-<dt><span class="section"><a href="the_boost_pimpl_library/acknowledgements.html">Acknowledgements</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/references.html">References</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/acknowledgements.html">Acknowledgements</a></span></dt>
 <dt><span class="section"><a href="index/s10.html">Index</a></span></dt>
 </dl>
 </div>
@@ -70,24 +67,21 @@
 <th align="left">Note</th>
 </tr>
 <tr><td align="left" valign="top"><p>
-      This documentation is based on the article (<a class="link" href="the_boost_pimpl_library/references.html#1">[1]</a>) originally
-      published in the C/C++ Users Journal (now Dr. Dobb's).
+      This documentation is based on the article (<a class="link" href="the_pimpl/references.html#1">[1]</a>) originally
+      published in the C/C++ Users Journal.
     </p></td></tr>
 </table></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="the_boost_pimpl_library.introduction"></a><a class="link" href="index.html#the_boost_pimpl_library.introduction" title="Introduction">Introduction</a>
+<a name="the_pimpl.introduction"></a><a class="link" href="index.html#the_pimpl.introduction" title="Introduction">Introduction</a>
 </h2></div></div></div>
 <p>
       In the domain of commercial large-scale software development the following
       design principles come to the fore:
     </p>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
-          component-based, modular and API-centered design,
-        </li>
-<li class="listitem">
-          separation of concerns (<a class="link" href="the_boost_pimpl_library/references.html#8">[8]</a>, <a class="link" href="the_boost_pimpl_library/references.html#9">[9]</a>),
+          API-centered design,
         </li>
 <li class="listitem">
           implementation hiding,
@@ -96,17 +90,20 @@
           minimization of compilation and component dependencies,
         </li>
 <li class="listitem">
-          consistent and recognizable deployment and implementation patterns,
+          separation of concerns (<a class="link" href="the_pimpl/references.html#8">[8]</a>, <a class="link" href="the_pimpl/references.html#9">[9]</a>),
+        </li>
+<li class="listitem">
+          consistent and recognizable implementation and deployment patterns,
         </li>
 <li class="listitem">
           multi-platform support.
         </li>
 </ul></div>
 <p>
-      The <span class="emphasis"><em>Pimpl</em></span> idiom can help great deal achieving those goals.
+      The <span class="emphasis"><em>Pimpl</em></span> idiom can help great deal achieving these goals.
       It is a simple yet robust programming technique to minimize coupling via
     </p>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
           the separation of public interface and private implementation and then
         </li>
@@ -115,30 +112,31 @@
         </li>
 </ul></div>
 <p>
-      Successfully popularized by Sutter (<a class="link" href="the_boost_pimpl_library/references.html#2">[2]</a>, <a class="link" href="the_boost_pimpl_library/references.html#3">[3]</a>)
+      Successfully popularized by Sutter (<a class="link" href="the_pimpl/references.html#2">[2]</a>, <a class="link" href="the_pimpl/references.html#3">[3]</a>)
       under the cheeky <span class="emphasis"><em>Pimpl</em></span> name (as for "pointer to implementation"
       in Hungarian notation) the technique has been known long before under various
-      names -- the Cheshire Cat in <a class="link" href="the_boost_pimpl_library/references.html#4">[4]</a>, the Handle/Body
-      in <a class="link" href="the_boost_pimpl_library/references.html#5">[5]</a>, the Bridge in <a class="link" href="the_boost_pimpl_library/references.html#6">[6]</a>
+      names -- the D-pointer (in Qt), the Cheshire Cat in <a class="link" href="the_pimpl/references.html#4">[4]</a>,
+      the Handle/Body in <a class="link" href="the_pimpl/references.html#5">[5]</a>, the Bridge in <a class="link" href="the_pimpl/references.html#6">[6]</a>
       -- and conceptually deployed in C and C++ as far back as at least early eighties
-      (<a class="link" href="the_boost_pimpl_library/references.html#7">[7]</a>).
+      (<a class="link" href="the_pimpl/references.html#7">[7]</a>).
     </p>
 <p>
-      Still, it does not seem to be widely deployed. In part that is due to efficiency
-      considerations (valid or misguided) and probably more often due to additional
-      implementation scaffolding and coding overhead associated with the technique.
+      Still, it does not seem to be widely deployed. In part that might be due to
+      efficiency considerations (valid or misguided) and probably more often due
+      to additional implementation scaffolding and coding overhead associated with
+      the technique.
     </p>
 <p>
-      This library provides a coding framework and a deployment pattern in an attempt
-      to bridge that gap, to ease and to formalize the deployment of the idiom.
+      This library provides a programming and deployment pattern in an attempt to
+      bridge that gap, to ease and to formalize the deployment of the idiom.
     </p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: June 06, 2014 at 01:29:50 GMT</small></p></td>
+<td align="left"><p><small>Last revised: May 27, 2016 at 22:02:48 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>
-<div class="spirit-nav"><a accesskey="n" href="the_boost_pimpl_library/getting_started.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="the_pimpl/getting_started.html"><img src="images/next.png" alt="Next"></a></div>
 </body>
 </html>

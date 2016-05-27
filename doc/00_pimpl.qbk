@@ -4,9 +4,9 @@
     Use, modification and distribution is subject to the Boost Software
     License, Version 1.0. (See a copy at http://www.boost.org/LICENSE_1_0.txt)
 ===============================================================================/]
-[library The Pimpl Library
+[library The Pimpl
     [quickbook 1.5]
-    [version 1.0]
+    [version C++11]
     [id pimpl]
     [dirname pimpl]
     [copyright 2006-2016 Vladimir Batov]
@@ -20,7 +20,7 @@
     ]
 ]
  
-[note This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal (now Dr. Dobb's).]
+[note This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal.]
 
 [include 01_introduction.qbk]
 [include 02_getting_started.qbk]

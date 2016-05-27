@@ -1,0 +1,109 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Pimpl with Value Semantics</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="prev" href="getting_started.html" title="Getting Started">
+<link rel="next" href="behind_the_interface.html" title="Behind the Interface">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="getting_started.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="behind_the_interface.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="the_pimpl.pimpl_with_value_semantics"></a><a class="link" href="pimpl_with_value_semantics.html" title="Pimpl with Value Semantics">Pimpl with Value
+    Semantics</a>
+</h2></div></div></div>
+<p>
+      <span class="emphasis"><em>Pimpl</em></span> with <span class="emphasis"><em>value semantics</em></span> exhibits
+      different relationship with the underlying data. It solely owns and manages
+      the data (rather than shares). Consequently, for such <span class="emphasis"><em>Pimpls</em></span>
+      manual implementation gets more involved and might look as follows:
+    </p>
+<pre class="programlisting"><span class="keyword">class</span> <span class="identifier">Book</span>
+<span class="special">{</span>
+   <span class="keyword">public</span><span class="special">:</span>
+
+  <span class="special">~</span><span class="identifier">Book</span> <span class="special">();</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">!=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="keyword">private</span><span class="special">:</span>
+
+   <span class="keyword">struct</span> <span class="identifier">implementation</span><span class="special">;</span>
+   <span class="identifier">implementation</span><span class="special">*</span> <span class="identifier">impl_</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+      In the example above it is tempting to deploy <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
+      instead of the raw <span class="emphasis"><em>implementation*</em></span>. In fact, that is what
+      H. Sutter advocates in <a class="link" href="references.html#13">[13]</a>. Unfortunately, <span class="emphasis"><em>std::unique_ptr</em></span>
+      deployment only marginally reduces the amount of manually-written code which
+      greatly diminishes the benefits of <span class="emphasis"><em>std::unique_ptr</em></span> deployment
+      in this particular context. The <span class="emphasis"><em>std::unique_ptr</em></span> (as its
+      predecessor <span class="emphasis"><em>std::auto_ptr</em></span>) have been developed with very
+      different goals in mind and require <span class="emphasis"><em>Book::implementation</em></span>
+      to be a complete type (see <a class="link" href="references.html#13">[13]</a> for details). <span class="emphasis"><em>std::shared_ptr</em></span>
+      does not have such a restriction and was deployed in the previous chapter for
+      the <span class="emphasis"><em>Pimpls</em></span> with pointer semantics. Similarly the internal
+      <span class="emphasis"><em>pimpl::value_ptr</em></span> also implements the incomplete-type management
+      technique (originally by Peter Dimov) and is deployed for the <span class="emphasis"><em>Pimpls</em></span>
+      with value semantics. Consequently, the code can be shrunk down to:
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">value_semantics</span>
+<span class="special">{</span>
+   <span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
+
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+      with no loss in functionality and with the same benefits as before -- shorter,
+      application-focused and reasonably self-documented.
+    </p>
+<p>
+      A notable difference (compared to pointer-semantics classes) is that the <span class="emphasis"><em>Book::operator==()</em></span>
+      is not a freebie. In fact, the comparison operators are never freebies (they
+      are never auto-generated). However, in the case of pointer-semantics classes
+      those comparison operators are reduced to pointer comparisons and generalized.
+      Clearly, that's not the case with value-semantics classes. Consequently, for
+      value-semantics classes the comparison operators become part of the user-provided
+      interface (if such a class needs to be comparable).
+    </p>
+<p>
+      So far both examples of <span class="emphasis"><em>Pimpl</em></span>-based <span class="emphasis"><em>Book</em></span>
+      classes (with pointer- and value-semantics) look almost identical and internal
+      implementations (as we'll see later) are as close. That property is important
+      for orderly and healthy evolution of commercial large-scale systems as it allows
+      to minimize the impact of a requirement change -- something as inevitable as
+      "death and taxes".
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2016 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="getting_started.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="behind_the_interface.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

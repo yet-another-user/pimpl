@@ -2,10 +2,8 @@
 
 Let's start with a fairly basic and conventional
 
- class Book
+ struct Book
  {
-    public:
-
     Book (string const& title, string const& author);
     ...
     string const&  title() const;
@@ -22,14 +20,12 @@ Let's start with a fairly basic and conventional
 Say, due to reasons mentioned in the ['Introduction] we would like to transform it to a ['Pimpl]-style class with the ['pointer semantics]. That is:
 
 * we intend to hide implementation through the deployment of the ['Pimpl] idiom;
-* we intend the class to have pointer semantics, i.e. with regard to the underlying data it will behave in the smart-pointer/proxy fashion by allowing shared access to the actual implementation data.
+* we intend the class to have ['pointer semantics], i.e. with regard to the underlying data it will behave in the smart-pointer/shared-proxy fashion by allowing shared access to the actual implementation data.
 
 In that setting the ['Book] definition might probably change to as follows: 
 
- class Book
+ struct Book
  {
-    public:
-
     Book(string const& title, string const& author);
     ...
     string const&  title() const;
@@ -38,7 +34,8 @@ In that setting the ['Book] definition might probably change to as follows:
     bool operator== (Book const& other) const { return impl_ == other.impl_; }
     bool operator!= (Book const& other) const { return !operator==(other); }
 
-    explicit operator bool() const { return bool(impl_); }
+    explicit operator bool () const { return  bool(impl_); }
+    bool         operator! () const { return !bool(impl_); }
   
     private:
   
@@ -46,9 +43,11 @@ In that setting the ['Book] definition might probably change to as follows:
     std::shared_ptr<implementation> impl_;
  };
 
-That fairly standard ['Pimpl] idiom deployment splits the original class (accommodating behavior ['and] data, public ['and] private) into two classes -- the public interface (the ['Book] class) and the private implementation (the ['Book::implementation] class). 
+[important That fairly standard ['Pimpl] idiom deployment splits the original class (accommodating behavior ['and] data, public ['and] private) into two classes -- the public interface (the ['Book] class) and the private implementation (the ['Book::implementation] class). 
 
-[note At first glance, the ['Pimpl] idiom might appear breaking the established Object-Oriented programming paradigm -- the association between data and behavior -- enshrined in the fundamental concept of an ['object] or a ['class] and routinely seen/implemented as such -- one class. That one-class approach is not exactly ideal for ['implementation-hiding] purposes. However, the fault-line where the ['Pimpl] splits the conventional class in two is not between data and behavior. It is, in fact, between ['public interface] (behavior) and ['private implementation] (data and behavior). That "subtlety" should not be overlooked. Public interface and private implementation are different views of a system. They serve different purposes and are easier managed when kept separate. The ['Pimpl] technique seems to fit that objective better with ['actual] rather than ['notional] separation.]  
+At first glance, that might appear as breaking the established Object-Oriented programming paradigm -- the association between data and behavior -- enshrined in the fundamental concept of an ['object] or a ['class] and routinely seen/implemented as such -- one class. 
+
+That one-class approach is not exactly ideal for reasons mentioned in the ['Introduction]. However, the fault-line where the ['Pimpl] splits the conventional class in two is not between ['data and behavior]. It is, in fact, between ['public interface] (behavior) and ['private implementation] (data and behavior). Public interface and private implementation are different views of a system. They serve different purposes and are easier managed when kept separate. The ['Pimpl] technique seems to fit that objective better with ['actual] rather than ['notional] separation.]  
  
 So far applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] (or ['boost::shared_ptr] for non-C++11-compliant) takes care of much of the scaffolding hassle. The auto-generated destructor, copy constructor and assignment operator suffice and writing the comparison operators is child's play.
 
