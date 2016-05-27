@@ -3,7 +3,7 @@ In the domain of commercial large-scale software development the following desig
 * API-centered design, 
 * implementation hiding, 
 * minimization of compilation and component dependencies, 
-* separation of concerns ([link 8 \[8\]], [link 9 \[9\]]),
+* separation of concerns,
 * consistent and recognizable implementation and deployment patterns, 
 * multi-platform support.
 
