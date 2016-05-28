@@ -60,7 +60,7 @@ struct pimpl<user_type>::value_ptr
         virtual ~traits() =default;
 
         virtual void    destroy (impl_type*&) const {}
-        virtual impl_type* copy (impl_type const*) const { return nullptr; };
+        virtual impl_type* copy (impl_type const*) const { return nullptr; }
         virtual void     assign (impl_type*&, impl_type const*) const {}
 
         operator traits const*() { static traits impl; return &impl; }
