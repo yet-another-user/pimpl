@@ -20,8 +20,7 @@ struct pimpl
     template<class> class            value_ptr;
     template<template<class> class> class base;
 
-    template<class T> using value_ptr1 = std::unique_ptr<T>;
-    using   unique = base<value_ptr1>;
+    using   unique = base<value_ptr>;
     using   shared = base<std::shared_ptr>;
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
