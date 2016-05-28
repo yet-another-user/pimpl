@@ -93,8 +93,8 @@ struct pimpl<user_type>::base
     using     pimpl_type = base;
     using   managed_type = manager<implementation>;
 
-    template<class T> using     no_ref = typename std::remove_reference<T>::type;
-    template<class T> using is_derived = typename std::enable_if<std::is_base_of<base, no_ref<T>>::value, null_type*>::type;
+    template<class T> using     rm_ref = typename std::remove_reference<T>::type;
+    template<class T> using is_derived = typename std::enable_if<std::is_base_of<base, rm_ref<T>>::value, null_type*>::type;
 
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
