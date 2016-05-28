@@ -40,7 +40,7 @@ struct pimpl<user_type>::value_ptr
     // The incomplete-type management technique is originally by Peter Dimov.
 
    ~value_ptr () { traits_->destroy(impl_); }
-    value_ptr () : traits_(null()), impl_(0) {}
+    value_ptr () : traits_(traits()), impl_(0) {}
     value_ptr (impl_type* p) : traits_(deep_copy()), impl_(p) {}
     value_ptr (value_ptr const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
@@ -59,17 +59,11 @@ struct pimpl<user_type>::value_ptr
     {
         virtual ~traits() =default;
 
-        virtual void    destroy (impl_type*&) const =0;
-        virtual impl_type* copy (impl_type const*) const =0;
-        virtual void     assign (impl_type*&, impl_type const*) const =0;
-    };
-    struct null : public traits
-    {
         virtual void    destroy (impl_type*&) const {}
-        virtual impl_type* copy (impl_type const*) const { return 0; }
-        virtual void     assign (impl_type*&, impl_type const*) const {};
+        virtual impl_type* copy (impl_type const*) const { return nullptr; };
+        virtual void     assign (impl_type*&, impl_type const*) const {}
 
-        operator traits const*() { static null impl; return &impl; }
+        operator traits const*() { static traits impl; return &impl; }
     };
     struct deep_copy : public traits
     {
