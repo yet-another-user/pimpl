@@ -37,7 +37,7 @@ template<class impl_type>
 struct pimpl<user_type>::value_ptr
 {
     // Smart-pointer with the value-semantics behavior.
-    // The incomplete-type management technique is by Peter Dimov.
+    // The incomplete-type management technique is originally by Peter Dimov.
 
    ~value_ptr () { traits_->destroy(impl_); }
     value_ptr () : traits_(null()), impl_(0) {}
@@ -125,13 +125,12 @@ struct pimpl<user_type>::base
     template<class Y, class D> void reset(Y* p, D d) { impl_.reset(p, d); }
 
     // Access To the Implementation.
-    // Functions allow access to the underlying implementation. These
-    // methods are only meaningful to the code for which pimpl<>::implementation
-    // has been made visible. For example, the derived classes which extend the
-    // base implementation or the code inside IMPLEMENTATION files.
-    // Pimpl DOES NOT behave like a pointer, where, say, 'const std::shared_ptr' still allows
-    // modifications of the underlying data. Instead, Pimpl behaves like a proxy.
-    // Therefore, 'const' instances return 'const' pointers and references.
+    // Functions allow access to the underlying implementation. These methods
+    // are only meaningful in the code for which pimpl<>::implementation has been
+    // made visible. Pimpl behaves like a proxy and exhibits the deep-constness
+    // property unlike raw pointers and, say, std::shared_ptr. That is,
+    // 'const std::shared_ptr' still allows the underlying data modified!.
+    // Pimpl does not. So, 'const pimpls' return 'const' pointers and references.
     implementation const* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
     implementation const& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
     implementation*       operator->()       { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
@@ -160,11 +159,18 @@ inline
 user_type
 pimpl<user_type>::null()
 {
-    static_assert(pimpl<user_type>::value, "");
-    static_assert(sizeof(user_type) == sizeof(typename user_type::pimpl_type), "");
+    // null_type needs to be declared in pimpl::base.
+    // That way null_type below easily matches pimpl_type and,
+    // therefore, base::base(null_type) is called correctly.
 
-    typename user_type::null_type   arg;
-    typename user_type::pimpl_type null (arg);
+    using  null_type = typename user_type::null_type;
+    using pimpl_type = typename user_type::pimpl_type;
+
+    static_assert(pimpl<user_type>::value, "");
+    static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
+
+    null_type   arg;
+    pimpl_type null (arg);
 
     return *(user_type*) &null;
 }
