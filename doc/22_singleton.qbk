@@ -4,11 +4,11 @@ A quick singleton implementation might look as follows:
 
  struct deleter
  {
-    // Convenience deleter allows shared_ptrs to "manage" objects without actually managing them.
+    // Convenience deleter allows to "manage" objects without actually managing them.
     struct no { void operator()(void*) {}};
  };
 
- Book::Book() : base(null())
+ Book::Book() : pimpl_type(pimpl<Book>::null())
  {
     static implementation impl(parameters);
 

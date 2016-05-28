@@ -123,9 +123,9 @@
       deal. On a larger scale, reading, understanding and maintaining extra code,
       mentally separating the application logic from the infrastructure scaffolding,
       repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring
-      and expensive exercise. The following, therefore, seems like an improvement:
+      and wasteful exercise. The following, therefore, seems like an improvement:
     </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
    <span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
 
@@ -134,10 +134,11 @@
 <span class="special">};</span>
 </pre>
 <p>
-      With no loss in functionality it is shorter, application-focused and reasonably
-      self-documented. The most important quality though is that it consists of nothing
-      but <span class="emphasis"><em>pure application-specific interface</em></span>. It does not even
-      need to be a class as often there is nothing to restrict access to.
+      With no loss in functionality it is shorter, cleaner, application-focused and
+      reasonably self-documented. The most important quality though is that it consists
+      of nothing but <span class="emphasis"><em>pure application-specific interface</em></span>. It
+      does not even need to be a class as often there is nothing to restrict access
+      to.
     </p>
 <p>
       With such a clean <span class="emphasis"><em>separation of concerns</em></span> (public interface
@@ -150,16 +151,16 @@
 <th align="left">Note</th>
 </tr>
 <tr><td align="left" valign="top"><p>
-        Designing large-scale systems in general might probably be described as
-        <span class="emphasis"><em>API-centered design</em></span>. For such systems considerable initial
-        effort goes into designing interface specifications for modules/components
-        (high-level/architectural design) and classes (low-level/detailed design).
-        That allows further development to proceed to a large degree in parallel
-        -- with the service consumer relying on those contractual obligations (imposed
-        by the API) and with the service provider working towards meeting those contractual
-        obligations. The better/cleaner the interface/implementation separation of
-        concerns is, the fewer there are dependencies and interruptions of that parallel
-        development process.
+        In general, large-scale systems are easier evolved and maintained if they
+        implement the principle which might be described as <span class="emphasis"><em>API-centered
+        design</em></span>. For such systems considerable initial effort goes into
+        designing interface specifications for modules/components (high-level/architectural
+        design) and classes (low-level/detailed design). That allows further development
+        to proceed to a large degree in parallel -- with the service consumer relying
+        on those contractual obligations (imposed by the API) and with the service
+        provider working towards meeting those contractual obligations. The better/cleaner
+        the interface/implementation separation of concerns is, the fewer there are
+        dependencies and interruptions of that parallel development process.
       </p></td></tr>
 </table></div>
 </div>

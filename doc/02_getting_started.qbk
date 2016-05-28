@@ -63,10 +63,10 @@ Still, from design perspectives lumping the application logic with the infrastru
     string const& author() const;
  };
 
-With no loss in functionality it is shorter, application-focused and reasonably self-documented. The most important quality though is that it consists of nothing but ['pure application-specific interface]. It does not even need to be a class as often there is nothing to restrict access to. 
+With no loss in functionality it is shorter, cleaner, application-focused and reasonably self-documented. The most important quality though is that it consists of nothing but ['pure application-specific interface]. It does not even need to be a class as often there is nothing to restrict access to. 
 
 With such a clean ['separation of concerns] (public interface and private implementation) the technique is ideal for building large-scale systems and then, most importantly, managing evolution of those systems. 
 
-[note Designing large-scale systems in general might probably be described as ['API-centered design]. For such systems considerable initial effort goes into designing interface specifications for modules/components (high-level/architectural design) and classes (low-level/detailed design). That allows further development to proceed to a large degree in parallel -- with the service consumer relying on those contractual obligations (imposed by the API) and with the service provider working towards meeting those contractual obligations. The better/cleaner the interface/implementation separation of concerns is, the fewer there are dependencies and interruptions of that parallel development process.]
+[note In general, large-scale systems are easier evolved and maintained if they implement the principle which might be described as ['API-centered design]. For such systems considerable initial effort goes into designing interface specifications for modules/components (high-level/architectural design) and classes (low-level/detailed design). That allows further development to proceed to a large degree in parallel -- with the service consumer relying on those contractual obligations (imposed by the API) and with the service provider working towards meeting those contractual obligations. The better/cleaner the interface/implementation separation of concerns is, the fewer there are dependencies and interruptions of that parallel development process.]
 
 [endsect]

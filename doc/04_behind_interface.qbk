@@ -20,7 +20,7 @@ Still, the deployment pattern is reasonably self-documented and fairly straightf
   
  Book::Book(string const& title, string const& author)
  :
-    base_type(title, author)
+    pimpl_type(title, author)
  {}
  
  string const&
@@ -51,11 +51,10 @@ As mentioned earlier, if comparison functionality is required, a class with valu
     return impl.title == other->title && impl.author == other->author;
  }
  
-Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the declaration is local to one file, there is generally little value in making it a class. 
+Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the ['pimpl<Book>::implementation] implementation is local to one file, there is generally little value in making it a class. 
 
-[note Another liberating and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and clearly identified as ['impl.title] or ['(*this)->title] or something of that sort.]
+Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['pimpl<Book>::implementation] encapsulates ['private implementation] (data and behavior).
 
-Again, the public ['Book] class describes and implements the ['public] behavior and the internal ['pimpl<Book>::implementation] encapsulates ['private] implementation (data and behavior).
-
+[note Another liberating and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.]
 
 [endsect]

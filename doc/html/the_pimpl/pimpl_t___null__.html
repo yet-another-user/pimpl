@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>pimpl::null()</title>
+<title>pimpl&lt;T&gt;::null()</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
@@ -15,27 +15,18 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="the_pimpl.pimpl__null__"></a><a class="link" href="pimpl__null__.html" title="pimpl::null()">pimpl::null()</a>
+<a name="the_pimpl.pimpl_t___null__"></a><a class="link" href="pimpl_t___null__.html" title="pimpl&lt;T&gt;::null()">pimpl&lt;T&gt;::null()</a>
 </h2></div></div></div>
 <p>
       Again, <span class="emphasis"><em>Pimpl</em></span> exhibits a considerably stronger (and automatically
       managed) association between the external interface and internal implementation.
-      Hence,
+      Hence, the default behavior is that there is always an implementation data
+      behind every interface object.
     </p>
-<div class="note"><table border="0" summary="Note">
-<tr>
-<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
-<th align="left">Note</th>
-</tr>
-<tr><td align="left" valign="top"><p>
-        the default behavior is that there is always an implementation data behind
-        every interface object.
-      </p></td></tr>
-</table></div>
 <p>
       To override this default behavior we might write something like:
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
    <span class="comment">// an invalid Book object is created with no data behind it</span>
 <span class="special">}</span>
@@ -52,14 +43,14 @@
 <span class="special">}</span>
 </pre>
 <p>
-      Here initially we explicitly (via <span class="emphasis"><em>pimpl&lt;&gt;::null()</em></span>)
-      create the underlying <span class="emphasis"><em>pimpl_type</em></span> empty (like <span class="emphasis"><em>nullptr</em></span>
-      or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>. Later we create a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-      instance explicitly and assign the <span class="emphasis"><em>pimpl_type</em></span> to manage
-      it.
+      Here initially we explicitly (via <span class="emphasis"><em>Book::null()</em></span>) instruct
+      the underlying <span class="emphasis"><em>base_type</em></span> to be created empty/invalid (like
+      <span class="emphasis"><em>nullptr</em></span> or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>.
+      Later we create a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> instance
+      explicitly and assign the <span class="emphasis"><em>base_type</em></span> to manage it.
     </p>
 <p>
-      The technique is useful for lazy-instantiation optimization (as in the example
+      That technique is useful for lazy-instantiation optimization (as in the example
       above) or to support dynamic polymorphism that is discussed later.
     </p>
 <p>
@@ -70,9 +61,10 @@
 <pre class="programlisting"><span class="identifier">Book</span>
 <span class="identifier">find_book</span><span class="special">()</span>
 <span class="special">{</span>  <span class="special">...</span>
-   <span class="keyword">return</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">();</span> <span class="comment">// found nothing, return an invalid Book</span>
+   <span class="keyword">return</span> <span class="identifier">Book</span><span class="special">::</span><span class="identifier">null</span><span class="special">();</span> <span class="comment">// found nothing, return an invalid Book</span>
 <span class="special">}</span>
 <span class="special">...</span>
+
 <span class="identifier">Book</span> <span class="identifier">book</span> <span class="special">=</span> <span class="identifier">find_book</span><span class="special">();</span>
 
 <span class="keyword">if</span> <span class="special">(!</span><span class="identifier">book</span><span class="special">)</span> <span class="identifier">report</span> <span class="identifier">book</span><span class="special">-</span><span class="keyword">not</span><span class="special">-</span><span class="identifier">found</span><span class="special">;</span>

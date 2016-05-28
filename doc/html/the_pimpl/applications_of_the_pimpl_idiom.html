@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
-<link rel="prev" href="pimpl__null__.html" title="Pimpl::null()">
+<link rel="prev" href="pimpl__null__.html" title="pimpl::null()">
 <link rel="next" href="applications_of_the_pimpl_idiom/simple_singleton.html" title="Simple Singleton">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -44,21 +44,19 @@
       Constructors</a>
 </h3></div></div></div>
 <p>
-        The <span class="emphasis"><em>delegating constructors</em></span> feature is available in
-        C++11. For older non-C++11-compliant compilers (or for some other reason)
-        such functionality can be implemented using <span class="emphasis"><em>Pimpl</em></span>:
+        The <span class="emphasis"><em>delegating constructors</em></span> functionality is available
+        in C++11. For implementation reasons that functionality might instead be
+        implemented using <span class="emphasis"><em>Pimpl</em></span>:
       </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Foo</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Foo</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
    <span class="identifier">Foo</span> <span class="special">();</span>
    <span class="identifier">Foo</span> <span class="special">(</span><span class="keyword">int</span><span class="special">);</span>
 <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">v</span><span class="special">)</span>
-<span class="special">{</span> <span class="special">...</span>
-<span class="special">};</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">v</span><span class="special">)</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
 <span class="special">{</span>
   <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="number">42</span><span class="special">);</span> <span class="comment">// Calling the actual (non-delegating) constructor</span>
 <span class="special">};</span>

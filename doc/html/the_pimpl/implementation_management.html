@@ -7,7 +7,7 @@
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="prev" href="behind_the_interface.html" title="Behind the Interface">
-<link rel="next" href="pimpl__null__.html" title="Pimpl::null()">
+<link rel="next" href="pimpl__null__.html" title="pimpl::null()">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
@@ -24,15 +24,16 @@
     </p>
 <p>
       In that regard it might be tempting to see the <span class="emphasis"><em>Pimpl</em></span> idiom
-      as merely yet another variation of the smart-pointer idiom. However, the similarity
-      with <span class="emphasis"><em>std::shared_ptr</em></span> and the likes should not be exaggerated.
-      <span class="emphasis"><em>Pimpl</em></span>'s primary goal is <span class="emphasis"><em>implementation hiding</em></span>.
+      as merely yet another variation of the smart-pointer idiom and to a certain
+      degreee that is. However, the similarity with <span class="emphasis"><em>std::shared_ptr</em></span>
+      and the likes should not be exaggerated. <span class="emphasis"><em>Pimpl</em></span> behaves
+      like a proxy and its primary goal is <span class="emphasis"><em>implementation hiding</em></span>.
       For <span class="emphasis"><em>Pimpl</em></span> the smart-pointer behavior is somewhat incidental
       (an implementation detail) and optional rather than the primary design objective.
       Indeed, only <span class="emphasis"><em>Pimpls</em></span> with pointer semantics advertise and
       make available smart-pointer behavior to the user. More so, some unconventional
       high-efficiency value-semantics <span class="emphasis"><em>Pimpl</em></span> implementations
-      are not even opaque-pointer-based and memory-heap-based.
+      might not even be opaque-pointer-based and memory-heap-based.
     </p>
 <p>
       Consequently, <span class="emphasis"><em>Pimpl</em></span> possesses far stronger association
@@ -45,21 +46,23 @@
       class deployment pattern. For our <span class="emphasis"><em>Book</em></span> class instead of
       the smart-pointer style:
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<pre class="programlisting"><span class="comment">// Incorrect Pimpl deployment</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
 <span class="special">:</span>
-   <span class="identifier">base</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">))</span>
+   <span class="identifier">pimpl_type</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">))</span>
 <span class="special">{}</span>
 </pre>
 <p>
-      we write instead:
+      we write:
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<pre class="programlisting"><span class="comment">// Correct Pimpl deployment</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
 <span class="special">:</span>
-   <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
+   <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
 <span class="special">{}</span>
 </pre>
 <p>
-      All arguments passed to the <span class="emphasis"><em>base_type</em></span> are forwarded to
+      All arguments passed to the <span class="emphasis"><em>pimpl_type</em></span> are forwarded to
       the corresponding <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> constructor.
       Otherwise, the respective <span class="emphasis"><em>Book</em></span> constructor fails to compile
       if a suitable <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> constructor
@@ -69,7 +72,7 @@
       That <span class="emphasis"><em>perfect-forwarding</em></span> mechanism is generic and, consequently,
       works for the default constructor as well. That is,
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">()</span> <span class="special">{}</span>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">()</span> <span class="special">{}</span>
 </pre>
 <p>
       or the same but not as explicit

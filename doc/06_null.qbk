@@ -1,10 +1,12 @@
-[section Pimpl::null()]
+[section pimpl::null()]
 
-Again, ['Pimpl] exhibits a considerably stronger (and automatically managed) association between the external interface and internal implementation. Hence, the default behavior is that there is always an implementation data behind every interface object. 
+Again, ['Pimpl] exhibits a considerably stronger (and automatically managed) association between the external interface and internal implementation. Hence, 
+
+[note the default behavior is that there is always an implementation data behind every interface object.] 
 
 To override this default behavior we might write something like:  
  
- Book::Book() : base_type(Book::null())
+ Book::Book() : pimpl_type(pimpl<Book>::null())
  {
     // an invalid Book object is created with no data behind it
  }
@@ -20,26 +22,21 @@ To override this default behavior we might write something like:
     ...
  } 
  
-Here initially we explicitly (via ['Book::null()]) instruct the underlying ['base_type] to be created empty/invalid (like ['nullptr] or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['base_type] to manage it. 
+Here initially we explicitly (via ['pimpl<>::null()]) create the underlying ['pimpl_type] empty (like ['nullptr] or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['pimpl_type] to manage it. 
 
-That technique is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
+The technique is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
 
 We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as ['nullptr] or ['boost::optional] might be used: 
 
  Book
  find_book()
  {  ...
-    return Book::null(); // found nothing, return an invalid Book
+    return pimpl<Book>::null(); // found nothing, return an invalid Book
  }
  ...
-
  Book book = find_book();
  
  if (!book) report book-not-found;
  
 [endsect] 
-
-
-
-
 

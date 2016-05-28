@@ -45,7 +45,7 @@
 
 <span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
 <span class="special">:</span>
-   <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
+   <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
 <span class="special">{}</span>
 
 <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>
@@ -81,8 +81,13 @@
 <p>
       Here the <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> is again a
       <span class="emphasis"><em>struct</em></span> rather than a <span class="emphasis"><em>class</em></span>. As long
-      as the declaration is local to one file, there is generally little value in
-      making it a class.
+      as the <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> implementation
+      is local to one file, there is generally little value in making it a class.
+    </p>
+<p>
+      Again, the public <span class="emphasis"><em>Book</em></span> class describes and implements
+      the <span class="emphasis"><em>public interface</em></span> (behavior) and the internal <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
+      encapsulates <span class="emphasis"><em>private implementation</em></span> (data and behavior).
     </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -93,15 +98,10 @@
         Another liberating and unifying feature is that we do not have to follow
         (and fight over) a particular naming convention to draw attention to member
         variables (like the trailing underscore, the 'm_' prefix or the myriad others).
-        Member variables are accessed and clearly identified as <span class="emphasis"><em>impl.title</em></span>
+        Member variables are accessed and identified as <span class="emphasis"><em>impl.title</em></span>
         or <span class="emphasis"><em>(*this)-&gt;title</em></span> or something of that sort.
       </p></td></tr>
 </table></div>
-<p>
-      Again, the public <span class="emphasis"><em>Book</em></span> class describes and implements
-      the <span class="emphasis"><em>public</em></span> behavior and the internal <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-      encapsulates <span class="emphasis"><em>private</em></span> implementation (data and behavior).
-    </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

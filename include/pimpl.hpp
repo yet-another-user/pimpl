@@ -20,7 +20,8 @@ struct pimpl
     template<class> class            value_ptr;
     template<template<class> class> class base;
 
-    using   unique = base<value_ptr>;
+    template<class T> using value_ptr1 = std::unique_ptr<T>;
+    using   unique = base<value_ptr1>;
     using   shared = base<std::shared_ptr>;
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
@@ -95,11 +96,12 @@ struct pimpl<user_type>::base
 {
     struct null_type {};
 
-    /***************/ using implementation = typename pimpl<user_type>::implementation;
-    /***************/ using     pimpl_type = base;
-    /***************/ using   managed_type = manager<implementation>;
-    template<class T> using         no_ref = typename std::remove_reference<T>::type;
-    template<class T> using     is_derived = typename boost::enable_if<std::is_base_of<pimpl_type, no_ref<T>>, null_type*>::type;
+    using implementation = typename pimpl<user_type>::implementation;
+    using     pimpl_type = base;
+    using   managed_type = manager<implementation>;
+
+    template<class T> using     no_ref = typename std::remove_reference<T>::type;
+    template<class T> using is_derived = typename boost::enable_if<std::is_base_of<base, no_ref<T>>, null_type*>::type;
 
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
