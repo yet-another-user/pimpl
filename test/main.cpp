@@ -69,9 +69,13 @@ test_swap()
     Value vt13 = vt12;
     Value vt14 (vt12);
 
+    BOOST_TEST(pt16 == pt17); // No copying. Implementation shared.
     BOOST_TEST(pt16.id() == pt17.id()); // No copying. Implementation shared.
     BOOST_TEST(vt12.trace() == "Value::implementation(int)");
     BOOST_TEST(vt13.trace() == "Value::implementation(Value::implementation const&)");
+    BOOST_TEST(vt14.trace() == "Value::implementation(Value::implementation const&)");
+    BOOST_TEST(vt13.id() != vt12.id());
+    BOOST_TEST(vt14.id() != vt12.id());
 
     int pt16_id = pt16.id();
     int pt17_id = pt17.id();
