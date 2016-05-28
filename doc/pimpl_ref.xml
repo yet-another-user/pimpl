@@ -28,9 +28,6 @@
 <method name="operator*"><type>implementation &amp;</type></method>
 <method name="use_count" cv="const"><type>long</type></method>
 </method-group>
-<method-group name="public static functions">
-<method name="null" specifiers="static"><type>user_type</type></method>
-</method-group>
 <method-group name="protected member functions">
 </method-group>
 <constructor><parameter name=""><paramtype><classname>null_type</classname></paramtype></parameter></constructor>
@@ -74,8 +71,7 @@
 <constructor><parameter name="p"><paramtype>impl_type *</paramtype></parameter></constructor>
 <constructor><parameter name="that"><paramtype><classname>value_ptr</classname> const &amp;</paramtype></parameter></constructor>
 <copy-assignment><type><classname>value_ptr</classname> &amp;</type><parameter name="that"><paramtype><classname>value_ptr</classname> const &amp;</paramtype></parameter></copy-assignment>
-</struct><typedef name="value_ptr1"><type>std::unique_ptr&lt; T &gt;</type></typedef>
-<typedef name="unique"><type><classname>base</classname>&lt; value_ptr1 &gt;</type></typedef>
+</struct><typedef name="unique"><type><classname>base</classname>&lt; <classname>value_ptr</classname> &gt;</type></typedef>
 <typedef name="shared"><type><classname>base</classname>&lt; std::shared_ptr &gt;</type></typedef>
 <typedef name="yes_type"><type>boost::type_traits::yes_type</type></typedef>
 <typedef name="no_type"><type>boost::type_traits::no_type</type></typedef>

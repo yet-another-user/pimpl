@@ -47,8 +47,8 @@
 <p>
       In the example above it is very tempting to deploy <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
       instead of the raw <span class="emphasis"><em>implementation*</em></span> and, in fact, that
-      is what H. Sutter advocates in <a class="link" href="references.html#13">[13]</a>. Unfortunately,
-      <span class="emphasis"><em>std::unique_ptr</em></span> as its predecessor <span class="emphasis"><em>std::auto_ptr</em></span>
+      is what H. Sutter advocates in <a class="link" href="references.html#13">[13]</a>, <a class="link" href="references.html#14">[14]</a>.
+      Unfortunately, <span class="emphasis"><em>std::unique_ptr</em></span> as its predecessor <span class="emphasis"><em>std::auto_ptr</em></span>
       have been developed with very different goals in mind. Importantly, they lack
       the incomplete-type management functionality and require <span class="emphasis"><em>Book::implementation</em></span>
       to be a complete type (see <a class="link" href="references.html#13">[13]</a> for details). Consequently,

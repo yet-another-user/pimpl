@@ -105,8 +105,6 @@ struct pimpl<user_type>::base
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
 
-    static user_type null() { return pimpl<user_type>::null(); }
-
     // Comparison Operators.
     // base::op==() transfers the comparison to 'impl_' (std::shared_ptr or pimpl::value_ptr).
     // Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable as there is shared_ptr::op==().

@@ -102,7 +102,7 @@ test_runtime_polymorphic_behavior()
     Base*         bp3 = &base3;
     Base*         bp4 = &derived1;
     Base*         bp5 = &derived2;
-    Base         bad1 = Base::null();
+    Base         bad1 = pimpl<Base>::null();
     Base         bad2 = pimpl<Base>::null();
     Base         bad3 = pimpl<Derived1>::null();
     Base         bad4 = pimpl<Derived2>::null();
