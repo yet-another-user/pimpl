@@ -148,6 +148,11 @@ static
 void
 test_constructors()
 {
+    Shared p01 = pimpl<Shared>::null(); BOOST_TEST(p01.trace() == "null");
+    Shared p02 (pimpl<Shared>::null()); BOOST_TEST(p02.trace() == "null");
+    Value  v01 = pimpl<Value>::null();  BOOST_TEST(v01.trace() == "null");
+    Value  v02 (pimpl<Value>::null());  BOOST_TEST(v02.trace() == "null");
+
     singleton_type single;
     Foo               foo;
     Foo const   const_foo = foo;
