@@ -47,9 +47,9 @@ test_is_pimpl()
     BOOST_TEST(false == pimpl<int>::value);
     BOOST_TEST(false == pimpl<int*>::value);
     BOOST_TEST(false == pimpl<int const&>::value);
-    BOOST_TEST(true  == pimpl<Test>::value);
-    BOOST_TEST(true  == pimpl<Test const>::value);
-    BOOST_TEST(false == pimpl<Test*>::value);
+    BOOST_TEST(true  == pimpl<Shared>::value);
+    BOOST_TEST(true  == pimpl<Shared const>::value);
+    BOOST_TEST(false == pimpl<Shared*>::value);
     BOOST_TEST(true  == pimpl<Value>::value);
     BOOST_TEST(true  == pimpl<Base>::value);
     BOOST_TEST(true  == pimpl<Derived1>::value);
@@ -63,8 +63,8 @@ test_swap()
 {
     singleton_type single;
 
-    Test  pt16 (single);
-    Test  pt17 (single);
+    Shared  pt16 (single);
+    Shared  pt17 (single);
     Value vt12 (5);
     Value vt13 = vt12;
     Value vt14 (vt12);
@@ -125,10 +125,10 @@ test_runtime_polymorphic_behavior()
     BOOST_TEST(derived1 == base2);
     BOOST_TEST(derived2 == base3);
 
-    bool bad1_bool1 =   bad5 ? true : false; // Test conversion to bool
-    bool bad1_bool2 = !!bad5; // Test operator!()
-    bool bad2_bool1 =   bad6 ? true : false; // Test conversion to bool
-    bool bad2_bool2 = !!bad6; // Test operator!()
+    bool bad1_bool1 =   bad5 ? true : false; // Shared conversion to bool
+    bool bad1_bool2 = !!bad5; // Shared operator!()
+    bool bad2_bool1 =   bad6 ? true : false; // Shared conversion to bool
+    bool bad2_bool2 = !!bad6; // Shared operator!()
 
     BOOST_TEST(!bad1_bool1);
     BOOST_TEST(!bad1_bool2);
@@ -148,83 +148,73 @@ static
 void
 test_constructors()
 {
-    singleton_type singleton;
-    pass_value_type pass_value;
-    Foo              foo;
-    Foo const  const_foo = foo;
-    Foo&             ref = foo;
-    Foo const& const_ref = const_foo;
-    Foo*             ptr = &foo;
-    Foo const* const_ptr = &const_foo;
+    singleton_type single;
+    Foo               foo;
+    Foo const   const_foo = foo;
+    Foo&              ref = foo;
+    Foo const&  const_ref = const_foo;
+    Foo*              ptr = &foo;
+    Foo const*  const_ptr = &const_foo;
 
-    Test p11;                          BOOST_TEST(p11.trace() == "Test::implementation()");
-    Value v11;                         BOOST_TEST(v11.trace() == "Value::implementation()");
-    Test p12(5);                       BOOST_TEST(p12.trace() == "Test::implementation(int)");
-    Value v12(5);                      BOOST_TEST(v12.trace() == "Value::implementation(int)");
-    Test p13 = p12;                    BOOST_TEST(p13.id() == p12.id()); // No copying. Implementation shared.
-    Test p14(p12);                     BOOST_TEST(p14.id() == p12.id()); // No copying. Implementation shared.
-                                       BOOST_TEST(p13.trace() == "Test::implementation(int)"); // trace state is the same
-                                       BOOST_TEST(p14.trace() == "Test::implementation(int)"); // trace state is the same
-    Value v13 = v12;                   BOOST_TEST(v13.trace() == "Value::implementation(Value::implementation const&)");
-    Value v14(v12);                    BOOST_TEST(v14.trace() == "Value::implementation(Value::implementation const&)");
-                                       BOOST_TEST(v13.id() != v12.id()); // Implementation copied.
-                                       BOOST_TEST(v14.id() != v12.id()); // Implementation copied.
-    Test p15(5, 6);                    BOOST_TEST(p15.trace() == "Test::implementation(int, int)");
-    Test p16(singleton);
-    Test p17(singleton);               BOOST_TEST(p16.id() == p17.id()); // No copying. Implementation shared.
+    Shared p11;             BOOST_TEST(p11.trace() == "Shared::implementation()");
+    Shared p12 (5);         BOOST_TEST(p12.trace() == "Shared::implementation(int)");
+    Shared p15 (5, 6);      BOOST_TEST(p15.trace() == "Shared::implementation(int, int)");
+    Shared p13 = p12;       BOOST_TEST(p13.id() == p12.id()); // No copying. Implementation shared.
+    Shared p14 (p12);       BOOST_TEST(p14.id() == p12.id()); // No copying. Implementation shared.
+                            BOOST_TEST(p13.trace() == "Shared::implementation(int)"); // trace state is the same
+                            BOOST_TEST(p14.trace() == "Shared::implementation(int)"); // trace state is the same
+    Shared p16 (single);    BOOST_TEST(p16.trace() == "Shared::implementation()");
+    Shared p17 (single);    BOOST_TEST(p17.trace() == "Shared::implementation()");
+                            BOOST_TEST(p17.id() == p16.id()); // No copying. Implementation shared.
 
-    Test p21(foo);                     BOOST_TEST(p21.trace() == "Test::implementation(Foo&)");
-    Test p22(const_foo);               BOOST_TEST(p22.trace() == "Test::implementation(Foo const&)");
-    Test p23(ref);                     BOOST_TEST(p23.trace() == "Test::implementation(Foo&)");
-    Test p24(const_ref);               BOOST_TEST(p24.trace() == "Test::implementation(Foo const&)");
-    Test p25(ptr);                     BOOST_TEST(p25.trace() == "Test::implementation(Foo*)");
-    Test p26(const_ptr);               BOOST_TEST(p26.trace() == "Test::implementation(Foo const*)");
+    Shared p21(foo);        BOOST_TEST(p21.trace() == "Shared::implementation(Foo&)");
+    Shared p22(const_foo);  BOOST_TEST(p22.trace() == "Shared::implementation(Foo const&)");
+    Shared p23(ref);        BOOST_TEST(p23.trace() == "Shared::implementation(Foo&)");
+    Shared p24(const_ref);  BOOST_TEST(p24.trace() == "Shared::implementation(Foo const&)");
+    Shared p25(ptr);        BOOST_TEST(p25.trace() == "Shared::implementation(Foo*)");
+    Shared p26(const_ptr);  BOOST_TEST(p26.trace() == "Shared::implementation(Foo const*)");
 
-    Test p31(const_foo, const_foo);    BOOST_TEST(p31.trace() == "Test::implementation(Foo const&, Foo const&)");
-    Test p32(foo, const_foo);          BOOST_TEST(p32.trace() == "Test::implementation(Foo&, Foo const&)");
-    Test p33(const_foo, foo);          BOOST_TEST(p33.trace() == "Test::implementation(Foo const&, Foo&)");
-    Test p34(foo, foo);                BOOST_TEST(p34.trace() == "Test::implementation(Foo&, Foo&)");
-    Test p35(foo, Foo());              BOOST_TEST(p35.trace() == "Test::implementation(Foo&, Foo const&)");
-    Test p36(Foo(), foo);              BOOST_TEST(p36.trace() == "Test::implementation(Foo const&, Foo&)");
-    Test p37(pass_value);              BOOST_TEST(p37.trace() == "Test::implementation(Foo const&)");
+    Value v11;              BOOST_TEST(v11.trace() == "Value::implementation()");
+    Value v12 (5);          BOOST_TEST(v12.trace() == "Value::implementation(int)");
+    Value v13 = v12;        BOOST_TEST(v13.trace() == "Value::implementation(Value::implementation const&)");
+    Value v14 (v12);        BOOST_TEST(v14.trace() == "Value::implementation(Value::implementation const&)");
+                            BOOST_TEST(v13.id() != v12.id()); // Implementation copied.
+                            BOOST_TEST(v14.id() != v12.id()); // Implementation copied.
 }
 
 static
 void
 test_bool_conversions()
 {
-    Test       p1; BOOST_TEST(p1.trace() == "Test::implementation()");
-    Value      v1; BOOST_TEST(v1.trace() == "Value::implementation()");
-    Test       p2 = pimpl<Test>::null();
-    Value      v2 = pimpl<Value>::null();
-    bool p1_bool1 = bool(p1);   // Test conversion to bool
-    bool p1_bool2 = !!p1;       // Test operator!()
-    bool v1_bool1 = bool(v1);   // Test conversion to bool
-    bool v1_bool2 = !!v1;       // Test operator!()
-    bool p2_bool1 = bool(p2);   // Test conversion to bool
-    bool p2_bool2 = !!p2;       // Test operator!()
-    bool v2_bool1 = bool(v2);   // Test conversion to bool
-    bool v2_bool2 = !!v2;       // Test operator!()
+    Shared  p1;
+    Value v1;
+    Shared  p2 = pimpl<Shared>::null();
+    Value v2 = pimpl<Value>::null();
 
-    BOOST_TEST( p1_bool1);
-    BOOST_TEST( p1_bool2);
-    BOOST_TEST( v1_bool1);
-    BOOST_TEST( v1_bool2);
-    BOOST_TEST(!p2_bool1);
-    BOOST_TEST(!p2_bool2);
-    BOOST_TEST(!v2_bool1);
-    BOOST_TEST(!v2_bool2);
+    BOOST_TEST(p1.trace() == "Shared::implementation()");
+    BOOST_TEST(v1.trace() == "Value::implementation()");
+    BOOST_TEST(p2.trace() == "null");
+    BOOST_TEST(v2.trace() == "null");
+
+    BOOST_TEST(bool(p1));
+    BOOST_TEST(!!p1);
+    BOOST_TEST(bool(v1));
+    BOOST_TEST(!!v1);
+    BOOST_TEST(!bool(p2));
+    BOOST_TEST(!p2);
+    BOOST_TEST(!bool(v2));
+    BOOST_TEST(!v2);
 }
 
 static
 void
 test_comparisons()
 {
-    Test p1;
+    Shared p1;
     Value v1;
-    Test p2(5);
+    Shared p2(5);
     Value v2(5);
-    Test p3 = p2;
+    Shared p3 = p2;
     Value v3 = v2;
 
     BOOST_TEST(p2 == p3); // calls pimpl::op==()
@@ -240,9 +230,9 @@ test_singleton()
 {
     singleton_type single;
 
-    Test p1 (single);
-    Test p2 (single);
-    std::set<Test> collected;
+    Shared p1 (single);
+    Shared p2 (single);
+    std::set<Shared> collected;
 
     collected.insert(p1);
     collected.insert(p2);

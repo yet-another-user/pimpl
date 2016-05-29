@@ -27,27 +27,23 @@ struct uid
 // This internal implementation usually only have destructor, constructors,
 // data and probably internal methods. Given it is already internal by design,
 // it does not need to be a 'class'. All public methods are declared in the
-// external visible Test class. Then, data in this structure are accessed as
+// external visible Shared class. Then, data in this structure are accessed as
 // (*this)->data or (**this).data.
-template<> struct pimpl<Test>::implementation : boost::noncopyable
+template<> struct pimpl<Shared>::implementation : boost::noncopyable
 {
     typedef implementation this_type;
 
-    implementation () : int_(0)             { trace_ =  "Test::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ =  "Test::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ =  "Test::implementation(int, int)"; }
-    implementation (Foo&)                   { trace_ =  "Test::implementation(Foo&)"; }
-    implementation (Foo const&)             { trace_ =  "Test::implementation(Foo const&)"; }
-    implementation (Foo      &, Foo      &) { trace_ =  "Test::implementation(Foo&, Foo&)"; }
-    implementation (Foo      &, Foo const&) { trace_ =  "Test::implementation(Foo&, Foo const&)"; }
-    implementation (Foo const&, Foo      &) { trace_ =  "Test::implementation(Foo const&, Foo&)"; }
-    implementation (Foo const&, Foo const&) { trace_ =  "Test::implementation(Foo const&, Foo const&)"; }
-    implementation (Foo*)                   { trace_ =  "Test::implementation(Foo*)"; }
-    implementation (Foo const*)             { trace_ =  "Test::implementation(Foo const*)"; }
+    implementation () : int_(0)             { trace_ =  "Shared::implementation()"; }
+    implementation (int k) : int_(k)        { trace_ =  "Shared::implementation(int)"; }
+    implementation (int k, int l) : int_(k) { trace_ =  "Shared::implementation(int, int)"; }
+    implementation (Foo&)                   { trace_ =  "Shared::implementation(Foo&)"; }
+    implementation (Foo const&)             { trace_ =  "Shared::implementation(Foo const&)"; }
+    implementation (Foo*)                   { trace_ =  "Shared::implementation(Foo*)"; }
+    implementation (Foo const*)             { trace_ =  "Shared::implementation(Foo const*)"; }
     implementation (this_type const& o)
     :
         int_    (o.int_),
-        trace_  ("Test::implementation(Test::implementation const&)"),
+        trace_  ("Shared::implementation(Shared::implementation const&)"),
         id_     (o.id_)
     {}
 
@@ -76,34 +72,25 @@ template<> struct pimpl<Value>::implementation
     uid               id_;
 };
 
-typedef Foo const& cref;
+string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
+string Value:: trace () const { return *this ? (*this)->trace_ : "null"; }
+int    Shared::id () const { return (*this)->id_; }
+int    Value:: id () const { return (*this)->id_; }
 
-//Test::Test(pass_value_type) : pimpl_type(Foo::create()) {}
-Test::Test(pass_value_type const&) : pimpl_type(cref(create_foo())) {}
+Shared::Shared () : pimpl_type() {}
+Value::  Value () : pimpl_type() {}
+Shared::Shared (int k) : pimpl_type(k) {}
+Value::  Value (int k) : pimpl_type(k) {}
+Shared::Shared (int k, int l) : pimpl_type(k, l) {}
 
-string const& Test::trace () const { return (*this)->trace_; }
-string const& Value::trace () const { return (*this)->trace_; }
-int           Test::   id () const { return (*this)->id_; }
-int           Value::   id () const { return (*this)->id_; }
+Shared::Shared (Foo&       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const& foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo*       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const* foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
 
-Test::Test () : pimpl_type() {}                     // Call implementation::implementation()
-Value::Value () : pimpl_type() {}                     // ditto
-Test::Test (int k) : pimpl_type(k) {}               // Call implementation::implementation(int)
-Value::Value (int k) : pimpl_type(k) {}               // ditto
-Test::Test (int k, int l) : pimpl_type(k, l) {}     // Call implementation::implementation(int, int)
+static Shared single;
 
-Test::Test (Foo&       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test::Test (Foo const& foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test::Test (Foo*       foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test::Test (Foo const* foo) : pimpl_type(foo) {}                  // Make sure 'const' handled properly
-Test::Test (Foo      & f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
-Test::Test (Foo      & f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
-Test::Test (Foo const& f1, Foo      & f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
-Test::Test (Foo const& f1, Foo const& f2) : pimpl_type(f1, f2) {} // Make sure 'const' handled properly
-
-static Test single;
-
-Test::Test (singleton_type const&) : pimpl_type(single) {} // 'single' is used as a Singleton.
+Shared::Shared(singleton_type) : pimpl_type(single) {} // 'single' is used as a Singleton.
 
 bool
 Value::operator==(Value const& that) const

@@ -6,37 +6,31 @@
 #include <string>
 
 struct singleton_type {};
-struct pass_value_type {};
 struct Foo {};
 
 using string = std::string;
 
-struct Test : public pimpl<Test>::shared
+struct Shared : public pimpl<Shared>::shared // Pure interface.
 {
-    // Pure interface. The implementation is hidden in pimpl_test_implementation.cpp
+    Shared ();
+    Shared (int);
+    Shared (int, int);
+    Shared (Foo&);
+    Shared (Foo const&);
+    Shared (Foo const&, Foo const&);
+    Shared (Foo&, Foo const&);
+    Shared (Foo const&, Foo&);
+    Shared (Foo&, Foo&);
+    Shared (Foo*);
+    Shared (Foo const*);
+    Shared (singleton_type);
 
-    Test ();
-    Test (int);
-    Test (int, int);
-    Test (Foo&);
-    Test (Foo const&);
-    Test (Foo const&, Foo const&);
-    Test (Foo&, Foo const&);
-    Test (Foo const&, Foo&);
-    Test (Foo&, Foo&);
-    Test (Foo*);
-    Test (Foo const*);
-    Test (singleton_type const&);
-    Test (pass_value_type const&);
-
-    string const& trace () const;
-    int              id () const;
+    string trace () const;
+    int       id () const;
 };
 
-struct Value : public pimpl<Value>::unique
+struct Value : public pimpl<Value>::unique // Pure interface.
 {
-    // Pure interface. The implementation is hidden in pimpl_test_implementation.cpp
-
     Value ();
     Value (int);
 
@@ -45,8 +39,8 @@ struct Value : public pimpl<Value>::unique
     bool operator==(Value const& o) const;
     bool operator!=(Value const& o) const { return !operator==(o); }
 
-    string const& trace () const;
-    int              id () const;
+    string trace () const;
+    int       id () const;
 };
 
 struct Base : public pimpl<Base>::shared
@@ -57,15 +51,7 @@ struct Base : public pimpl<Base>::shared
     string const& trace() const;
 };
 
-struct Derived1 : public Base
-{
-    Derived1 (int, int);
-};
-
-struct Derived2 : public Derived1
-{
-    Derived2 (int, int, int);
-};
-
+struct Derived1 : public Base { Derived1 (int, int); };
+struct Derived2 : public Derived1 { Derived2 (int, int, int); };
 
 #endif // AUXILIARY_PIMPLE_TEST_HPP
