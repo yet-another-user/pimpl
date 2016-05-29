@@ -14,12 +14,13 @@
 template<class user_type>
 struct pimpl
 {
-    struct                      implementation;
-    template<class> class            value_ptr;
-    template<template<class> class> class base;
+    class       implementation;
+    class            value_mgr;
+    class           shared_mgr;
+    template<class> class base;
 
-    using   unique = base<value_ptr>;
-    using   shared = base<std::shared_ptr>;
+    using   unique = base<value_mgr>;
+    using   shared = base<shared_mgr>;
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
     using ptr_type = typename std::remove_reference<user_type>::type*;
@@ -48,66 +49,76 @@ struct pimpl
     }
 };
 
-template<class user_type>
-template<class impl_type>
-struct pimpl<user_type>::value_ptr
+template<typename user_type>
+struct pimpl<user_type>::shared_mgr
 {
-    // Smart-pointer with the value-semantics behavior.
-    // The incomplete-type management technique is originally by Peter Dimov.
+    template<typename impl_type> using type = std::shared_ptr<impl_type>;
+};
 
-   ~value_ptr () { traits_->destroy(impl_); }
-    value_ptr () : traits_(traits()), impl_(0) {}
-    value_ptr (impl_type* p) : traits_(deep_copy()), impl_(p) {}
-    value_ptr (value_ptr const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
-
-    value_ptr& operator= (value_ptr const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
-    bool       operator< (value_ptr const& that) const { return this->impl_ < that.impl_; }
-
-    void           reset (impl_type* p) { value_ptr(p).swap(*this); }
-    void            swap (value_ptr& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
-    impl_type*       get () { return impl_; }
-    impl_type const* get () const { return impl_; }
-    long       use_count () const { return 1; }
-
-    private:
-
-    struct traits
+template<typename user_type>
+struct pimpl<user_type>::value_mgr
+{
+    template<class impl_type>
+    struct value_ptr
     {
-        virtual ~traits() =default;
+        // Smart-pointer with the value-semantics behavior.
+        // The incomplete-type management technique is originally by Peter Dimov.
 
-        virtual void    destroy (impl_type*&) const {}
-        virtual impl_type* copy (impl_type const*) const { return nullptr; }
-        virtual void     assign (impl_type*&, impl_type const*) const {}
+       ~value_ptr () { traits_->destroy(impl_); }
+        value_ptr () : traits_(traits()), impl_(0) {}
+        value_ptr (impl_type* p) : traits_(deep_copy()), impl_(p) {}
+        value_ptr (value_ptr const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
-        operator traits const*() { static traits impl; return &impl; }
-    };
-    struct deep_copy : public traits
-    {
-        virtual void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
-        virtual impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
-        virtual void     assign (impl_type*& a, impl_type const* b) const
+        value_ptr& operator= (value_ptr const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
+        bool       operator< (value_ptr const& that) const { return this->impl_ < that.impl_; }
+
+        void           reset (impl_type* p) { value_ptr(p).swap(*this); }
+        void            swap (value_ptr& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
+        impl_type*       get () { return impl_; }
+        impl_type const* get () const { return impl_; }
+        long       use_count () const { return 1; }
+
+        private:
+
+        struct traits
         {
-            /**/ if ( a ==  b);
-            else if ( a &&  b) *a = *b;
-            else if (!a &&  b) a = copy(b);
-            else if ( a && !b) destroy(a);
-        }
-        operator traits const*() { static deep_copy impl; return &impl; }
-    };
+            virtual ~traits() =default;
 
-    traits const* traits_;
-    impl_type*      impl_;
+            virtual void    destroy (impl_type*&) const {}
+            virtual impl_type* copy (impl_type const*) const { return nullptr; }
+            virtual void     assign (impl_type*&, impl_type const*) const {}
+
+            operator traits const*() { static traits impl; return &impl; }
+        };
+        struct deep_copy : public traits
+        {
+            virtual void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
+            virtual impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
+            virtual void     assign (impl_type*& a, impl_type const* b) const
+            {
+                /**/ if ( a ==  b);
+                else if ( a &&  b) *a = *b;
+                else if (!a &&  b) a = copy(b);
+                else if ( a && !b) destroy(a);
+            }
+            operator traits const*() { static deep_copy impl; return &impl; }
+        };
+
+        traits const* traits_;
+        impl_type*      impl_;
+    };
+    template<typename impl_type> using type = value_ptr<impl_type>;
 };
 
 template<class user_type>
-template<template<class> class manager>
+template<class manager>
 struct pimpl<user_type>::base
 {
     struct null_type {};
 
     using implementation = typename pimpl<user_type>::implementation;
     using     pimpl_type = base;
-    using   managed_type = manager<implementation>;
+    using   managed_type = typename manager::template type<implementation>;
 
     template<class T> using     rm_ref = typename std::remove_reference<T>::type;
     template<class T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;
