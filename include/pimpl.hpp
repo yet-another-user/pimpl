@@ -27,7 +27,7 @@ struct pimpl
     template<class Y> static yes_type test (Y const*, typename Y::pimpl_type const* =0);
     /***************/ static no_type  test (...);
 
-    BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(0)))));
+    BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
 
     static user_type null()
     {
