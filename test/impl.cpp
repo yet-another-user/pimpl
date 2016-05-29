@@ -106,19 +106,20 @@ Value::operator==(Value const& that) const
 template<> struct pimpl<Base>::implementation
 {
     implementation (int k) : base_int_(k), trace_("Base::implementation(int)") {}
-    virtual ~implementation ()            { /*printf("Base::~implementation()\n"); */ }
+    virtual ~implementation() =default;
 
     virtual string call_virtual() { return("Base::call_virtual()"); }
 
-    int      base_int_;
+    int base_int_;
     string trace_;
 };
 
 struct Derived1Impl : public pimpl<Base>::implementation
 {
-    typedef pimpl<Base>::implementation pimpl_type;
+    typedef pimpl<Base>::implementation base_impl;
+    typedef Derived1Impl                this_impl;
 
-    Derived1Impl (int k, int l) : pimpl_type(k), derived_int_(l)
+    Derived1Impl (int k, int l) : base_impl(k), derived_int_(l)
     {
         BOOST_TEST(trace_ == "Base::implementation(int)");
         trace_ = "Derived1::implementation(int, int)";
@@ -134,9 +135,10 @@ struct Derived1Impl : public pimpl<Base>::implementation
 
 struct Derived2Impl : public Derived1Impl
 {
-    typedef Derived1Impl pimpl_type;
+    typedef Derived1Impl base_impl;
+    typedef Derived2Impl this_impl;
 
-    Derived2Impl (int k, int l, int m) : pimpl_type(k, l), more_int_(m)
+    Derived2Impl (int k, int l, int m) : base_impl(k, l), more_int_(m)
     {
         BOOST_TEST(trace_ == "Derived1::implementation(int, int)");
         trace_ = "Derived2::implementation(int, int, int)";
@@ -164,10 +166,10 @@ Derived2::Derived2(int k, int l, int m) : Derived1(pimpl<Derived1>::null())
     reset(new Derived2Impl(k, l, m));
 }
 
-string const&
+string
 Base::trace() const
 {
-    return (*this)->trace_;
+    return *this ? (*this)->trace_ : "null";
 }
 
 string

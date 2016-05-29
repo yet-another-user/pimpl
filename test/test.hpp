@@ -48,7 +48,7 @@ struct Base : public pimpl<Base>::shared
     Base (int);
 
     string call_virtual(); // Non-virtual.
-    string const& trace() const;
+    string trace() const;
 };
 
 struct Derived1 : public Base { Derived1 (int, int); };

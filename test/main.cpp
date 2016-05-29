@@ -146,13 +146,25 @@ test_runtime_polymorphic_behavior()
 
 static
 void
-test_constructors()
+test_null()
 {
     Shared p01 = pimpl<Shared>::null(); BOOST_TEST(p01.trace() == "null");
     Shared p02 (pimpl<Shared>::null()); BOOST_TEST(p02.trace() == "null");
     Value  v01 = pimpl<Value>::null();  BOOST_TEST(v01.trace() == "null");
     Value  v02 (pimpl<Value>::null());  BOOST_TEST(v02.trace() == "null");
 
+    Base     p03 (pimpl<    Base>::null()); BOOST_TEST(p03.trace() == "null");
+    Derived1 p04 (pimpl<Derived1>::null()); BOOST_TEST(p04.trace() == "null");
+    Derived2 p05 (pimpl<Derived2>::null()); BOOST_TEST(p05.trace() == "null");
+    Base     p06 (p03); BOOST_TEST(p06.trace() == "null");
+    Base     p07 (p04); BOOST_TEST(p07.trace() == "null");
+    Base     p08 (p05); BOOST_TEST(p08.trace() == "null");
+}
+
+static
+void
+test_constructors()
+{
     singleton_type single;
     Foo               foo;
     Foo const   const_foo = foo;
@@ -252,6 +264,7 @@ int
 main(int argc, char const* argv[])
 {
     test_basics();
+    test_null();
     test_is_pimpl();
     test_constructors();
     test_bool_conversions();
