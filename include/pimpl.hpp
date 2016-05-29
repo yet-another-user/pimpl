@@ -14,8 +14,6 @@
 template<class user_type>
 struct pimpl
 {
-    static user_type null();
-
     struct                      implementation;
     template<class> class            value_ptr;
     template<template<class> class> class base;
@@ -30,6 +28,24 @@ struct pimpl
     /***************/ static no_type  test (...);
 
     BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(0)))));
+
+    static user_type null()
+    {
+        // null_type needs to be declared in pimpl::base.
+        // That way null_type below easily matches pimpl_type and,
+        // therefore, base::base(null_type) is called correctly.
+
+        using  null_type = typename user_type::null_type;
+        using pimpl_type = typename user_type::pimpl_type;
+
+        static_assert(pimpl<user_type>::value, "");
+        static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
+
+        null_type   arg;
+        pimpl_type null (arg);
+
+        return *(user_type*) &null;
+    }
 };
 
 template<class user_type>
@@ -148,26 +164,5 @@ struct pimpl<user_type>::base
 
     private: managed_type impl_;
 };
-
-template<class user_type>
-inline
-user_type
-pimpl<user_type>::null()
-{
-    // null_type needs to be declared in pimpl::base.
-    // That way null_type below easily matches pimpl_type and,
-    // therefore, base::base(null_type) is called correctly.
-
-    using  null_type = typename user_type::null_type;
-    using pimpl_type = typename user_type::pimpl_type;
-
-    static_assert(pimpl<user_type>::value, "");
-    static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
-
-    null_type   arg;
-    pimpl_type null (arg);
-
-    return *(user_type*) &null;
-}
 
 #endif // AUXILIARY_PIMPL_HPP
