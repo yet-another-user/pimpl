@@ -53,6 +53,14 @@ template<typename user_type>
 struct pimpl<user_type>::shared_mgr
 {
     template<typename impl_type> using type = std::shared_ptr<impl_type>;
+
+    template<typename impl_type, typename... Args>
+    static
+    type<impl_type>
+    make(Args&&... args)
+    {
+        return std::make_shared<impl_type>(std::forward<Args>(args)...);
+    }
 };
 
 template<typename user_type>
@@ -108,6 +116,14 @@ struct pimpl<user_type>::value_mgr
         impl_type*      impl_;
     };
     template<typename impl_type> using type = value_ptr<impl_type>;
+
+    template<typename impl_type, typename... Args>
+    static
+    impl_type*
+    make(Args&&... args)
+    {
+        return new impl_type(std::forward<Args>(args)...);
+    }
 };
 
 template<class user_type>
@@ -165,13 +181,13 @@ struct pimpl<user_type>::base
     template<typename> friend class pimpl;
 
     base (null_type) {}
-    base () : impl_(new implementation()) {}
+    base () : impl_(manager::template make<implementation>()) {}
 
     template<class Arg>
     base(Arg&& arg, is_derived<Arg> =0) : impl_(arg.impl_) {}
 
     template<typename... Args>
-    base(Args&&... args) : impl_(new implementation(std::forward<Args>(args)...)) {}
+    base(Args&&... args) : impl_(manager::template make<implementation>(std::forward<Args>(args)...)) {}
 
     private: managed_type impl_;
 };
