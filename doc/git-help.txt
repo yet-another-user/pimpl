@@ -16,9 +16,10 @@ cd pimpl.io
 git init
 git remote add origin  https://github.com/yet-another-user/pimpl.git
 git checkout -b gh-pages
-git rm test arc* include J* R* -r
+git remote -v
+git pull origin gh-pages
+...
 git add .
 git commit -m "creating public docs"
-git push origin gh-pages
-
+git push --set-upstream origin gh-pages
 
