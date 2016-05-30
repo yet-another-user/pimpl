@@ -27,40 +27,38 @@ test_is_pimpl()
     BOOST_TEST(true  == pimpl<Derived1>::value);
     BOOST_TEST(true  == pimpl<Derived1 const>::value);
     BOOST_TEST(true  == pimpl<Derived1 const&>::value);
+    BOOST_TEST(true  == pimpl<Derived2>::value);
 }
 
 static
 void
 test_swap()
 {
-    singleton_type single;
+    Shared pt16 (5);
+    Shared pt17 (5);
+    Value  vt13 (5);
+    Value  vt14 (5);
 
-    Shared  pt16 (single);
-    Shared  pt17 (single);
-    Value vt12 (5);
-    Value vt13 = vt12;
-    Value vt14 (vt12);
+    BOOST_TEST(pt16.trace() == "Shared::implementation(int)");
+    BOOST_TEST(pt17.trace() == "Shared::implementation(int)");
+    BOOST_TEST(pt16 != pt17);
+    BOOST_TEST(pt16.id() != pt17.id());
+    BOOST_TEST(vt13.trace() == "Value::implementation(int)");
+    BOOST_TEST(vt14.trace() == "Value::implementation(int)");
+    BOOST_TEST(vt13.id() != vt14.id());
 
-    BOOST_TEST(pt16 == pt17); // No copying. Implementation shared.
-    BOOST_TEST(pt16.id() == pt17.id()); // No copying. Implementation shared.
-    BOOST_TEST(vt12.trace() == "Value::implementation(int)");
-    BOOST_TEST(vt13.trace() == "Value::implementation(Value::implementation const&)");
-    BOOST_TEST(vt14.trace() == "Value::implementation(Value::implementation const&)");
-    BOOST_TEST(vt13.id() != vt12.id());
-    BOOST_TEST(vt14.id() != vt12.id());
-
-    int pt16_id = pt16.id();
-    int pt17_id = pt17.id();
-    int vt13_id = vt13.id();
-    int vt14_id = vt14.id();
+    int old_pt16_id = pt16.id();
+    int old_pt17_id = pt17.id();
+    int old_vt13_id = vt13.id();
+    int old_vt14_id = vt14.id();
 
     pt16.swap(pt17);
     vt13.swap(vt14);
 
-    BOOST_TEST(pt16.id() == pt17_id);
-    BOOST_TEST(pt17.id() == pt16_id);
-    BOOST_TEST(vt13.id() == vt14_id);
-    BOOST_TEST(vt14.id() == vt13_id);
+    BOOST_TEST(pt16.id() == old_pt17_id);
+    BOOST_TEST(pt17.id() == old_pt16_id);
+    BOOST_TEST(vt13.id() == old_vt14_id);
+    BOOST_TEST(vt14.id() == old_vt13_id);
 }
 
 static
@@ -200,17 +198,18 @@ void
 test_comparisons()
 {
     Shared p1;
-    Value v1;
-    Shared p2(5);
-    Value v2(5);
+    Shared p2 (5);
     Shared p3 = p2;
-    Value v3 = v2;
+    Value  v1;
+    Value  v2 (5);
+    Value  v3 = v2;
 
+    BOOST_TEST(p2 != p1); // calls pimpl::op!=()
     BOOST_TEST(p2 == p3); // calls pimpl::op==()
     BOOST_TEST(v2 == v3);
     BOOST_TEST(v2.trace() == "Value::operator==(Value const&)");
-    BOOST_TEST(v1 != v2);
-    BOOST_TEST(v1.trace() == "Value::operator==(Value const&)");
+    BOOST_TEST(v2 != v1);
+    BOOST_TEST(v2.trace() == "Value::operator==(Value const&)");
 }
 
 static
