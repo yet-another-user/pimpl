@@ -1,14 +1,15 @@
 <?xml version="1.0" standalone="yes"?>
-<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="/home/vb/dev/pimpl/include/pimpl.hpp">
+<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="/home/vbatov/dev/pimpl/include/pimpl.hpp">
 <struct name="pimpl"><template>
       <template-type-parameter name="user_type"/>
     </template><struct name="base"><template>
-      <template-nontype-parameter name="class"><type>template&lt; class &gt;</type></template-nontype-parameter>
+      <template-type-parameter name=""/>
     </template><struct name="null_type"/><typedef name="implementation"><type>typename <classname>pimpl</classname>&lt; user_type &gt;::implementation</type></typedef>
 <typedef name="pimpl_type"><type><classname>base</classname></type></typedef>
-<typedef name="managed_type"><type>manager&lt; implementation &gt;</type></typedef>
-<typedef name="no_ref"><type>typename std::remove_reference&lt; T &gt;::type</type></typedef>
-<typedef name="is_derived"><type>typename boost::enable_if&lt; std::is_base_of&lt; <classname>base</classname>, no_ref&lt; T &gt;&gt;, <classname>null_type</classname> * &gt;::type</type></typedef>
+<typedef name="managed_type"><type>typename manager::template type&lt; implementation &gt;</type></typedef>
+<typedef name="rm_ref"><type>typename std::remove_reference&lt; T &gt;::type</type></typedef>
+<typedef name="is_base_of"><type>typename std::is_base_of&lt; <classname>base</classname>, rm_ref&lt; T &gt;&gt;</type></typedef>
+<typedef name="is_derived"><type>typename std::enable_if&lt; is_base_of&lt; T &gt;::value, <classname>null_type</classname> * &gt;::type</type></typedef>
 <method-group name="public member functions">
 <method name="operator!" cv="const"><type>bool</type></method>
 <method name="conversion-operator" cv="const" specifiers="explicit"><type>bool</type></method>
@@ -38,24 +39,26 @@
 <constructor><template>
           <template-nontype-parameter name="Args"><type>typename...</type></template-nontype-parameter>
         </template><parameter name="args"><paramtype>Args &amp;&amp;...</paramtype></parameter></constructor>
-</struct><struct name="value_ptr"><template>
-      <template-type-parameter name=""/>
-    </template><struct name="deep_copy"><inherit access="public">pimpl&lt; user_type &gt;::value_ptr::traits</inherit><method-group name="public member functions">
+</struct><struct name="shared_mgr"><typedef name="type"><type>std::shared_ptr&lt; impl_type &gt;</type></typedef>
+<method-group name="public static functions">
+<method name="make" specifiers="static"><type>type&lt; impl_type &gt;</type><template>
+          <template-type-parameter name="impl_type"/>
+          <template-nontype-parameter name="Args"><type>typename...</type></template-nontype-parameter>
+        </template><parameter name="args"><paramtype>Args &amp;&amp;...</paramtype></parameter></method>
+</method-group>
+</struct><struct name="value_mgr"><struct name="value_ptr"><template>
+      <template-type-parameter name="impl_type"/>
+    </template><struct name="deep_copy"><inherit access="public">pimpl&lt; user_type &gt;::value_mgr::value_ptr::traits</inherit><method-group name="public member functions">
 <method name="destroy" cv="const" specifiers="virtual"><type>void</type><parameter name="p"><paramtype>impl_type *&amp;</paramtype></parameter></method>
 <method name="copy" cv="const" specifiers="virtual"><type>impl_type *</type><parameter name="p"><paramtype>impl_type const *</paramtype></parameter></method>
 <method name="assign" cv="const" specifiers="virtual"><type>void</type><parameter name="a"><paramtype>impl_type *&amp;</paramtype></parameter><parameter name="b"><paramtype>impl_type const *</paramtype></parameter></method>
 <method name="conversion-operator"><type>traits const *</type></method>
 </method-group>
-</struct><struct name="null"><inherit access="public">pimpl&lt; user_type &gt;::value_ptr::traits</inherit><method-group name="public member functions">
+</struct><struct name="traits"><method-group name="public member functions">
 <method name="destroy" cv="const" specifiers="virtual"><type>void</type><parameter name=""><paramtype>impl_type *&amp;</paramtype></parameter></method>
 <method name="copy" cv="const" specifiers="virtual"><type>impl_type *</type><parameter name=""><paramtype>impl_type const *</paramtype></parameter></method>
 <method name="assign" cv="const" specifiers="virtual"><type>void</type><parameter name=""><paramtype>impl_type *&amp;</paramtype></parameter><parameter name=""><paramtype>impl_type const *</paramtype></parameter></method>
 <method name="conversion-operator"><type>traits const *</type></method>
-</method-group>
-</struct><struct name="traits"><method-group name="public member functions">
-<method name="destroy" cv="const = 0" specifiers="virtual"><type>void</type><parameter name=""><paramtype>impl_type *&amp;</paramtype></parameter></method>
-<method name="copy" cv="const = 0" specifiers="virtual"><type>impl_type *</type><parameter name=""><paramtype>impl_type const *</paramtype></parameter></method>
-<method name="assign" cv="const = 0" specifiers="virtual"><type>void</type><parameter name=""><paramtype>impl_type *&amp;</paramtype></parameter><parameter name=""><paramtype>impl_type const *</paramtype></parameter></method>
 </method-group>
 <destructor/>
 </struct><method-group name="public member functions">
@@ -71,20 +74,27 @@
 <constructor><parameter name="p"><paramtype>impl_type *</paramtype></parameter></constructor>
 <constructor><parameter name="that"><paramtype><classname>value_ptr</classname> const &amp;</paramtype></parameter></constructor>
 <copy-assignment><type><classname>value_ptr</classname> &amp;</type><parameter name="that"><paramtype><classname>value_ptr</classname> const &amp;</paramtype></parameter></copy-assignment>
-</struct><typedef name="unique"><type><classname>base</classname>&lt; <classname>value_ptr</classname> &gt;</type></typedef>
-<typedef name="shared"><type><classname>base</classname>&lt; std::shared_ptr &gt;</type></typedef>
+</struct><typedef name="type"><type><classname>value_ptr</classname>&lt; impl_type &gt;</type></typedef>
+<method-group name="public static functions">
+<method name="make" specifiers="static"><type>impl_type *</type><template>
+          <template-type-parameter name="impl_type"/>
+          <template-nontype-parameter name="Args"><type>typename...</type></template-nontype-parameter>
+        </template><parameter name="args"><paramtype>Args &amp;&amp;...</paramtype></parameter></method>
+</method-group>
+</struct><typedef name="unique"><type><classname>base</classname>&lt; <classname>value_mgr</classname> &gt;</type></typedef>
+<typedef name="shared"><type><classname>base</classname>&lt; <classname>shared_mgr</classname> &gt;</type></typedef>
 <typedef name="yes_type"><type>boost::type_traits::yes_type</type></typedef>
 <typedef name="no_type"><type>boost::type_traits::no_type</type></typedef>
 <typedef name="ptr_type"><type>typename std::remove_reference&lt; user_type &gt;::type *</type></typedef>
 <method-group name="public static functions">
-<method name="null" specifiers="static"><type>user_type</type></method>
 <method name="test" specifiers="static"><type>yes_type</type><template>
           <template-type-parameter name="Y"/>
         </template><parameter name=""><paramtype>Y const *</paramtype></parameter><parameter name=""><paramtype>typename Y::pimpl_type const *</paramtype><default>0</default></parameter></method>
 <method name="test" specifiers="static"><type>no_type</type><parameter name=""><paramtype>...</paramtype></parameter></method>
+<method name="null" specifiers="static"><type>user_type</type></method>
 </method-group>
 <method-group name="public member functions">
-<method name="BOOST_STATIC_CONSTANT"><type/><parameter name=""><paramtype>bool</paramtype></parameter><parameter name=""><paramtype>value</paramtype><default>(1==sizeof(test(ptr_type(0))))</default></parameter></method>
+<method name="BOOST_STATIC_CONSTANT"><type/><parameter name=""><paramtype>bool</paramtype></parameter><parameter name=""><paramtype>value</paramtype><default>(1==sizeof(test(ptr_type(nullptr))))</default></parameter></method>
 </method-group>
 </struct></header>
 </library-reference>

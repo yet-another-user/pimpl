@@ -9,6 +9,7 @@ using string = std::string;
 
 struct Book : public pimpl<Book>::shared
 {
+    Book();
     Book(string const& title, string const& author);
 
     string const&  title () const;

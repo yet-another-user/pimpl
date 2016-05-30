@@ -1,5 +1,11 @@
 #include "./test.hpp"
 
+struct deleter
+{
+    // Convenience deleter allows to "manage" objects without actually managing them.
+    struct no { void operator()(void*) {}};
+};
+
 template<>
 struct pimpl<Book>::implementation
 {
@@ -12,6 +18,10 @@ struct pimpl<Book>::implementation
     string  title;
     string author;
 };
+
+Book::Book() : pimpl_type(pimpl<pimpl_type>::null())
+{
+}
 
 Book::Book(string const& title, string const& author) : pimpl_type(title, author)
 {
@@ -69,8 +79,6 @@ template<> struct pimpl<Shared>::implementation : boost::noncopyable
 string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Shared::id () const { return (*this)->id_; }
 
-static Shared single;
-
 Shared::Shared () {}
 Shared::Shared (int k) : pimpl_type(k) {}
 Shared::Shared (int k, int l) : pimpl_type(k, l) {}
@@ -78,7 +86,11 @@ Shared::Shared (Foo&       foo) : pimpl_type(foo) {} // Make sure 'const' handle
 Shared::Shared (Foo const& foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
 Shared::Shared (Foo*       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
 Shared::Shared (Foo const* foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (singleton_type) : pimpl_type(single) {} // 'single' is used as a Singleton.
+Shared::Shared (singleton_type) : pimpl_type(pimpl<pimpl_type>::null())
+{
+    static implementation impl;
+    reset(&impl, deleter::no());
+}
 
 ///////////////////////////////////////////////////
 // Value

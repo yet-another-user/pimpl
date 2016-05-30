@@ -1,4 +1,4 @@
-[section Simple Singleton]
+[section Singleton]
 
 A quick singleton implementation might look as follows:
 
@@ -10,112 +10,23 @@ A quick singleton implementation might look as follows:
 
  Book::Book() : pimpl_type(pimpl<Book>::null())
  {
-    static implementation impl(parameters);
+    static implementation impl;
 
-    reset(&impl, deleter::no());
+    reset(&impl, deleter::no()); // Always point to the same implementation.
  }
 
-It is not a 100% kosher (see the following chapter) but for vast majority of singleton applications it is sufficient.
-
-[endsect]
-[section Singleton Improved]
-
-In a nutshell, the singleton implementation above is not a 100% well-behaved singleton because it passes the ['equality] test but fails the ['equivalence] test (see [link 10 \[10\]] for details about equality vs. equivalence).
-
-What that means is that two ['Book] instances created with the constructor above will indeed share the same implementation. More, those two ['Book] instances will even pass the equality test as
+The singleton is well-behaved. It passes both the ['equality] and the ['equivalence] tests (see [link 10 \[10\]] for details about equality vs. equivalence):
 
  Book book1;
  Book book2;
 
  BOOST_ASSERT (book1 == book2); // Equality test passed. Good.
+ BOOST_ASSERT (!(book1 < book2)); 
+ BOOST_ASSERT (!(book2 < book1)); // Equivalence test passed. Good.
 
-That is sufficient for vast majority of singleton applications. However, if one decides to put ['book1] and ['book2] in a ['std::set], they will end up with two entries instead of one even though both represent the same singleton book. That is due to these ['Book] instances failing the equivalence test required by the standard associative containers. That is,
+An alternative implementation might look as the following:
 
- Book book1;
- Book book2;
-
- BOOST_ASSERT (!(book1 < book2)); // Equivalence test fails. Bad.
- BOOST_ASSERT (!(book2 < book1)); // Equivalence test fails. Bad.
-
-It is certainly true to say that it is not every day that we need to put a singleton in an associative container. More often than not we don't. Still, consider the following example. In our logging library we would like to provide the user with the ability to register a certain output stream (or streams) where they would like the logging information to go to:
-
- log my_log; // Create my_log
- log::out::file file1(some-file); // Create a logging stream to "some-file"
- log::out::file file2(some-other-file); // Create another logging stream to "some-other-file"
- log::out::stdout console; // Create a logging stream on to the console
-
- // Register logging streams with our log. Logging will go to three places at once.
- my_log(file1)(file2)(console);
-
-To achieve that we might like to do the following:
-
- struct log
- { ...
-    struct out;
-    ...
-
-    log& operator()(log::out const& stream)
-    { ...
-        streams_.insert(stream);
-
-        return *this;
-    }
-    std::set<log::out> streams_;
- };
-
- struct log::out : public pimpl<log::out>::pointer_semantics
- { ...
-    struct file;
-    struct stdout;
-
-    void write(string const& msg) { (*this)->write(msg); }
- };
-
- struct log::out::file : public log::out { file(char const* filename); };
- struct log::out::stdout : public log::out { stdout(); };
-
-In the example above we might like to be able to register many ['log::out::file] logging streams with
-
- my_log(log::out::file(some-file));
- my_log(log::out::file(some-other-file));
- ... different 'file' logging streams registered.
-
-but only one ['log::out::stdout] stream even though the user might try registering that stream more than once: 
-
- my_log(log::out::stdout());
- ...
- my_log(log::out::stdout());
- ... only one 'console' logging stream registered.
-
-To achieve that we will need to implement ['log::out::stdout] as an equivalence-supporting singleton that would be registered (inserted into ['std::set]) only once.
-
-Now a well-behaved singleton implementation might look as follows:
-
- template<> struct pimpl<Book>::implementation
- {
-    static Book create()
-    {
-        Book single = null(); // Don't use Book::Book() to avoid recursion.
-
-        single.reset(new implementation());
-
-        return single;
-    }
- };
-
- Book::Book() : base(null())
- {
-    static Book single = implementation::create();
-
-    *this = single;
- }
-
-[endsect]
-[section Singleton Again]
-
-A nice property of the singletons described above is that they preserve the visual purity of the public interfaces of the respective classes. However, that comes at the expense of somewhat laborious implementation. One might consider that price to be too high to pay and instead prefer the following:
-
- struct Book : public pimpl<Book>::pointer_semantics // In the declaration file
+ struct Book : public pimpl<Book>::shared // In the declaration file
  {
     Book();
 
