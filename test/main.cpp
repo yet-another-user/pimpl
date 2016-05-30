@@ -1,34 +1,6 @@
 #include "./test.hpp"
 #include <set>
 
-struct Book : public pimpl<Book>::shared
-{
-    Book(string const& title, string const& author);
-
-    string const&  title () const;
-    string const& author () const;
-};
-
-template<>
-struct pimpl<Book>::implementation
-{
-    implementation(string const& the_title, string const& the_author)
-    :
-        title(the_title), author(the_author)
-    {
-    }
-
-    string  title;
-    string author;
-};
-
-Book::Book(string const& title, string const& author) : base(title, author)
-{
-}
-
-string const& Book:: title() const { return (*this)->title; }
-string const& Book::author() const { return (*this)->author; }
-
 static
 void
 test_basics()

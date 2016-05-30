@@ -1,10 +1,24 @@
 #include "./test.hpp"
 
-Foo
-create_foo()
+template<>
+struct pimpl<Book>::implementation
 {
-    return Foo();
+    implementation(string const& the_title, string const& the_author)
+    :
+        title(the_title), author(the_author)
+    {
+    }
+
+    string  title;
+    string author;
+};
+
+Book::Book(string const& title, string const& author) : pimpl_type(title, author)
+{
 }
+
+string const& Book:: title() const { return (*this)->title; }
+string const& Book::author() const { return (*this)->author; }
 
 struct uid
 {
@@ -52,6 +66,24 @@ template<> struct pimpl<Shared>::implementation : boost::noncopyable
     uid const         id_;
 };
 
+string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
+int    Shared::id () const { return (*this)->id_; }
+
+static Shared single;
+
+Shared::Shared () {}
+Shared::Shared (int k) : pimpl_type(k) {}
+Shared::Shared (int k, int l) : pimpl_type(k, l) {}
+Shared::Shared (Foo&       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const& foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo*       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const* foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (singleton_type) : pimpl_type(single) {} // 'single' is used as a Singleton.
+
+///////////////////////////////////////////////////
+// Value
+///////////////////////////////////////////////////
+
 template<> struct pimpl<Value>::implementation
 {
     typedef implementation this_type;
@@ -72,30 +104,19 @@ template<> struct pimpl<Value>::implementation
     uid               id_;
 };
 
-string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
-string Value:: trace () const { return *this ? (*this)->trace_ : "null"; }
-int    Shared::id () const { return (*this)->id_; }
-int    Value:: id () const { return (*this)->id_; }
+Value::Value () {}
+Value::Value (int k) : pimpl_type(k) {}
 
-Shared::Shared () : pimpl_type() {}
-Value::  Value () : pimpl_type() {}
-Shared::Shared (int k) : pimpl_type(k) {}
-Value::  Value (int k) : pimpl_type(k) {}
-Shared::Shared (int k, int l) : pimpl_type(k, l) {}
-
-Shared::Shared (Foo&       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const& foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo*       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const* foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-
-static Shared single;
-
-Shared::Shared(singleton_type) : pimpl_type(single) {} // 'single' is used as a Singleton.
+string Value::trace () const { return *this ? (*this)->trace_ : "null"; }
+int    Value::id () const { return (*this)->id_; }
 
 bool
 Value::operator==(Value const& that) const
 {
     (*this)->trace_ = "Value::operator==(Value const&)";
+
+    BOOST_ASSERT((*this)->id_ != that->id_);
+
     return (*this)->int_ == that->int_;
 }
 

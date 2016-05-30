@@ -5,10 +5,18 @@
 #include <boost/detail/lightweight_test.hpp>
 #include <string>
 
+using string = std::string;
+
+struct Book : public pimpl<Book>::shared
+{
+    Book(string const& title, string const& author);
+
+    string const&  title () const;
+    string const& author () const;
+};
+
 struct singleton_type {};
 struct Foo {};
-
-using string = std::string;
 
 struct Shared : public pimpl<Shared>::shared // Pure interface.
 {
