@@ -4,11 +4,12 @@ Again, ['Pimpl] exhibits a considerably stronger (and automatically managed) ass
 
 [note the default behavior is that there is always an implementation data behind every interface object.] 
 
-To override this default behavior we might write something like:  
- 
+Still the ['Pimpl] technique of breaking one monolythic object in to two  (a light-weight interface proxy and internal implementation) provides us with an easy opportunity to have a useful invalid-['Pimpl] concept implemented. That would seem unreasonable (and less efficient) not to have such functionality or to have it implemented by other means (for example, ['std::optional]).
+
+ // Use invalid pimpl to break the default interface-implementation association
  Book::Book() : pimpl_type(pimpl<Book>::null())
  {
-    // an invalid Book object is created with no data behind it
+    // An invalid Book object is created with no implementation behind it
  }
  
  void
@@ -16,17 +17,15 @@ To override this default behavior we might write something like:
  {
     if (!*this)
     {
-        // implementation is created only when needed.
+        // Implementation is created later.
         this->reset(new implementation(...));
     }
     ...
  } 
  
-Here initially we explicitly (via ['pimpl<>::null()]) create the underlying ['pimpl_type] empty (like ['nullptr] or an empty ['std::shared_ptr())]. Later we create a ['pimpl<Book>::implementation] instance explicitly and assign the ['pimpl_type] to manage it. 
+In the example the underlying ['pimpl_type] and, threrefore, Book are created invalid (like ['nullptr] or an empty ['std::shared_ptr())]. Later a ['pimpl<Book>::implementation] instance is explicitly created and the ['pimpl_type] is assigned to manage it. 
 
-The technique is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later.
-
-We might use such an invalid ['Book] object to indicate a no-book condition in the same fashion as ['nullptr] or ['boost::optional] might be used: 
+Invalid ['Pimpl] is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later. It might be used to indicate a no-book condition in the same fashion as ['nullptr] or ['boost::optional] might be used: 
 
  Book
  find_book()
@@ -34,9 +33,8 @@ We might use such an invalid ['Book] object to indicate a no-book condition in t
     return pimpl<Book>::null(); // found nothing, return an invalid Book
  }
  ...
- Book book = find_book();
- 
- if (!book) report book-not-found;
+ if (Book book = find_book()) do something useful;
+ else                         report book-not-found;
  
 [endsect] 
 

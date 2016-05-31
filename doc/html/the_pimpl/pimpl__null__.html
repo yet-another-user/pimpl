@@ -33,11 +33,17 @@
       </p></td></tr>
 </table></div>
 <p>
-      To override this default behavior we might write something like:
+      Still the <span class="emphasis"><em>Pimpl</em></span> technique of breaking one monolythic object
+      in to two (a light-weight interface proxy and internal implementation) provides
+      us with an easy opportunity to have a useful invalid-<span class="emphasis"><em>Pimpl</em></span>
+      concept implemented. That would seem unreasonable (and less efficient) not
+      to have such functionality or to have it implemented by other means (for example,
+      <span class="emphasis"><em>std::optional</em></span>).
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>
+<pre class="programlisting"><span class="comment">// Use invalid pimpl to break the default interface-implementation association</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
-   <span class="comment">// an invalid Book object is created with no data behind it</span>
+   <span class="comment">// An invalid Book object is created with no implementation behind it</span>
 <span class="special">}</span>
 
 <span class="keyword">void</span>
@@ -45,27 +51,25 @@
 <span class="special">{</span>
    <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
    <span class="special">{</span>
-       <span class="comment">// implementation is created only when needed.</span>
+       <span class="comment">// Implementation is created later.</span>
        <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">reset</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">implementation</span><span class="special">(...));</span>
    <span class="special">}</span>
    <span class="special">...</span>
 <span class="special">}</span>
 </pre>
 <p>
-      Here initially we explicitly (via <span class="emphasis"><em>pimpl&lt;&gt;::null()</em></span>)
-      create the underlying <span class="emphasis"><em>pimpl_type</em></span> empty (like <span class="emphasis"><em>nullptr</em></span>
-      or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>. Later we create a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-      instance explicitly and assign the <span class="emphasis"><em>pimpl_type</em></span> to manage
+      In the example the underlying <span class="emphasis"><em>pimpl_type</em></span> and, threrefore,
+      Book are created invalid (like <span class="emphasis"><em>nullptr</em></span> or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>.
+      Later a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> instance is
+      explicitly created and the <span class="emphasis"><em>pimpl_type</em></span> is assigned to manage
       it.
     </p>
 <p>
-      The technique is useful for lazy-instantiation optimization (as in the example
-      above) or to support dynamic polymorphism that is discussed later.
-    </p>
-<p>
-      We might use such an invalid <span class="emphasis"><em>Book</em></span> object to indicate a
-      no-book condition in the same fashion as <span class="emphasis"><em>nullptr</em></span> or <span class="emphasis"><em>boost::optional</em></span>
-      might be used:
+      Invalid <span class="emphasis"><em>Pimpl</em></span> is useful for lazy-instantiation optimization
+      (as in the example above) or to support dynamic polymorphism that is discussed
+      later. It might be used to indicate a no-book condition in the same fashion
+      as <span class="emphasis"><em>nullptr</em></span> or <span class="emphasis"><em>boost::optional</em></span> might
+      be used:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span>
 <span class="identifier">find_book</span><span class="special">()</span>
@@ -73,9 +77,8 @@
    <span class="keyword">return</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">();</span> <span class="comment">// found nothing, return an invalid Book</span>
 <span class="special">}</span>
 <span class="special">...</span>
-<span class="identifier">Book</span> <span class="identifier">book</span> <span class="special">=</span> <span class="identifier">find_book</span><span class="special">();</span>
-
-<span class="keyword">if</span> <span class="special">(!</span><span class="identifier">book</span><span class="special">)</span> <span class="identifier">report</span> <span class="identifier">book</span><span class="special">-</span><span class="keyword">not</span><span class="special">-</span><span class="identifier">found</span><span class="special">;</span>
+<span class="keyword">if</span> <span class="special">(</span><span class="identifier">Book</span> <span class="identifier">book</span> <span class="special">=</span> <span class="identifier">find_book</span><span class="special">())</span> <span class="keyword">do</span> <span class="identifier">something</span> <span class="identifier">useful</span><span class="special">;</span>
+<span class="keyword">else</span>                         <span class="identifier">report</span> <span class="identifier">book</span><span class="special">-</span><span class="keyword">not</span><span class="special">-</span><span class="identifier">found</span><span class="special">;</span>
 </pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
