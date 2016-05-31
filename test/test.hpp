@@ -7,7 +7,7 @@
 
 using string = std::string;
 
-struct Book : public pimpl<Book>::shared
+struct Book : public boost::pimpl<Book>::shared
 {
     Book();
     Book(string const& title, string const& author);
@@ -19,7 +19,7 @@ struct Book : public pimpl<Book>::shared
 struct singleton_type {};
 struct Foo {};
 
-struct Shared : public pimpl<Shared>::shared // Pure interface.
+struct Shared : public boost::pimpl<Shared>::shared // Pure interface.
 {
     Shared ();
     Shared (int);
@@ -38,7 +38,7 @@ struct Shared : public pimpl<Shared>::shared // Pure interface.
     int       id () const;
 };
 
-struct Value : public pimpl<Value>::unique // Pure interface.
+struct Value : public boost::pimpl<Value>::unique // Pure interface.
 {
     Value ();
     Value (int);
@@ -52,7 +52,7 @@ struct Value : public pimpl<Value>::unique // Pure interface.
     int       id () const;
 };
 
-struct Base : public pimpl<Base>::shared
+struct Base : public boost::pimpl<Base>::shared
 {
     Base (int);
 

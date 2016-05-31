@@ -7,7 +7,7 @@ struct deleter
 };
 
 template<>
-struct pimpl<Book>::implementation
+struct boost::pimpl<Book>::implementation
 {
     implementation(string const& the_title, string const& the_author)
     :
@@ -53,7 +53,7 @@ struct uid
 // it does not need to be a 'class'. All public methods are declared in the
 // external visible Shared class. Then, data in this structure are accessed as
 // (*this)->data or (**this).data.
-template<> struct pimpl<Shared>::implementation : boost::noncopyable
+template<> struct boost::pimpl<Shared>::implementation : boost::noncopyable
 {
     typedef implementation this_type;
 

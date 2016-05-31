@@ -192,4 +192,9 @@ struct pimpl<user_type>::base
     private: managed_type impl_;
 };
 
+namespace boost
+{
+    template<class user_type> using pimpl = ::pimpl<user_type>;
+}
+
 #endif // AUXILIARY_PIMPL_HPP
