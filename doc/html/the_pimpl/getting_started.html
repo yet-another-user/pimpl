@@ -35,9 +35,9 @@
 <span class="special">};</span>
 </pre>
 <p>
-      Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span> we would
-      like to transform it to a <span class="emphasis"><em>Pimpl</em></span>-style class with the
-      <span class="emphasis"><em>pointer semantics</em></span>. That is:
+      Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span> we need
+      to transform it to a <span class="emphasis"><em>Pimpl</em></span>-style class with the <span class="emphasis"><em>pointer
+      semantics</em></span>. That is:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -46,14 +46,14 @@
           idiom;
         </li>
 <li class="listitem">
-          we intend the class to have <span class="emphasis"><em>pointer semantics</em></span>, i.e.
-          with regard to the underlying data it will behave in the smart-pointer/shared-proxy
-          fashion by allowing shared access to the actual implementation data.
+          we intend instances of the class to have <span class="emphasis"><em>pointer semantics</em></span>,
+          i.e. with regard to the underlying data <span class="emphasis"><em>Book</em></span> instances
+          will behave in the smart-pointer/shared-proxy fashion by allowing shared
+          access to the actual implementation data.
         </li>
 </ul></div>
 <p>
-      In that setting the <span class="emphasis"><em>Book</em></span> definition might probably change
-      to as follows:
+      In that setting the <span class="emphasis"><em>Book</em></span> definition might change as follows:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
@@ -94,36 +94,33 @@
         and routinely seen/implemented as such -- one class.
       </p>
 <p>
-        That one-class approach is not exactly ideal for reasons mentioned in the
+        That one-class approach is not exactly ideal for purposes mentioned in the
         <span class="emphasis"><em>Introduction</em></span>. However, the fault-line where the <span class="emphasis"><em>Pimpl</em></span>
         splits the conventional class in two is not <span class="emphasis"><em>exactly</em></span>
         between <span class="emphasis"><em>data and behavior</em></span>. It is, rather, between <span class="emphasis"><em>public
         interface</em></span> (public behavior) and <span class="emphasis"><em>private implementation</em></span>
         (private data and behavior) -- two different views of a system. They serve
-        different purposes and are better managed when kept separate.
-      </p>
-<p>
-        The <span class="emphasis"><em>Pimpl</em></span> technique seems to fit that objective better
-        with <span class="emphasis"><em>actual</em></span> rather than <span class="emphasis"><em>notional</em></span>
-        separation.
+        different purposes and are better managed when kept separate. The <span class="emphasis"><em>Pimpl</em></span>
+        technique seems to fit that objective better with <span class="emphasis"><em>actual</em></span>
+        rather than <span class="emphasis"><em>notional</em></span> separation.
       </p>
 </td></tr>
 </table></div>
 <p>
       So far applying the <span class="emphasis"><em>Pimpl</em></span> idiom is fairly straightforward
-      as <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the scaffolding
-      hassle. The auto-generated destructor, copy constructor and assignment operator
-      suffice and writing the comparison operators is child's play.
+      as <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the implementation-related
+      hassle. The auto-generated destructor, the copy constructor and the assignment
+      operator suffice and writing the comparison operators is child's play.
     </p>
 <p>
       Still, from design perspectives lumping the application logic with the infrastructure
-      scaffolding is messy. Moreover, in our (admittedly simple) <span class="emphasis"><em>Book</em></span>
-      class more than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related
-      scaffolding. For one class in isolation that might not look like that big a
-      deal. On a larger scale, reading, understanding and maintaining extra code,
-      mentally separating the application logic from the infrastructure scaffolding,
-      repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring
-      and wasteful exercise. The following, therefore, seems like an improvement:
+      scaffolding is unfortunate. Moreover, in our (admittedly simple) example more
+      than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related (implementation
+      detail) scaffolding. For one class in isolation that might not look like that
+      big a deal. On a larger scale, reading, understanding and maintaining extra
+      code, mentally separating the application logic from the infrastructure detail,
+      repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring,
+      eror-prone and wasteful exercise. The following, therefore, seems like an improvement:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
@@ -137,31 +134,32 @@
       With no loss in functionality it is shorter, cleaner, application-focused and
       reasonably self-documented. The most important quality though is that it consists
       of nothing but <span class="emphasis"><em>pure application-specific interface</em></span>. It
-      does not even need to be a class as often there is nothing to restrict access
-      to.
-    </p>
-<p>
-      With such a clean <span class="emphasis"><em>separation of concerns</em></span> (public interface
-      and private implementation) the technique is ideal for building large-scale
-      systems and then, most importantly, managing evolution of those systems.
+      is not even a class as there is nothing to restrict access to.
     </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
 <td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
 <th align="left">Note</th>
 </tr>
-<tr><td align="left" valign="top"><p>
+<tr><td align="left" valign="top">
+<p>
+        With such a clean <span class="emphasis"><em>separation of concerns</em></span> (public interface
+        and private implementation) the technique is ideal for building large-scale
+        systems and then, most importantly, managing evolution of those systems.
+      </p>
+<p>
         In general, large-scale systems are easier evolved and maintained if they
-        implement the principle which might be described as <span class="emphasis"><em>API-centered
-        design</em></span>. For such systems considerable initial effort goes into
-        designing interface specifications for modules/components (high-level/architectural
-        design) and classes (low-level/detailed design). That allows further development
-        to proceed to a large degree in parallel -- with the service consumer relying
-        on those contractual obligations (imposed by the API) and with the service
-        provider working towards meeting those contractual obligations. The better/cleaner
+        follow the principle which might be described as <span class="emphasis"><em>API-centered design</em></span>.
+        For such systems considerable initial effort goes into designing interface
+        specifications for modules/components (high-level/architectural design) and
+        classes (low-level/detailed design). That allows further development to proceed
+        to a large degree in parallel -- with the service-consumer relying on those
+        contractual obligations (imposed by the API) and with the service-provider
+        working towards meeting those contractual obligations. The better/cleaner
         the interface/implementation separation of concerns is, the fewer there are
         dependencies and interruptions of that parallel development process.
-      </p></td></tr>
+      </p>
+</td></tr>
 </table></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

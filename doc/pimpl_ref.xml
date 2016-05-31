@@ -96,5 +96,8 @@
 <method-group name="public member functions">
 <method name="BOOST_STATIC_CONSTANT"><type/><parameter name=""><paramtype>bool</paramtype></parameter><parameter name=""><paramtype>value</paramtype><default>(1==sizeof(test(ptr_type(nullptr))))</default></parameter></method>
 </method-group>
-</struct></header>
+</struct><namespace name="boost">
+<typedef name="pimpl"><type>::<classname>pimpl</classname>&lt; user_type &gt;</type></typedef>
+</namespace>
+</header>
 </library-reference>

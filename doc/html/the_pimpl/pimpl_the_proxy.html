@@ -1,0 +1,110 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Pimpl the Proxy</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="prev" href="behind_the_interface.html" title="Behind the Interface">
+<link rel="next" href="pimpl_the_proxy/deep_const_.html" title="Deep Const">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="behind_the_interface.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="pimpl_the_proxy/deep_const_.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="the_pimpl.pimpl_the_proxy"></a><a class="link" href="pimpl_the_proxy.html" title="Pimpl the Proxy">Pimpl the Proxy</a>
+</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="pimpl_the_proxy.html#the_pimpl.pimpl_the_proxy.deliberate_interface_implementation_coupling">Deliberate
+      Interface-Implementation Coupling</a></span></dt>
+<dt><span class="section"><a href="pimpl_the_proxy/deep_const_.html">Deep Const </a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="the_pimpl.pimpl_the_proxy.deliberate_interface_implementation_coupling"></a><a class="link" href="pimpl_the_proxy.html#the_pimpl.pimpl_the_proxy.deliberate_interface_implementation_coupling" title="Deliberate Interface-Implementation Coupling">Deliberate
+      Interface-Implementation Coupling</a>
+</h3></div></div></div>
+<p>
+        As demonstrated in the previous sections the conventional <span class="emphasis"><em>Pimpl</em></span>
+        idiom implementations generally boil down to an opaque pointer to the internal/private
+        implementation.
+      </p>
+<p>
+        In that regard it might be tempting to see the <span class="emphasis"><em>Pimpl</em></span>
+        idiom as merely yet another variation of the smart-pointer idiom and to a
+        certain degreee that is. However, the similarity with <span class="emphasis"><em>std::shared_ptr</em></span>
+        and the likes should not be exaggerated. Pointers and smart-pointers exhibit
+        certain distinctive properties towards the data that <span class="emphasis"><em>Pimpl</em></span>
+        does not. <span class="emphasis"><em>Pimpl</em></span> behaves like a proxy with its primary
+        goal being the <span class="emphasis"><em>implementation hiding</em></span>.
+      </p>
+<p>
+        Consequently, <span class="emphasis"><em>Pimpl</em></span> possesses far stronger association
+        (and deliberate coupling) between the external interface and internal implementation
+        classes. When the family of smart-pointer classes (<span class="emphasis"><em>std::unique_ptr</em></span>,
+        <span class="emphasis"><em>std::shared_ptr</em></span> and the like) take good care managing
+        objects <span class="emphasis"><em>after</em></span> they are <span class="emphasis"><em>manually and explicitly</em></span>
+        created, <span class="emphasis"><em>Pimpl</em></span> fully hides (from the user), encapsulates
+        and automates internal-data management.
+      </p>
+<p>
+        That is reflected in the <span class="emphasis"><em>Pimpl</em></span>-based class deployment
+        pattern. For our <span class="emphasis"><em>Book</em></span> class instead of the smart-pointer
+        style:
+      </p>
+<pre class="programlisting"><span class="comment">// Incorrect Pimpl deployment</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">:</span>
+   <span class="identifier">pimpl_type</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">))</span>
+<span class="special">{}</span>
+</pre>
+<p>
+        we write:
+      </p>
+<pre class="programlisting"><span class="comment">// Correct Pimpl deployment</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">:</span>
+   <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">{}</span>
+</pre>
+<p>
+        All arguments passed to the <span class="emphasis"><em>pimpl_type</em></span> are forwarded
+        to the corresponding <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
+        constructor. Otherwise, the respective <span class="emphasis"><em>Book</em></span> constructor
+        fails to compile if a suitable <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
+        constructor is not found.
+      </p>
+<p>
+        That <span class="emphasis"><em>perfect-forwarding</em></span> mechanism is generic and, consequently,
+        works for the default constructor as well. That is,
+      </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">{}</span>
+</pre>
+<p>
+        or the same but explicit
+      </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">()</span> <span class="special">{}</span>
+</pre>
+<p>
+        will try calling <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation::implementation()</em></span>
+        and will fail if there is no such.
+      </p>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2016 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="behind_the_interface.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="pimpl_the_proxy/deep_const_.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

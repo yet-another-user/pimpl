@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Deep Const</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="up" href="../pimpl_the_proxy.html" title="Pimpl the Proxy">
+<link rel="prev" href="../pimpl_the_proxy.html" title="Pimpl the Proxy">
+<link rel="next" href="../pimpl__null__.html" title="pimpl::null()">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../pimpl_the_proxy.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../pimpl_the_proxy.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../pimpl__null__.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="the_pimpl.pimpl_the_proxy.deep_const_"></a><a class="link" href="deep_const_.html" title="Deep Const">Deep Const </a>
+</h3></div></div></div>
+<p>
+        TODO
+      </p>
+<p>
+        In C/C++ <span class="emphasis"><em>const</em></span> is not deep but shallow:
+      </p>
+<pre class="programlisting"><span class="identifier">std</span><span class="special">::</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">foo</span> <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">make_shared</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">);</span> <span class="comment">// Const foo</span>
+<span class="special">...</span>
+<span class="identifier">foo</span><span class="special">-&gt;</span><span class="identifier">modify</span><span class="special">();</span> <span class="comment">// Modifying foo's undelying data.</span>
+</pre>
+<p>
+        With Pimpl being a proxy it preserves the constness:
+      </p>
+<pre class="programlisting"><span class="identifier">Book</span> <span class="keyword">const</span> <span class="identifier">book</span> <span class="special">=</span> <span class="special">...</span>
+<span class="special">...</span>
+<span class="identifier">book</span>
+</pre>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2016 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../pimpl_the_proxy.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../pimpl_the_proxy.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../pimpl__null__.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

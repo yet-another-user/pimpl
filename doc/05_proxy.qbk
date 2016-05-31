@@ -1,0 +1,57 @@
+[section Pimpl the Proxy]
+[section Deliberate Interface-Implementation Coupling]
+
+As demonstrated in the previous sections the conventional ['Pimpl] idiom implementations generally boil down to an opaque pointer to the internal/private implementation.
+
+In that regard it might be tempting to see the ['Pimpl] idiom as merely yet another variation of the smart-pointer idiom and to a certain degreee that is. However, the similarity with ['std::shared_ptr] and the likes should not be exaggerated. Pointers and smart-pointers exhibit certain distinctive properties towards the data that ['Pimpl] does not. ['Pimpl] behaves like a proxy with its primary goal being the ['implementation hiding].
+
+Consequently, ['Pimpl] possesses far stronger association (and deliberate coupling) between the external interface and internal implementation classes. When the family of smart-pointer classes (['std::unique_ptr], ['std::shared_ptr] and the like) take good care managing objects ['after] they are ['manually and explicitly] created, ['Pimpl] fully hides (from the user), encapsulates and automates internal-data management. 
+
+That is reflected in the ['Pimpl]-based class deployment pattern. For our ['Book] class instead of the smart-pointer style: 
+
+ // Incorrect Pimpl deployment
+ Book::Book(string const& title, string const& author)
+ :
+    pimpl_type(new pimpl<Book>::implementation(title, author))
+ {}
+ 
+we write:
+
+ // Correct Pimpl deployment
+ Book::Book(string const& title, string const& author)
+ :
+    pimpl_type(title, author)
+ {} 
+ 
+All arguments passed to the ['pimpl_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor. Otherwise, the respective ['Book] constructor fails to compile if a suitable ['pimpl<Book>::implementation] constructor is not found. 
+
+That ['perfect-forwarding] mechanism is generic and, consequently, works for the default constructor as well. That is, 
+
+ Book::Book() {}
+ 
+or the same but explicit  
+ 
+ Book::Book() : pimpl_type() {}
+ 
+will try calling ['pimpl<Book>::implementation::implementation()] and will fail if there is no such.
+
+[endsect]
+[section Deep Const ]
+
+TODO
+
+In C/C++ ['const] is not deep but shallow:
+
+ std::shared_ptr<Foo> const foo = std::make_shared<Foo>(args); // Const foo
+ ...
+ foo->modify(); // Modifying foo's undelying data.
+
+With Pimpl being a proxy it preserves the constness:
+
+ Book const book = ...
+ ...
+ book
+
+[endsect]
+[endsect]
+

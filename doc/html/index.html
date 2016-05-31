@@ -32,7 +32,12 @@
 <dt><span class="section"><a href="the_pimpl/pimpl_with_value_semantics.html">Pimpl with Value
     Semantics</a></span></dt>
 <dt><span class="section"><a href="the_pimpl/behind_the_interface.html">Behind the Interface</a></span></dt>
-<dt><span class="section"><a href="the_pimpl/implementation_management.html">Implementation Management</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/pimpl_the_proxy.html">Pimpl the Proxy</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="the_pimpl/pimpl_the_proxy.html#the_pimpl.pimpl_the_proxy.deliberate_interface_implementation_coupling">Deliberate
+      Interface-Implementation Coupling</a></span></dt>
+<dt><span class="section"><a href="the_pimpl/pimpl_the_proxy/deep_const_.html">Deep Const </a></span></dt>
+</dl></dd>
 <dt><span class="section"><a href="the_pimpl/pimpl__null__.html">pimpl::null()</a></span></dt>
 <dt><span class="section"><a href="the_pimpl/applications_of_the_pimpl_idiom.html">Applications
     of the Pimpl Idiom</a></span></dt>
@@ -82,13 +87,13 @@
           implementation hiding,
         </li>
 <li class="listitem">
+          consistent and recognizable implementation and deployment patterns,
+        </li>
+<li class="listitem">
           minimization of compilation and component dependencies,
         </li>
 <li class="listitem">
           separation of concerns (<a class="link" href="the_pimpl/references.html#8">[8]</a>, <a class="link" href="the_pimpl/references.html#9">[9]</a>),
-        </li>
-<li class="listitem">
-          consistent and recognizable implementation and deployment patterns,
         </li>
 <li class="listitem">
           multi-platform support.
@@ -100,25 +105,29 @@
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
-          the separation of public interface and private implementation and then
+          the separation of <span class="emphasis"><em>public interface</em></span> and <span class="emphasis"><em>private
+          implementation</em></span> and then
         </li>
 <li class="listitem">
           implementation hiding.
         </li>
 </ul></div>
 <p>
-      Successfully popularized by Sutter (<a class="link" href="the_pimpl/references.html#2">[2]</a>, <a class="link" href="the_pimpl/references.html#3">[3]</a>)
-      under the cheeky <span class="emphasis"><em>Pimpl</em></span> name (as for "pointer to implementation"
-      in Hungarian notation) the technique has been known long before under various
-      names -- the D-pointer (in Qt), the Cheshire Cat in <a class="link" href="the_pimpl/references.html#4">[4]</a>,
-      the Handle/Body in <a class="link" href="the_pimpl/references.html#5">[5]</a>, the Bridge in <a class="link" href="the_pimpl/references.html#6">[6]</a>
-      -- and conceptually deployed in C and C++ as far back as at least early eighties
+      Popularized by Sutter (<a class="link" href="the_pimpl/references.html#2">[2]</a>, <a class="link" href="the_pimpl/references.html#3">[3]</a>,
+      <a class="link" href="the_pimpl/references.html#11">[11]</a>, <a class="link" href="the_pimpl/references.html#12">[12]</a>, <a class="link" href="the_pimpl/references.html#13">[13]</a>,
+      <a class="link" href="the_pimpl/references.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
+      name (as for "pointer to implementation" in Hungarian notation) the
+      technique has been known long before under various names -- the D-pointer (in
+      Qt), the Cheshire Cat in <a class="link" href="the_pimpl/references.html#4">[4]</a>, the Handle/Body in
+      <a class="link" href="the_pimpl/references.html#5">[5]</a>, the Bridge in <a class="link" href="the_pimpl/references.html#6">[6]</a> --
+      and conceptually deployed in C and C++ as far back as at least early eighties
       (<a class="link" href="the_pimpl/references.html#7">[7]</a>).
     </p>
 <p>
-      Still, it does not seem to be widely deployed. In part that might be due to
-      efficiency considerations (valid or misguided) and probably more often due
-      to additional implementation-related overhead associated with the technique.
+      Still, it does not seem to be sufficiently widely deployed. In part that might
+      be due to efficiency considerations (valid or misguided) and probably more
+      often due to additional implementation-related overhead associated with the
+      technique.
     </p>
 <p>
       This one-header "library" provides a programming building block and
@@ -128,7 +137,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: May 30, 2016 at 02:35:38 GMT</small></p></td>
+<td align="left"><p><small>Last revised: May 31, 2016 at 01:52:11 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

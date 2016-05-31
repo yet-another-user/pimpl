@@ -2,7 +2,7 @@
 
 The key property of the ['Pimpl] idiom is that the implementation is private. Not only notionally declared as such, not merely separated into another (as visible) class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
 
-Still, the deployment pattern is reasonably self-documented and fairly straightforward to follow. Something like the following will be tucked away in an implementation file separate from the public interface and far from the user eyes: 
+Still, the deployment pattern is fairly straightforward to follow and reasonably self-documented. Something like the following will be tucked away in an implementation file: 
 
  template<> struct pimpl<Book>::implementation
  {
@@ -18,22 +18,10 @@ Still, the deployment pattern is reasonably self-documented and fairly straightf
     int     price;
  };
   
- Book::Book(string const& title, string const& author)
- :
-    pimpl_type(title, author)
- {}
+ Book::Book(string const& title, string const& author) : pimpl_type(title, author) {}
  
- string const&
- Book::author() const
- {
-    return (*this)->author;
- }
-  
- void
- Book::price(int new_price)
- {
-    (*this)->price = new_price;
- }
+ string const& Book::author () const { return (*this)->author; }
+ void          Book:: price (int new_price) { (*this)->price = new_price; }
 
  bool
  Book::some_function() const
@@ -55,6 +43,6 @@ Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['cla
 
 Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['pimpl<Book>::implementation] encapsulates ['private implementation] (data and behavior).
 
-[note Another liberating and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the trailing underscore, the 'm_' prefix or the myriad others). Member variables are accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.]
+[note :-) Another reconciliatory and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the leading or trailing underscores, the 'm_' prefix or the myriad others). Member variables are named naturally and accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.]
 
 [endsect]
