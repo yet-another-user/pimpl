@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <memory>
 
-template<class user_type, typename user_allocator =void>
+template<typename user_type, typename user_allocator =void>
 struct pimpl
 {
     class       implementation;
@@ -56,20 +56,21 @@ struct pimpl
 template<typename user_type, typename user_allocator>
 struct pimpl<user_type, user_allocator>::shared_mgr
 {
-    template<typename impl_type> using type = std::shared_ptr<impl_type>;
-    using allocator = pimpl<user_type, user_allocator>::allocator;
+    using alloc = pimpl<user_type, user_allocator>::allocator;
+    using  impl = pimpl<user_type, user_allocator>::implementation;
+    using  type = std::shared_ptr<impl>;
 
-    template<typename impl_type, typename... Args>
+    template<typename... Args>
     static
-    type<impl_type>
+    type
     make(Args&&... args)
     {
-        return std::allocate_shared<impl_type>(allocator(), std::forward<Args>(args)...);
+        return std::allocate_shared<impl>(alloc(), std::forward<Args>(args)...);
     }
 };
 
-template<typename user_type, typename allocator>
-struct pimpl<user_type, allocator>::value_mgr
+template<typename user_type, typename user_allocator>
+struct pimpl<user_type, user_allocator>::value_mgr
 {
     template<class impl_type>
     struct value_ptr
@@ -120,14 +121,16 @@ struct pimpl<user_type, allocator>::value_mgr
         traits const* traits_;
         impl_type*      impl_;
     };
-    template<typename impl_type> using type = value_ptr<impl_type>;
+    using alloc = pimpl<user_type, user_allocator>::allocator;
+    using  impl = pimpl<user_type, user_allocator>::implementation;
+    using  type = value_ptr<impl>;
 
-    template<typename impl_type, typename... Args>
+    template<typename... Args>
     static
-    impl_type*
+    impl*
     make(Args&&... args)
     {
-        return new impl_type(std::forward<Args>(args)...);
+        return new impl(std::forward<Args>(args)...);
     }
 };
 
@@ -139,7 +142,7 @@ struct pimpl<user_type, allocator>::base
 
     using implementation = typename pimpl<user_type>::implementation;
     using     pimpl_type = base;
-    using   managed_type = typename manager::template type<implementation>;
+    using   managed_type = typename manager::type;
 
     template<class T> using     rm_ref = typename std::remove_reference<T>::type;
     template<class T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;
@@ -186,13 +189,13 @@ struct pimpl<user_type, allocator>::base
     template<typename, typename> friend class pimpl;
 
     base (null_type) {}
-    base () : impl_(manager::template make<implementation>()) {}
+    base () : impl_(manager::make()) {}
 
     template<class Arg>
     base(Arg&& arg, is_derived<Arg> =0) : impl_(arg.impl_) {}
 
     template<typename... Args>
-    base(Args&&... args) : impl_(manager::template make<implementation>(std::forward<Args>(args)...)) {}
+    base(Args&&... args) : impl_(manager::make(std::forward<Args>(args)...)) {}
 
     private: managed_type impl_;
 };
