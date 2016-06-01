@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <memory>
 
-template<class user_type>
+template<class user_type, typename user_allocator =void>
 struct pimpl
 {
     class       implementation;
@@ -19,11 +19,15 @@ struct pimpl
     class           shared_mgr;
     template<class> class base;
 
-    using   unique = base<value_mgr>;
-    using   shared = base<shared_mgr>;
-    using yes_type = boost::type_traits::yes_type;
-    using  no_type = boost::type_traits::no_type;
-    using ptr_type = typename std::remove_reference<user_type>::type*;
+    using    unique = base<value_mgr>;
+    using    shared = base<shared_mgr>;
+    using  yes_type = boost::type_traits::yes_type;
+    using   no_type = boost::type_traits::no_type;
+    using  ptr_type = typename std::remove_reference<user_type>::type*;
+    using allocator = typename std::conditional<
+                          std::is_void<user_allocator>::value,
+                          std::allocator<implementation>,
+                          user_allocator>::type;
 
     template<class Y> static yes_type test (Y const*, typename Y::pimpl_type const* =0);
     /***************/ static no_type  test (...);
@@ -49,22 +53,23 @@ struct pimpl
     }
 };
 
-template<typename user_type>
-struct pimpl<user_type>::shared_mgr
+template<typename user_type, typename user_allocator>
+struct pimpl<user_type, user_allocator>::shared_mgr
 {
     template<typename impl_type> using type = std::shared_ptr<impl_type>;
+    using allocator = pimpl<user_type, user_allocator>::allocator;
 
     template<typename impl_type, typename... Args>
     static
     type<impl_type>
     make(Args&&... args)
     {
-        return std::make_shared<impl_type>(std::forward<Args>(args)...);
+        return std::allocate_shared<impl_type>(allocator(), std::forward<Args>(args)...);
     }
 };
 
-template<typename user_type>
-struct pimpl<user_type>::value_mgr
+template<typename user_type, typename allocator>
+struct pimpl<user_type, allocator>::value_mgr
 {
     template<class impl_type>
     struct value_ptr
@@ -126,9 +131,9 @@ struct pimpl<user_type>::value_mgr
     }
 };
 
-template<class user_type>
+template<class user_type, typename allocator>
 template<class manager>
-struct pimpl<user_type>::base
+struct pimpl<user_type, allocator>::base
 {
     struct null_type {};
 
@@ -178,7 +183,7 @@ struct pimpl<user_type>::base
 
     protected:
 
-    template<typename> friend class pimpl;
+    template<typename, typename> friend class pimpl;
 
     base (null_type) {}
     base () : impl_(manager::template make<implementation>()) {}
@@ -194,7 +199,7 @@ struct pimpl<user_type>::base
 
 namespace boost
 {
-    template<class user_type> using pimpl = ::pimpl<user_type>;
+    template<typename user_type, typename alloc =void> using pimpl = ::pimpl<user_type, alloc>;
 }
 
 #endif // AUXILIARY_PIMPL_HPP
