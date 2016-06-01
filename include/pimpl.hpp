@@ -125,6 +125,8 @@ struct pimpl<user_type, user_allocator>::value_mgr
     using  impl = pimpl<user_type, user_allocator>::implementation;
     using  type = value_ptr<impl>;
 
+    // TODO. NEED TO DEPLOY ALLOCATOR
+
     template<typename... Args>
     static
     impl*
