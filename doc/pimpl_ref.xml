@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="yes"?>
-<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="/home/vbatov/dev/pimpl/include/pimpl.hpp">
+<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="/home/vb/dev/pimpl/include/pimpl.hpp">
 <struct name="pimpl"><template>
       <template-type-parameter name="user_type"/>
     </template><struct name="base"><template>

@@ -46,19 +46,35 @@
 <span class="special">};</span>
 </pre>
 <p>
-      In the example above it is very tempting to deploy <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
-      instead of the raw <span class="emphasis"><em>implementation*</em></span> and, in fact, that
-      is what H. Sutter advocates in <a class="link" href="references.html#13">[13]</a>, <a class="link" href="references.html#14">[14]</a>.
-      Unfortunately, <span class="emphasis"><em>std::unique_ptr</em></span> as its predecessor <span class="emphasis"><em>std::auto_ptr</em></span>
-      have been developed with very different goals in mind. Importantly, they lack
-      the incomplete-type management functionality and require <span class="emphasis"><em>Book::implementation</em></span>
-      to be a complete type (see <a class="link" href="references.html#13">[13]</a> for details). Consequently,
-      <span class="emphasis"><em>std::unique_ptr</em></span> deployment hardly reduces the amount of
-      manually-written code (the copy constructor, the assignment operator, even
-      the explicit non-default non-inlined destructor are still needed). That all
-      but wipes out the benefits of <span class="emphasis"><em>std::unique_ptr</em></span> deployment
-      in this particular context.
+      In the example above it is only natural and reasonable to deploy <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
+      instead of the raw <span class="emphasis"><em>implementation*</em></span> (<a class="link" href="references.html#13">[13]</a>,
+      <a class="link" href="references.html#14">[14]</a>). It needs to be mentioned though that <span class="emphasis"><em>std::unique_ptr</em></span>
+      has been developed with certain (and very different from <span class="emphasis"><em>std::shared_ptr</em></span>)
+      goals in mind -- no overhead and maximum efficiency -- and intentionally avoids
+      the overhead of the incomplete-type management. Consequently, the explicit
+      copy constructor, the assignment operator and the explicit non-inlined destructor
+      are still our responsibility:
     </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
+<span class="special">{</span>
+  <span class="special">~</span><span class="identifier">Book</span> <span class="special">();</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="comment">// If Books need to be comparable</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">!=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="keyword">private</span><span class="special">:</span>
+
+   <span class="keyword">struct</span> <span class="identifier">implementation</span><span class="special">;</span>
+   <span class="identifier">std</span><span class="special">::</span><span class="identifier">unique_ptr</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;</span> <span class="identifier">impl_</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
 <p>
       <span class="emphasis"><em>std::shared_ptr</em></span> implements the incomplete-type management
       functionality and is deployed for the <span class="emphasis"><em>Pimpls</em></span> with pointer

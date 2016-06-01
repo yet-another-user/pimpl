@@ -22,7 +22,27 @@
     implementation* impl_;
  };
 
-In the example above it is very tempting to deploy ['std::unique_ptr<implementation>] instead of the raw ['implementation*] and, in fact, that is what H. Sutter advocates in [link 13 \[13\]], [link 14 \[14\]]. Unfortunately, ['std::unique_ptr] as its predecessor ['std::auto_ptr] have been developed with very different goals in mind. Importantly, they lack the incomplete-type management functionality and require ['Book::implementation] to be a complete type (see [link 13 \[13\]] for details). Consequently, ['std::unique_ptr] deployment hardly reduces the amount of manually-written code (the copy constructor, the assignment operator, even the explicit non-default non-inlined destructor are still needed). That all but wipes out the benefits of ['std::unique_ptr] deployment in this particular context. 
+In the example above it is only natural and reasonable to deploy ['std::unique_ptr<implementation>] instead of the raw ['implementation*] ([link 13 \[13\]], [link 14 \[14\]]). It needs to be mentioned though that ['std::unique_ptr] has been developed with certain (and very different from ['std::shared_ptr]) goals in mind -- no overhead and maximum efficiency -- and intentionally avoids the overhead of the incomplete-type management. Consequently, the explicit copy constructor, the assignment operator and the explicit non-inlined destructor are still our responsibility: 
+
+ struct Book
+ {
+   ~Book ();
+    Book (string const& title, string const& author);
+    Book (Book const&);
+    Book& operator=(Book const&);
+  
+    string const&  title() const;
+    string const& author() const;
+    
+    // If Books need to be comparable
+    bool operator==(Book const&) const;
+    bool operator!=(Book const&) const;
+  
+    private:
+  
+    struct implementation;
+    std::unique_ptr<implementation> impl_;
+ };
 
 ['std::shared_ptr] implements the incomplete-type management functionality and is deployed for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl::value_ptr] also implements the incomplete-type management technique (originally by Peter Dimov) and is deployed for the ['Pimpls] with value semantics. Consequently, the code above shrinks down to: 
 
