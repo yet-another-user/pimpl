@@ -5,6 +5,8 @@ the_pimpl/behind_the_interface.html
 the_pimpl/pimpl_the_proxy.html
 the_pimpl/pimpl_the_proxy/deep_const_.html
 the_pimpl/pimpl__null__.html
+the_pimpl/customization.html
+the_pimpl/customization/custom_management_policy.html
 the_pimpl/applications_of_the_pimpl_idiom.html
 the_pimpl/applications_of_the_pimpl_idiom/singleton.html
 the_pimpl/applications_of_the_pimpl_idiom/extendible_dictionary.html
@@ -14,4 +16,4 @@ the_pimpl/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hierarchy.h
 the_pimpl/applications_of_the_pimpl_idiom/derived_classes_overriding_the_pimpl__operator_bool_type__.html
 the_pimpl/references.html
 the_pimpl/acknowledgements.html
-index/s10.html
+index/s11.html

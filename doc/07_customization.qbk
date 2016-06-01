@@ -1,0 +1,18 @@
+[section Customization]
+[section Custom Allocator]
+TODO
+
+ struct Book : public pimpl<Book, my_allocator>::shared
+ {
+    Book(string const& title, string const& author);
+    
+    string const&  title() const;
+    string const& author() const;
+ };
+
+[endsect] 
+[section Custom Management Policy]
+TODO
+[endsect] 
+[endsect] 
+

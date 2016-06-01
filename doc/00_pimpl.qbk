@@ -28,6 +28,7 @@
 [include 04_behind_interface.qbk]
 [include 05_proxy.qbk]
 [include 06_null.qbk]
+[include 07_customization.qbk]
 [include 20_applications.qbk]
 [include 21_delegating_constructors.qbk]
 [include 22_singleton.qbk]
