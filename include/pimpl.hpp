@@ -11,7 +11,16 @@
 #include <type_traits>
 #include <memory>
 
-template<typename user_type, typename user_allocator =void>
+namespace pimpl_detail
+{
+    template <typename first_type =void, typename... more_types>
+    struct first
+    {
+       using type = first_type;
+    };
+}
+
+template<typename user_type, typename... more_types>
 struct pimpl
 {
     class       implementation;
@@ -24,10 +33,6 @@ struct pimpl
     using  yes_type = boost::type_traits::yes_type;
     using   no_type = boost::type_traits::no_type;
     using  ptr_type = typename std::remove_reference<user_type>::type*;
-    using allocator = typename std::conditional<
-                          std::is_void<user_allocator>::value,
-                          std::allocator<implementation>,
-                          user_allocator>::type;
 
     template<class Y> static yes_type test (Y const*, typename Y::pimpl_type const* =0);
     /***************/ static no_type  test (...);
@@ -53,12 +58,15 @@ struct pimpl
     }
 };
 
-template<typename user_type, typename user_allocator>
-struct pimpl<user_type, user_allocator>::shared_mgr
+template<typename user_type, typename... more_types>
+struct pimpl<user_type, more_types...>::shared_mgr
 {
-    using alloc = pimpl<user_type, user_allocator>::allocator;
-    using  impl = pimpl<user_type, user_allocator>::implementation;
+    using  impl = pimpl<user_type, more_types...>::implementation;
     using  type = std::shared_ptr<impl>;
+    using alloc = typename std::conditional<
+                          sizeof...(more_types) == 0,
+                          std::allocator<implementation>,
+                          typename pimpl_detail::first<more_types...>::type>::type;
 
     template<typename... Args>
     static
@@ -69,8 +77,8 @@ struct pimpl<user_type, user_allocator>::shared_mgr
     }
 };
 
-template<typename user_type, typename user_allocator>
-struct pimpl<user_type, user_allocator>::value_mgr
+template<typename user_type, typename... more_types>
+struct pimpl<user_type, more_types...>::value_mgr
 {
     template<class impl_type>
     struct value_ptr
@@ -121,8 +129,11 @@ struct pimpl<user_type, user_allocator>::value_mgr
         traits const* traits_;
         impl_type*      impl_;
     };
-    using alloc = pimpl<user_type, user_allocator>::allocator;
-    using  impl = pimpl<user_type, user_allocator>::implementation;
+    using alloc = typename std::conditional<
+                          sizeof...(more_types) == 0,
+                          std::allocator<implementation>,
+                          typename pimpl_detail::first<more_types...>::type>::type;
+    using  impl = pimpl<user_type, more_types...>::implementation;
     using  type = value_ptr<impl>;
 
     // TODO. NEED TO DEPLOY ALLOCATOR
@@ -136,9 +147,9 @@ struct pimpl<user_type, user_allocator>::value_mgr
     }
 };
 
-template<class user_type, typename allocator>
+template<class user_type, typename... more_types>
 template<class manager>
-struct pimpl<user_type, allocator>::base
+struct pimpl<user_type, more_types...>::base
 {
     struct null_type {};
 
@@ -188,7 +199,7 @@ struct pimpl<user_type, allocator>::base
 
     protected:
 
-    template<typename, typename> friend class pimpl;
+    template<typename, typename...> friend class pimpl;
 
     base (null_type) {}
     base () : impl_(manager::make()) {}
@@ -204,7 +215,7 @@ struct pimpl<user_type, allocator>::base
 
 namespace boost
 {
-    template<typename user_type, typename alloc =void> using pimpl = ::pimpl<user_type, alloc>;
+    template<typename user_type, typename... more_types> using pimpl = ::pimpl<user_type, more_types...>;
 }
 
 #endif // AUXILIARY_PIMPL_HPP
