@@ -20,7 +20,25 @@ namespace pimpl_detail
     };
     template<typename, typename...> struct shared;
     template<typename, typename...> struct unique;
+    template<typename, typename...> struct onstack;
 }
+
+template<typename impl_type, typename... more_types>
+struct pimpl_detail::onstack
+{
+    // Proof of concept
+    // Need to extract storage size from more_types
+    char storage_[32];
+
+    template<typename... arg_types>
+    void
+    make(arg_types&&... args)
+    {
+        new (storage_) impl_type(std::forward<arg_types>(args)...);
+    }
+
+    onstack () =default;
+};
 
 template<typename impl_type, typename... more_types>
 struct pimpl_detail::shared : public std::shared_ptr<impl_type>
@@ -39,9 +57,6 @@ struct pimpl_detail::shared : public std::shared_ptr<impl_type>
         base_type bt = std::allocate_shared<impl_type>(alloc(), std::forward<arg_types>(args)...);
         this->swap(bt);
     }
-
-    shared () =default;
-    shared (base_type const& other) : base_type(other) {}
 };
 
 template<typename impl_type, typename... more_types>
@@ -115,6 +130,7 @@ struct pimpl
 
     using    unique = base<pimpl_detail::unique<implementation, more_types...>>;
     using    shared = base<pimpl_detail::shared<implementation, more_types...>>;
+    using   onstack = base<pimpl_detail::onstack<implementation, more_types...>>;
     using  yes_type = boost::type_traits::yes_type;
     using   no_type = boost::type_traits::no_type;
     using  ptr_type = typename std::remove_reference<user_type>::type*;
