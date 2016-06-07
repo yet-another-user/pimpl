@@ -33,11 +33,11 @@ struct pimpl_detail::shared : public std::shared_ptr<impl_type>
                       typename first<more_types...>::type>::type;
 
     template<typename... arg_types>
-    static
-    base_type
+    void
     make(arg_types&&... args)
     {
-        return std::allocate_shared<impl_type>(alloc(), std::forward<arg_types>(args)...);
+        base_type bt = std::allocate_shared<impl_type>(alloc(), std::forward<arg_types>(args)...);
+        this->swap(bt);
     }
 
     shared () =default;
@@ -56,11 +56,11 @@ struct pimpl_detail::unique
                   typename first<more_types...>::type>::type;
 
     template<typename... arg_types>
-    static
-    impl_type*
+    void
     make(arg_types&&... args)
     {
-        return new impl_type(std::forward<arg_types>(args)...); // TODO. NEED TO DEPLOY ALLOCATOR
+        unique u (new impl_type(std::forward<arg_types>(args)...)); // TODO. NEED TO DEPLOY ALLOCATOR
+        this->swap(u);
     }
 
    ~unique () { traits_->destroy(impl_); }
@@ -144,12 +144,12 @@ struct pimpl
 };
 
 template<class user_type, typename... more_types>
-template<class managed_type>
+template<class policy_type>
 struct pimpl<user_type, more_types...>::base
 {
     struct null_type {};
 
-    using implementation = typename pimpl<user_type>::implementation;
+    using implementation = typename pimpl<user_type, more_types...>::implementation;
     using     pimpl_type = base;
 
     template<class T> using     rm_ref = typename std::remove_reference<T>::type;
@@ -173,7 +173,7 @@ struct pimpl<user_type, more_types...>::base
     bool operator< (pimpl_type const& that) const { return impl_  < that.impl_; }
 
     void swap (pimpl_type& that) { impl_.swap(that.impl_); }
-//    void swap (managed_type& that) { impl_.swap(that); }
+//    void swap (policy_type& that) { impl_.swap(that); }
 
     void reset(implementation* p) { impl_.reset(p); }
     template<class Y, class D> void reset(Y* p, D d) { impl_.reset(p, d); }
@@ -197,15 +197,15 @@ struct pimpl<user_type, more_types...>::base
     template<typename, typename...> friend class pimpl;
 
     base (null_type) {}
-    base () : impl_(managed_type::make()) {}
+    base () { impl_.make(); }
 
     template<class Arg>
     base(Arg&& arg, is_derived<Arg> =nullptr) : impl_(arg.impl_) {}
 
     template<typename... Args>
-    base(Args&&... args) : impl_(managed_type::make(std::forward<Args>(args)...)) {}
+    base(Args&&... args) { impl_.make(std::forward<Args>(args)...); }
 
-    private: managed_type impl_;
+    private: policy_type impl_;
 };
 
 namespace boost
