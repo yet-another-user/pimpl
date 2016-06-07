@@ -13,74 +13,36 @@
 
 namespace pimpl_detail
 {
-    template <typename first_type =void, typename... more_types>
+    template <typename first_type =void, typename...>
     struct first
     {
        using type = first_type;
     };
+    template<typename, typename...> struct shared;
+    template<typename, typename...> struct unique;
 }
 
-template<typename user_type, typename... more_types>
-struct pimpl
+template<typename impl_type, typename... more_types>
+struct pimpl_detail::shared
 {
-    class       implementation;
-    class            value_mgr;
-    class           shared_mgr;
-    template<class> class base;
-
-    using    unique = base<value_mgr>;
-    using    shared = base<shared_mgr>;
-    using  yes_type = boost::type_traits::yes_type;
-    using   no_type = boost::type_traits::no_type;
-    using  ptr_type = typename std::remove_reference<user_type>::type*;
-
-    template<class Y> static yes_type test (Y const*, typename Y::pimpl_type const* =0);
-    /***************/ static no_type  test (...);
-
-    BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
-
-    static user_type null()
-    {
-        // null_type needs to be declared in pimpl::base.
-        // That way null_type below easily matches pimpl_type and,
-        // therefore, base::base(null_type) is called correctly.
-
-        using  null_type = typename user_type::null_type;
-        using pimpl_type = typename user_type::pimpl_type;
-
-        static_assert(pimpl<user_type>::value, "");
-        static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
-
-        null_type   arg;
-        pimpl_type null (arg);
-
-        return *(user_type*) &null;
-    }
-};
-
-template<typename user_type, typename... more_types>
-struct pimpl<user_type, more_types...>::shared_mgr
-{
-    using  impl = pimpl<user_type, more_types...>::implementation;
-    using  type = std::shared_ptr<impl>;
+    using  type = std::shared_ptr<impl_type>;
     using alloc = typename std::conditional<
-                          sizeof...(more_types) == 0,
-                          std::allocator<implementation>,
-                          typename pimpl_detail::first<more_types...>::type>::type;
+                      sizeof...(more_types) == 0,
+                      std::allocator<impl_type>,
+                      typename first<more_types...>::type>::type;
 
-    template<typename... Args>
+    template<typename... arg_types>
     static
     type
-    make(Args&&... args)
+    make(arg_types&&... args)
     {
-        return std::allocate_shared<impl>(alloc(), std::forward<Args>(args)...);
+        return std::allocate_shared<impl_type>(alloc(), std::forward<arg_types>(args)...);
     }
 };
 
-template<typename user_type, typename... more_types>
-struct pimpl<user_type, more_types...>::value_mgr
+template<typename impl_type, typename... more_types>
+struct pimpl_detail::unique
 {
-    template<class impl_type>
     struct value_ptr
     {
         // Smart-pointer with the value-semantics behavior.
@@ -110,7 +72,7 @@ struct pimpl<user_type, more_types...>::value_mgr
             virtual impl_type* copy (impl_type const*) const { return nullptr; }
             virtual void     assign (impl_type*&, impl_type const*) const {}
 
-            operator traits const*() { static traits impl; return &impl; }
+            operator traits const*() { static traits trait; return &trait; }
         };
         struct deep_copy : public traits
         {
@@ -123,27 +85,60 @@ struct pimpl<user_type, more_types...>::value_mgr
                 else if (!a &&  b) a = copy(b);
                 else if ( a && !b) destroy(a);
             }
-            operator traits const*() { static deep_copy impl; return &impl; }
+            operator traits const*() { static deep_copy trait; return &trait; }
         };
 
         traits const* traits_;
         impl_type*      impl_;
     };
+    using  type = value_ptr;
     using alloc = typename std::conditional<
-                          sizeof...(more_types) == 0,
-                          std::allocator<implementation>,
-                          typename pimpl_detail::first<more_types...>::type>::type;
-    using  impl = pimpl<user_type, more_types...>::implementation;
-    using  type = value_ptr<impl>;
+                      sizeof...(more_types) == 0,
+                      std::allocator<impl_type>,
+                      typename first<more_types...>::type>::type;
 
-    // TODO. NEED TO DEPLOY ALLOCATOR
-
-    template<typename... Args>
+    template<typename... arg_types>
     static
-    impl*
-    make(Args&&... args)
+    impl_type*
+    make(arg_types&&... args)
     {
-        return new impl(std::forward<Args>(args)...);
+        return new impl_type(std::forward<arg_types>(args)...); // TODO. NEED TO DEPLOY ALLOCATOR
+    }
+};
+
+template<typename user_type, typename... more_types>
+struct pimpl
+{
+    class       implementation;
+    template<class> class base;
+
+    using    unique = base<pimpl_detail::unique<implementation, more_types...>>;
+    using    shared = base<pimpl_detail::shared<implementation, more_types...>>;
+    using  yes_type = boost::type_traits::yes_type;
+    using   no_type = boost::type_traits::no_type;
+    using  ptr_type = typename std::remove_reference<user_type>::type*;
+
+    template<class Y> static yes_type test (Y const*, typename Y::pimpl_type const* =0);
+    /***************/ static no_type  test (...);
+
+    BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
+
+    static user_type null()
+    {
+        // null_type needs to be declared in pimpl::base.
+        // That way null_type below easily matches pimpl_type and,
+        // therefore, base::base(null_type) is called correctly.
+
+        using  null_type = typename user_type::null_type;
+        using pimpl_type = typename user_type::pimpl_type;
+
+        static_assert(pimpl<user_type>::value, "");
+        static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
+
+        null_type   arg;
+        pimpl_type null (arg);
+
+        return *(user_type*) &null;
     }
 };
 
