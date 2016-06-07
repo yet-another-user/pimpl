@@ -118,7 +118,7 @@ struct pimpl
     using   no_type = boost::type_traits::no_type;
     using  ptr_type = typename std::remove_reference<user_type>::type*;
 
-    template<class Y> static yes_type test (Y const*, typename Y::pimpl_type const* =0);
+    template<class Y> static yes_type test (Y*, typename Y::pimpl_type* =nullptr);
     /***************/ static no_type  test (...);
 
     BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
@@ -132,7 +132,7 @@ struct pimpl
         using  null_type = typename user_type::null_type;
         using pimpl_type = typename user_type::pimpl_type;
 
-        static_assert(pimpl<user_type>::value, "");
+//        static_assert(pimpl<user_type>::value, "");
         static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
 
         null_type   arg;
