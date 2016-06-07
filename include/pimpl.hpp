@@ -74,8 +74,7 @@ struct pimpl_detail::unique
     void
     make(arg_types&&... args)
     {
-        unique u (new impl_type(std::forward<arg_types>(args)...)); // TODO. NEED TO DEPLOY ALLOCATOR
-        this->swap(u);
+        reset(new impl_type(std::forward<arg_types>(args)...)); // TODO. NEED TO DEPLOY ALLOCATOR
     }
 
    ~unique () { traits_->destroy(impl_); }
