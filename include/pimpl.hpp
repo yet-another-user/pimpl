@@ -66,7 +66,7 @@ struct pimpl_detail::unique
     unique (unique const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
     unique& operator= (unique const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
-    bool       operator< (unique const& that) const { return this->impl_ < that.impl_; }
+    bool    operator< (unique const& that) const { return this->impl_ < that.impl_; }
 
     void           reset (impl_type* p) { unique(p).swap(*this); }
     void            swap (unique& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
@@ -198,7 +198,7 @@ struct pimpl<user_type, more_types...>::base
     base () : impl_(manager::make()) {}
 
     template<class Arg>
-    base(Arg&& arg, is_derived<Arg> =0) : impl_(arg.impl_) {}
+    base(Arg&& arg, is_derived<Arg> =nullptr) : impl_(arg.impl_) {}
 
     template<typename... Args>
     base(Args&&... args) : impl_(manager::make(std::forward<Args>(args)...)) {}
