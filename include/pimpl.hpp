@@ -43,55 +43,10 @@ struct pimpl_detail::shared
 template<typename impl_type, typename... more_types>
 struct pimpl_detail::unique
 {
-    struct value_ptr
-    {
-        // Smart-pointer with the value-semantics behavior.
-        // The incomplete-type management technique is originally by Peter Dimov.
+    // Smart-pointer with the value-semantics behavior.
+    // The incomplete-type management technique is originally by Peter Dimov.
 
-       ~value_ptr () { traits_->destroy(impl_); }
-        value_ptr () : traits_(traits()), impl_(0) {}
-        value_ptr (impl_type* p) : traits_(deep_copy()), impl_(p) {}
-        value_ptr (value_ptr const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
-
-        value_ptr& operator= (value_ptr const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
-        bool       operator< (value_ptr const& that) const { return this->impl_ < that.impl_; }
-
-        void           reset (impl_type* p) { value_ptr(p).swap(*this); }
-        void            swap (value_ptr& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
-        impl_type*       get () { return impl_; }
-        impl_type const* get () const { return impl_; }
-        long       use_count () const { return 1; }
-
-        private:
-
-        struct traits
-        {
-            virtual ~traits() =default;
-
-            virtual void    destroy (impl_type*&) const {}
-            virtual impl_type* copy (impl_type const*) const { return nullptr; }
-            virtual void     assign (impl_type*&, impl_type const*) const {}
-
-            operator traits const*() { static traits trait; return &trait; }
-        };
-        struct deep_copy : public traits
-        {
-            virtual void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
-            virtual impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
-            virtual void     assign (impl_type*& a, impl_type const* b) const
-            {
-                /**/ if ( a ==  b);
-                else if ( a &&  b) *a = *b;
-                else if (!a &&  b) a = copy(b);
-                else if ( a && !b) destroy(a);
-            }
-            operator traits const*() { static deep_copy trait; return &trait; }
-        };
-
-        traits const* traits_;
-        impl_type*      impl_;
-    };
-    using  type = value_ptr;
+    using  type = unique;
     using alloc = typename std::conditional<
                       sizeof...(more_types) == 0,
                       std::allocator<impl_type>,
@@ -104,6 +59,49 @@ struct pimpl_detail::unique
     {
         return new impl_type(std::forward<arg_types>(args)...); // TODO. NEED TO DEPLOY ALLOCATOR
     }
+
+   ~unique () { traits_->destroy(impl_); }
+    unique () : traits_(traits()), impl_(0) {}
+    unique (impl_type* p) : traits_(deep_copy()), impl_(p) {}
+    unique (unique const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
+
+    unique& operator= (unique const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
+    bool       operator< (unique const& that) const { return this->impl_ < that.impl_; }
+
+    void           reset (impl_type* p) { unique(p).swap(*this); }
+    void            swap (unique& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
+    impl_type*       get () { return impl_; }
+    impl_type const* get () const { return impl_; }
+    long       use_count () const { return 1; }
+
+    private:
+
+    struct traits
+    {
+        virtual ~traits() =default;
+
+        virtual void    destroy (impl_type*&) const {}
+        virtual impl_type* copy (impl_type const*) const { return nullptr; }
+        virtual void     assign (impl_type*&, impl_type const*) const {}
+
+        operator traits const*() { static traits trait; return &trait; }
+    };
+    struct deep_copy : public traits
+    {
+        virtual void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
+        virtual impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
+        virtual void     assign (impl_type*& a, impl_type const* b) const
+        {
+            /**/ if ( a ==  b);
+            else if ( a &&  b) *a = *b;
+            else if (!a &&  b) a = copy(b);
+            else if ( a && !b) destroy(a);
+        }
+        operator traits const*() { static deep_copy trait; return &trait; }
+    };
+
+    traits const* traits_;
+    impl_type*      impl_;
 };
 
 template<typename user_type, typename... more_types>
@@ -160,13 +158,13 @@ struct pimpl<user_type, more_types...>::base
     explicit operator bool () const { return  impl_.get(); }
 
     // Comparison Operators.
-    // base::op==() transfers the comparison to 'impl_' (std::shared_ptr or pimpl::value_ptr).
+    // base::op==() transfers the comparison to 'impl_' (std::shared_ptr or pimpl::unique).
     // Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable as there is shared_ptr::op==().
-    // However, value-semantics (value_ptr-based) pimpls are NOT COMPARABLE BY DEFAULT -- the standard
-    // value-semantics behavior -- as there is no pimpl::value_ptr::op==().
+    // However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT -- the standard
+    // value-semantics behavior -- as there is no pimpl::unique::op==().
     // If a value-semantics class T needs to be comparable, then it has to provide
     // T::op==(T const&) EXPLICITLY as part of its public interface.
-    // Trying to call this base::op==() for value_ptr-based pimpl will fail to compile (no value_ptr::op==())
+    // Trying to call this base::op==() for unique-based pimpl will fail to compile (no unique::op==())
     // and will indicate that the user forgot to declare T::operator==(T const&).
     bool operator==(pimpl_type const& that) const { return impl_ == that.impl_; }
     bool operator!=(pimpl_type const& that) const { return impl_ != that.impl_; }
