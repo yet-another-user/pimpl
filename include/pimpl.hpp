@@ -215,11 +215,11 @@ struct pimpl<user_type, more_types...>::base
     base (null_type) {}
     base () { impl_.make(); }
 
-    template<class Arg>
-    base(Arg&& arg, is_derived<Arg> =nullptr) : impl_(arg.impl_) {}
+    template<class arg_type>
+    base(arg_type&& arg, is_derived<arg_type> =nullptr) : impl_(arg.impl_) {}
 
-    template<typename... Args>
-    base(Args&&... args) { impl_.make(std::forward<Args>(args)...); }
+    template<typename... arg_types>
+    base(arg_types&&... args) { impl_.make(std::forward<arg_types>(args)...); }
 
     private: policy_type impl_;
 };
