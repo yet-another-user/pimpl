@@ -14,17 +14,38 @@ struct my_allocator
     typedef T              value_type;
 
     // allocate but don't initialize num elements of type T
-    pointer allocate(size_type num);
-
+    pointer allocate(size_type num)
+    {
+        return (pointer) ::operator new(num * sizeof(T));
+    }
     // initialize elements of allocated storage p with value value
-    void construct(pointer p, const T& value);
-
+    void construct(pointer p, const T& value)
+    {
+        new ((void*) p) T(value);
+    }
     // delete elements of initialized storage p
-    void destroy(pointer p);
-
+    void destroy(pointer p)
+    {
+        p->~T();
+    }
     // deallocate storage p of deleted elements
-    void deallocate(pointer p, size_type num);
+    void deallocate(pointer p, size_type num)
+    {
+        ::operator delete((void*) p);
+    }
 };
+
+template <class T1, class T2>
+bool operator== (const my_allocator<T1>&, const my_allocator<T2>&) throw()
+{
+    return true;
+}
+
+template <class T1, class T2>
+bool operator!= (const my_allocator<T1>&, const my_allocator<T2>&) throw()
+{
+    return false;
+}
 
 static
 void
