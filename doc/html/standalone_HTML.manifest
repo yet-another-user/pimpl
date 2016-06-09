@@ -1,4 +1,5 @@
 index.html
+the_pimpl/the_basics.html
 the_pimpl/getting_started.html
 the_pimpl/pimpl_with_value_semantics.html
 the_pimpl/behind_the_interface.html
@@ -16,4 +17,4 @@ the_pimpl/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hierarchy.h
 the_pimpl/applications_of_the_pimpl_idiom/derived_classes_overriding_the_pimpl__operator_bool_type__.html
 the_pimpl/references.html
 the_pimpl/acknowledgements.html
-index/s11.html
+index/s12.html

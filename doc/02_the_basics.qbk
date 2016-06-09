@@ -1,0 +1,14 @@
+[section The Basics]
+
+As was already mentioned the ['Pimpl] idiom signature properties are 
+
+* the separation of ['public interface] and ['private implementation] and then 
+* implementation hiding. 
+
+The first (and some might argue the only) property is the "separation", the introduction of two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, the introduction of access indirection. Those two classes/objects are tightly coupled. They are yin and yang, part and parcel of the ['Pimpl] idiom.
+
+The actual relationship between those two objects defines the ['Pimpl's semantics]. That is, the proxy-data relationship might exhibit the ['pointer semantics] where several proxy objects will be sharing access to one underlying data object. Alternatively, the proxy-data relationship might exhibit the ['value semantics] where every proxy object represents and corresponds to one underlying data object. Alternatively again, the proxy-data relationship might exhibit the ['copy-on-write semantics]. 
+
+
+[endsect]
+
