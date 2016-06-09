@@ -20,6 +20,7 @@ namespace pimpl_detail
     };
     template<typename, typename...> struct shared;
     template<typename, typename...> struct unique;
+    template<typename, typename...> struct copy_on_write;
     template<typename, typename...> struct onstack;
 }
 
