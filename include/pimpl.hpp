@@ -32,7 +32,7 @@ struct pimpl_detail::onstack
 
     template<typename... arg_types>
     void
-    make(arg_types&&... args)
+    construct(arg_types&&... args)
     {
         new (storage_) impl_type(std::forward<arg_types>(args)...);
     }
@@ -52,7 +52,7 @@ struct pimpl_detail::shared : public std::shared_ptr<impl_type>
 
     template<typename... arg_types>
     void
-    make(arg_types&&... args)
+    construct(arg_types&&... args)
     {
         base_type bt = std::allocate_shared<impl_type>(alloc(), std::forward<arg_types>(args)...);
         this->swap(bt);
@@ -72,7 +72,7 @@ struct pimpl_detail::unique
 
     template<typename... arg_types>
     void
-    make(arg_types&&... args)
+    construct(arg_types&&... args)
     {
         reset(new impl_type(std::forward<arg_types>(args)...)); // TODO. NEED TO DEPLOY ALLOCATOR
     }
@@ -212,13 +212,13 @@ struct pimpl<user_type, more_types...>::base
     template<typename, typename...> friend class pimpl;
 
     base (null_type) {}
-    base () { impl_.make(); }
+    base () { impl_.construct(); }
 
     template<class arg_type>
     base(arg_type&& arg, is_derived<arg_type> =nullptr) : impl_(arg.impl_) {}
 
     template<typename... arg_types>
-    base(arg_types&&... args) { impl_.make(std::forward<arg_types>(args)...); }
+    base(arg_types&&... args) { impl_.construct(std::forward<arg_types>(args)...); }
 
     private: policy_type impl_;
 };

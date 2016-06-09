@@ -1,6 +1,31 @@
 #include "./test.hpp"
 #include <set>
 
+template <class T>
+struct my_allocator
+{
+    typedef my_allocator    this_type;
+    typedef size_t          size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T*                pointer;
+    typedef const T*    const_pointer;
+    typedef T&              reference;
+    typedef const T&  const_reference;
+    typedef T              value_type;
+
+    // allocate but don't initialize num elements of type T
+    pointer allocate(size_type num);
+
+    // initialize elements of allocated storage p with value value
+    void construct(pointer p, const T& value);
+
+    // delete elements of initialized storage p
+    void destroy(pointer p);
+
+    // deallocate storage p of deleted elements
+    void deallocate(pointer p, size_type num);
+};
+
 static
 void
 test_basics()
