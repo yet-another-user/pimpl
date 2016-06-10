@@ -15,7 +15,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="the_pimpl.getting_started"></a><a class="link" href="getting_started.html" title="Getting Started">Getting Started</a>
+<a name="pimpl.getting_started"></a><a class="link" href="getting_started.html" title="Getting Started">Getting Started</a>
 </h2></div></div></div>
 <p>
       Let's start with a fairly basic and conventional
@@ -74,38 +74,6 @@
    <span class="identifier">std</span><span class="special">::</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;</span> <span class="identifier">impl_</span><span class="special">;</span>
 <span class="special">};</span>
 </pre>
-<div class="important"><table border="0" summary="Important">
-<tr>
-<td rowspan="2" align="center" valign="top" width="25"><img alt="[Important]" src="../images/important.png"></td>
-<th align="left">Important</th>
-</tr>
-<tr><td align="left" valign="top">
-<p>
-        That fairly standard <span class="emphasis"><em>Pimpl</em></span> idiom deployment splits the
-        original class (accommodating behavior <span class="emphasis"><em>and</em></span> data, public
-        <span class="emphasis"><em>and</em></span> private) into two classes -- the public interface
-        (the <span class="emphasis"><em>Book</em></span> class) and the private implementation (the
-        <span class="emphasis"><em>Book::implementation</em></span> class).
-      </p>
-<p>
-        At first glance, that might appear as breaking the established Object-Oriented
-        programming paradigm -- the association between data and behavior -- enshrined
-        in the fundamental concept of an <span class="emphasis"><em>object</em></span> or a <span class="emphasis"><em>class</em></span>
-        and routinely seen/implemented as such -- one class.
-      </p>
-<p>
-        That one-class approach is not exactly ideal for purposes mentioned in the
-        <span class="emphasis"><em>Introduction</em></span>. However, the fault-line where the <span class="emphasis"><em>Pimpl</em></span>
-        splits the conventional class in two is not <span class="emphasis"><em>exactly</em></span>
-        between <span class="emphasis"><em>data and behavior</em></span>. It is, rather, between <span class="emphasis"><em>public
-        interface</em></span> (public behavior) and <span class="emphasis"><em>private implementation</em></span>
-        (private data and behavior) -- two different views of a system. They serve
-        different purposes and are better managed when kept separate. The <span class="emphasis"><em>Pimpl</em></span>
-        technique seems to fit that objective better with <span class="emphasis"><em>actual</em></span>
-        rather than <span class="emphasis"><em>notional</em></span> separation.
-      </p>
-</td></tr>
-</table></div>
 <p>
       So far applying the <span class="emphasis"><em>Pimpl</em></span> idiom is fairly straightforward
       as <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the implementation-related
