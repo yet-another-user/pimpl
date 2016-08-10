@@ -45,7 +45,7 @@ In that setting the ['Book] definition might change as follows:
 
 So far applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] takes care of much of the implementation-related hassle. The auto-generated destructor, the copy constructor and the assignment operator suffice and writing the comparison operators is child's play.
 
-Still, from design perspectives lumping the application logic with the infrastructure scaffolding is unfortunate. Moreover, in our (admittedly simple) example more than half of the code is the ['Pimpl]-related (implementation detail) scaffolding. For one class in isolation that might not look like that big a deal. On a larger scale, reading, understanding and maintaining extra code, mentally separating the application logic from the infrastructure detail, repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring, eror-prone and wasteful exercise. The following, therefore, seems like an improvement: 
+Still, from design perspectives lumping the application logic with the infrastructure scaffolding is unfortunate. Moreover, in our (admittedly simple) example more than half of the code is the ['Pimpl]-related (implementation detail) scaffolding. For one class in isolation that might not look like that big a deal. On a larger scale, reading, understanding and maintaining extra code, mentally separating the application logic from the infrastructure detail, repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring, error-prone and wasteful exercise. The following, therefore, seems like an improvement: 
 
  struct Book : public pimpl<Book>::shared
  {
