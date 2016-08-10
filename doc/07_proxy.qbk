@@ -23,9 +23,9 @@ we write:
     pimpl_type(title, author)
  {} 
  
-All arguments passed to the ['pimpl_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor. Otherwise, the respective ['Book] constructor fails to compile if a suitable ['pimpl<Book>::implementation] constructor is not found. 
+All arguments passed to the ['pimpl_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor. Consequently, the respective ['Book] constructor fails to compile if a suitable ['pimpl<Book>::implementation] constructor is not found. 
 
-That ['perfect-forwarding] mechanism is generic and, consequently, works for the default constructor as well. That is, 
+That ['perfect-forwarding] mechanism is generic and works for the default constructor as well. That is, 
 
  Book::Book() {}
  
@@ -33,7 +33,7 @@ or the same but explicit
  
  Book::Book() : pimpl_type() {}
  
-will try calling ['pimpl<Book>::implementation::implementation()] and will fail if there is no such.
+will try calling ['pimpl<Book>::implementation::implementation()] and will fail to compile if there is no such.
 
 [endsect]
 [section Deep Const ]

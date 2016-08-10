@@ -4,7 +4,7 @@ Again, ['Pimpl] exhibits a considerably stronger (and automatically managed) ass
 
 [note the default behavior is that there is always an implementation data behind every interface object.] 
 
-Still the ['Pimpl] technique of breaking one monolythic object in to two  (a light-weight interface proxy and internal implementation) provides us with an easy opportunity to have a useful invalid-['Pimpl] concept implemented. That would seem unreasonable (and less efficient) not to have such functionality or to have it implemented by other means (for example, ['std::optional]).
+Still the ['Pimpl] technique of breaking one monolythic object in to two  (a light-weight interface proxy and internal implementation) provides us with an opportunity to have a useful invalid-['Pimpl] concept implemented. That would seem unreasonable (and less efficient) not to provide such functionality or to have it implemented by other means (for example, ['std::optional]).
 
  // Use invalid pimpl to break the default interface-implementation association
  Book::Book() : pimpl_type(pimpl<Book>::null())

@@ -6,7 +6,7 @@ The declaration file:
 
  // If you are not planning on applying dynamic_cast<> to 
  // the public interface base class, then it does not need to be virtual
- struct Book : public pimpl<Book>::pointer_semantics
+ struct Book : public pimpl<Book>::shared
  {
     Book(parameters);
     
