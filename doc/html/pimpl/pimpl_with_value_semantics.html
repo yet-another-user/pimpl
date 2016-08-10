@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Pimpl with Value Semantics</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="prev" href="getting_started.html" title="Getting Started">
@@ -99,15 +99,22 @@
       no private-part implementation detail, no loss in functionality and with the
       same benefits as before -- shorter, application-focused and reasonably self-documented.
     </p>
-<p>
-      A notable difference (compared to pointer-semantics classes) is that the comparison
-      operators are not freebies. In fact, they are never freebies (they are never
-      auto-generated). However, in the case of the pointer-semantics classes those
-      comparison operators are reduced to pointer comparisons and generalized. That's
-      not the case with the value-semantics classes. Consequently, for value-semantics
-      classes the comparison operators become part of the <span class="emphasis"><em>user-provided
-      interface</em></span> (if such a class needs to be comparable).
-    </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+        A notable difference (compared to pointer-semantics classes) is that the
+        comparison operators are not freebies. In fact, they are never freebies (they
+        are never auto-generated). However, in the case of the pointer-semantics
+        classes those comparison operators are reduced to pointer comparisons and
+        generalized. That's not the case with the value-semantics classes. Consequently,
+        for value-semantics classes the comparison operators become part of the
+        <span class="emphasis"><em>user-provided interface</em></span> (if such a class needs to be
+        comparable).
+      </p></td></tr>
+</table></div>
 <p>
       So far both examples of <span class="emphasis"><em>Pimpl</em></span>-based <span class="emphasis"><em>Book</em></span>
       classes (with pointer- and value-semantics) look almost identical and internal

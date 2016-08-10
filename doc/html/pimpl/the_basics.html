@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>The Basics</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="prev" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
@@ -32,16 +32,16 @@
 </ul></div>
 <p>
       The main property is the <span class="emphasis"><em>separation</em></span>. In fact, <a class="link" href="references.html#6">[6]</a>
-      states it is the only "intent" of the pattern with <span class="emphasis"><em>implementation
+      states it is the only "intent" of the pattern with the <span class="emphasis"><em>implementation
       hiding</em></span> listed only as pattern's applicability in the context of
       C++ (<a class="link" href="references.html#6">[6]</a>, the Bridge section).
     </p>
 <p>
       The separation introduces two classes/objects -- the Handle and the Body (<a class="link" href="references.html#5">[5]</a>), the interface proxy and the actual implementation,
-      a level of indirection. On the conceptual level that "decouples an abstraction
-      from its implementation" (<a class="link" href="references.html#6">[6]</a>). In practical
-      terms those two classes/objects complement each other and cannot avoid coupling.
-      They are yin and yang, part and parcel of the <span class="emphasis"><em>Pimpl</em></span> idiom.
+      a level of indirection. Conceptually that "decouples an abstraction from
+      its implementation" (<a class="link" href="references.html#6">[6]</a>). In practical terms
+      those two classes/objects complement each other and inherently coupled. They
+      are yin and yang, part and parcel of the <span class="emphasis"><em>Pimpl</em></span> idiom.
     </p>
 <p>
       Consequently, the relationship between those two objects is an important part

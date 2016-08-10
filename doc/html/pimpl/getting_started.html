@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Getting Started</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="prev" href="the_basics.html" title="The Basics">
@@ -88,7 +88,8 @@
       big a deal. On a larger scale, reading, understanding and maintaining extra
       code, mentally separating the application logic from the infrastructure detail,
       repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring,
-      eror-prone and wasteful exercise. The following, therefore, seems like an improvement:
+      error-prone and wasteful exercise. The following, therefore, seems like an
+      improvement:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>

@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="yes"?>
-<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="/home/vbatov/dev/pimpl/include/pimpl.hpp">
+<library-reference id="pimpl_reference"><title>Pimpl Reference</title><header name="/home/vb/dev/pimpl/include/pimpl.hpp">
 <struct name="pimpl"><template>
       <template-type-parameter name="user_type"/>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
     </template><struct name="base"><template>
-      <template-type-parameter name=""/>
-    </template><struct name="null_type"/><typedef name="implementation"><type>typename <classname>pimpl</classname>&lt; user_type, more_types...&gt;::implementation</type></typedef>
+      <template-type-parameter name="policy_type"/>
+    </template><struct name="null_type"/><typedef name="implementation"><type>typename <classname>pimpl</classname>&lt; user_type, more_types... &gt;::implementation</type></typedef>
 <typedef name="pimpl_type"><type><classname>base</classname></type></typedef>
 <typedef name="rm_ref"><type>typename std::remove_reference&lt; T &gt;::type</type></typedef>
 <typedef name="is_base_of"><type>typename std::is_base_of&lt; <classname>base</classname>, rm_ref&lt; T &gt;&gt;</type></typedef>
@@ -55,7 +55,7 @@
 <method name="BOOST_STATIC_CONSTANT"><type/><parameter name=""><paramtype>bool</paramtype></parameter><parameter name=""><paramtype>value</paramtype><default>(1==sizeof(test(ptr_type(nullptr))))</default></parameter></method>
 </method-group>
 </struct><namespace name="boost">
-<typedef name="pimpl"><type>::<classname>pimpl</classname>&lt; user_type, more_types...&gt;</type></typedef>
+<typedef name="pimpl"><type>::<classname>pimpl</classname>&lt; user_type, more_types... &gt;</type></typedef>
 </namespace>
 </header>
 </library-reference>

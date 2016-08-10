@@ -5,9 +5,9 @@ As was already mentioned the ['Pimpl] idiom signature properties are
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding. 
 
-The main property is the ['separation]. In fact, [link 6 \[6\]] states it is the only "intent" of the pattern with ['implementation hiding] listed only as pattern's applicability in the context of C++ ([link 6 \[6\]], the Bridge section).
+The main property is the ['separation]. In fact, [link 6 \[6\]] states it is the only "intent" of the pattern with the ['implementation hiding] listed only as pattern's applicability in the context of C++ ([link 6 \[6\]], the Bridge section).
 
-The separation introduces two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. On the conceptual level that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In practical terms those two classes/objects complement each other and cannot avoid coupling. They are yin and yang, part and parcel of the ['Pimpl] idiom. 
+The separation introduces two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. Conceptually that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In practical terms those two classes/objects complement each other and inherently coupled. They are yin and yang, part and parcel of the ['Pimpl] idiom. 
 
 Consequently, the relationship between those two objects is an important part of the idiom (at the very least from the practical angle). The proxy-data relationship might exhibit the ['pointer semantics] where several proxy objects might be sharing access to one underlying data object. Alternatively, the proxy-data relationship might exhibit the ['value semantics] where every proxy object represents and corresponds to one underlying data object. Alternatively again, the proxy-data relationship might exhibit the ['copy-on-write semantics]. 
 
