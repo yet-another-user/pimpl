@@ -48,11 +48,11 @@
       In the example above it is only natural and reasonable to deploy <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
       instead of the raw <span class="emphasis"><em>implementation*</em></span> (<a class="link" href="references.html#13">[13]</a>,
       <a class="link" href="references.html#14">[14]</a>). It needs to be mentioned though that <span class="emphasis"><em>std::unique_ptr</em></span>
-      has been developed with certain (and very different from <span class="emphasis"><em>std::shared_ptr</em></span>)
-      goals in mind -- no overhead and maximum efficiency -- and intentionally avoids
-      the overhead of the incomplete-type management. Consequently, the explicit
-      copy constructor, the assignment operator and the explicit non-inlined destructor
-      are still our responsibility:
+      has been developed with certain strict goals in mind -- namely, no overhead
+      and maximum efficiency -- and intentionally avoids the overhead of the incomplete-type
+      management. Consequently, implementation-wise the benefits of the <span class="emphasis"><em>std::unique_ptr</em></span>
+      deployment are fairly modest as the explicit non-inlined destructor, the copy
+      constructor, the assignment operator are still our responsibility:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
@@ -119,9 +119,9 @@
       So far both examples of <span class="emphasis"><em>Pimpl</em></span>-based <span class="emphasis"><em>Book</em></span>
       classes (with pointer- and value-semantics) look almost identical and internal
       implementations (as we'll see later) are as close. That property is important
-      for orderly and healthy evolution of commercial large-scale systems as it allows
-      to minimize the impact of a requirement change -- something as inevitable as
-      "death and taxes".
+      for orderly and painless evolution of commercial large-scale systems as it
+      allows to minimize the impact of a requirement change -- something as inevitable
+      as "death and taxes".
     </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

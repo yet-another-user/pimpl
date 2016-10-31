@@ -39,7 +39,7 @@ As mentioned earlier, if comparison functionality is required, a class with valu
     return impl.title == other->title && impl.author == other->author;
  }
  
-Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the ['pimpl<Book>::implementation] implementation is local to one file, there is generally little value in making it a class. 
+Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the ['pimpl<Book>::implementation] implementation is local to one implementation file, there is generally little value in making it a class. 
 
 Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['pimpl<Book>::implementation] encapsulates ['private implementation] (data and behavior).
 

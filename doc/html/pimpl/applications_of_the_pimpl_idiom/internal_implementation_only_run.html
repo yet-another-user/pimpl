@@ -22,7 +22,7 @@
         For details and explanations see the <span class="emphasis"><em>Non-Virtual Interface</em></span>
         idiom in <a class="link" href="../references.html#11">[11]</a> and Rule #39 in <a class="link" href="../references.html#12">[12]</a>.
       </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span> <span class="comment">// The public interface class is not virtual</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span> <span class="comment">// The public interface class is not virtual</span>
 <span class="special">{</span>
    <span class="identifier">Book</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">);</span>
 

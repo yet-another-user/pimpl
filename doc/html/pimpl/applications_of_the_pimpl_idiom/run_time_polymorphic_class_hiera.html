@@ -26,7 +26,7 @@
       </p>
 <pre class="programlisting"><span class="comment">// If you are not planning on applying dynamic_cast&lt;&gt; to </span>
 <span class="comment">// the public interface base class, then it does not need to be virtual</span>
-<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">pointer_semantics</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
    <span class="identifier">Book</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">);</span>
 

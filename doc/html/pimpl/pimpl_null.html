@@ -35,10 +35,10 @@
 <p>
       Still the <span class="emphasis"><em>Pimpl</em></span> technique of breaking one monolythic object
       in to two (a light-weight interface proxy and internal implementation) provides
-      us with an easy opportunity to have a useful invalid-<span class="emphasis"><em>Pimpl</em></span>
+      us with an opportunity to have a useful invalid-<span class="emphasis"><em>Pimpl</em></span>
       concept implemented. That would seem unreasonable (and less efficient) not
-      to have such functionality or to have it implemented by other means (for example,
-      <span class="emphasis"><em>std::optional</em></span>).
+      to provide such functionality or to have it implemented by other means (for
+      example, <span class="emphasis"><em>std::optional</em></span>).
     </p>
 <pre class="programlisting"><span class="comment">// Use invalid pimpl to break the default interface-implementation association</span>
 <span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>

@@ -31,26 +31,28 @@
         </li>
 </ul></div>
 <p>
-      The main property is the <span class="emphasis"><em>separation</em></span>. In fact, <a class="link" href="references.html#6">[6]</a>
-      states it is the only "intent" of the pattern with the <span class="emphasis"><em>implementation
-      hiding</em></span> listed only as pattern's applicability in the context of
-      C++ (<a class="link" href="references.html#6">[6]</a>, the Bridge section).
+      The first property is the <span class="emphasis"><em>separation</em></span>. In fact, <a class="link" href="references.html#6">[6]</a>
+      states it is the <span class="emphasis"><em>only</em></span> "intent" of the pattern;
+      then the <span class="emphasis"><em>implementation hiding</em></span> is only listed as pattern's
+      "applicability" in the context of C++ (<a class="link" href="references.html#6">[6]</a>,
+      the Bridge section).
     </p>
 <p>
-      The separation introduces two classes/objects -- the Handle and the Body (<a class="link" href="references.html#5">[5]</a>), the interface proxy and the actual implementation,
+      The separation results in two classes/objects -- the Handle and the Body (<a class="link" href="references.html#5">[5]</a>), the interface proxy and the actual implementation,
       a level of indirection. Conceptually that "decouples an abstraction from
-      its implementation" (<a class="link" href="references.html#6">[6]</a>). In practical terms
-      those two classes/objects complement each other and inherently coupled. They
-      are yin and yang, part and parcel of the <span class="emphasis"><em>Pimpl</em></span> idiom.
+      its implementation" (<a class="link" href="references.html#6">[6]</a>). In reality, however,
+      those two classes/objects complement each other and <span class="emphasis"><em>inherently coupled</em></span>.
+      They are inseparable yin and yang, part and parcel of the <span class="emphasis"><em>Pimpl</em></span>
+      idiom. Consequently, the <span class="emphasis"><em>relationship</em></span> between those two
+      objects is an important part of the idiom (at the very least from the practical
+      angle).
     </p>
 <p>
-      Consequently, the relationship between those two objects is an important part
-      of the idiom (at the very least from the practical angle). The proxy-data relationship
-      might exhibit the <span class="emphasis"><em>pointer semantics</em></span> where several proxy
-      objects might be sharing access to one underlying data object. Alternatively,
-      the proxy-data relationship might exhibit the <span class="emphasis"><em>value semantics</em></span>
-      where every proxy object represents and corresponds to one underlying data
-      object. Alternatively again, the proxy-data relationship might exhibit the
+      The proxy-implementation relationship might exhibit the <span class="emphasis"><em>pointer semantics</em></span>
+      where several proxy objects are sharing access to the same underlying data
+      object. Alternatively, the relationship might exhibit the <span class="emphasis"><em>value semantics</em></span>
+      where every proxy object represents and corresponds to its own underlying data
+      object (no sharing). Alternatively again, the relationship might exhibit the
       <span class="emphasis"><em>copy-on-write semantics</em></span>.
     </p>
 <div class="important"><table border="0" summary="Important">
@@ -60,15 +62,15 @@
 </tr>
 <tr><td align="left" valign="top">
 <p>
-        The established Object-Oriented programming paradigm -- the association between
-        data and behavior -- is enshrined in the fundamental concept of an <span class="emphasis"><em>object</em></span>
+        The Object-Oriented programming paradigm -- the association between data
+        and behavior -- is enshrined in the fundamental concept of an <span class="emphasis"><em>object</em></span>
         or a <span class="emphasis"><em>class</em></span> and is routinely seen and implemented as
         such -- one class.
       </p>
 <p>
-        That one-class approach is not exactly ideal for purposes mentioned in the
-        <span class="emphasis"><em>Introduction</em></span>. However, the fault-line where the <span class="emphasis"><em>Pimpl</em></span>
-        splits the conventional class in two is not <span class="emphasis"><em>exactly</em></span>
+        That one-class approach is not exactly ideal for the purposes mentioned in
+        the <span class="emphasis"><em>Introduction</em></span>. However, the fault-line where the
+        <span class="emphasis"><em>Pimpl</em></span> splits the conventional class in two is not exactly
         between <span class="emphasis"><em>data and behavior</em></span>. It is, rather, between <span class="emphasis"><em>public
         interface</em></span> (public behavior) and <span class="emphasis"><em>private implementation</em></span>
         (private data and behavior) -- two different views of a system. They serve

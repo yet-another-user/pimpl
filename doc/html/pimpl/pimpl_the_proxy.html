@@ -18,37 +18,37 @@
 <a name="pimpl.pimpl_the_proxy"></a><a class="link" href="pimpl_the_proxy.html" title="Pimpl the Proxy">Pimpl the Proxy</a>
 </h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="pimpl_the_proxy.html#pimpl.pimpl_the_proxy.deliberate_interface_implementat">Deliberate
-      Interface-Implementation Coupling</a></span></dt>
+<dt><span class="section"><a href="pimpl_the_proxy.html#pimpl.pimpl_the_proxy.internal_data_management">Internal-Data
+      Management</a></span></dt>
 <dt><span class="section"><a href="pimpl_the_proxy/deep_const.html">Deep Const </a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="pimpl.pimpl_the_proxy.deliberate_interface_implementat"></a><a class="link" href="pimpl_the_proxy.html#pimpl.pimpl_the_proxy.deliberate_interface_implementat" title="Deliberate Interface-Implementation Coupling">Deliberate
-      Interface-Implementation Coupling</a>
+<a name="pimpl.pimpl_the_proxy.internal_data_management"></a><a class="link" href="pimpl_the_proxy.html#pimpl.pimpl_the_proxy.internal_data_management" title="Internal-Data Management">Internal-Data
+      Management</a>
 </h3></div></div></div>
 <p>
-        As demonstrated in the previous sections the conventional <span class="emphasis"><em>Pimpl</em></span>
-        idiom implementations generally boil down to an opaque pointer to the internal/private
-        implementation.
+        The conventional <span class="emphasis"><em>Pimpl</em></span> idiom implementations generally
+        boil down to an opaque pointer to the internal implementation. So, it might
+        be tempting to see <span class="emphasis"><em>Pimpl</em></span> as yet another variation of
+        the smart-pointer idiom and to a certain degreee it might well be. However,
+        the behavioral similarity is rather incidental than by design. <span class="emphasis"><em>Pimpl</em></span>
+        is first and foremost a proxy
       </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+            advertising the external interface and
+          </li>
+<li class="listitem">
+            hiding and managing the internal implementation.
+          </li>
+</ul></div>
 <p>
-        In that regard it might be tempting to see the <span class="emphasis"><em>Pimpl</em></span>
-        idiom as merely yet another variation of the smart-pointer idiom and to a
-        certain degreee that is. However, the similarity with <span class="emphasis"><em>std::shared_ptr</em></span>
-        and the likes should not be exaggerated. Pointers and smart-pointers exhibit
-        certain distinctive properties towards the data that <span class="emphasis"><em>Pimpl</em></span>
-        does not. <span class="emphasis"><em>Pimpl</em></span> behaves like a proxy with its primary
-        goal being the <span class="emphasis"><em>implementation hiding</em></span>.
-      </p>
-<p>
-        Consequently, <span class="emphasis"><em>Pimpl</em></span> possesses far stronger association
-        (and deliberate coupling) between the external interface and internal implementation
-        classes. When the family of smart-pointer classes (<span class="emphasis"><em>std::unique_ptr</em></span>,
+        When the family of smart-pointer classes (<span class="emphasis"><em>std::unique_ptr</em></span>,
         <span class="emphasis"><em>std::shared_ptr</em></span> and the like) take good care managing
-        objects <span class="emphasis"><em>after</em></span> they are <span class="emphasis"><em>manually and explicitly</em></span>
-        created, <span class="emphasis"><em>Pimpl</em></span> fully hides (from the user), encapsulates
-        and automates internal-data management.
+        objects <span class="emphasis"><em>after</em></span> they are <span class="emphasis"><em>explicitly</em></span>
+        created, <span class="emphasis"><em>Pimpl</em></span> fully encapsulates and automates the
+        internal-data management.
       </p>
 <p>
         That is reflected in the <span class="emphasis"><em>Pimpl</em></span>-based class deployment
@@ -73,13 +73,13 @@
 <p>
         All arguments passed to the <span class="emphasis"><em>pimpl_type</em></span> are forwarded
         to the corresponding <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-        constructor. Otherwise, the respective <span class="emphasis"><em>Book</em></span> constructor
+        constructor. Consequently, the respective <span class="emphasis"><em>Book</em></span> constructor
         fails to compile if a suitable <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
         constructor is not found.
       </p>
 <p>
-        That <span class="emphasis"><em>perfect-forwarding</em></span> mechanism is generic and, consequently,
-        works for the default constructor as well. That is,
+        That <span class="emphasis"><em>perfect-forwarding</em></span> mechanism is generic and works
+        for the default constructor as well. That is,
       </p>
 <pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">{}</span>
 </pre>
@@ -90,7 +90,7 @@
 </pre>
 <p>
         will try calling <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation::implementation()</em></span>
-        and will fail if there is no such.
+        and will fail to compile if there is no such.
       </p>
 </div>
 </div>

@@ -1,11 +1,12 @@
 [section Pimpl the Proxy]
-[section Deliberate Interface-Implementation Coupling]
+[section Internal-Data Management]
 
-As demonstrated in the previous sections the conventional ['Pimpl] idiom implementations generally boil down to an opaque pointer to the internal/private implementation.
+The conventional ['Pimpl] idiom implementations generally boil down to an opaque pointer to the internal implementation. So, it might be tempting to see ['Pimpl] as yet another variation of the smart-pointer idiom and to a certain degreee it might well be. However, the behavioral similarity is rather incidental than by design. ['Pimpl] is first and foremost a proxy
 
-In that regard it might be tempting to see the ['Pimpl] idiom as merely yet another variation of the smart-pointer idiom and to a certain degreee that is. However, the similarity with ['std::shared_ptr] and the likes should not be exaggerated. Pointers and smart-pointers exhibit certain distinctive properties towards the data that ['Pimpl] does not. ['Pimpl] behaves like a proxy with its primary goal being the ['implementation hiding].
+* advertising the external interface and 
+* hiding and managing the internal implementation. 
 
-Consequently, ['Pimpl] possesses far stronger association (and deliberate coupling) between the external interface and internal implementation classes. When the family of smart-pointer classes (['std::unique_ptr], ['std::shared_ptr] and the like) take good care managing objects ['after] they are ['manually and explicitly] created, ['Pimpl] fully hides (from the user), encapsulates and automates internal-data management. 
+When the family of smart-pointer classes (['std::unique_ptr], ['std::shared_ptr] and the like) take good care managing objects ['after] they are ['explicitly] created, ['Pimpl] fully encapsulates and automates the internal-data management. 
 
 That is reflected in the ['Pimpl]-based class deployment pattern. For our ['Book] class instead of the smart-pointer style: 
 

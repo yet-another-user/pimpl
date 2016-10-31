@@ -48,8 +48,8 @@
 <li class="listitem">
           we intend instances of the class to have <span class="emphasis"><em>pointer semantics</em></span>,
           i.e. with regard to the underlying data <span class="emphasis"><em>Book</em></span> instances
-          will behave in the smart-pointer/shared-proxy fashion by allowing shared
-          access to the actual implementation data.
+          will behave in the shared-proxy fashion by allowing shared access to the
+          actual implementation data.
         </li>
 </ul></div>
 <p>
@@ -83,13 +83,13 @@
 <p>
       Still, from design perspectives lumping the application logic with the infrastructure
       scaffolding is unfortunate. Moreover, in our (admittedly simple) example more
-      than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related (implementation
-      detail) scaffolding. For one class in isolation that might not look like that
-      big a deal. On a larger scale, reading, understanding and maintaining extra
-      code, mentally separating the application logic from the infrastructure detail,
-      repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring,
-      error-prone and wasteful exercise. The following, therefore, seems like an
-      improvement:
+      than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related scaffolding
+      (implementation detail). For one class in isolation that might not be that
+      big a deal. On a larger scale though, reading, understanding and maintaining
+      extra code, mentally separating the application logic from the infrastructure
+      detail, repeatedly making sure nothing is forgotten, misused, or misplaced
+      is a tiring, error-prone and wasteful exercise. The following, therefore, seems
+      like an improvement:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
@@ -114,7 +114,7 @@
 <p>
         With such a clean <span class="emphasis"><em>separation of concerns</em></span> (public interface
         and private implementation) the technique is ideal for building large-scale
-        systems and then, most importantly, managing evolution of those systems.
+        systems and, importantly, managing evolution of those systems.
       </p>
 <p>
         In general, large-scale systems are easier evolved and maintained if they
