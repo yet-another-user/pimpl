@@ -1,0 +1,63 @@
+[section Construction and pimpl::null()]
+
+You might have noticed the ['pimpl_type] base-class initialization:
+
+ Book::Book(string const& title, string const& author)
+ :
+    pimpl_type(title, author)
+ {} 
+ 
+instead of the smart-pointer style implementation: 
+
+ Book::Book(string const& title, string const& author)
+ :
+    pimpl_type(new implementation(title, author)) // Incorrect
+ {}
+ 
+All arguments passed to the ['pimpl_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor. Consequently, a ['Book] constructor with no matching ['pimpl<Book>::implementation] constructor will fail to compile. 
+
+That mechanism works the same for the default constructor as well. That is, 
+
+ Book::Book() {}
+ 
+or the same but explicit  
+ 
+ Book::Book() : pimpl_type() {}
+ 
+will try calling ['pimpl<Book>::implementation::implementation()] and will fail to compile if there is no such. Hence, 
+
+[note the default behavior is that there is always an implementation data behind an interface object.] 
+
+Sometimes it is beneficial to break that proxy-implementation association.
+
+ Book::Book() : pimpl_type(null_type())
+ {
+    // An invalid Book object is created with no implementation behind it
+ }
+ 
+ void
+ Book::do_something()
+ {
+    if (!*this)
+    {
+        // Implementation is created later.
+        this->reset(new implementation(...));
+    }
+    ...
+ } 
+ 
+In the example the underlying ['pimpl_type] and, threrefore, ['Book] are created invalid (like ['nullptr] or an empty ['std::shared_ptr())]. Later a ['pimpl<Book>::implementation] instance is explicitly created and the ['pimpl_type] is assigned to manage it. 
+
+The library generalizes that invalid-['Pimpl] concept and provides ['pimpl::null()]. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later. It can be used to indicate a no-book condition: 
+
+ Book
+ find_book()
+ {  ...
+    return pimpl<Book>::null(); // found nothing
+ }
+ ...
+ if (Book book = find_book()) do something useful;
+ else                         report book-not-found;
+ 
+[endsect] 
+

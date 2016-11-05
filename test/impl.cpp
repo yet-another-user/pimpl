@@ -19,7 +19,7 @@ struct boost::pimpl<Book>::implementation
     string author;
 };
 
-Book::Book() : pimpl_type(pimpl<pimpl_type>::null())
+Book::Book() : pimpl_type(null_type())
 {
 }
 

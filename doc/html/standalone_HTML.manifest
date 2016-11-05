@@ -3,9 +3,8 @@ pimpl/the_basics.html
 pimpl/getting_started.html
 pimpl/pimpl_with_value_semantics.html
 pimpl/behind_the_interface.html
-pimpl/pimpl_the_proxy.html
-pimpl/pimpl_the_proxy/deep_const.html
-pimpl/pimpl_null.html
+pimpl/construction_and_pimpl_null.html
+pimpl/deep_const.html
 pimpl/customization.html
 pimpl/customization/custom_management_policy.html
 pimpl/applications_of_the_pimpl_idiom.html

@@ -5,8 +5,9 @@
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
     </template><struct name="base"><template>
       <template-type-parameter name="policy_type"/>
-    </template><struct name="null_type"/><typedef name="implementation"><type>typename <classname>pimpl</classname>&lt; user_type, more_types... &gt;::implementation</type></typedef>
+    </template><typedef name="implementation"><type>typename <classname>pimpl</classname>&lt; user_type, more_types... &gt;::implementation</type></typedef>
 <typedef name="pimpl_type"><type><classname>base</classname></type></typedef>
+<typedef name="null_type"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="rm_ref"><type>typename std::remove_reference&lt; T &gt;::type</type></typedef>
 <typedef name="is_base_of"><type>typename std::is_base_of&lt; <classname>base</classname>, rm_ref&lt; T &gt;&gt;</type></typedef>
 <typedef name="is_derived"><type>typename std::enable_if&lt; is_base_of&lt; T &gt;::value, <classname>null_type</classname> * &gt;::type</type></typedef>
@@ -40,6 +41,7 @@
         </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
 </struct><typedef name="unique"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
+<typedef name="cow"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="yes_type"><type>boost::type_traits::yes_type</type></typedef>
 <typedef name="no_type"><type>boost::type_traits::no_type</type></typedef>

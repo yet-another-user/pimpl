@@ -1,0 +1,18 @@
+[section Deep Const ]
+
+TODO
+
+In C/C++ ['const] is not deep but shallow:
+
+ std::shared_ptr<Foo> const foo = std::make_shared<Foo>(args); // Const foo
+ ...
+ foo->modify(); // Modifying foo's undelying data.
+
+With Pimpl being a proxy it preserves the constness:
+
+ Book const book = ...
+ ...
+ book
+
+[endsect]
+

@@ -18,8 +18,7 @@
 <a name="pimpl.the_basics"></a><a class="link" href="the_basics.html" title="The Basics">The Basics</a>
 </h2></div></div></div>
 <p>
-      As was already mentioned the <span class="emphasis"><em>Pimpl</em></span> idiom signature properties
-      are
+      The <span class="emphasis"><em>Pimpl</em></span> idiom signature properties are
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -31,18 +30,18 @@
         </li>
 </ul></div>
 <p>
-      The first property is the <span class="emphasis"><em>separation</em></span>. In fact, <a class="link" href="references.html#6">[6]</a>
-      states it is the <span class="emphasis"><em>only</em></span> "intent" of the pattern;
-      then the <span class="emphasis"><em>implementation hiding</em></span> is only listed as pattern's
-      "applicability" in the context of C++ (<a class="link" href="references.html#6">[6]</a>,
-      the Bridge section).
+      The first property is the <span class="emphasis"><em>separation</em></span>. In fact, the <span class="emphasis"><em>Bridge</em></span>
+      variation (<a class="link" href="references.html#6">[6]</a>) states it is the <span class="emphasis"><em>only</em></span>
+      "intent" of the pattern. The <span class="emphasis"><em>implementation hiding</em></span>
+      is viewed as pattern's "applicability" in the context of C++.
     </p>
 <p>
       The separation results in two classes/objects -- the Handle and the Body (<a class="link" href="references.html#5">[5]</a>), the interface proxy and the actual implementation,
-      a level of indirection. Conceptually that "decouples an abstraction from
-      its implementation" (<a class="link" href="references.html#6">[6]</a>). In reality, however,
-      those two classes/objects complement each other and <span class="emphasis"><em>inherently coupled</em></span>.
-      They are inseparable yin and yang, part and parcel of the <span class="emphasis"><em>Pimpl</em></span>
+      a level of indirection. Conceptually (from the design perspective) that "decouples
+      an abstraction from its implementation" (<a class="link" href="references.html#6">[6]</a>).
+      In reality (from the implementation perspective), however, those two classes/objects
+      complement each other and <span class="emphasis"><em>inherently coupled</em></span>. They are
+      inseparable yin and yang, part and parcel of the <span class="emphasis"><em>Pimpl</em></span>
       idiom. Consequently, the <span class="emphasis"><em>relationship</em></span> between those two
       objects is an important part of the idiom (at the very least from the practical
       angle).

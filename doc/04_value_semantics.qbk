@@ -1,6 +1,6 @@
 [section Pimpl with Value Semantics]
 
-['Pimpl] with ['value semantics] exhibits different relationship with the underlying data and behaves as a ['unique-proxy]. It solely owns and manages the data (rather than shares). Consequently, for such ['Pimpls] manual implementation gets more involved and might look as follows:
+['Pimpl] with ['value semantics] exhibits different relationship with the underlying data and behaves as a ['unique-proxy]. It solely owns and manages the data (rather than shares). Consequently, for such ['Pimpls] implementation gets more involved and might look as follows:
 
  struct Book
  {
@@ -22,7 +22,7 @@
     implementation* impl_;
  };
 
-In the example above it is only natural and reasonable to deploy ['std::unique_ptr<implementation>] instead of the raw ['implementation*] ([link 13 \[13\]], [link 14 \[14\]]). It needs to be mentioned though that ['std::unique_ptr] has been developed with certain strict goals in mind -- namely, no overhead and maximum efficiency -- and intentionally avoids the overhead of the incomplete-type management. Consequently, implementation-wise the benefits of the ['std::unique_ptr] deployment are fairly modest as the explicit non-inlined destructor, the copy constructor, the assignment operator are still our responsibility: 
+In the example above it is only natural and reasonable to deploy ['std::unique_ptr<implementation>] instead of the raw ['implementation*] ([link 13 \[13\]], [link 14 \[14\]]). It needs to be mentioned though that ['std::unique_ptr] has been developed with certain strict goals in mind -- namely, no overhead and maximum efficiency -- and it intentionally avoids the overhead of the incomplete-type management. Consequently, implementation-wise the benefits of the ['std::unique_ptr] deployment are fairly modest as the explicit non-inlined destructor, the copy constructor, the assignment operator are still our responsibility: 
 
  struct Book
  {
@@ -44,7 +44,7 @@ In the example above it is only natural and reasonable to deploy ['std::unique_p
     std::unique_ptr<implementation> impl_;
  };
 
-['std::shared_ptr] implements the incomplete-type management functionality and is deployed for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl::value_ptr] also implements the incomplete-type management technique (originally by Peter Dimov) and is deployed for the ['Pimpls] with value semantics. Consequently, the code above shrinks down to: 
+['std::shared_ptr] implements the incomplete-type management functionality and is deployed for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl::value_ptr] also implements that technique (originally by Peter Dimov) and is deployed for the ['Pimpls] with value semantics. Consequently, the code above shrinks down to: 
 
  struct Book : public pimpl<Book>::unique
  {
@@ -60,7 +60,7 @@ In the example above it is only natural and reasonable to deploy ['std::unique_p
 
 with auto-generated copy constructor, assignment operator, destructor, with no private-part implementation detail, no loss in functionality and with the same benefits as before -- shorter, application-focused and reasonably self-documented.
 
-[note A notable difference (compared to pointer-semantics classes) is that the comparison operators are not freebies. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those comparison operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
+[note A notable difference (compared to pointer-semantics classes) is that the comparison operators are not freebies. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
   
 So far both examples of ['Pimpl]-based ['Book] classes (with pointer- and value-semantics) look almost identical and internal implementations (as we'll see later) are as close. That property is important for orderly and painless evolution of commercial large-scale systems as it allows to minimize the impact of a requirement change -- something as inevitable as "death and taxes". 
 

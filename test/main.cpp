@@ -36,13 +36,13 @@ struct my_allocator
 };
 
 template <class T1, class T2>
-bool operator== (const my_allocator<T1>&, const my_allocator<T2>&) throw()
+bool operator==(const my_allocator<T1>&, const my_allocator<T2>&) throw()
 {
     return true;
 }
 
 template <class T1, class T2>
-bool operator!= (const my_allocator<T1>&, const my_allocator<T2>&) throw()
+bool operator!=(const my_allocator<T1>&, const my_allocator<T2>&) throw()
 {
     return false;
 }

@@ -1,6 +1,6 @@
 [section Getting Started]
 
-Let's start with a fairly basic and conventional
+Let's begin with a fairly basic and conventional
 
  struct Book
  {
@@ -19,7 +19,7 @@ Let's start with a fairly basic and conventional
 
 Say, due to reasons mentioned in the ['Introduction] we need to transform it to a ['Pimpl]-style class with the ['pointer semantics]. That is:
 
-* we intend to separate the interface from the implementation and to hide implementation through the deployment of the ['Pimpl] idiom;
+* we intend to separate the interface from the implementation and to hide the implementation through the deployment of the ['Pimpl] idiom;
 * we intend instances of the class to have ['pointer semantics], i.e. with regard to the underlying data ['Book] instances will behave in the shared-proxy fashion by allowing shared access to the actual implementation data.
 
 In that setting the ['Book] definition might change as follows: 
@@ -43,7 +43,7 @@ In that setting the ['Book] definition might change as follows:
     std::shared_ptr<implementation> impl_;
  };
 
-So far applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] takes care of much of the implementation-related hassle. The auto-generated destructor, the copy constructor and the assignment operator suffice and writing the comparison operators is child's play.
+So far applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] takes care of much of the implementation-related hassle. The auto-generated destructor, the copy constructor and the assignment operator suffice and writing the comparison operators is straightforward.
 
 Still, from design perspectives lumping the application logic with the infrastructure scaffolding is unfortunate. Moreover, in our (admittedly simple) example more than half of the code is the ['Pimpl]-related scaffolding (implementation detail). For one class in isolation that might not be that big a deal. On a larger scale though, reading, understanding and maintaining extra code, mentally separating the application logic from the infrastructure detail, repeatedly making sure nothing is forgotten, misused, or misplaced is a tiring, error-prone and wasteful exercise. The following, therefore, seems like an improvement: 
 

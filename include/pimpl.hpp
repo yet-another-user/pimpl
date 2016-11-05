@@ -1,4 +1,4 @@
-// Copyright (c) 2006-2016 Mike Wazowski.
+// Copyright (c) 2006-2016 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
@@ -13,14 +13,16 @@
 
 namespace pimpl_detail
 {
-    template <typename first_type =void, typename...>
+	struct null_type {};
+
+	template <typename first_type =void, typename...>
     struct first
     {
        using type = first_type;
     };
-    template<typename, typename...> struct shared;
-    template<typename, typename...> struct unique;
-    template<typename, typename...> struct copy_on_write;
+    template<typename, typename...> struct  shared;
+    template<typename, typename...> struct  unique;
+    template<typename, typename...> struct     cow; // copy_on_write
     template<typename, typename...> struct onstack;
 }
 
@@ -37,7 +39,6 @@ struct pimpl_detail::onstack
     {
         new (storage_) impl_type(std::forward<arg_types>(args)...);
     }
-
     onstack () =default;
 };
 
@@ -66,10 +67,11 @@ struct pimpl_detail::unique
     // Smart-pointer with the value-semantics behavior.
     // The incomplete-type management technique is originally by Peter Dimov.
 
-    using alloc = typename std::conditional<
-                  sizeof...(more_types) == 0,
-                  std::allocator<impl_type>,
-                  typename first<more_types...>::type>::type;
+    using this_type = unique;
+	using     alloc = typename std::conditional<
+                      sizeof...(more_types) == 0,
+                      std::allocator<impl_type>,
+                      typename first<more_types...>::type>::type;
 
     template<typename... arg_types>
     void
@@ -106,9 +108,9 @@ struct pimpl_detail::unique
     };
     struct deep_copy : public traits
     {
-        virtual void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
-        virtual impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
-        virtual void     assign (impl_type*& a, impl_type const* b) const
+        void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
+        impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
+        void     assign (impl_type*& a, impl_type const* b) const
         {
             /**/ if ( a ==  b);
             else if ( a &&  b) *a = *b;
@@ -128,12 +130,13 @@ struct pimpl
     class       implementation;
     template<class> class base;
 
-    using    unique = base<pimpl_detail::unique<implementation, more_types...>>;
-    using    shared = base<pimpl_detail::shared<implementation, more_types...>>;
-    using   onstack = base<pimpl_detail::onstack<implementation, more_types...>>;
-    using  yes_type = boost::type_traits::yes_type;
-    using   no_type = boost::type_traits::no_type;
-    using  ptr_type = typename std::remove_reference<user_type>::type*;
+    using   unique = base<pimpl_detail::unique <implementation, more_types...>>;
+    using   shared = base<pimpl_detail::shared <implementation, more_types...>>;
+    using      cow = base<pimpl_detail::cow    <implementation, more_types...>>;
+    using  onstack = base<pimpl_detail::onstack<implementation, more_types...>>;
+    using yes_type = boost::type_traits::yes_type;
+    using  no_type = boost::type_traits::no_type;
+    using ptr_type = typename std::remove_reference<user_type>::type*;
 
     template<class Y> static yes_type test (Y*, typename Y::pimpl_type* =nullptr);
     /***************/ static no_type  test (...);
@@ -142,10 +145,6 @@ struct pimpl
 
     static user_type null()
     {
-        // null_type needs to be declared in pimpl::base.
-        // That way null_type below easily matches pimpl_type and,
-        // therefore, base::base(null_type) is called correctly.
-
         using  null_type = typename user_type::null_type;
         using pimpl_type = typename user_type::pimpl_type;
 
@@ -163,10 +162,9 @@ template<class user_type, typename... more_types>
 template<class policy_type>
 struct pimpl<user_type, more_types...>::base
 {
-    struct null_type {};
-
     using implementation = typename pimpl<user_type, more_types...>::implementation;
     using     pimpl_type = base;
+    using      null_type = pimpl_detail::null_type;
 
     template<class T> using     rm_ref = typename std::remove_reference<T>::type;
     template<class T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;

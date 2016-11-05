@@ -2,7 +2,7 @@
 
 The key property of the ['Pimpl] idiom is that the implementation is private. Not only notionally declared as such, not merely separated into another (as visible) class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
 
-Still, the deployment pattern is fairly straightforward to follow and reasonably self-documented. Something like the following will be tucked away in an implementation file: 
+Still, the ['deployment pattern] is fairly straightforward to follow and reasonably self-documented. Something like the following will be tucked away in an implementation file: 
 
  template<> struct pimpl<Book>::implementation
  {
@@ -39,7 +39,7 @@ As mentioned earlier, if comparison functionality is required, a class with valu
     return impl.title == other->title && impl.author == other->author;
  }
  
-Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as the ['pimpl<Book>::implementation] implementation is local to one implementation file, there is generally little value in making it a class. 
+Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as ['pimpl<Book>::implementation] is local to one file, there is generally little value in making it a class. 
 
 Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['pimpl<Book>::implementation] encapsulates ['private implementation] (data and behavior).
 

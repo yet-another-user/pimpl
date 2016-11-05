@@ -1,13 +1,13 @@
 [section The Basics]
 
-As was already mentioned the ['Pimpl] idiom signature properties are 
+The ['Pimpl] idiom signature properties are 
 
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding. 
 
-The first property is the ['separation]. In fact, [link 6 \[6\]] states it is the ['only] "intent" of the pattern; then the ['implementation hiding] is only listed as pattern's "applicability" in the context of C++ ([link 6 \[6\]], the Bridge section).
+The first property is the ['separation]. In fact, the ['Bridge] variation ([link 6 \[6\]]) states it is the ['only] "intent" of the pattern. The ['implementation hiding] is viewed as pattern's "applicability" in the context of C++.
 
-The separation results in two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. Conceptually that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In reality, however, those two classes/objects complement each other and ['inherently coupled]. They are inseparable yin and yang, part and parcel of the ['Pimpl] idiom. Consequently, the ['relationship] between those two objects is an important part of the idiom (at the very least from the practical angle).
+The separation results in two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. Conceptually (from the design perspective) that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In reality (from the implementation perspective), however, those two classes/objects complement each other and ['inherently coupled]. They are inseparable yin and yang, part and parcel of the ['Pimpl] idiom. Consequently, the ['relationship] between those two objects is an important part of the idiom (at the very least from the practical angle).
 
 The proxy-implementation relationship might exhibit the ['pointer semantics] where several proxy objects are sharing access to the same underlying data object. Alternatively, the relationship might exhibit the ['value semantics] where every proxy object represents and corresponds to its own underlying data object (no sharing). Alternatively again, the relationship might exhibit the ['copy-on-write semantics]. 
 
