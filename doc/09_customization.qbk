@@ -13,6 +13,12 @@ TODO
 [endsect] 
 [section Custom Management Policy]
 TODO
+
+shared
+unique
+copy-oon-write (COW)
+onstack
+
 [endsect] 
 [endsect] 
 

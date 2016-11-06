@@ -44,7 +44,7 @@ In the example above it is only natural and reasonable to deploy ['std::unique_p
     std::unique_ptr<implementation> impl_;
  };
 
-['std::shared_ptr] implements the incomplete-type management functionality and is deployed for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl::value_ptr] also implements that technique (originally by Peter Dimov) and is deployed for the ['Pimpls] with value semantics. Consequently, the code above shrinks down to: 
+['std::shared_ptr] implements the incomplete-type management functionality and is deployed for the ['Pimpls] with pointer semantics. Similarly the internal ['pimpl_detail::unique] also implements that technique (originally by Peter Dimov) and is deployed for the ['Pimpls] with value semantics. Consequently, the code above shrinks down to: 
 
  struct Book : public pimpl<Book>::unique
  {

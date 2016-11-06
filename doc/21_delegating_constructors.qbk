@@ -10,7 +10,7 @@ The ['delegating constructors] functionality is available in C++11. For implemen
 
  Foo::Foo(int v) : pimpl_type(v) { ... };
 
- Foo::Foo() : pimpl_type(pimpl<Foo>::null()) // Delegating constructor
+ Foo::Foo() : pimpl_type(null_type()) // Delegating constructor
  {
    *this = Foo(42); // Calling the actual (non-delegating) constructor
  };

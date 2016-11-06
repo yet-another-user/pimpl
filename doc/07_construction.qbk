@@ -1,13 +1,13 @@
 [section Construction and pimpl::null()]
 
-You might have noticed the ['pimpl_type] base-class initialization:
+Тhe ['pimpl_type] base-class is initialized with:
 
  Book::Book(string const& title, string const& author)
  :
     pimpl_type(title, author)
  {} 
  
-instead of the smart-pointer style implementation: 
+instead of the smart-pointer style: 
 
  Book::Book(string const& title, string const& author)
  :

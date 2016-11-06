@@ -10,9 +10,18 @@ In C/C++ ['const] is not deep but shallow:
 
 With Pimpl being a proxy it preserves the constness:
 
+ struct Book : public pimpl<Book>::shared
+ {
+    Book(string const& title, string const& author);
+    
+    string const&  title () const;
+    string const& author () const;
+    void           price (int);
+ };
+
  Book const book = ...
  ...
- book
+ book.price(new_price); // Fails to compile
 
 [endsect]
 
