@@ -24,6 +24,8 @@ namespace pimpl_detail
     template<typename, typename...> struct  unique;
     template<typename, typename...> struct     cow; // copy_on_write
     template<typename, typename...> struct onstack;
+
+    template<class T> using is_assignable = typename std::enable_if<std::is_copy_assignable<T>::value, null_type*>::type;
 }
 
 template<typename impl_type, typename... more_types>
@@ -43,7 +45,7 @@ struct pimpl_detail::onstack
 };
 
 template<typename impl_type, typename... more_types>
-struct pimpl_detail::shared : public std::shared_ptr<impl_type>
+struct pimpl_detail::shared : std::shared_ptr<impl_type>
 {
     using this_type = shared;
     using base_type = std::shared_ptr<impl_type>;
@@ -81,15 +83,15 @@ struct pimpl_detail::unique
     }
 
    ~unique () { traits_->destroy(impl_); }
-    unique () : traits_(traits()), impl_(0) {}
+    unique () : traits_(traits()), impl_(nullptr) {}
     unique (impl_type* p) : traits_(deep_copy()), impl_(p) {}
-    unique (unique const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
+    unique (this_type const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
-    unique& operator= (unique const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
-    bool    operator< (unique const& that) const { return this->impl_ < that.impl_; }
+    this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
+    bool       operator< (this_type const& that) const { return impl_ < that.impl_; }
 
-    void           reset (impl_type* p) { unique(p).swap(*this); }
-    void            swap (unique& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
+    void           reset (impl_type* p) { this_type(p).swap(*this); }
+    void            swap (this_type& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
     impl_type*       get () { return impl_; }
     impl_type const* get () const { return impl_; }
     long       use_count () const { return 1; }
@@ -106,10 +108,14 @@ struct pimpl_detail::unique
 
         operator traits const*() { static traits trait; return &trait; }
     };
-    struct deep_copy : public traits
+    struct deep_copy : traits
     {
         void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
         impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
+//      void     assign (impl_type*& a, impl_type const* b) const
+//      {
+//          if (a != b) destroy(a), a = copy(b);
+//      }
         void     assign (impl_type*& a, impl_type const* b) const
         {
             /**/ if ( a ==  b);
@@ -127,8 +133,8 @@ struct pimpl_detail::unique
 template<typename user_type, typename... more_types>
 struct pimpl
 {
-    class       implementation;
-    template<class> class base;
+    struct          implementation;
+    template<typename> struct base;
 
     using   unique = base<pimpl_detail::unique <implementation, more_types...>>;
     using   shared = base<pimpl_detail::shared <implementation, more_types...>>;
@@ -148,7 +154,7 @@ struct pimpl
         using  null_type = typename user_type::null_type;
         using pimpl_type = typename user_type::pimpl_type;
 
-//        static_assert(pimpl<user_type>::value, "");
+        static_assert(pimpl<user_type>::value, "");
         static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
 
         null_type   arg;
@@ -158,17 +164,17 @@ struct pimpl
     }
 };
 
-template<class user_type, typename... more_types>
-template<class policy_type>
+template<typename user_type, typename... more_types>
+template<typename policy_type>
 struct pimpl<user_type, more_types...>::base
 {
     using implementation = typename pimpl<user_type, more_types...>::implementation;
     using     pimpl_type = base;
     using      null_type = pimpl_detail::null_type;
 
-    template<class T> using     rm_ref = typename std::remove_reference<T>::type;
-    template<class T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;
-    template<class T> using is_derived = typename std::enable_if<is_base_of<T>::value, null_type*>::type;
+    template<typename T> using     rm_ref = typename std::remove_reference<T>::type;
+    template<typename T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;
+    template<typename T> using is_derived = typename std::enable_if<is_base_of<T>::value, null_type*>::type;
 
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
@@ -193,9 +199,8 @@ struct pimpl<user_type, more_types...>::base
     template<class Y, class D> void reset(Y* p, D d) { impl_.reset(p, d); }
 
     // Access To the Implementation.
-    // Functions allow access to the underlying implementation. These methods
-    // are only meaningful in the code for which pimpl<>::implementation has been
-    // made visible. Pimpl behaves like a proxy and exhibits the deep-constness
+    // These methods are only meaningful in the code for which pimpl<>::implementation
+    // has been made visible. Pimpl behaves like a proxy and exhibits the deep-constness
     // property unlike raw pointers and, say, std::shared_ptr. That is,
     // 'const std::shared_ptr' still allows the underlying data modified!.
     // Pimpl does not. So, 'const pimpls' return 'const' pointers and references.

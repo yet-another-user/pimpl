@@ -36,13 +36,13 @@ struct my_allocator
 };
 
 template <class T1, class T2>
-bool operator==(const my_allocator<T1>&, const my_allocator<T2>&) throw()
+bool operator==(my_allocator<T1> const&, my_allocator<T2> const&) throw()
 {
     return true;
 }
 
 template <class T1, class T2>
-bool operator!=(const my_allocator<T1>&, const my_allocator<T2>&) throw()
+bool operator!=(my_allocator<T1> const&, my_allocator<T2> const&) throw()
 {
     return false;
 }
@@ -211,8 +211,24 @@ test_constructors()
     Value v12 (5);          BOOST_TEST(v12.trace() == "Value::implementation(int)");
     Value v13 = v12;        BOOST_TEST(v13.trace() == "Value::implementation(Value::implementation const&)");
     Value v14 (v12);        BOOST_TEST(v14.trace() == "Value::implementation(Value::implementation const&)");
-                            BOOST_TEST(v13.id() != v12.id()); // Implementation copied.
-                            BOOST_TEST(v14.id() != v12.id()); // Implementation copied.
+                            BOOST_TEST(v13.id() != v12.id()); // Copied.
+                            BOOST_TEST(v14.id() != v12.id()); // Copied.
+}
+
+static
+void
+test_assignments()
+{
+    Value v11 (3);
+    Value v12 (5);
+
+    BOOST_TEST(v11 != v12);
+    BOOST_TEST(v11.id() != v12.id());
+
+    v11 = v12;
+
+    BOOST_TEST(v11 == v12);
+    BOOST_TEST(v11.id() != v12.id());
 }
 
 static
@@ -284,6 +300,7 @@ main(int argc, char const* argv[])
     test_null();
     test_is_pimpl();
     test_constructors();
+    test_assignments();
     test_bool_conversions();
     test_comparisons();
     test_runtime_polymorphic_behavior();
