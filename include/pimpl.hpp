@@ -25,7 +25,7 @@ namespace pimpl_detail
     struct is_alloc { BOOST_STATIC_CONSTANT(bool, value = false); };
 
     template<typename Class>
-    struct is_alloc<Class, typename boost::enable_if<boost::is_class<Class>, void>::type>
+    struct is_alloc<Class, typename std::enable_if<std::is_class<Class>::value, void>::type>
     {
         BOOST_DECLARE_HAS_MEMBER(has_allocate, allocate);
         BOOST_DECLARE_HAS_MEMBER(has_deallocate, deallocate);
@@ -61,18 +61,18 @@ struct pimpl_detail::shared : std::shared_ptr<impl_type>
     using this_type = shared;
     using base_type = std::shared_ptr<impl_type>;
 
-    template<typename alloc_type, typename... arg_types>
-    typename boost::enable_if<is_alloc<alloc_type>, void>::type
-    construct(alloc_type alloc, arg_types&&... args)
+    template<typename arg_type, typename... arg_types>
+    typename std::enable_if<is_alloc<arg_type>::value, void>::type
+    construct(arg_type&& arg, arg_types&&... args)
     {
-        base_type bt = std::allocate_shared<impl_type>(alloc, std::forward<arg_types>(args)...);
+        base_type bt = std::allocate_shared<impl_type>(std::forward<arg_type>(arg), std::forward<arg_types>(args)...);
         this->swap(bt);
     }
     template<typename arg_type, typename... arg_types>
-    typename boost::disable_if<is_alloc<arg_type>, void>::type
-    construct(arg_type arg1, arg_types&&... args)
+    typename std::enable_if<!is_alloc<arg_type>::value, void>::type
+    construct(arg_type&& arg, arg_types&&... args)
     {
-        base_type bt = std::make_shared<impl_type>(arg1, std::forward<arg_types>(args)...);
+        base_type bt = std::make_shared<impl_type>(std::forward<arg_type>(arg), std::forward<arg_types>(args)...);
         this->swap(bt);
     }
     void
@@ -91,11 +91,16 @@ struct pimpl_detail::unique
 
     using this_type = unique;
 
+    void
+    construct()
+    {
+        reset(new impl_type());
+    }
     template<typename... arg_types>
     void
     construct(arg_types&&... args)
     {
-        reset(new impl_type(std::forward<arg_types>(args)...)); // TODO. NEED TO DEPLOY ALLOCATOR
+        reset(new impl_type(std::forward<arg_types>(args)...));
     }
 
    ~unique () { traits_->destroy(impl_); }

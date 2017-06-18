@@ -3,14 +3,22 @@
 template <class T>
 struct my_allocator
 {
-    typedef my_allocator    this_type;
-    typedef size_t          size_type;
-    typedef ptrdiff_t difference_type;
-    typedef T*                pointer;
-    typedef const T*    const_pointer;
-    typedef T&              reference;
-    typedef const T&  const_reference;
-    typedef T              value_type;
+    using       this_type = my_allocator;
+    using       size_type = size_t;
+    using difference_type = ptrdiff_t;
+    using         pointer = T*;
+    using   const_pointer = T const*;
+    using       reference = T&;
+    using const_reference = T const&;
+    using      value_type = T;
+
+   ~my_allocator() throw() {}
+    my_allocator() throw() {}
+
+    my_allocator(const my_allocator&) throw() {}
+
+    template<typename other_type>
+    my_allocator(my_allocator<other_type> const&) throw() {}
 
     // allocate but don't initialize num elements of type T
     pointer allocate(size_type num)
@@ -71,7 +79,7 @@ Book::Book() : pimpl_type(null_type())
 
 Book::Book(string const& title, string const& author)
 :
-    pimpl_type(std::allocator<implementation>(), title, author)
+    pimpl_type(my_allocator<implementation>(), title, author)
 {
 }
 
