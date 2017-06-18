@@ -8,7 +8,6 @@
 #include <boost/assert.hpp>
 #include <boost/utility.hpp>
 #include <boost/type_traits.hpp>
-#include <boost/convert/detail/has_member.hpp>
 #include <type_traits>
 #include <memory>
 
@@ -16,30 +15,20 @@ namespace pimpl_detail
 {
 	struct null_type {};
 
-    template<typename> struct  shared;
-    template<typename> struct  unique;
-    template<typename> struct     cow; // copy_on_write
-    template<typename> struct onstack;
-
-    template<typename, typename =void>
-    struct is_alloc { BOOST_STATIC_CONSTANT(bool, value = false); };
-
-    template<typename Class>
-    struct is_alloc<Class, typename boost::enable_if<boost::is_class<Class>, void>::type>
+	template <typename first_type =void, typename...>
+    struct first
     {
-        BOOST_DECLARE_HAS_MEMBER(has_allocate, allocate);
-        BOOST_DECLARE_HAS_MEMBER(has_deallocate, deallocate);
-        BOOST_DECLARE_HAS_MEMBER(has_construct, construct);
-        BOOST_DECLARE_HAS_MEMBER(has_destroy, destroy);
-
-        BOOST_STATIC_CONSTANT(bool, value = has_allocate<Class>::value
-                                         && has_deallocate<Class>::value
-                                         && has_construct<Class>::value
-                                         && has_destroy<Class>::value);
+       using type = first_type;
     };
+    template<typename, typename...> struct  shared;
+    template<typename, typename...> struct  unique;
+    template<typename, typename...> struct     cow; // copy_on_write
+    template<typename, typename...> struct onstack;
+
+    template<class T> using is_assignable = typename std::enable_if<std::is_copy_assignable<T>::value, null_type*>::type;
 }
 
-template<typename impl_type>
+template<typename impl_type, typename... more_types>
 struct pimpl_detail::onstack
 {
     // Proof of concept
@@ -55,41 +44,36 @@ struct pimpl_detail::onstack
     onstack () =default;
 };
 
-template<typename impl_type>
+template<typename impl_type, typename... more_types>
 struct pimpl_detail::shared : std::shared_ptr<impl_type>
 {
     using this_type = shared;
     using base_type = std::shared_ptr<impl_type>;
+    using     alloc = typename std::conditional<
+                      sizeof...(more_types) == 0,
+                      std::allocator<impl_type>,
+                      typename first<more_types...>::type>::type;
 
-    template<typename alloc_type, typename... arg_types>
-    typename boost::enable_if<is_alloc<alloc_type>, void>::type
-    construct(alloc_type alloc, arg_types&&... args)
-    {
-        base_type bt = std::allocate_shared<impl_type>(alloc, std::forward<arg_types>(args)...);
-        this->swap(bt);
-    }
-    template<typename arg_type, typename... arg_types>
-    typename boost::disable_if<is_alloc<arg_type>, void>::type
-    construct(arg_type arg1, arg_types&&... args)
-    {
-        base_type bt = std::make_shared<impl_type>(arg1, std::forward<arg_types>(args)...);
-        this->swap(bt);
-    }
+    template<typename... arg_types>
     void
-    construct()
+    construct(arg_types&&... args)
     {
-        base_type bt = std::make_shared<impl_type>();
+        base_type bt = std::allocate_shared<impl_type>(alloc(), std::forward<arg_types>(args)...);
         this->swap(bt);
     }
 };
 
-template<typename impl_type>
+template<typename impl_type, typename... more_types>
 struct pimpl_detail::unique
 {
     // Smart-pointer with the value-semantics behavior.
     // The incomplete-type management technique is originally by Peter Dimov.
 
     using this_type = unique;
+	using     alloc = typename std::conditional<
+                      sizeof...(more_types) == 0,
+                      std::allocator<impl_type>,
+                      typename first<more_types...>::type>::type;
 
     template<typename... arg_types>
     void
@@ -146,16 +130,16 @@ struct pimpl_detail::unique
     impl_type*      impl_;
 };
 
-template<typename user_type>
+template<typename user_type, typename... more_types>
 struct pimpl
 {
     struct          implementation;
     template<typename> struct base;
 
-    using   unique = base<pimpl_detail::unique <implementation>>;
-    using   shared = base<pimpl_detail::shared <implementation>>;
-    using      cow = base<pimpl_detail::cow    <implementation>>;
-    using  onstack = base<pimpl_detail::onstack<implementation>>;
+    using   unique = base<pimpl_detail::unique <implementation, more_types...>>;
+    using   shared = base<pimpl_detail::shared <implementation, more_types...>>;
+    using      cow = base<pimpl_detail::cow    <implementation, more_types...>>;
+    using  onstack = base<pimpl_detail::onstack<implementation, more_types...>>;
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
     using ptr_type = typename std::remove_reference<user_type>::type*;
@@ -180,11 +164,11 @@ struct pimpl
     }
 };
 
-template<typename user_type>
+template<typename user_type, typename... more_types>
 template<typename policy_type>
-struct pimpl<user_type>::base
+struct pimpl<user_type, more_types...>::base
 {
-    using implementation = typename pimpl<user_type>::implementation;
+    using implementation = typename pimpl<user_type, more_types...>::implementation;
     using     pimpl_type = base;
     using      null_type = pimpl_detail::null_type;
 
@@ -209,6 +193,7 @@ struct pimpl<user_type>::base
     bool operator< (pimpl_type const& that) const { return impl_  < that.impl_; }
 
     void swap (pimpl_type& that) { impl_.swap(that.impl_); }
+//    void swap (policy_type& that) { impl_.swap(that); }
 
     void reset(implementation* p) { impl_.reset(p); }
     template<class Y, class D> void reset(Y* p, D d) { impl_.reset(p, d); }
@@ -228,7 +213,7 @@ struct pimpl<user_type>::base
 
     protected:
 
-    template<typename> friend class pimpl;
+    template<typename, typename...> friend class pimpl;
 
     base (null_type) {}
     base () { impl_.construct(); }
@@ -244,7 +229,7 @@ struct pimpl<user_type>::base
 
 namespace boost
 {
-    template<typename user_type> using pimpl = ::pimpl<user_type>;
+    template<typename user_type, typename... more_types> using pimpl = ::pimpl<user_type, more_types...>;
 }
 
 #endif // AUXILIARY_PIMPL_HPP
