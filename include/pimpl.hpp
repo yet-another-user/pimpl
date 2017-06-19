@@ -92,7 +92,9 @@ struct pimpl_detail::unique
     unique () : impl_(nullptr), traits_(traits()) {}
     unique (impl_type* p) : impl_(p), traits_(deep_copy()) {}
     unique (this_type const& that) : impl_(that.traits_->copy(that.impl_)), traits_(that.traits_) {}
+    unique (this_type&& that) : unique() { swap(that); }
 
+    this_type& operator= (this_type&& that) { swap(that); return *this; }
     this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
     bool       operator< (this_type const& that) const { return impl_ < that.impl_; }
 
@@ -118,17 +120,19 @@ struct pimpl_detail::unique
     {
         void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
         impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
-//      void     assign (impl_type*& a, impl_type const* b) const
-//      {
-//          if (a != b) destroy(a), a = copy(b);
-//      }
-        void     assign (impl_type*& a, impl_type const* b) const
+
+        void assign (impl_type*& a, impl_type const* b) const
         {
-            /**/ if ( a ==  b);
-            else if ( a &&  b) *a = *b;
-            else if (!a &&  b) a = copy(b);
-            else if ( a && !b) destroy(a);
+            if (a != b) destroy(a), a = copy(b);
         }
+        // TODO: add selection using is_copy_assignable
+//        void assign (impl_type*& a, impl_type const* b) const
+//        {
+//            /**/ if ( a ==  b);
+//            else if ( a &&  b) *a = *b;
+//            else if (!a &&  b) a = copy(b);
+//            else if ( a && !b) destroy(a);
+//        }
         operator traits const*() { static deep_copy trait; return &trait; }
     };
 
