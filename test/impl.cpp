@@ -79,7 +79,7 @@ Book::Book() : pimpl_type(null_type())
 
 Book::Book(string const& title, string const& author)
 :
-    pimpl_type(my_allocator<implementation>(), title, author)
+    pimpl_type(std::allocate_shared<implementation>(std::allocator<implementation>(), title, author))
 {
 }
 

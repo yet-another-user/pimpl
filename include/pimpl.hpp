@@ -7,7 +7,6 @@
 
 #include <boost/assert.hpp>
 #include <boost/utility.hpp>
-#include <boost/type_traits.hpp>
 #include <boost/convert/detail/has_member.hpp>
 #include <type_traits>
 #include <memory>
@@ -20,23 +19,6 @@ namespace pimpl_detail
     template<typename> struct  unique;
     template<typename> struct     cow; // copy_on_write
     template<typename> struct onstack;
-
-    template<typename, typename =void>
-    struct is_alloc { BOOST_STATIC_CONSTANT(bool, value = false); };
-
-    template<typename Class>
-    struct is_alloc<Class, typename std::enable_if<std::is_class<Class>::value, void>::type>
-    {
-        BOOST_DECLARE_HAS_MEMBER(has_allocate, allocate);
-        BOOST_DECLARE_HAS_MEMBER(has_deallocate, deallocate);
-        BOOST_DECLARE_HAS_MEMBER(has_construct, construct);
-        BOOST_DECLARE_HAS_MEMBER(has_destroy, destroy);
-
-        BOOST_STATIC_CONSTANT(bool, value = has_allocate<Class>::value
-                                         && has_deallocate<Class>::value
-                                         && has_construct<Class>::value
-                                         && has_destroy<Class>::value);
-    };
 }
 
 template<typename impl_type>
@@ -61,26 +43,15 @@ struct pimpl_detail::shared : std::shared_ptr<impl_type>
     using this_type = shared;
     using base_type = std::shared_ptr<impl_type>;
 
-    template<typename arg_type, typename... arg_types>
-    typename std::enable_if<is_alloc<arg_type>::value, void>::type
-    construct(arg_type&& arg, arg_types&&... args)
-    {
-        base_type bt = std::allocate_shared<impl_type>(std::forward<arg_type>(arg), std::forward<arg_types>(args)...);
-        this->swap(bt);
-    }
-    template<typename arg_type, typename... arg_types>
-    typename std::enable_if<!is_alloc<arg_type>::value, void>::type
-    construct(arg_type&& arg, arg_types&&... args)
-    {
-        base_type bt = std::make_shared<impl_type>(std::forward<arg_type>(arg), std::forward<arg_types>(args)...);
-        this->swap(bt);
-    }
+    template<typename... arg_types>
     void
-    construct()
+    construct(arg_types&&... args)
     {
-        base_type bt = std::make_shared<impl_type>();
+        base_type bt = std::make_shared<impl_type>(std::forward<arg_types>(args)...);
         this->swap(bt);
     }
+
+    void construct(base_type&& impl) { this->swap(impl); }
 };
 
 template<typename impl_type>
@@ -91,11 +62,6 @@ struct pimpl_detail::unique
 
     using this_type = unique;
 
-    void
-    construct()
-    {
-        reset(new impl_type());
-    }
     template<typename... arg_types>
     void
     construct(arg_types&&... args)
@@ -104,9 +70,9 @@ struct pimpl_detail::unique
     }
 
    ~unique () { traits_->destroy(impl_); }
-    unique () : traits_(traits()), impl_(nullptr) {}
-    unique (impl_type* p) : traits_(deep_copy()), impl_(p) {}
-    unique (this_type const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
+    unique () : impl_(nullptr), traits_(traits()) {}
+    unique (impl_type* p) : impl_(p), traits_(deep_copy()) {}
+    unique (this_type const& that) : impl_(that.traits_->copy(that.impl_)), traits_(that.traits_) {}
 
     this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
     bool       operator< (this_type const& that) const { return impl_ < that.impl_; }
@@ -147,8 +113,8 @@ struct pimpl_detail::unique
         operator traits const*() { static deep_copy trait; return &trait; }
     };
 
-    traits const* traits_;
     impl_type*      impl_;
+    traits const* traits_;
 };
 
 template<typename user_type>
@@ -165,8 +131,8 @@ struct pimpl
     using  no_type = boost::type_traits::no_type;
     using ptr_type = typename std::remove_reference<user_type>::type*;
 
-    template<class Y> static yes_type test (Y*, typename Y::pimpl_type* =nullptr);
-    /***************/ static no_type  test (...);
+    template<typename Y> static yes_type test (Y*, typename Y::pimpl_type* =nullptr);
+    /******************/ static no_type  test (...);
 
     BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
 
@@ -236,7 +202,6 @@ struct pimpl<user_type>::base
     template<typename> friend class pimpl;
 
     base (null_type) {}
-    base () { impl_.construct(); }
 
     template<class arg_type>
     base(arg_type&& arg, is_derived<arg_type> =nullptr) : impl_(arg.impl_) {}
