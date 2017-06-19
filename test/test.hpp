@@ -1,13 +1,13 @@
 #ifndef AUXILIARY_PIMPLE_TEST_HPP
 #define AUXILIARY_PIMPLE_TEST_HPP
 
-#include "../include/pimpl.hpp"
+#include "../include/impl_ptr.hpp"
 #include <boost/detail/lightweight_test.hpp>
 #include <string>
 
 using string = std::string;
 
-struct Book : public boost::pimpl<Book>::shared
+struct Book : public boost::impl_ptr<Book>::shared
 {
     Book();
     Book(string const& title, string const& author);
@@ -19,7 +19,7 @@ struct Book : public boost::pimpl<Book>::shared
 struct singleton_type {};
 struct Foo {};
 
-struct Shared : public boost::pimpl<Shared>::shared // Pure interface.
+struct Shared : public boost::impl_ptr<Shared>::shared // Pure interface.
 {
     Shared ();
     Shared (int);
@@ -38,7 +38,7 @@ struct Shared : public boost::pimpl<Shared>::shared // Pure interface.
     int       id () const;
 };
 
-struct Value : public boost::pimpl<Value>::unique // Pure interface.
+struct Value : public boost::impl_ptr<Value>::unique // Pure interface.
 {
     Value ();
     Value (int);
@@ -52,7 +52,7 @@ struct Value : public boost::pimpl<Value>::unique // Pure interface.
     int       id () const;
 };
 
-struct Base : public boost::pimpl<Base>::shared
+struct Base : public boost::impl_ptr<Base>::shared
 {
     Base (int);
 

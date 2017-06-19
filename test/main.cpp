@@ -15,19 +15,19 @@ static
 void
 test_is_pimpl()
 {
-    BOOST_TEST(false == pimpl<Foo>::value);
-    BOOST_TEST(false == pimpl<int>::value);
-    BOOST_TEST(false == pimpl<int*>::value);
-    BOOST_TEST(false == pimpl<int const&>::value);
-    BOOST_TEST(true  == pimpl<Shared>::value);
-    BOOST_TEST(true  == pimpl<Shared const>::value);
-    BOOST_TEST(false == pimpl<Shared*>::value);
-    BOOST_TEST(true  == pimpl<Value>::value);
-    BOOST_TEST(true  == pimpl<Base>::value);
-    BOOST_TEST(true  == pimpl<Derived1>::value);
-    BOOST_TEST(true  == pimpl<Derived1 const>::value);
-    BOOST_TEST(true  == pimpl<Derived1 const&>::value);
-    BOOST_TEST(true  == pimpl<Derived2>::value);
+    BOOST_TEST(false == impl_ptr<Foo>::value);
+    BOOST_TEST(false == impl_ptr<int>::value);
+    BOOST_TEST(false == impl_ptr<int*>::value);
+    BOOST_TEST(false == impl_ptr<int const&>::value);
+    BOOST_TEST(true  == impl_ptr<Shared>::value);
+    BOOST_TEST(true  == impl_ptr<Shared const>::value);
+    BOOST_TEST(false == impl_ptr<Shared*>::value);
+    BOOST_TEST(true  == impl_ptr<Value>::value);
+    BOOST_TEST(true  == impl_ptr<Base>::value);
+    BOOST_TEST(true  == impl_ptr<Derived1>::value);
+    BOOST_TEST(true  == impl_ptr<Derived1 const>::value);
+    BOOST_TEST(true  == impl_ptr<Derived1 const&>::value);
+    BOOST_TEST(true  == impl_ptr<Derived2>::value);
 }
 
 static
@@ -76,12 +76,12 @@ test_runtime_polymorphic_behavior()
     Base*         bp3 = &base3;
     Base*         bp4 = &derived1;
     Base*         bp5 = &derived2;
-    Base         bad1 = pimpl<Base>::null();
-    Base         bad2 = pimpl<Base>::null();
-    Base         bad3 = pimpl<Derived1>::null();
-    Base         bad4 = pimpl<Derived2>::null();
-    Derived1     bad5 (pimpl<Derived1>::null());
-    Derived2     bad6 (pimpl<Derived2>::null());
+    Base         bad1 = impl_ptr<Base>::null();
+    Base         bad2 = impl_ptr<Base>::null();
+    Base         bad3 = impl_ptr<Derived1>::null();
+    Base         bad4 = impl_ptr<Derived2>::null();
+    Derived1     bad5 (impl_ptr<Derived1>::null());
+    Derived2     bad6 (impl_ptr<Derived2>::null());
 
     BOOST_TEST(derived1.trace() == "Derived1::implementation(int, int)");
     BOOST_TEST(derived2.trace() == "Derived2::implementation(int, int, int)");
@@ -118,14 +118,14 @@ static
 void
 test_null()
 {
-    Shared p01 = pimpl<Shared>::null(); BOOST_TEST(p01.trace() == "null");
-    Shared p02 (pimpl<Shared>::null()); BOOST_TEST(p02.trace() == "null");
-    Value  v01 = pimpl<Value>::null();  BOOST_TEST(v01.trace() == "null");
-    Value  v02 (pimpl<Value>::null());  BOOST_TEST(v02.trace() == "null");
+    Shared p01 = impl_ptr<Shared>::null(); BOOST_TEST(p01.trace() == "null");
+    Shared p02 (impl_ptr<Shared>::null()); BOOST_TEST(p02.trace() == "null");
+    Value  v01 = impl_ptr<Value>::null();  BOOST_TEST(v01.trace() == "null");
+    Value  v02 (impl_ptr<Value>::null());  BOOST_TEST(v02.trace() == "null");
 
-    Base     p03 (pimpl<    Base>::null()); BOOST_TEST(p03.trace() == "null");
-    Derived1 p04 (pimpl<Derived1>::null()); BOOST_TEST(p04.trace() == "null");
-    Derived2 p05 (pimpl<Derived2>::null()); BOOST_TEST(p05.trace() == "null");
+    Base     p03 (impl_ptr<    Base>::null()); BOOST_TEST(p03.trace() == "null");
+    Derived1 p04 (impl_ptr<Derived1>::null()); BOOST_TEST(p04.trace() == "null");
+    Derived2 p05 (impl_ptr<Derived2>::null()); BOOST_TEST(p05.trace() == "null");
     Base     p06 (p03); BOOST_TEST(p06.trace() == "null");
     Base     p07 (p04); BOOST_TEST(p07.trace() == "null");
     Base     p08 (p05); BOOST_TEST(p08.trace() == "null");
@@ -191,8 +191,8 @@ test_bool_conversions()
 {
     Shared  p1;
     Value v1;
-    Shared  p2 = pimpl<Shared>::null();
-    Value v2 = pimpl<Value>::null();
+    Shared  p2 = impl_ptr<Shared>::null();
+    Value v2 = impl_ptr<Value>::null();
 
     BOOST_TEST(p1.trace() == "Shared::implementation()");
     BOOST_TEST(v1.trace() == "Value::implementation()");
@@ -220,8 +220,8 @@ test_comparisons()
     Value  v2 (5);
     Value  v3 = v2;
 
-    BOOST_TEST(p2 != p1); // calls pimpl::op!=()
-    BOOST_TEST(p2 == p3); // calls pimpl::op==()
+    BOOST_TEST(p2 != p1); // calls impl_ptr::op!=()
+    BOOST_TEST(p2 == p3); // calls impl_ptr::op==()
     BOOST_TEST(v2 == v3);
     BOOST_TEST(v2.trace() == "Value::operator==(Value const&)");
     BOOST_TEST(v2 != v1);

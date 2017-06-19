@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <memory>
 
-namespace pimpl_detail
+namespace detail
 {
 	struct null_type {};
 
@@ -29,7 +29,7 @@ namespace pimpl_detail
 }
 
 template<typename impl_type, typename... more_types>
-struct pimpl_detail::onstack
+struct detail::onstack
 {
     // Proof of concept
     // Need to extract storage size from more_types
@@ -45,7 +45,7 @@ struct pimpl_detail::onstack
 };
 
 template<typename impl_type, typename... more_types>
-struct pimpl_detail::shared : std::shared_ptr<impl_type>
+struct detail::shared : std::shared_ptr<impl_type>
 {
     using this_type = shared;
     using base_type = std::shared_ptr<impl_type>;
@@ -64,7 +64,7 @@ struct pimpl_detail::shared : std::shared_ptr<impl_type>
 };
 
 template<typename impl_type, typename... more_types>
-struct pimpl_detail::unique
+struct detail::unique
 {
     // Smart-pointer with the value-semantics behavior.
     // The incomplete-type management technique is originally by Peter Dimov.
@@ -131,20 +131,20 @@ struct pimpl_detail::unique
 };
 
 template<typename user_type, typename... more_types>
-struct pimpl
+struct impl_ptr
 {
     struct          implementation;
     template<typename> struct base;
 
-    using   unique = base<pimpl_detail::unique <implementation, more_types...>>;
-    using   shared = base<pimpl_detail::shared <implementation, more_types...>>;
-    using      cow = base<pimpl_detail::cow    <implementation, more_types...>>;
-    using  onstack = base<pimpl_detail::onstack<implementation, more_types...>>;
+    using   unique = base<detail::unique <implementation, more_types...>>;
+    using   shared = base<detail::shared <implementation, more_types...>>;
+    using      cow = base<detail::cow    <implementation, more_types...>>;
+    using  onstack = base<detail::onstack<implementation, more_types...>>;
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
     using ptr_type = typename std::remove_reference<user_type>::type*;
 
-    template<class Y> static yes_type test (Y*, typename Y::pimpl_type* =nullptr);
+    template<class Y> static yes_type test (Y*, typename Y::base_type* =nullptr);
     /***************/ static no_type  test (...);
 
     BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
@@ -152,13 +152,13 @@ struct pimpl
     static user_type null()
     {
         using  null_type = typename user_type::null_type;
-        using pimpl_type = typename user_type::pimpl_type;
+        using base_type = typename user_type::base_type;
 
-        static_assert(pimpl<user_type>::value, "");
-        static_assert(sizeof(user_type) == sizeof(pimpl_type), "");
+        static_assert(impl_ptr<user_type>::value, "");
+        static_assert(sizeof(user_type) == sizeof(base_type), "");
 
         null_type   arg;
-        pimpl_type null (arg);
+        base_type null (arg);
 
         return *(user_type*) &null;
     }
@@ -166,11 +166,11 @@ struct pimpl
 
 template<typename user_type, typename... more_types>
 template<typename policy_type>
-struct pimpl<user_type, more_types...>::base
+struct impl_ptr<user_type, more_types...>::base
 {
-    using implementation = typename pimpl<user_type, more_types...>::implementation;
-    using     pimpl_type = base;
-    using      null_type = pimpl_detail::null_type;
+    using implementation = typename impl_ptr<user_type, more_types...>::implementation;
+    using      base_type = base;
+    using      null_type = detail::null_type;
 
     template<typename T> using     rm_ref = typename std::remove_reference<T>::type;
     template<typename T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;
@@ -180,26 +180,26 @@ struct pimpl<user_type, more_types...>::base
     explicit operator bool () const { return  impl_.get(); }
 
     // Comparison Operators.
-    // base::op==() transfers the comparison to 'impl_' (std::shared_ptr or pimpl::unique).
+    // base::op==() transfers the comparison to 'impl_' (std::shared_ptr or impl_ptr::unique).
     // Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable as there is shared_ptr::op==().
     // However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT -- the standard
-    // value-semantics behavior -- as there is no pimpl::unique::op==().
+    // value-semantics behavior -- as there is no impl_ptr::unique::op==().
     // If a value-semantics class T needs to be comparable, then it has to provide
     // T::op==(T const&) EXPLICITLY as part of its public interface.
-    // Trying to call this base::op==() for unique-based pimpl will fail to compile (no unique::op==())
+    // Trying to call this base::op==() for unique-based impl_ptr will fail to compile (no unique::op==())
     // and will indicate that the user forgot to declare T::operator==(T const&).
-    bool operator==(pimpl_type const& that) const { return impl_ == that.impl_; }
-    bool operator!=(pimpl_type const& that) const { return impl_ != that.impl_; }
-    bool operator< (pimpl_type const& that) const { return impl_  < that.impl_; }
+    bool operator==(base_type const& that) const { return impl_ == that.impl_; }
+    bool operator!=(base_type const& that) const { return impl_ != that.impl_; }
+    bool operator< (base_type const& that) const { return impl_  < that.impl_; }
 
-    void swap (pimpl_type& that) { impl_.swap(that.impl_); }
+    void swap (base_type& that) { impl_.swap(that.impl_); }
 //    void swap (policy_type& that) { impl_.swap(that); }
 
     void reset(implementation* p) { impl_.reset(p); }
     template<class Y, class D> void reset(Y* p, D d) { impl_.reset(p, d); }
 
     // Access To the Implementation.
-    // These methods are only meaningful in the code for which pimpl<>::implementation
+    // These methods are only meaningful in the code for which impl_ptr<>::implementation
     // has been made visible. Pimpl behaves like a proxy and exhibits the deep-constness
     // property unlike raw pointers and, say, std::shared_ptr. That is,
     // 'const std::shared_ptr' still allows the underlying data modified!.
@@ -213,7 +213,7 @@ struct pimpl<user_type, more_types...>::base
 
     protected:
 
-    template<typename, typename...> friend class pimpl;
+    template<typename, typename...> friend class impl_ptr;
 
     base (null_type) {}
     base () { impl_.construct(); }
@@ -229,7 +229,7 @@ struct pimpl<user_type, more_types...>::base
 
 namespace boost
 {
-    template<typename user_type, typename... more_types> using pimpl = ::pimpl<user_type, more_types...>;
+    template<typename user_type, typename... more_types> using impl_ptr = ::impl_ptr<user_type, more_types...>;
 }
 
 #endif // AUXILIARY_PIMPL_HPP

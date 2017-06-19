@@ -61,7 +61,7 @@ struct deleter
 };
 
 template<>
-struct boost::pimpl<Book>::implementation
+struct boost::impl_ptr<Book>::implementation
 {
     implementation(string const& the_title, string const& the_author)
     :
@@ -73,18 +73,18 @@ struct boost::pimpl<Book>::implementation
     string author;
 };
 
-Book::Book() : pimpl_type(null_type())
+Book::Book() : base_type(null_type())
 {
 }
 
 Book::Book(string const& title, string const& author)
 :
-//  pimpl_type(title, author)
-    pimpl_type(std::allocator<implementation>(), title, author)
-//  pimpl_type(std::make_shared<implementation>(title, author))
-//  pimpl_type(std::allocate_shared<implementation>(std::allocator<implementation>(), title, author))
+//  base_type(title, author)
+    base_type(std::allocator<implementation>(), title, author)
+//  base_type(std::make_shared<implementation>(title, author))
+//  base_type(std::allocate_shared<implementation>(std::allocator<implementation>(), title, author))
 {
-    // Various ways of initializing the pimpl base:
+    // Various ways of initializing the impl_ptr base:
     // 1) Internally calls std::make_shared
     // 2) Internally calls std::allocate_shared(allocator, ...)
     // 3) Calling std::make_shared explicitly.
@@ -117,7 +117,7 @@ struct uid
 // it does not need to be a 'class'. All public methods are declared in the
 // external visible Shared class. Then, data in this structure are accessed as
 // (*this)->data or (**this).data.
-template<> struct boost::pimpl<Shared>::implementation : boost::noncopyable
+template<> struct boost::impl_ptr<Shared>::implementation : boost::noncopyable
 {
     typedef implementation this_type;
 
@@ -144,13 +144,13 @@ string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Shared::id () const { return (*this)->id_; }
 
 Shared::Shared () {}
-Shared::Shared (int k) : pimpl_type(k) {}
-Shared::Shared (int k, int l) : pimpl_type(k, l) {}
-Shared::Shared (Foo&       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const& foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo*       foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const* foo) : pimpl_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (singleton_type) : pimpl_type(pimpl<pimpl_type>::null())
+Shared::Shared (int k) : base_type(k) {}
+Shared::Shared (int k, int l) : base_type(k, l) {}
+Shared::Shared (Foo&       foo) : base_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const& foo) : base_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo*       foo) : base_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const* foo) : base_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (singleton_type) : base_type(impl_ptr<base_type>::null())
 {
     static implementation impl;
     reset(&impl, deleter::no());
@@ -160,7 +160,7 @@ Shared::Shared (singleton_type) : pimpl_type(pimpl<pimpl_type>::null())
 // Value
 ///////////////////////////////////////////////////
 
-template<> struct pimpl<Value>::implementation
+template<> struct impl_ptr<Value>::implementation
 {
     typedef implementation this_type;
 
@@ -181,7 +181,7 @@ template<> struct pimpl<Value>::implementation
 };
 
 Value::Value () {}
-Value::Value (int k) : pimpl_type(k) {}
+Value::Value (int k) : base_type(k) {}
 
 string Value::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Value::id () const { return (*this)->id_; }
@@ -200,7 +200,7 @@ Value::operator==(Value const& that) const
 // Testing polymorphism
 ///////////////////////////////////////////////////
 
-template<> struct pimpl<Base>::implementation
+template<> struct impl_ptr<Base>::implementation
 {
     implementation (int k) : base_int_(k), trace_("Base::implementation(int)") {}
     virtual ~implementation() =default;
@@ -211,9 +211,9 @@ template<> struct pimpl<Base>::implementation
     string trace_;
 };
 
-struct Derived1Impl : public pimpl<Base>::implementation
+struct Derived1Impl : public impl_ptr<Base>::implementation
 {
-    typedef pimpl<Base>::implementation base_impl;
+    typedef impl_ptr<Base>::implementation base_impl;
     typedef Derived1Impl                this_impl;
 
     Derived1Impl (int k, int l) : base_impl(k), derived_int_(l)
@@ -249,16 +249,16 @@ struct Derived2Impl : public Derived1Impl
     int more_int_;
 };
 
-Base::Base(int k) : pimpl_type(k)
+Base::Base(int k) : base_type(k)
 {
 }
 
-Derived1::Derived1(int k, int l) : Base(pimpl<Base>::null())
+Derived1::Derived1(int k, int l) : Base(impl_ptr<Base>::null())
 {
     reset(new Derived1Impl(k, l));
 }
 
-Derived2::Derived2(int k, int l, int m) : Derived1(pimpl<Derived1>::null())
+Derived2::Derived2(int k, int l, int m) : Derived1(impl_ptr<Derived1>::null())
 {
     reset(new Derived2Impl(k, l, m));
 }
