@@ -13,12 +13,26 @@
 
 namespace pimpl_detail
 {
-	struct null_type {};
-
     template<typename> struct  shared;
     template<typename> struct  unique;
     template<typename> struct     cow; // copy_on_write
     template<typename> struct onstack;
+
+    struct null_type {};
+
+    template <typename first_type =void, typename...> struct first { using type = first_type; };
+
+    template<typename, typename =void>
+    struct is_allocator { BOOST_STATIC_CONSTANT(bool, value = false); };
+
+    template<typename class_type>
+    struct is_allocator<class_type, typename std::enable_if<std::is_class<class_type>::value, void>::type>
+    {
+        BOOST_DECLARE_HAS_MEMBER(has_allocate, allocate);
+        BOOST_DECLARE_HAS_MEMBER(has_deallocate, deallocate);
+
+        BOOST_STATIC_CONSTANT(bool, value = has_allocate<class_type>::value && has_deallocate<class_type>::value);
+    };
 }
 
 template<typename impl_type>
@@ -40,18 +54,23 @@ struct pimpl_detail::onstack
 template<typename impl_type>
 struct pimpl_detail::shared : std::shared_ptr<impl_type>
 {
-    using this_type = shared;
-    using base_type = std::shared_ptr<impl_type>;
+    using     this_type = shared;
+    using     base_type = std::shared_ptr<impl_type>;
+    using base_type_ref = std::shared_ptr<impl_type>&;
 
     template<typename... arg_types>
-    void
+    typename std::enable_if<is_allocator<typename first<arg_types...>::type>::value, void>::type
     construct(arg_types&&... args)
     {
-        base_type bt = std::make_shared<impl_type>(std::forward<arg_types>(args)...);
-        this->swap(bt);
+        base_type_ref(*this) = std::allocate_shared<impl_type>(std::forward<arg_types>(args)...);
     }
-
-    void construct(base_type&& impl) { this->swap(impl); }
+    template<typename... arg_types>
+    typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
+    construct(arg_types&&... args)
+    {
+        base_type_ref(*this) = std::make_shared<impl_type>(std::forward<arg_types>(args)...);
+    }
+    void construct(base_type&& ptr) { base_type_ref(*this) = ptr; }
 };
 
 template<typename impl_type>

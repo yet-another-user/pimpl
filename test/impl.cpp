@@ -79,12 +79,16 @@ Book::Book() : pimpl_type(null_type())
 
 Book::Book(string const& title, string const& author)
 :
-    pimpl_type(std::make_shared<implementation>(title, author))
+//  pimpl_type(title, author)
+    pimpl_type(std::allocator<implementation>(), title, author)
+//  pimpl_type(std::make_shared<implementation>(title, author))
 //  pimpl_type(std::allocate_shared<implementation>(std::allocator<implementation>(), title, author))
 {
-    // Above the pimpl base is initialized in a more explicit/conventional way with std::make_shared.
-    // That API allows to take the allocator-related complexity outside the pimpl by simply
-    // calling std::allocate_shared.
+    // Various ways of initializing the pimpl base:
+    // 1) Internally calls std::make_shared
+    // 2) Internally calls std::allocate_shared(allocator, ...)
+    // 3) Calling std::make_shared explicitly.
+    // 4) Calling std::allocate_shared explicitly.
 }
 
 string const& Book:: title() const { return (*this)->title; }
