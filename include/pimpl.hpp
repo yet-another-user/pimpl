@@ -81,8 +81,15 @@ struct pimpl_detail::unique
 
     using this_type = unique;
 
+//  template<typename alloc_type, typename... arg_types>
+//  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
+//  construct(alloc_type&& alloc, arg_types&&... args)
+//  {
+//      void* mem = std::allocator_traits<alloc_type>::allocate(alloc, 1);
+//      reset(new(mem) impl_type(std::forward<arg_types>(args)...));
+//  }
     template<typename... arg_types>
-    void
+    typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
     construct(arg_types&&... args)
     {
         reset(new impl_type(std::forward<arg_types>(args)...));
