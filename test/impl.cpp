@@ -117,31 +117,39 @@ struct uid
 // it does not need to be a 'class'. All public methods are declared in the
 // external visible Shared class. Then, data in this structure are accessed as
 // (*this)->data or (**this).data.
-template<> struct boost::impl_ptr<Shared>::implementation : boost::noncopyable
+template<> struct boost::impl_ptr<Shared>::implementation
 {
-    typedef implementation this_type;
+    using this_type = implementation;
 
-    implementation () : int_(0)             { trace_ =  "Shared::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ =  "Shared::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ =  "Shared::implementation(int, int)"; }
-    implementation (Foo&)                   { trace_ =  "Shared::implementation(Foo&)"; }
-    implementation (Foo const&)             { trace_ =  "Shared::implementation(Foo const&)"; }
-    implementation (Foo*)                   { trace_ =  "Shared::implementation(Foo*)"; }
-    implementation (Foo const*)             { trace_ =  "Shared::implementation(Foo const*)"; }
-    implementation (this_type const& o)
-    :
-        int_    (o.int_),
-        trace_  ("Shared::implementation(Shared::implementation const&)"),
-        id_     (o.id_)
-    {}
+    implementation ()                       { trace_ = "Shared::implementation()"; }
+    implementation (int k) : int_(k)        { trace_ = "Shared::implementation(int)"; }
+    implementation (int k, int l) : int_(k) { trace_ = "Shared::implementation(int, int)"; }
+    implementation (Foo&)                   { trace_ = "Shared::implementation(Foo&)"; }
+    implementation (Foo const&)             { trace_ = "Shared::implementation(Foo const&)"; }
+    implementation (Foo*)                   { trace_ = "Shared::implementation(Foo*)"; }
+    implementation (Foo const*)             { trace_ = "Shared::implementation(Foo const*)"; }
 
-    int              int_;
-    mutable string trace_;
-    uid const         id_;
+    implementation(this_type const&) =delete;
+    this_type& operator=(this_type const&) =delete;
+
+    void* operator new(size_t sz)
+    {
+        BOOST_ASSERT(0); // Never called. Need allocators for custom mem. mgmt
+        return malloc(sz);
+    };
+    void operator delete(void* p, size_t)
+    {
+        BOOST_ASSERT(0); // Never called. Need allocators for custom mem. mgmt
+        if (p) free(p);
+    }
+    int           int_ = 0;
+    std::string trace_;
+    uid const      id_;
 };
 
 string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
-int    Shared::id () const { return (*this)->id_; }
+int    Shared::value () const { return (*this)->int_; }
+int    Shared::   id () const { return (*this)->id_; }
 
 Shared::Shared () {}
 Shared::Shared (int k) : base_type(k) {}
@@ -152,6 +160,10 @@ Shared::Shared (Foo*       foo) : base_type(foo) {} // Make sure 'const' handled
 Shared::Shared (Foo const* foo) : base_type(foo) {} // Make sure 'const' handled properly
 Shared::Shared (singleton_type) : base_type(impl_ptr<base_type>::null())
 {
+//  If there is an available/suitable public Shared::Shared(...).
+//  static Shared single;
+//  *this = single;
+
     static implementation impl;
     reset(&impl, deleter::no());
 }
@@ -162,19 +174,27 @@ Shared::Shared (singleton_type) : base_type(impl_ptr<base_type>::null())
 
 template<> struct impl_ptr<Value>::implementation
 {
-    typedef implementation this_type;
+    using this_type = implementation;
 
-    implementation () : int_(0)             { trace_ =  "Value::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ =  "Value::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ =  "Value::implementation(int, int)"; }
-    implementation (Foo&) : int_(0)         { trace_ =  "Value::implementation(Foo&)"; }
-    implementation (Foo const&) : int_(0)   { trace_ =  "Value::implementation(Foo const&)"; }
+    implementation () : int_(0)             { trace_ = "Value::implementation()"; }
+    implementation (int k) : int_(k)        { trace_ = "Value::implementation(int)"; }
+    implementation (int k, int l) : int_(k) { trace_ = "Value::implementation(int, int)"; }
+    implementation (Foo&) : int_(0)         { trace_ = "Value::implementation(Foo&)"; }
+    implementation (Foo const&) : int_(0)   { trace_ = "Value::implementation(Foo const&)"; }
 
     implementation(this_type const& other)
     :
         int_(other.int_), trace_("Value::implementation(Value::implementation const&)")
     {}
 
+    void* operator new(size_t sz)
+    {
+        return malloc(sz);
+    };
+    void operator delete(void* p, size_t)
+    {
+        if (p) free(p);
+    }
     int              int_;
     mutable string trace_;
     uid               id_;
@@ -211,10 +231,10 @@ template<> struct impl_ptr<Base>::implementation
     string trace_;
 };
 
-struct Derived1Impl : public impl_ptr<Base>::implementation
+struct Derived1Impl : impl_ptr<Base>::implementation
 {
-    typedef impl_ptr<Base>::implementation base_impl;
-    typedef Derived1Impl                this_impl;
+    using this_impl = Derived1Impl;
+    using base_impl = impl_ptr<Base>::implementation;
 
     Derived1Impl (int k, int l) : base_impl(k), derived_int_(l)
     {
@@ -230,7 +250,7 @@ struct Derived1Impl : public impl_ptr<Base>::implementation
     int derived_int_;
 };
 
-struct Derived2Impl : public Derived1Impl
+struct Derived2Impl : Derived1Impl
 {
     typedef Derived1Impl base_impl;
     typedef Derived2Impl this_impl;

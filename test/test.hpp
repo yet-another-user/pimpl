@@ -35,6 +35,7 @@ struct Shared : public boost::impl_ptr<Shared>::shared // Pure interface.
     Shared (singleton_type);
 
     string trace () const;
+    int    value () const;
     int       id () const;
 };
 
