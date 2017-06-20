@@ -106,7 +106,6 @@ struct detail::unique
     this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
     bool       operator< (this_type const& that) const { return impl_ < that.impl_; }
 
-    void     reset () { this_type().swap(*this); }
     void     reset (impl_type* p) { this_type(p).swap(*this); }
     void      swap (this_type& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
     impl_type* get () const { return impl_; }
@@ -211,7 +210,6 @@ struct impl_ptr<user_type>::base
     bool operator< (base_type const& that) const { return impl_  < that.impl_; }
 
     void  swap (base_type& that) { impl_.swap(that.impl_); }
-    void reset () { impl_.reset(); }
 
 //    template<class Y>                   void reset (Y* p) { impl_.reset(p); }
 //    template<class Y, class D>          void reset (Y* p, D d) { impl_.reset(p, d); }
