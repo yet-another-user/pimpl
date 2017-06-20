@@ -7,9 +7,8 @@
 
 using string = std::string;
 
-struct Book : public boost::impl_ptr<Book>::shared
+struct Book : boost::impl_ptr<Book>::shared
 {
-    Book();
     Book(string const& title, string const& author);
 
     string const&  title () const;
@@ -19,7 +18,7 @@ struct Book : public boost::impl_ptr<Book>::shared
 struct singleton_type {};
 struct Foo {};
 
-struct Shared : public boost::impl_ptr<Shared>::shared // Pure interface.
+struct Shared : boost::impl_ptr<Shared>::shared // Pure interface.
 {
     Shared ();
     Shared (int);
@@ -39,7 +38,7 @@ struct Shared : public boost::impl_ptr<Shared>::shared // Pure interface.
     int       id () const;
 };
 
-struct Value : public boost::impl_ptr<Value>::unique // Pure interface.
+struct Value : boost::impl_ptr<Value>::unique // Pure interface.
 {
     Value ();
     Value (int);
@@ -50,10 +49,16 @@ struct Value : public boost::impl_ptr<Value>::unique // Pure interface.
     bool operator!=(Value const& o) const { return !operator==(o); }
 
     string trace () const;
+    int    value () const;
     int       id () const;
 };
 
-struct Base : public boost::impl_ptr<Base>::shared
+struct MoreValue : Value
+{
+    MoreValue (int);
+};
+
+struct Base : boost::impl_ptr<Base>::shared
 {
     Base (int);
 
@@ -61,7 +66,7 @@ struct Base : public boost::impl_ptr<Base>::shared
     string trace() const;
 };
 
-struct Derived1 : public Base { Derived1 (int, int); };
-struct Derived2 : public Derived1 { Derived2 (int, int, int); };
+struct Derived1 : Base { Derived1 (int, int); };
+struct Derived2 : Derived1 { Derived2 (int, int, int); };
 
 #endif // AUXILIARY_PIMPLE_TEST_HPP

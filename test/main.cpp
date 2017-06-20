@@ -171,6 +171,19 @@ test_constructors()
 
 static
 void
+test_reset()
+{
+    Value v11 (3);
+
+    BOOST_TEST(v11.value() == 3);
+
+    v11.reset();
+
+    BOOST_TEST(!v11);
+}
+
+static
+void
 test_assignments()
 {
     Value v11 (3);
@@ -183,6 +196,8 @@ test_assignments()
 
     BOOST_TEST(v11 == v12);
     BOOST_TEST(v11.id() != v12.id());
+
+    MoreValue mv(5);
 }
 
 static
@@ -254,6 +269,7 @@ main(int argc, char const* argv[])
     test_null();
     test_is_pimpl();
     test_constructors();
+    test_reset();
     test_assignments();
     test_bool_conversions();
     test_comparisons();

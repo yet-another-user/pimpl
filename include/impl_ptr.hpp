@@ -54,23 +54,24 @@ struct detail::onstack
 template<typename impl_type>
 struct detail::shared : std::shared_ptr<impl_type>
 {
-    using     this_type = shared;
-    using     base_type = std::shared_ptr<impl_type>;
-    using base_type_ref = std::shared_ptr<impl_type>&;
+    using this_type = shared;
+    using  base_ref = std::shared_ptr<impl_type>&;
 
     template<typename... arg_types>
     typename std::enable_if<is_allocator<typename first<arg_types...>::type>::value, void>::type
     construct(arg_types&&... args)
     {
-        base_type_ref(*this) = std::allocate_shared<impl_type>(std::forward<arg_types>(args)...);
+        base_ref(*this) = std::allocate_shared<impl_type>(std::forward<arg_types>(args)...);
     }
     template<typename... arg_types>
     typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
     construct(arg_types&&... args)
     {
-        base_type_ref(*this) = std::make_shared<impl_type>(std::forward<arg_types>(args)...);
+        base_ref(*this) = std::make_shared<impl_type>(std::forward<arg_types>(args)...);
     }
-    void construct(base_type&& ptr) { base_type_ref(*this) = ptr; }
+    template<typename derived_type> void construct(std::shared_ptr<derived_type>&&      p) { base_ref(*this) = p; }
+    template<typename derived_type> void construct(std::shared_ptr<derived_type> const& p) { base_ref(*this) = p; }
+    template<typename derived_type> void construct(std::shared_ptr<derived_type>&       p) { base_ref(*this) = p; }
 };
 
 template<typename impl_type>
@@ -105,6 +106,7 @@ struct detail::unique
     this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
     bool       operator< (this_type const& that) const { return impl_ < that.impl_; }
 
+    void     reset () { this_type().swap(*this); }
     void     reset (impl_type* p) { this_type(p).swap(*this); }
     void      swap (this_type& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
     impl_type* get () const { return impl_; }
@@ -208,11 +210,16 @@ struct impl_ptr<user_type>::base
     bool operator!=(base_type const& that) const { return impl_ != that.impl_; }
     bool operator< (base_type const& that) const { return impl_  < that.impl_; }
 
-    void swap (base_type& that) { impl_.swap(that.impl_); }
+    void  swap (base_type& that) { impl_.swap(that.impl_); }
+    void reset () { impl_.reset(); }
 
-    template<class Y>                   void reset (Y* p) { impl_.reset(p); }
-    template<class Y, class D>          void reset (Y* p, D d) { impl_.reset(p, d); }
-    template<class Y, class D, class A> void reset (Y* p, D d, A a) { impl_.reset(p, d, a); }
+//    template<class Y>                   void reset (Y* p) { impl_.reset(p); }
+//    template<class Y, class D>          void reset (Y* p, D d) { impl_.reset(p, d); }
+//    template<class Y, class D, class A> void reset (Y* p, D d, A a) { impl_.reset(p, d, a); }
+
+    template<typename... arg_types>
+    void
+    reset(arg_types&&... args) { impl_.construct(std::forward<arg_types>(args)...); }
 
     // Access To the Implementation.
     // 1) These methods are useful and only meaningful in the implementation code,

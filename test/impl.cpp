@@ -1,5 +1,22 @@
 #include "./test.hpp"
 
+namespace { namespace local
+{
+    static int uid_counter;
+
+    struct uid
+    {
+        uid() : id_(++uid_counter) {}
+
+        uid(uid const&) =delete;
+        uid& operator=(uid const&) =delete;
+
+        operator int() const { return id_; }
+
+        private: int const id_;
+    };
+}}
+
 template <class T>
 struct my_allocator
 {
@@ -54,28 +71,20 @@ bool operator!=(my_allocator<T1> const&, my_allocator<T2> const&) throw()
     return false;
 }
 
-struct deleter
-{
-    // Convenience deleter allows to "manage" objects without actually managing them.
-    struct no { void operator()(void*) {}};
-};
+///////////////////////////////////////////////////
+// Book
+///////////////////////////////////////////////////
 
-template<>
-struct boost::impl_ptr<Book>::implementation
+template<> struct boost::impl_ptr<Book>::implementation
 {
     implementation(string const& the_title, string const& the_author)
     :
         title(the_title), author(the_author)
-    {
-    }
+    {}
 
     string  title;
     string author;
 };
-
-Book::Book() : base_type(null_type())
-{
-}
 
 Book::Book(string const& title, string const& author)
 :
@@ -94,23 +103,9 @@ Book::Book(string const& title, string const& author)
 string const& Book:: title() const { return (*this)->title; }
 string const& Book::author() const { return (*this)->author; }
 
-struct uid
-{
-    uid() : id_(counter()) {}
-    uid(uid const&) : id_(counter()) {}
-    uid& operator=(uid const&) { return *this; }
-
-    operator int() const { return id_; }
-
-    private:
-
-    int counter()
-    {
-        static int counter_;
-        return ++counter_;
-    }
-    int const id_;
-};
+///////////////////////////////////////////////////
+// Shared
+///////////////////////////////////////////////////
 
 // This internal implementation usually only have destructor, constructors,
 // data and probably internal methods. Given it is already internal by design,
@@ -134,17 +129,17 @@ template<> struct boost::impl_ptr<Shared>::implementation
 
     void* operator new(size_t sz)
     {
-        BOOST_ASSERT(0); // Never called. Need allocators for custom mem. mgmt
+        BOOST_ASSERT(0); // Never called. Use allocators for custom mem. mgmt
         return malloc(sz);
     };
     void operator delete(void* p, size_t)
     {
-        BOOST_ASSERT(0); // Never called. Need allocators for custom mem. mgmt
+        BOOST_ASSERT(0); // Never called. Use allocators for custom mem. mgmt
         if (p) free(p);
     }
-    int           int_ = 0;
-    std::string trace_;
-    uid const      id_;
+    int             int_ = 0;
+    std::string   trace_;
+    local::uid const id_;
 };
 
 string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
@@ -158,14 +153,14 @@ Shared::Shared (Foo&       foo) : base_type(foo) {} // Make sure 'const' handled
 Shared::Shared (Foo const& foo) : base_type(foo) {} // Make sure 'const' handled properly
 Shared::Shared (Foo*       foo) : base_type(foo) {} // Make sure 'const' handled properly
 Shared::Shared (Foo const* foo) : base_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (singleton_type) : base_type(impl_ptr<base_type>::null())
+Shared::Shared (singleton_type) : base_type(impl_ptr<Shared>::null())
 {
 //  If there is an available/suitable public Shared::Shared(...).
 //  static Shared single;
 //  *this = single;
 
-    static implementation impl;
-    reset(&impl, deleter::no());
+    static auto impl = std::make_shared<implementation>();
+    reset(impl);
 }
 
 ///////////////////////////////////////////////////
@@ -197,14 +192,15 @@ template<> struct impl_ptr<Value>::implementation
     }
     int              int_;
     mutable string trace_;
-    uid               id_;
+    local::uid        id_;
 };
 
 Value::Value () {}
 Value::Value (int k) : base_type(k) {}
 
 string Value::trace () const { return *this ? (*this)->trace_ : "null"; }
-int    Value::id () const { return (*this)->id_; }
+int    Value::value () const { return (*this)->int_; }
+int    Value::   id () const { return (*this)->id_; }
 
 bool
 Value::operator==(Value const& that) const
@@ -214,6 +210,16 @@ Value::operator==(Value const& that) const
     BOOST_ASSERT((*this)->id_ != that->id_);
 
     return (*this)->int_ == that->int_;
+}
+
+struct MoreValueImpl : impl_ptr<Value>::implementation
+{
+    int more_value_ = 0;
+};
+
+MoreValue::MoreValue(int k) : Value(impl_ptr<Value>::null())
+{
+    reset(k);
 }
 
 ///////////////////////////////////////////////////
@@ -227,6 +233,14 @@ template<> struct impl_ptr<Base>::implementation
 
     virtual string call_virtual() { return("Base::call_virtual()"); }
 
+    void* operator new(size_t sz)
+    {
+        return malloc(sz);
+    };
+    void operator delete(void* p, size_t)
+    {
+        if (p) free(p);
+    }
     int base_int_;
     string trace_;
 };
@@ -275,12 +289,12 @@ Base::Base(int k) : base_type(k)
 
 Derived1::Derived1(int k, int l) : Base(impl_ptr<Base>::null())
 {
-    reset(new Derived1Impl(k, l));
+    reset(std::make_shared<Derived1Impl>(k, l));
 }
 
 Derived2::Derived2(int k, int l, int m) : Derived1(impl_ptr<Derived1>::null())
 {
-    reset(new Derived2Impl(k, l, m));
+    reset(std::make_shared<Derived2Impl>(k, l, m));
 }
 
 string
