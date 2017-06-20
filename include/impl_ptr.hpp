@@ -55,7 +55,8 @@ template<typename impl_type>
 struct detail::shared : std::shared_ptr<impl_type>
 {
     using this_type = shared;
-    using  base_ref = std::shared_ptr<impl_type>&;
+    using base_type = std::shared_ptr<impl_type>;
+    using  base_ref = base_type&;
 
     template<typename... arg_types>
     typename std::enable_if<is_allocator<typename first<arg_types...>::type>::value, void>::type
@@ -161,8 +162,9 @@ struct impl_ptr
     using  no_type = boost::type_traits::no_type;
     using ptr_type = typename std::remove_reference<user_type>::type*;
 
-    template<typename Y> static yes_type test (Y*, typename Y::base_type* =nullptr);
-    /******************/ static no_type  test (...);
+    template<typename Y>
+    static yes_type test (Y*, typename Y::impl_ptr_check_type* =nullptr);
+    static no_type  test (...);
 
     BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
 
@@ -185,9 +187,10 @@ template<typename user_type>
 template<typename policy_type>
 struct impl_ptr<user_type>::base
 {
-    using implementation = typename impl_ptr<user_type>::implementation;
-    using      base_type = base;
-    using      null_type = detail::null_type;
+    using      implementation = typename impl_ptr<user_type>::implementation;
+    using impl_ptr_check_type = base;
+    using           base_type = base;
+    using           null_type = detail::null_type;
 
     template<typename T> using     rm_ref = typename std::remove_reference<T>::type;
     template<typename T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;
