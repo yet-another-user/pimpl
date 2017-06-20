@@ -193,17 +193,17 @@ struct impl_ptr<user_type>::base
     using           null_type = detail::null_type;
 
     template<typename T> using     rm_ref = typename std::remove_reference<T>::type;
-    template<typename T> using is_base_of = typename std::is_base_of<base, rm_ref<T>>;
+    template<typename T> using is_base_of = typename std::is_base_of<base_type, rm_ref<T>>;
     template<typename T> using is_derived = typename std::enable_if<is_base_of<T>::value, null_type*>::type;
 
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
 
     // Comparison Operators.
-    // base::op==() transfers the comparison to 'impl_' (std::shared_ptr or impl_ptr::unique).
-    // Consequently, pointer-semantics (shared_ptr-based) pimpls are comparable as there is shared_ptr::op==().
-    // However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT -- the standard
-    // value-semantics behavior -- as there is no impl_ptr::unique::op==().
+    // base::op==() transfers the comparison to 'impl_'. Consequently,
+    // ptr-semantics (shared_ptr-based) pimpls are comparable due to shared_ptr::op==().
+    // However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT --
+    // the standard value-semantics behavior -- due to NO unique::op==().
     // If a value-semantics class T needs to be comparable, then it has to provide
     // T::op==(T const&) EXPLICITLY as part of its public interface.
     // Trying to call this base::op==() for unique-based impl_ptr will fail to compile (no unique::op==())
@@ -223,10 +223,10 @@ struct impl_ptr<user_type>::base
     reset(arg_types&&... args) { impl_.construct(std::forward<arg_types>(args)...); }
 
     // Access To the Implementation.
-    // 1) These methods are useful and only meaningful in the implementation code,
-    //    i.e. where impl_ptr<>::implementation has been made visible.
+    // 1) These methods are only useful and meaningful in the implementation code,
+    //    i.e. where impl_ptr<>::implementation is visible.
     // 2) For better or worse the original deep-constness behavior has been changed
-    //    to behave like std::shared_ptr, etc. to avoid questions, confusion, etc.
+    //    to match std::shared_ptr, etc. to avoid questions, confusion, etc.
     implementation* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
     implementation& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
 
