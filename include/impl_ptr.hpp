@@ -5,34 +5,15 @@
 #ifndef AUXILIARY_PIMPL_HPP
 #define AUXILIARY_PIMPL_HPP
 
-#include <boost/assert.hpp>
-#include <boost/utility.hpp>
-#include <boost/convert/detail/has_member.hpp>
-#include <type_traits>
-#include <memory>
+#include "./detail/unique.hpp"
 
 namespace detail
 {
     template<typename> struct  shared;
-    template<typename> struct  unique;
     template<typename> struct     cow; // copy_on_write
     template<typename> struct onstack;
 
     struct null_type {};
-
-    template <typename first_type =void, typename...> struct first { using type = first_type; };
-
-    template<typename, typename =void>
-    struct is_allocator { BOOST_STATIC_CONSTANT(bool, value = false); };
-
-    template<typename class_type>
-    struct is_allocator<class_type, typename std::enable_if<std::is_class<class_type>::value, void>::type>
-    {
-        BOOST_DECLARE_HAS_MEMBER(has_allocate, allocate);
-        BOOST_DECLARE_HAS_MEMBER(has_deallocate, deallocate);
-
-        BOOST_STATIC_CONSTANT(bool, value = has_allocate<class_type>::value && has_deallocate<class_type>::value);
-    };
 }
 
 template<typename impl_type>
@@ -73,79 +54,6 @@ struct detail::shared : std::shared_ptr<impl_type>
     template<typename derived_type> void construct(std::shared_ptr<derived_type>&&      p) { base_ref(*this) = p; }
     template<typename derived_type> void construct(std::shared_ptr<derived_type> const& p) { base_ref(*this) = p; }
     template<typename derived_type> void construct(std::shared_ptr<derived_type>&       p) { base_ref(*this) = p; }
-};
-
-template<typename impl_type>
-struct detail::unique
-{
-    // Smart-pointer with the value-semantics behavior.
-    // The incomplete-type management technique is originally by Peter Dimov.
-
-    using this_type = unique;
-
-//  template<typename alloc_type, typename... arg_types>
-//  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
-//  construct(alloc_type&& alloc, arg_types&&... args)
-//  {
-//      void* mem = std::allocator_traits<alloc_type>::allocate(alloc, 1);
-//      reset(new(mem) impl_type(std::forward<arg_types>(args)...));
-//  }
-    template<typename... arg_types>
-    typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
-    construct(arg_types&&... args)
-    {
-        reset(new impl_type(std::forward<arg_types>(args)...));
-    }
-
-   ~unique () { traits_->destroy(impl_); }
-    unique () : impl_(nullptr), traits_(traits()) {}
-    unique (impl_type* p) : impl_(p), traits_(deep_copy()) {}
-    unique (this_type const& that) : impl_(that.traits_->copy(that.impl_)), traits_(that.traits_) {}
-    unique (this_type&& that) : unique() { swap(that); }
-
-    this_type& operator= (this_type&& that) { swap(that); return *this; }
-    this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
-    bool       operator< (this_type const& that) const { return impl_ < that.impl_; }
-
-    void     reset (impl_type* p) { this_type(p).swap(*this); }
-    void      swap (this_type& that) { std::swap(impl_, that.impl_), std::swap(traits_, that.traits_); }
-    impl_type* get () const { return impl_; }
-    long use_count () const { return 1; }
-
-    private:
-
-    struct traits
-    {
-        virtual ~traits() =default;
-
-        virtual void    destroy (impl_type*&) const {}
-        virtual impl_type* copy (impl_type const*) const { return nullptr; }
-        virtual void     assign (impl_type*&, impl_type const*) const {}
-
-        operator traits const*() { static traits trait; return &trait; }
-    };
-    struct deep_copy : traits
-    {
-        void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
-        impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
-
-        void assign (impl_type*& a, impl_type const* b) const
-        {
-            if (a != b) destroy(a), a = copy(b);
-        }
-        // TODO: add selection using is_copy_assignable
-//        void assign (impl_type*& a, impl_type const* b) const
-//        {
-//            /**/ if ( a ==  b);
-//            else if ( a &&  b) *a = *b;
-//            else if (!a &&  b) a = copy(b);
-//            else if ( a && !b) destroy(a);
-//        }
-        operator traits const*() { static deep_copy trait; return &trait; }
-    };
-
-    impl_type*      impl_;
-    traits const* traits_;
 };
 
 template<typename user_type>
