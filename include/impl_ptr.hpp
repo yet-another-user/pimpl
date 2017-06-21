@@ -6,31 +6,15 @@
 #define AUXILIARY_PIMPL_HPP
 
 #include "./detail/unique.hpp"
+#include "./detail/onstack.hpp"
+#include "./detail/cow.hpp"
 
 namespace detail
 {
-    template<typename> struct  shared;
-    template<typename> struct     cow; // copy_on_write
-    template<typename> struct onstack;
+    template<typename> struct shared;
 
     struct null_type {};
 }
-
-template<typename impl_type>
-struct detail::onstack
-{
-    // Proof of concept
-    // Need to extract storage size from more_types
-    char storage_[32];
-
-    template<typename... arg_types>
-    void
-    construct(arg_types&&... args)
-    {
-        new (storage_) impl_type(std::forward<arg_types>(args)...);
-    }
-    onstack () =default;
-};
 
 template<typename impl_type>
 struct detail::shared : std::shared_ptr<impl_type>
