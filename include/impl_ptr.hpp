@@ -2,9 +2,10 @@
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef AUXILIARY_PIMPL_HPP
-#define AUXILIARY_PIMPL_HPP
+#ifndef IMPL_PTR_HPP
+#define IMPL_PTR_HPP
 
+#include "./detail/single.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
@@ -44,6 +45,7 @@ struct impl_ptr
     template<typename> struct base;
 
     using   unique = base<detail::unique <implementation>>;
+    using   single = base<detail::single <implementation>>;
     using   shared = base<detail::shared <implementation>>;
     using      cow = base<detail::cow    <implementation>>;
     using  onstack = base<detail::onstack<implementation>>;
@@ -147,4 +149,4 @@ namespace boost
     template<typename user_type> using impl_ptr = ::impl_ptr<user_type>;
 }
 
-#endif // AUXILIARY_PIMPL_HPP
+#endif // IMPL_PTR_HPP

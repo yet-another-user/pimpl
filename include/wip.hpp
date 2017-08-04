@@ -2,8 +2,8 @@
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef AUXILIARY_PIMPL_HPP
-#define AUXILIARY_PIMPL_HPP
+#ifndef IMPL_PTR_HPP
+#define IMPL_PTR_HPP
 
 #include <boost/assert.hpp>
 #include <boost/utility.hpp>
@@ -232,4 +232,4 @@ namespace boost
     template<typename user_type, typename... more_types> using impl_ptr = ::impl_ptr<user_type, more_types...>;
 }
 
-#endif // AUXILIARY_PIMPL_HPP
+#endif // IMPL_PTR_HPP

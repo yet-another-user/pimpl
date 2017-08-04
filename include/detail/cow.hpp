@@ -1,5 +1,5 @@
-#ifndef AUXILIARY_PIMPL_DETAIL_COW_HPP
-#define AUXILIARY_PIMPL_DETAIL_COW_HPP
+#ifndef IMPL_PTR_DETAIL_COW_HPP
+#define IMPL_PTR_DETAIL_COW_HPP
 
 namespace detail
 {
@@ -11,4 +11,4 @@ struct detail::cow
 {
 };
 
-#endif // AUXILIARY_PIMPL_DETAIL_COW_HPP
+#endif // IMPL_PTR_DETAIL_COW_HPP

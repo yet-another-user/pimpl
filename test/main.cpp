@@ -1,5 +1,6 @@
 #include "./test.hpp"
 #include <set>
+#include <memory>
 
 static
 void
@@ -245,6 +246,11 @@ test_singleton()
     BOOST_ASSERT (!(p1 < p2));  // Equivalence test
     BOOST_ASSERT (!(p2 < p1));  // Equivalence test
     BOOST_TEST(collected.size() == 1);
+}
+
+void
+foo(std::unique_ptr<int> a)
+{
 }
 
 int

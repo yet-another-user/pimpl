@@ -1,5 +1,5 @@
-#ifndef AUXILIARY_PIMPL_DETAIL_IS_ALLOCATOR_HPP
-#define AUXILIARY_PIMPL_DETAIL_IS_ALLOCATOR_HPP
+#ifndef IMPL_PTR_DETAIL_IS_ALLOCATOR_HPP
+#define IMPL_PTR_DETAIL_IS_ALLOCATOR_HPP
 
 #include <boost/convert/detail/has_member.hpp>
 
@@ -20,4 +20,4 @@ namespace detail
     };
 }
 
-#endif // AUXILIARY_PIMPL_DETAIL_IS_ALLOCATOR_HPP
+#endif // IMPL_PTR_DETAIL_IS_ALLOCATOR_HPP

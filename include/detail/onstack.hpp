@@ -1,5 +1,5 @@
-#ifndef AUXILIARY_PIMPL_DETAIL_ONSTACK_HPP
-#define AUXILIARY_PIMPL_DETAIL_ONSTACK_HPP
+#ifndef IMPL_PTR_DETAIL_ONSTACK_HPP
+#define IMPL_PTR_DETAIL_ONSTACK_HPP
 
 namespace detail
 {
@@ -22,4 +22,4 @@ struct detail::onstack
     onstack () =default;
 };
 
-#endif // AUXILIARY_PIMPL_DETAIL_ONSTACK_HPP
+#endif // IMPL_PTR_DETAIL_ONSTACK_HPP

@@ -1,5 +1,5 @@
-#ifndef AUXILIARY_PIMPLE_TEST_HPP
-#define AUXILIARY_PIMPLE_TEST_HPP
+#ifndef PIMPLE_TEST_HPP
+#define PIMPLE_TEST_HPP
 
 #include "../include/impl_ptr.hpp"
 #include <boost/detail/lightweight_test.hpp>
@@ -38,7 +38,7 @@ struct Shared : boost::impl_ptr<Shared>::shared // Pure interface.
     int       id () const;
 };
 
-struct Value : boost::impl_ptr<Value>::unique // Pure interface.
+struct Value : boost::impl_ptr<Value>::single // Pure interface.
 {
     Value ();
     Value (int);
@@ -64,4 +64,4 @@ struct Base : boost::impl_ptr<Base>::shared
 struct Derived1 : Base { Derived1 (int, int); };
 struct Derived2 : Derived1 { Derived2 (int, int, int); };
 
-#endif // AUXILIARY_PIMPLE_TEST_HPP
+#endif // PIMPLE_TEST_HPP
