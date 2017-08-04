@@ -19,18 +19,18 @@ struct detail::unique
     using base_traits_type = detail::traits::base<impl_type>;
     using copy_traits_type = detail::traits::deep_copy<impl_type>;
 
-//  template<typename alloc_type, typename... arg_types>
+//  template<typename derived_type, typename alloc_type, typename... arg_types>
 //  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
-//  construct(alloc_type&& alloc, arg_types&&... args)
+//  emplace(alloc_type&& alloc, arg_types&&... args)
 //  {
 //      void* mem = std::allocator_traits<alloc_type>::allocate(alloc, 1);
-//      reset(new(mem) impl_type(std::forward<arg_types>(args)...));
+//      reset(new(mem) derived_type(std::forward<arg_types>(args)...));
 //  }
-    template<typename... arg_types>
+    template<typename derived_type, typename... arg_types>
     typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
-    construct(arg_types&&... args)
+    emplace(arg_types&&... args)
     {
-        reset(new impl_type(std::forward<arg_types>(args)...));
+        reset(new derived_type(std::forward<arg_types>(args)...));
     }
 
    ~unique () { if (traits_) traits_->destroy(impl_); }

@@ -88,10 +88,10 @@ template<> struct boost::impl_ptr<Book>::implementation
 
 Book::Book(string const& title, string const& author)
 :
-//  base_type(title, author)
-    base_type(std::allocator<implementation>(), title, author)
-//  base_type(std::make_shared<implementation>(title, author))
-//  base_type(std::allocate_shared<implementation>(std::allocator<implementation>(), title, author))
+//  impl_ptr_type(title, author)
+    impl_ptr_type(std::allocator<implementation>(), title, author)
+//  impl_ptr_type(std::make_shared<implementation>(title, author))
+//  impl_ptr_type(std::allocate_shared<implementation>(std::allocator<implementation>(), title, author))
 {
     // Various ways of initializing the impl_ptr base:
     // 1) Internally calls std::make_shared
@@ -127,6 +127,13 @@ template<> struct boost::impl_ptr<Shared>::implementation
     implementation(this_type const&) =delete;
     this_type& operator=(this_type const&) =delete;
 
+    static Shared create_single()
+    {
+        Shared single = impl_ptr<Shared>::null();
+        single.emplace<implementation>();
+        return single;
+    }
+
     void* operator new(size_t sz)
     {
         BOOST_ASSERT(0); // Never called. Use allocators for custom mem. mgmt
@@ -147,20 +154,16 @@ int    Shared::value () const { return (*this)->int_; }
 int    Shared::   id () const { return (*this)->id_; }
 
 Shared::Shared () {}
-Shared::Shared (int k) : base_type(k) {}
-Shared::Shared (int k, int l) : base_type(k, l) {}
-Shared::Shared (Foo&       foo) : base_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const& foo) : base_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo*       foo) : base_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const* foo) : base_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (singleton_type) : base_type(impl_ptr<Shared>::null())
+Shared::Shared (int k)          : impl_ptr_type(k) {}
+Shared::Shared (int k, int l)   : impl_ptr_type(k, l) {}
+Shared::Shared (Foo&       foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const& foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo*       foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const* foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared (singleton_type) : impl_ptr_type(impl_ptr<Shared>::null())
 {
-//  If there is an available/suitable public Shared::Shared(...).
-//  static Shared single;
-//  *this = single;
-
-    static auto impl = std::make_shared<implementation>();
-    reset(impl);
+  static Shared single = implementation::create_single();
+  *this = single;
 }
 
 ///////////////////////////////////////////////////
@@ -196,7 +199,7 @@ template<> struct impl_ptr<Value>::implementation
 };
 
 Value::Value () {}
-Value::Value (int k) : base_type(k) {}
+Value::Value (int k) : impl_ptr_type(k) {}
 
 string Value::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Value::value () const { return (*this)->int_; }
@@ -210,16 +213,6 @@ Value::operator==(Value const& that) const
     BOOST_ASSERT((*this)->id_ != that->id_);
 
     return (*this)->int_ == that->int_;
-}
-
-struct MoreValueImpl : impl_ptr<Value>::implementation
-{
-    int more_value_ = 0;
-};
-
-MoreValue::MoreValue(int k) : Value(impl_ptr<Value>::null())
-{
-    reset(k);
 }
 
 ///////////////////////////////////////////////////
@@ -283,18 +276,18 @@ struct Derived2Impl : Derived1Impl
     int more_int_;
 };
 
-Base::Base(int k) : base_type(k)
+Base::Base(int k) : impl_ptr_type(k)
 {
 }
 
 Derived1::Derived1(int k, int l) : Base(impl_ptr<Base>::null())
 {
-    reset(std::make_shared<Derived1Impl>(k, l));
+    emplace<Derived1Impl>(k, l);
 }
 
 Derived2::Derived2(int k, int l, int m) : Derived1(impl_ptr<Derived1>::null())
 {
-    reset(std::make_shared<Derived2Impl>(k, l, m));
+    emplace<Derived2Impl>(k, l, m);
 }
 
 string

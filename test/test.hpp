@@ -53,11 +53,6 @@ struct Value : boost::impl_ptr<Value>::unique // Pure interface.
     int       id () const;
 };
 
-struct MoreValue : Value
-{
-    MoreValue (int);
-};
-
 struct Base : boost::impl_ptr<Base>::shared
 {
     Base (int);

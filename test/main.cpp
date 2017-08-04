@@ -183,8 +183,6 @@ test_assignments()
 
     BOOST_TEST(v11 == v12);
     BOOST_TEST(v11.id() != v12.id());
-
-    MoreValue mv(5);
 }
 
 static

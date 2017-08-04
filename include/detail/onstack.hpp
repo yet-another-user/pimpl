@@ -13,11 +13,11 @@ struct detail::onstack
     // Need to extract storage size from more_types
     char storage_[32];
 
-    template<typename... arg_types>
+    template<typename derived_type, typename... arg_types>
     void
-    construct(arg_types&&... args)
+    emplace(arg_types&&... args)
     {
-        new (storage_) impl_type(std::forward<arg_types>(args)...);
+        new (storage_) derived_type(std::forward<arg_types>(args)...);
     }
     onstack () =default;
 };
