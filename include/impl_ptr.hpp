@@ -69,7 +69,7 @@ struct impl_ptr
         detail::null_type arg;
         impl_ptr_type    null (arg);
 
-        return *(user_type*) &null;
+        return std::move(*(user_type*) &null);
     }
 };
 
