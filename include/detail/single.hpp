@@ -13,7 +13,6 @@ template<typename impl_type>
 struct detail::single
 {
     // Smart-pointer with the value-semantics behavior.
-    // The incomplete-type management technique is originally by Peter Dimov.
 
     using        this_type = single;
     using base_traits_type = detail::traits::base<impl_type>;

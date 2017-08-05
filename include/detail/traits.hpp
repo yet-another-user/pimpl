@@ -8,6 +8,9 @@
 
 namespace detail
 {
+    // The incomplete-type management technique
+    // is originally by Peter Dimov.
+
     struct traits
     {
         template<typename> struct      base;

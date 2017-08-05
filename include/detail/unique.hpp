@@ -12,8 +12,7 @@ namespace detail
 template<typename impl_type>
 struct detail::unique
 {
-    // Smart-pointer with the value-semantics behavior.
-    // The incomplete-type management technique is originally by Peter Dimov.
+    // Smart-pointer with the unique-semantics behavior.
 
     using        this_type = unique;
     using base_traits_type = detail::traits::base<impl_type>;
@@ -36,13 +35,14 @@ struct detail::unique
    ~unique () { if (traits_) traits_->destroy(impl_); }
     unique () {}
     unique (impl_type* p) : impl_(p), traits_(copy_traits_type()) {}
+
     unique (this_type&& o) { swap(o); }
-    unique (this_type const&) =delete;
-
     this_type& operator= (this_type&& o) { swap(o); return *this; }
-    this_type& operator= (this_type const&) =delete;
-    bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
 
+    unique (this_type const&) =delete;
+    this_type& operator= (this_type const&) =delete;
+
+    bool operator< (this_type const& o) const { return impl_ < o.impl_; }
     void     reset (impl_type* p) { this_type(p).swap(*this); }
     void      swap (this_type& o) { std::swap(impl_, o.impl_), std::swap(traits_, o.traits_); }
     impl_type* get () const { return impl_; }
