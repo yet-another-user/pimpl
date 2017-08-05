@@ -15,8 +15,8 @@ struct detail::single
     // Smart-pointer with the value-semantics behavior.
 
     using        this_type = single;
-    using base_traits_type = detail::traits::base<impl_type>;
-    using copy_traits_type = detail::traits::deep_copy<impl_type>;
+    using real_traits_type = detail::traits::copy_type<impl_type>;
+    using base_traits_type = typename real_traits_type::base_type;
 
 //  template<typename derived_type, typename alloc_type, typename... arg_types>
 //  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
@@ -34,7 +34,7 @@ struct detail::single
 
    ~single () { if (traits_) traits_->destroy(impl_); }
     single () {}
-    single (impl_type* p) : impl_(p), traits_(copy_traits_type()) {}
+    single (impl_type* p) : impl_(p), traits_(real_traits_type()) {}
     single (this_type&& o) { swap(o); }
     single (this_type const& o)
     :

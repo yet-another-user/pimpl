@@ -15,8 +15,8 @@ struct detail::unique
     // Smart-pointer with the unique-semantics behavior.
 
     using        this_type = unique;
-    using base_traits_type = detail::traits::base<impl_type>;
-    using copy_traits_type = detail::traits::deep_copy<impl_type>;
+    using real_traits_type = detail::traits::destroy_type<impl_type>;
+    using base_traits_type = typename real_traits_type::base_type;
 
 //  template<typename derived_type, typename alloc_type, typename... arg_types>
 //  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
@@ -34,7 +34,7 @@ struct detail::unique
 
    ~unique () { if (traits_) traits_->destroy(impl_); }
     unique () {}
-    unique (impl_type* p) : impl_(p), traits_(copy_traits_type()) {}
+    unique (impl_type* p) : impl_(p), traits_(real_traits_type()) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }

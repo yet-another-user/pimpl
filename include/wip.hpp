@@ -84,7 +84,7 @@ struct detail::unique
 
    ~unique () { traits_->destroy(impl_); }
     unique () : traits_(traits()), impl_(nullptr) {}
-    unique (impl_type* p) : traits_(deep_copy()), impl_(p) {}
+    unique (impl_type* p) : traits_(copy_type()), impl_(p) {}
     unique (this_type const& that) : traits_(that.traits_), impl_(traits_->copy(that.impl_)) {}
 
     this_type& operator= (this_type const& that) { traits_ = that.traits_; traits_->assign(impl_, that.impl_); return *this; }
@@ -108,7 +108,7 @@ struct detail::unique
 
         operator traits const*() { static traits trait; return &trait; }
     };
-    struct deep_copy : traits
+    struct copy_type : traits
     {
         void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
         impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
@@ -123,7 +123,7 @@ struct detail::unique
             else if (!a &&  b) a = copy(b);
             else if ( a && !b) destroy(a);
         }
-        operator traits const*() { static deep_copy trait; return &trait; }
+        operator traits const*() { static copy_type trait; return &trait; }
     };
 
     traits const* traits_;
