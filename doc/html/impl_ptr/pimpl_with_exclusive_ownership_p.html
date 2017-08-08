@@ -115,9 +115,7 @@
       the <span class="emphasis"><em>std::unique_ptr</em></span>-base implementation. Changing the
       policy to
     </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span>
-<span class="special">{</span> <span class="special">...</span>
-<span class="special">};</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
       makes the <span class="emphasis"><em>Book</em></span> copyable.
@@ -138,12 +136,12 @@
       </p></td></tr>
 </table></div>
 <p>
-      So far both examples of <span class="emphasis"><em>Pimpl</em></span>-based <span class="emphasis"><em>Book</em></span>
-      classes (with pointer- and value-semantics) look almost identical and internal
-      implementations (as we'll see later) are as close. That property is important
-      for orderly and painless evolution of commercial large-scale systems as it
-      allows to minimize the impact of a requirement change -- something as inevitable
-      as "death and taxes".
+      So far the three <span class="emphasis"><em>impl_ptr</em></span>-based deployments (using the
+      shared, unique-ownership and copied-ownership policies) look almost identical
+      and internal implementations (as we'll see later) are as close. That property
+      is important for orderly and painless evolution of commercial large-scale systems
+      as it allows to minimize the required effort and the impact of a design or
+      requirement change.
     </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

@@ -74,15 +74,13 @@ with auto-generated ['special member functions], with no private-part implementa
 
 As the ['impl_ptr<Book>::unique] policy name suggests the ['Book] class is moveable but not copyable similar to the ['std::unique_ptr]-base implementation. Changing the policy to
 
- struct Book : impl_ptr<Book>::copied
- { ...    
- };
+ struct Book : impl_ptr<Book>::copied { ... };
 
 makes the ['Book] copyable. 
 
 [note A notable difference (compared to pointer-semantics classes) is that the comparison operators are not freebies. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
   
-So far both examples of ['Pimpl]-based ['Book] classes (with pointer- and value-semantics) look almost identical and internal implementations (as we'll see later) are as close. That property is important for orderly and painless evolution of commercial large-scale systems as it allows to minimize the impact of a requirement change -- something as inevitable as "death and taxes". 
+So far the three ['impl_ptr]-based deployments (using the shared, unique-ownership and copied-ownership policies) look almost identical and internal implementations (as we'll see later) are as close. That property is important for orderly and painless evolution of commercial large-scale systems as it allows to minimize the required effort and the impact of a design or requirement change. 
 
 [endsect]
 
