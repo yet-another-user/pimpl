@@ -1,0 +1,162 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Pimpl with Exclusive-Ownership Properties</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="prev" href="getting_started.html" title="Getting Started">
+<link rel="next" href="behind_the_interface.html" title="Behind the Interface">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="getting_started.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="behind_the_interface.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="impl_ptr.pimpl_with_exclusive_ownership_p"></a><a class="link" href="pimpl_with_exclusive_ownership_p.html" title="Pimpl with Exclusive-Ownership Properties">Pimpl with Exclusive-Ownership
+    Properties</a>
+</h2></div></div></div>
+<p>
+      <span class="emphasis"><em>Pimpl</em></span> with the <span class="emphasis"><em>exclusive-ownership</em></span>
+      properties behaves as a <span class="emphasis"><em>unique-proxy</em></span>. It solely owns and
+      manages the data (rather than shares). Consequently, for such <span class="emphasis"><em>Pimpls</em></span>
+      the implementation gets more involved and might look as follows:
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
+<span class="special">{</span>
+  <span class="special">~</span><span class="identifier">Book</span> <span class="special">();</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
+
+   <span class="comment">// If Book needs to be copyable</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+
+   <span class="comment">// If Book needs to be moveable</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
+
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="comment">// If Book needs to be comparable</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">!=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="keyword">private</span><span class="special">:</span>
+
+   <span class="keyword">struct</span> <span class="identifier">implementation</span><span class="special">;</span>
+   <span class="identifier">implementation</span><span class="special">*</span> <span class="identifier">impl_</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+      In the example above it is only natural to replace the raw pointer with <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
+      (<a class="link" href="references.html#13">[13]</a>, <a class="link" href="references.html#14">[14]</a>). It needs
+      to be mentioned though that <span class="emphasis"><em>std::unique_ptr</em></span> has been developed
+      with certain strict goals in mind -- namely, no overhead and maximum efficiency.
+      It intentionally avoids the overhead of the incomplete-type management. Consequently,
+      for <span class="emphasis"><em>Pimpl</em></span> the benefits of the <span class="emphasis"><em>std::unique_ptr</em></span>
+      deployment are relatively modest as the <span class="emphasis"><em>special member functions</em></span>
+      are still our responsibility:
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
+<span class="special">{</span>
+  <span class="special">~</span><span class="identifier">Book</span> <span class="special">();</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
+
+   <span class="comment">// If Book needs to be copyable</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+
+   <span class="comment">// If Book needs to be moveable</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
+
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="comment">// If Book needs to be comparable</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">!=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="keyword">private</span><span class="special">:</span>
+
+   <span class="keyword">struct</span> <span class="identifier">implementation</span><span class="special">;</span>
+   <span class="identifier">std</span><span class="special">::</span><span class="identifier">unique_ptr</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;</span> <span class="identifier">impl_</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+      To address that <span class="emphasis"><em>impl_ptr</em></span> (as <span class="emphasis"><em>std::shared_ptr</em></span>)
+      internally implements the incomplete-type-management technique (originally
+      by Peter Dimov) and is used for the <span class="emphasis"><em>Pimpls</em></span> with exclusive-ownership
+      properties. That allows the code above to shrink down to:
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">unique</span>
+<span class="special">{</span>
+   <span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
+
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
+
+   <span class="comment">// If Books need to be comparable</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">==(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+   <span class="keyword">bool</span> <span class="keyword">operator</span><span class="special">!=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;)</span> <span class="keyword">const</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+      with auto-generated <span class="emphasis"><em>special member functions</em></span>, with no
+      private-part implementation detail, no loss in functionality and with the same
+      benefits as before -- shorter, application-focused and reasonably self-documented.
+    </p>
+<p>
+      As the <span class="emphasis"><em>impl_ptr&lt;Book&gt;::unique</em></span> policy name suggests
+      the <span class="emphasis"><em>Book</em></span> class is moveable but not copyable similar to
+      the <span class="emphasis"><em>std::unique_ptr</em></span>-base implementation. Changing the
+      policy to
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span>
+<span class="special">{</span> <span class="special">...</span>
+<span class="special">};</span>
+</pre>
+<p>
+      makes the <span class="emphasis"><em>Book</em></span> copyable.
+    </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+        A notable difference (compared to pointer-semantics classes) is that the
+        comparison operators are not freebies. In fact, they are never freebies (they
+        are never auto-generated). However, in the case of the pointer-semantics
+        classes those operators are reduced to pointer comparisons and generalized.
+        That's not the case with the value-semantics classes. Consequently, for value-semantics
+        classes the comparison operators become part of the <span class="emphasis"><em>user-provided
+        interface</em></span> (if such a class needs to be comparable).
+      </p></td></tr>
+</table></div>
+<p>
+      So far both examples of <span class="emphasis"><em>Pimpl</em></span>-based <span class="emphasis"><em>Book</em></span>
+      classes (with pointer- and value-semantics) look almost identical and internal
+      implementations (as we'll see later) are as close. That property is important
+      for orderly and painless evolution of commercial large-scale systems as it
+      allows to minimize the impact of a requirement change -- something as inevitable
+      as "death and taxes".
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2018 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="getting_started.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="behind_the_interface.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

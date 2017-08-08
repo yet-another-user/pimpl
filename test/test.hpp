@@ -38,15 +38,25 @@ struct Shared : boost::impl_ptr<Shared>::shared // Pure interface.
     int       id () const;
 };
 
-struct Value : boost::impl_ptr<Value>::single // Pure interface.
+struct Unique : boost::impl_ptr<Unique>::unique // Pure interface.
 {
-    Value ();
-    Value (int);
+    Unique ();
+    Unique (int);
+
+    string trace () const;
+    int    value () const;
+    int       id () const;
+};
+
+struct Copied : boost::impl_ptr<Copied>::copied // Pure interface.
+{
+    Copied ();
+    Copied (int);
 
     // Value-semantics Pimpl must explicitly define comparison operators
     // if it wants to be comparable. The same as normal classes do.
-    bool operator==(Value const& o) const;
-    bool operator!=(Value const& o) const { return !operator==(o); }
+    bool operator==(Copied const& o) const;
+    bool operator!=(Copied const& o) const { return !operator==(o); }
 
     string trace () const;
     int    value () const;

@@ -167,22 +167,22 @@ Shared::Shared (singleton_type) : impl_ptr_type(impl_ptr<Shared>::null())
 }
 
 ///////////////////////////////////////////////////
-// Value
+// Copied
 ///////////////////////////////////////////////////
 
-template<> struct impl_ptr<Value>::implementation
+template<> struct impl_ptr<Copied>::implementation
 {
     using this_type = implementation;
 
-    implementation () : int_(0)             { trace_ = "Value::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ = "Value::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "Value::implementation(int, int)"; }
-    implementation (Foo&) : int_(0)         { trace_ = "Value::implementation(Foo&)"; }
-    implementation (Foo const&) : int_(0)   { trace_ = "Value::implementation(Foo const&)"; }
+    implementation () : int_(0)             { trace_ = "Copied::implementation()"; }
+    implementation (int k) : int_(k)        { trace_ = "Copied::implementation(int)"; }
+    implementation (int k, int l) : int_(k) { trace_ = "Copied::implementation(int, int)"; }
+    implementation (Foo&) : int_(0)         { trace_ = "Copied::implementation(Foo&)"; }
+    implementation (Foo const&) : int_(0)   { trace_ = "Copied::implementation(Foo const&)"; }
 
     implementation(this_type const& other)
     :
-        int_(other.int_), trace_("Value::implementation(Value::implementation const&)")
+        int_(other.int_), trace_("Copied::implementation(Copied::implementation const&)")
     {}
 
     void* operator new(size_t sz)
@@ -198,22 +198,48 @@ template<> struct impl_ptr<Value>::implementation
     local::uid        id_;
 };
 
-Value::Value () {}
-Value::Value (int k) : impl_ptr_type(k) {}
+Copied::Copied () {}
+Copied::Copied (int k) : impl_ptr_type(k) {}
 
-string Value::trace () const { return *this ? (*this)->trace_ : "null"; }
-int    Value::value () const { return (*this)->int_; }
-int    Value::   id () const { return (*this)->id_; }
+string Copied::trace () const { return *this ? (*this)->trace_ : "null"; }
+int    Copied::value () const { return (*this)->int_; }
+int    Copied::   id () const { return (*this)->id_; }
 
 bool
-Value::operator==(Value const& that) const
+Copied::operator==(Copied const& that) const
 {
-    (*this)->trace_ = "Value::operator==(Value const&)";
+    (*this)->trace_ = "Copied::operator==(Copied const&)";
 
     BOOST_ASSERT((*this)->id_ != that->id_);
 
     return (*this)->int_ == that->int_;
 }
+
+///////////////////////////////////////////////////
+// Unique
+///////////////////////////////////////////////////
+
+template<> struct impl_ptr<Unique>::implementation
+{
+    using this_type = implementation;
+
+    implementation () : int_(0)             { trace_ = "Unique::implementation()"; }
+    implementation (int k) : int_(k)        { trace_ = "Unique::implementation(int)"; }
+    implementation (int k, int l) : int_(k) { trace_ = "Unique::implementation(int, int)"; }
+    implementation (Foo&) : int_(0)         { trace_ = "Unique::implementation(Foo&)"; }
+    implementation (Foo const&) : int_(0)   { trace_ = "Unique::implementation(Foo const&)"; }
+
+    int              int_;
+    mutable string trace_;
+    local::uid        id_;
+};
+
+Unique::Unique () {}
+Unique::Unique (int k) : impl_ptr_type(k) {}
+
+string Unique::trace () const { return *this ? (*this)->trace_ : "null"; }
+int    Unique::value () const { return (*this)->int_; }
+int    Unique::   id () const { return (*this)->id_; }
 
 ///////////////////////////////////////////////////
 // Testing polymorphism

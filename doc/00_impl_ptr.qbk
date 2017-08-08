@@ -7,9 +7,9 @@
 [library The Pimpl
     [quickbook 1.6]
     [version C++11]
-    [id pimpl]
+    [id impl_ptr]
     [dirname pimpl]
-    [copyright 2006-2016 Vladimir Batov]
+    [copyright 2006-2018 Vladimir Batov]
     [purpose Generalization of The Pimpl Idiom]
     [category generic]
     [authors [Batov, Vladimir]]

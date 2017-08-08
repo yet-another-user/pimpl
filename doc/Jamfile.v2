@@ -1,6 +1,6 @@
-# Pimpl documentation Jamfile
+# impl_ptr documentation Jamfile
 #
-# Copyright 2009-2016 Vladimir Batov
+# Copyright 2009-2018 Vladimir Batov
 #
 
 using boostbook ;
@@ -14,7 +14,7 @@ import modules ;
 
 if --enable-index in  [ modules.peek : ARGV ]
 {
-   ECHO "Building the pimpl docs with automatic index generation enabled." ;
+   ECHO "Building the impl_ptr docs with automatic index generation enabled." ;
    using auto-index ;
    project convert_doc : requirements
              <auto-index>on
@@ -29,33 +29,33 @@ if --enable-index in  [ modules.peek : ARGV ]
 }
 else
 {
-   project pimpl_doc ;
-   ECHO "Building the pimpl docs with automatic index generation disabled. Try building with --enable-index." ;
+   project impl_ptr_doc ;
+   ECHO "Building the impl_ptr docs with automatic index generation disabled. Try building with --enable-index." ;
 }
 
-doxygen pimpl_ref
+doxygen impl_ptr_ref
   :
     [ glob $(here)/../include/*.hpp ]
   : 
-    <doxygen:param>PROJECT_NAME="PIMPL"
+    <doxygen:param>PROJECT_NAME="IMPL_PTR"
     <doxygen:param>PROJECT_NUMBER=3
     <doxygen:param>SORT_MEMBER_DOCS=NO
     <doxygen:param>SHOW_INCLUDE_FILES=NO
     <doxygen:param>MAX_INITIALIZER_LINES=0
     <doxygen:param>VERBATIM_HEADERS=NO
-    <reftitle>"Pimpl Reference"
+    <reftitle>"impl_ptr Reference"
 ;
 
-xml pimpl
+xml impl_ptr
   :
-    00_pimpl.qbk
+    00_impl_ptr.qbk
   :
-    <dependency>pimpl_ref
+    <dependency>impl_ptr_ref
 ;
 
 boostbook standalone
   :
-     pimpl
+     impl_ptr
   :
   <xsl:param>boost.root="../../../.."
   <xsl:param>chunk.section.depth=8  # How far down we chunk nested sections, basically all of them.
@@ -94,7 +94,7 @@ install images : [ glob $(BOOST_ROOT)/doc/src/images/*.png ]
     : <location>html/images ;
 install pdfinstall
     : standalone
-    : <location>.. <install-type>PDF <name>pimpl.pdf
+    : <location>.. <install-type>PDF <name>impl_ptr.pdf
     ;
 explicit css ;
 explicit images ;

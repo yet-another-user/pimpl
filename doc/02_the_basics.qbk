@@ -1,19 +1,28 @@
 [section The Basics]
 
-The ['Pimpl] idiom signature properties are 
+The ['Pimpl] idiom's defining properties are 
 
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding. 
 
-The first property is the ['separation]. In fact, the ['Bridge] variation ([link 6 \[6\]]) states it is the ['only] "intent" of the pattern. The ['implementation hiding] is viewed as pattern's "applicability" in the context of C++.
-
-The separation results in two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. Conceptually (from the design perspective) that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In reality (from the implementation perspective), however, those two classes/objects complement each other and ['inherently coupled]. They are inseparable yin and yang, part and parcel of the ['Pimpl] idiom. Consequently, the ['relationship] between those two objects is an important part of the idiom (at the very least from the practical angle).
-
-The proxy-implementation relationship might exhibit the ['pointer semantics] where several proxy objects are sharing access to the same underlying data object. Alternatively, the relationship might exhibit the ['value semantics] where every proxy object represents and corresponds to its own underlying data object (no sharing). Alternatively again, the relationship might exhibit the ['copy-on-write semantics]. 
+The ['separation] is the key. In fact, in [link 6 \[6\]] it is described as the ['only intent] of the the ['Bridge] incarnation of the pattern. The ['implementation hiding] is viewed as pattern's ['applicability] in the context of C++. 
 
 [important The Object-Oriented programming paradigm -- the association between data and behavior -- is enshrined in the fundamental concept of an ['object] or a ['class] and is routinely seen and implemented as such -- one class. 
 
-That one-class approach is not exactly ideal for the purposes mentioned in the ['Introduction]. However, the fault-line where the ['Pimpl] splits the conventional class in two is not exactly between ['data and behavior]. It is, rather, between ['public interface] (public behavior) and ['private implementation] (private data and behavior) -- two different views of a system. They serve different purposes and are better managed when kept separate. The ['Pimpl] technique seems to fit that objective better with ['actual] rather than ['notional] separation.]  
+That one-class approach is not exactly ideal for the purposes mentioned in the ['Introduction]. However, the fault-line where the ['Pimpl] splits the conventional class in two is not between ['data and behavior]. It is, rather, between ['public interface] (public behavior) and ['private implementation] (private data and behavior) -- two different views of a system. They serve different purposes and are better managed when kept separate. The ['Pimpl] technique seems to fit that objective better with ['actual] rather than ['notional] separation.]  
+
+The separation results in two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. Conceptually (from the design perspective) that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In reality (from the implementation perspective), however, those two classes/objects complement each other and ['inherently coupled]. They are inseparable yin and yang, part and parcel of the ['Pimpl] idiom. Consequently, the ['relationship] between those two objects is an important part of the idiom (at the very least from the practical angle).
+
+The proxy-implementation relationship might exhibit 
+
+*) the ['pointer/shared] properties where several proxy objects are sharing access to the same underlying implementation object (similar to ['std::shared_ptr] behavior);
+*) the ['exclusive-ownership] properties where every proxy represents and corresponds to its own underlying implementation (no sharing); such exclusive-ownership relationship might be further of
+ *) the ['unique-ownership] nature (i.e. non-copyable, similar to ['std::unique_ptr] behavior) or 
+ *) the ['copied-ownership] nature;
+*) the ['copy-on-write] properties;
+*) other user-specific or usage-specific properties.
+
+Taking care of all that variability on case-by-case basis might be laborious and error-prone. Replacing one with another in the middle of the development (or maintenance) cycle might be even more disruptive. This proposed policy-based library considerably reduces (if not eliminates) the impact and the hassle.
 
 [endsect]
 

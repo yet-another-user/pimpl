@@ -5,7 +5,7 @@
 #ifndef IMPL_PTR_HPP
 #define IMPL_PTR_HPP
 
-#include "./detail/single.hpp"
+#include "./detail/copied.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
@@ -44,9 +44,9 @@ struct impl_ptr
     struct          implementation;
     template<typename> struct base;
 
-    using   unique = base<detail::unique <implementation>>;
-    using   single = base<detail::single <implementation>>;
     using   shared = base<detail::shared <implementation>>;
+    using   unique = base<detail::unique <implementation>>;
+    using   copied = base<detail::copied <implementation>>;
     using      cow = base<detail::cow    <implementation>>;
     using  onstack = base<detail::onstack<implementation>>;
     using yes_type = boost::type_traits::yes_type;

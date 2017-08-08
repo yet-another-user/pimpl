@@ -15,11 +15,11 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="pimpl.applications_of_the_pimpl_idiom"></a><a class="link" href="applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">Applications of
-    the Pimpl Idiom</a>
+<a name="impl_ptr.applications_of_the_pimpl_idiom"></a><a class="link" href="applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">Applications
+    of the Pimpl Idiom</a>
 </h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="applications_of_the_pimpl_idiom.html#pimpl.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
+<dt><span class="section"><a href="applications_of_the_pimpl_idiom.html#impl_ptr.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
       Constructors</a></span></dt>
 <dt><span class="section"><a href="applications_of_the_pimpl_idiom/singleton.html">Singleton</a></span></dt>
 <dt><span class="section"><a href="applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
@@ -35,7 +35,7 @@
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="pimpl.applications_of_the_pimpl_idiom.delegating_constructors"></a><a class="link" href="applications_of_the_pimpl_idiom.html#pimpl.applications_of_the_pimpl_idiom.delegating_constructors" title="Delegating Constructors">Delegating
+<a name="impl_ptr.applications_of_the_pimpl_idiom.delegating_constructors"></a><a class="link" href="applications_of_the_pimpl_idiom.html#impl_ptr.applications_of_the_pimpl_idiom.delegating_constructors" title="Delegating Constructors">Delegating
       Constructors</a>
 </h3></div></div></div>
 <p>
@@ -51,7 +51,7 @@
 
 <span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">v</span><span class="special">)</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">null_type</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
 <span class="special">{</span>
   <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="number">42</span><span class="special">);</span> <span class="comment">// Calling the actual (non-delegating) constructor</span>
 <span class="special">};</span>
@@ -60,7 +60,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2016 Vladimir Batov<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2018 Vladimir Batov<p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
         <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

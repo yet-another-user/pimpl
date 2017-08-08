@@ -12,7 +12,7 @@ namespace detail
 template<typename impl_type>
 struct detail::unique
 {
-    // Smart-pointer with the unique-semantics behavior.
+    // Smart-pointer with the unique-value-semantics behavior.
 
     using        this_type = unique;
     using real_traits_type = detail::traits::destroy_type<impl_type>;

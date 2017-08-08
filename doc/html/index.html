@@ -5,20 +5,20 @@
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
-<link rel="next" href="pimpl/the_basics.html" title="The Basics">
+<link rel="next" href="impl_ptr/the_basics.html" title="The Basics">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<div class="spirit-nav"><a accesskey="n" href="pimpl/the_basics.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="impl_ptr/the_basics.html"><img src="images/next.png" alt="Next"></a></div>
 <div class="chapter">
 <div class="titlepage"><div>
 <div><h2 class="title">
-<a name="pimpl"></a>Chapter&#160;1.&#160;The Pimpl C++11</h2></div>
+<a name="impl_ptr"></a>Chapter&#160;1.&#160;The Pimpl C++11</h2></div>
 <div><div class="author"><h3 class="author">
 <span class="firstname">Vladimir</span> <span class="surname">Batov</span>
 </h3></div></div>
-<div><p class="copyright">Copyright &#169; 2006-2016 Vladimir Batov</p></div>
+<div><p class="copyright">Copyright &#169; 2006-2018 Vladimir Batov</p></div>
 <div><div class="legalnotice">
-<a name="pimpl.legal"></a><p>
+<a name="impl_ptr.legal"></a><p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
         <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>
@@ -27,38 +27,40 @@
 <div class="toc">
 <p><b>Table of Contents</b></p>
 <dl class="toc">
-<dt><span class="section"><a href="index.html#pimpl.introduction">Introduction</a></span></dt>
-<dt><span class="section"><a href="pimpl/the_basics.html">The Basics</a></span></dt>
-<dt><span class="section"><a href="pimpl/getting_started.html">Getting Started</a></span></dt>
-<dt><span class="section"><a href="pimpl/pimpl_with_value_semantics.html">Pimpl with Value Semantics</a></span></dt>
-<dt><span class="section"><a href="pimpl/behind_the_interface.html">Behind the Interface</a></span></dt>
-<dt><span class="section"><a href="pimpl/construction_and_pimpl_null.html">Construction and pimpl::null()</a></span></dt>
-<dt><span class="section"><a href="pimpl/deep_const.html">Deep Const </a></span></dt>
-<dt><span class="section"><a href="pimpl/customization.html">Customization</a></span></dt>
+<dt><span class="section"><a href="index.html#impl_ptr.introduction">Introduction</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/the_basics.html">The Basics</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/getting_started.html">Getting Started</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/pimpl_with_exclusive_ownership_p.html">Pimpl with Exclusive-Ownership
+    Properties</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/behind_the_interface.html">Behind the Interface</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/construction_and_pimpl_null.html">Construction and
+    pimpl::null()</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/deep_const.html">Deep Const </a></span></dt>
+<dt><span class="section"><a href="impl_ptr/customization.html">Customization</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="pimpl/customization.html#pimpl.customization.custom_allocator">Custom Allocator</a></span></dt>
-<dt><span class="section"><a href="pimpl/customization/custom_management_policy.html">Custom
+<dt><span class="section"><a href="impl_ptr/customization.html#impl_ptr.customization.custom_allocator">Custom Allocator</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/customization/custom_management_policy.html">Custom
       Management Policy</a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom.html">Applications of
-    the Pimpl Idiom</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom.html">Applications
+    of the Pimpl Idiom</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom.html#pimpl.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom.html#impl_ptr.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
       Constructors</a></span></dt>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom/singleton.html">Singleton</a></span></dt>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/singleton.html">Singleton</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
       Dictionary</a></span></dt>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom/non_extendible_dictionary.html">Non-Extendible
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/non_extendible_dictionary.html">Non-Extendible
       Dictionary</a></span></dt>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom/internal_implementation_only_run.html">Internal
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/internal_implementation_only_run.html">Internal
       (Implementation-Only) Run-Time Polymorphism</a></span></dt>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hiera.html">Run-Time
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hiera.html">Run-Time
       Polymorphic Class Hierarchy</a></span></dt>
-<dt><span class="section"><a href="pimpl/applications_of_the_pimpl_idiom/derived_classes_overriding_the_p.html">Derived
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/derived_classes_overriding_the_p.html">Derived
       Classes Overriding the pimpl::operator bool_type()</a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="pimpl/references.html">References</a></span></dt>
-<dt><span class="section"><a href="pimpl/acknowledgements.html">Acknowledgements</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/references.html">References</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/acknowledgements.html">Acknowledgements</a></span></dt>
 <dt><span class="section"><a href="index/s12.html">Index</a></span></dt>
 </dl>
 </div>
@@ -68,17 +70,17 @@
 <th align="left">Note</th>
 </tr>
 <tr><td align="left" valign="top"><p>
-      This documentation is based on the article (<a class="link" href="pimpl/references.html#1">[1]</a>) originally
+      This documentation is based on the article (<a class="link" href="impl_ptr/references.html#1">[1]</a>) originally
       published in the C/C++ Users Journal.
     </p></td></tr>
 </table></div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="pimpl.introduction"></a><a class="link" href="index.html#pimpl.introduction" title="Introduction">Introduction</a>
+<a name="impl_ptr.introduction"></a><a class="link" href="index.html#impl_ptr.introduction" title="Introduction">Introduction</a>
 </h2></div></div></div>
 <p>
-      In the domain of commercial large-scale software development the following
-      design principles come to the fore:
+      In the domain of <span class="emphasis"><em>commercial large-scale</em></span> software development
+      the following design principles come to the fore:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -88,13 +90,13 @@
           implementation hiding,
         </li>
 <li class="listitem">
-          consistent and recognizable implementation and deployment patterns,
-        </li>
-<li class="listitem">
           minimization of compilation and component dependencies,
         </li>
 <li class="listitem">
-          separation of concerns (<a class="link" href="pimpl/references.html#8">[8]</a>, <a class="link" href="pimpl/references.html#9">[9]</a>),
+          separation of concerns (<a class="link" href="impl_ptr/references.html#8">[8]</a>, <a class="link" href="impl_ptr/references.html#9">[9]</a>),
+        </li>
+<li class="listitem">
+          consistent and recognizable implementation and deployment patterns,
         </li>
 <li class="listitem">
           multi-platform support.
@@ -114,34 +116,43 @@
         </li>
 </ul></div>
 <p>
-      Popularized by Sutter (<a class="link" href="pimpl/references.html#2">[2]</a>, <a class="link" href="pimpl/references.html#3">[3]</a>,
-      <a class="link" href="pimpl/references.html#11">[11]</a>, <a class="link" href="pimpl/references.html#12">[12]</a>, <a class="link" href="pimpl/references.html#13">[13]</a>,
-      <a class="link" href="pimpl/references.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
+      Popularized by Sutter (<a class="link" href="impl_ptr/references.html#2">[2]</a>, <a class="link" href="impl_ptr/references.html#3">[3]</a>,
+      <a class="link" href="impl_ptr/references.html#11">[11]</a>, <a class="link" href="impl_ptr/references.html#12">[12]</a>, <a class="link" href="impl_ptr/references.html#13">[13]</a>,
+      <a class="link" href="impl_ptr/references.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
       name (as for "pointer to implementation" in Hungarian notation) the
       technique and its variations have been known long before under various names
-      -- the D-pointer (in Qt), the Cheshire Cat in <a class="link" href="pimpl/references.html#4">[4]</a>,
-      the Handle/Body in <a class="link" href="pimpl/references.html#5">[5]</a> and <a class="link" href="pimpl/references.html#6">[6]</a>,
-      the Bridge in <a class="link" href="pimpl/references.html#6">[6]</a> -- and conceptually deployed in
-      C and C++ as far back as at least early eighties (<a class="link" href="pimpl/references.html#7">[7]</a>).
+      -- the D-pointer (in Qt), the Cheshire Cat (in <a class="link" href="impl_ptr/references.html#4">[4]</a>),
+      the Handle/Body (in <a class="link" href="impl_ptr/references.html#5">[5]</a> and <a class="link" href="impl_ptr/references.html#6">[6]</a>),
+      the Bridge (in <a class="link" href="impl_ptr/references.html#6">[6]</a>) -- and conceptually deployed in
+      C and C++ as far back as at least early eighties (<a class="link" href="impl_ptr/references.html#7">[7]</a>).
     </p>
 <p>
       Still, it does not seem to be sufficiently widely deployed. In part that might
-      be due to efficiency considerations (valid or misguided) and probably more
-      often due to additional implementation-related overhead associated with the
-      technique.
+      be due to efficiency considerations (valid or misguided) and potentially due
+      to additional implementation-related overhead associated with the technique.
     </p>
 <p>
-      This one-header "library" provides a programming building block and
-      a deployment pattern in an attempt to minimize the hassle, to ease and to formalize
-      the deployment of the idiom.
+      This one-header "library" provides the supporting infrastructure
+      and a deployment pattern in an attempt
     </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+          to minimize the hassle and the potential for error,
+        </li>
+<li class="listitem">
+          to ease and, importantly,
+        </li>
+<li class="listitem">
+          to formalize the deployment of the idiom.
+        </li>
+</ul></div>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: November 05, 2016 at 11:48:18 GMT</small></p></td>
+<td align="left"><p><small>Last revised: August 08, 2017 at 04:00:00 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>
-<div class="spirit-nav"><a accesskey="n" href="pimpl/the_basics.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="impl_ptr/the_basics.html"><img src="images/next.png" alt="Next"></a></div>
 </body>
 </html>

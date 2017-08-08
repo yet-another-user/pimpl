@@ -6,15 +6,15 @@
 
 namespace detail
 {
-    template<typename> struct single;
+    template<typename> struct copied;
 }
 
 template<typename impl_type>
-struct detail::single
+struct detail::copied
 {
     // Smart-pointer with the value-semantics behavior.
 
-    using        this_type = single;
+    using        this_type = copied;
     using real_traits_type = detail::traits::copy_type<impl_type>;
     using base_traits_type = typename real_traits_type::base_type;
 
@@ -32,11 +32,11 @@ struct detail::single
         reset(new derived_type(std::forward<arg_types>(args)...));
     }
 
-   ~single () { if (traits_) traits_->destroy(impl_); }
-    single () {}
-    single (impl_type* p) : impl_(p), traits_(real_traits_type()) {}
-    single (this_type&& o) { swap(o); }
-    single (this_type const& o)
+   ~copied () { if (traits_) traits_->destroy(impl_); }
+    copied () {}
+    copied (impl_type* p) : impl_(p), traits_(real_traits_type()) {}
+    copied (this_type&& o) { swap(o); }
+    copied (this_type const& o)
     :
         impl_(o.traits_ ? o.traits_->copy(o.impl_) : nullptr),
         traits_(o.traits_)

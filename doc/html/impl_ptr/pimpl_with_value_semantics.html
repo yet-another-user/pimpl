@@ -15,21 +15,23 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="pimpl.pimpl_with_value_semantics"></a><a class="link" href="pimpl_with_value_semantics.html" title="Pimpl with Value Semantics">Pimpl with Value Semantics</a>
+<a name="impl_ptr.pimpl_with_value_semantics"></a><a class="link" href="pimpl_with_value_semantics.html" title="Pimpl with Value Semantics">Pimpl with Value Semantics</a>
 </h2></div></div></div>
 <p>
       <span class="emphasis"><em>Pimpl</em></span> with <span class="emphasis"><em>value semantics</em></span> exhibits
       different relationship with the underlying data and behaves as a <span class="emphasis"><em>unique-proxy</em></span>.
       It solely owns and manages the data (rather than shares). Consequently, for
-      such <span class="emphasis"><em>Pimpls</em></span> implementation gets more involved and might
-      look as follows:
+      such <span class="emphasis"><em>Pimpls</em></span> the implementation gets more involved and
+      might look as follows:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
   <span class="special">~</span><span class="identifier">Book</span> <span class="special">();</span>
    <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
    <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
    <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
 
    <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
    <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
@@ -51,15 +53,17 @@
       has been developed with certain strict goals in mind -- namely, no overhead
       and maximum efficiency -- and it intentionally avoids the overhead of the incomplete-type
       management. Consequently, implementation-wise the benefits of the <span class="emphasis"><em>std::unique_ptr</em></span>
-      deployment are fairly modest as the explicit non-inlined destructor, the copy
-      constructor, the assignment operator are still our responsibility:
+      deployment are relatively modest as the explicit non-inlined destructor, the
+      copy constructor, etc. are still our responsibility:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
   <span class="special">~</span><span class="identifier">Book</span> <span class="special">();</span>
    <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
    <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span> <span class="special">(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
    <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span> <span class="keyword">const</span><span class="special">&amp;);</span>
+   <span class="identifier">Book</span><span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=(</span><span class="identifier">Book</span><span class="special">&amp;&amp;);</span>
 
    <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span>  <span class="identifier">title</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
    <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
@@ -77,12 +81,12 @@
 <p>
       <span class="emphasis"><em>std::shared_ptr</em></span> implements the incomplete-type management
       functionality and is deployed for the <span class="emphasis"><em>Pimpls</em></span> with pointer
-      semantics. Similarly the internal <span class="emphasis"><em>pimpl::value_ptr</em></span> also
-      implements that technique (originally by Peter Dimov) and is deployed for the
-      <span class="emphasis"><em>Pimpls</em></span> with value semantics. Consequently, the code above
-      shrinks down to:
+      semantics. Similarly, <span class="emphasis"><em>pimpl_ptr</em></span> also implements that technique
+      (originally by Peter Dimov) internally and is deployed for the <span class="emphasis"><em>Pimpls</em></span>
+      with value and unique-value semantics. Consequently, the code above shrinks
+      down to:
     </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">unique</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">unique</span>
 <span class="special">{</span>
    <span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
 
@@ -95,9 +99,9 @@
 <span class="special">};</span>
 </pre>
 <p>
-      with auto-generated copy constructor, assignment operator, destructor, with
-      no private-part implementation detail, no loss in functionality and with the
-      same benefits as before -- shorter, application-focused and reasonably self-documented.
+      with auto-generated "special member functions", with no private-part
+      implementation detail, no loss in functionality and with the same benefits
+      as before -- shorter, application-focused and reasonably self-documented.
     </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -125,7 +129,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2016 Vladimir Batov<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2018 Vladimir Batov<p>
         Distributed under the Boost Software License, Version 1.0. (See copy at
         <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>
