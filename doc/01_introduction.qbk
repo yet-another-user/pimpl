@@ -18,9 +18,9 @@ Popularized by Sutter ([link 2 \[2\]], [link 3 \[3\]], [link 11 \[11\]], [link 1
 
 Still, it does not seem to be sufficiently widely deployed. In part that might be due to efficiency considerations (valid or misguided) and potentially due to additional implementation-related overhead associated with the technique. 
 
-This one-header "library" provides the supporting infrastructure and a deployment pattern in an attempt
+This header-only library provides a deployment pattern and the supporting infrastructure in an attempt
 
-* to minimize the hassle and the potential for error, 
+* to minimize the deployment and maintenance hassle and the potential for error, 
 * to ease and, importantly, 
 * to formalize the deployment of the idiom.
 
