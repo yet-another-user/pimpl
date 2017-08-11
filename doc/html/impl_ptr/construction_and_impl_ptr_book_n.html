@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Construction and pimpl::null()</title>
+<title>Construction and impl_ptr&lt;Book&gt;::null()</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
@@ -15,59 +15,38 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="impl_ptr.construction_and_pimpl_null"></a><a class="link" href="construction_and_pimpl_null.html" title="Construction and pimpl::null()">Construction and
-    pimpl::null()</a>
+<a name="impl_ptr.construction_and_impl_ptr_book_n"></a><a class="link" href="construction_and_impl_ptr_book_n.html" title="Construction and impl_ptr&lt;Book&gt;::null()">Construction
+    and impl_ptr&lt;Book&gt;::null()</a>
 </h2></div></div></div>
 <p>
-      &#1058;he <span class="emphasis"><em>pimpl_type</em></span> base-class is initialized with:
+      &#1058;he <span class="emphasis"><em>Pimpl</em></span> base class (aliased as <span class="emphasis"><em>impl_ptr_type</em></span>)
+      is initialized with:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
 <span class="special">:</span>
-   <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
+   <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">,</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
 <span class="special">{}</span>
 </pre>
 <p>
-      instead of the smart-pointer style:
+      Arguments passed to the <span class="emphasis"><em>impl_ptr_type</em></span> are forwarded to
+      the corresponding <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
+      constructor. Consequently, a <span class="emphasis"><em>Book</em></span> constructor with no
+      matching <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span> constructor
+      will fail to compile.
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
-<span class="special">:</span>
-   <span class="identifier">pimpl_type</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">))</span> <span class="comment">// Incorrect</span>
-<span class="special">{}</span>
+<p>
+      That same mechanism works for the default constructor as well. That is,
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">)</span> <span class="special">{}</span>
 </pre>
 <p>
-      All arguments passed to the <span class="emphasis"><em>pimpl_type</em></span> are forwarded to
-      the corresponding <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span> constructor.
-      Consequently, a <span class="emphasis"><em>Book</em></span> constructor with no matching <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-      constructor will fail to compile.
+      will try calling the default <span class="emphasis"><em>implementation()</em></span> constructor
+      and will fail to compile if there is no such.
     </p>
-<p>
-      That mechanism works the same for the default constructor as well. That is,
-    </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">{}</span>
-</pre>
-<p>
-      or the same but explicit
-    </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">()</span> <span class="special">{}</span>
-</pre>
-<p>
-      will try calling <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation::implementation()</em></span>
-      and will fail to compile if there is no such. Hence,
-    </p>
-<div class="note"><table border="0" summary="Note">
-<tr>
-<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
-<th align="left">Note</th>
-</tr>
-<tr><td align="left" valign="top"><p>
-        the default behavior is that there is always an implementation data behind
-        an interface object.
-      </p></td></tr>
-</table></div>
 <p>
       Sometimes it is beneficial to break that proxy-implementation association.
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">null_type</span><span class="special">())</span>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
    <span class="comment">// An invalid Book object is created with no implementation behind it</span>
 <span class="special">}</span>
@@ -78,7 +57,7 @@
    <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
    <span class="special">{</span>
        <span class="comment">// Implementation is created later.</span>
-       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">reset</span><span class="special">(</span><span class="keyword">new</span> <span class="identifier">implementation</span><span class="special">(...));</span>
+       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(...));</span>
    <span class="special">}</span>
    <span class="special">...</span>
 <span class="special">}</span>

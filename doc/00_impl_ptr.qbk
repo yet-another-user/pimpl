@@ -22,6 +22,8 @@
  
 [note This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal.]
 
+[important This library is not part of the Boost C++ Libraries collection. A potential submission is being considered. That is the reason for possible usage/deployment of ['impl_ptr] under the ['boost] namespace. I apologize for the inconvenience and potential confusion.]
+
 [include 01_introduction.qbk]
 [include 02_the_basics.qbk]
 [include 03_getting_started.qbk]

@@ -7,11 +7,11 @@
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="prev" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
-<link rel="next" href="getting_started.html" title="Getting Started">
+<link rel="next" href="getting_started_pimpl_with_share.html" title="Getting Started. Pimpl with Shared-Ownership Properties">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="../index.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="getting_started.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="../index.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="getting_started_pimpl_with_share.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -30,11 +30,11 @@
         </li>
 </ul></div>
 <p>
-      The <span class="emphasis"><em>separation</em></span> is the key. In fact, in <a class="link" href="references.html#6">[6]</a>
-      it is described as the <span class="emphasis"><em>only intent</em></span> of the the <span class="emphasis"><em>Bridge</em></span>
-      incarnation of the pattern. The <span class="emphasis"><em>implementation hiding</em></span>
-      is viewed as pattern's <span class="emphasis"><em>applicability</em></span> in the context of
-      C++.
+      <span class="emphasis"><em>Separation</em></span> is the key. In fact, in <a class="link" href="references.html#6">[6]</a>
+      it is described as the <span class="emphasis"><em>only</em></span> "intent" of the
+      the <span class="emphasis"><em>Bridge</em></span> incarnation of the pattern. In <a class="link" href="references.html#6">[6]</a>
+      the <span class="emphasis"><em>implementation hiding</em></span> is viewed as pattern's "applicability"
+      in the context of C++.
     </p>
 <div class="important"><table border="0" summary="Important">
 <tr>
@@ -51,13 +51,13 @@
 <p>
         That one-class approach is not exactly ideal for the purposes mentioned in
         the <span class="emphasis"><em>Introduction</em></span>. However, the fault-line where the
-        <span class="emphasis"><em>Pimpl</em></span> splits the conventional class in two is not between
-        <span class="emphasis"><em>data and behavior</em></span>. It is, rather, between <span class="emphasis"><em>public
-        interface</em></span> (public behavior) and <span class="emphasis"><em>private implementation</em></span>
-        (private data and behavior) -- two different views of a system. They serve
-        different purposes and are better managed when kept separate. The <span class="emphasis"><em>Pimpl</em></span>
-        technique seems to fit that objective better with <span class="emphasis"><em>actual</em></span>
-        rather than <span class="emphasis"><em>notional</em></span> separation.
+        conventional class is split in two is not between <span class="emphasis"><em>data and behavior</em></span>.
+        It is, rather, between <span class="emphasis"><em>public interface</em></span> (public behavior)
+        and <span class="emphasis"><em>private implementation</em></span> (private data and behavior)
+        -- two different views of a system. They serve different purposes and are
+        better managed when kept separate. The <span class="emphasis"><em>Pimpl</em></span> technique
+        seems to fit that objective better with <span class="emphasis"><em>actual</em></span> rather
+        than <span class="emphasis"><em>notional</em></span> separation.
       </p>
 </td></tr>
 </table></div>
@@ -73,7 +73,7 @@
       angle).
     </p>
 <p>
-      The proxy-implementation relationship might exhibit
+      That relationship might exhibit
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -83,15 +83,17 @@
         </li>
 <li class="listitem">
           ) the <span class="emphasis"><em>exclusive-ownership</em></span> properties where every proxy
-          represents and corresponds to its own underlying implementation (no sharing);
-          such exclusive-ownership relationship might be further of
+          represents and corresponds to its own single implementation object (no
+          sharing); such exclusive-ownership relationship might be further of
           <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
 <li class="listitem">
                 ) the <span class="emphasis"><em>unique-ownership</em></span> nature (i.e. non-copyable,
                 similar to <span class="emphasis"><em>std::unique_ptr</em></span> behavior) or
               </li>
 <li class="listitem">
-                ) the <span class="emphasis"><em>copied-ownership</em></span> nature;
+                ) the <span class="emphasis"><em>copied-ownership</em></span> nature where copying
+                of the proxy creates a new (copied) implementation to go with the
+                new (copied) proxy;
               </li>
 </ul></div>
         </li>
@@ -99,14 +101,15 @@
           ) the <span class="emphasis"><em>copy-on-write</em></span> properties;
         </li>
 <li class="listitem">
-          ) other user-specific or usage-specific properties.
+          ) other special implementation-specific properties.
         </li>
 </ul></div>
 <p>
       Taking care of all that variability on case-by-case basis might be laborious
-      and error-prone. Replacing one with another in the middle of the development
-      (or maintenance) cycle might be even more disruptive. This proposed policy-based
-      library considerably reduces (if not eliminates) the impact and the hassle.
+      and error-prone. Replacing one relationship policy with another in the middle
+      of the development (or maintenance) cycle might be even more disruptive. This
+      proposed policy-based library considerably reduces (if not eliminates) the
+      impact and the hassle.
     </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
@@ -119,7 +122,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../index.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="getting_started.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="../index.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="getting_started_pimpl_with_share.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

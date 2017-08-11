@@ -6,6 +6,7 @@
       <template-type-parameter name="policy_type"/>
     </template><typedef name="implementation"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
 <typedef name="impl_ptr_type"><type><classname>base</classname></type></typedef>
+<data-member name="in_place" specifiers="static"><type><emphasis>unspecified</emphasis></type></data-member>
 <method-group name="public member functions">
 <method name="operator!" cv="const"><type>bool</type></method>
 <method name="conversion-operator" cv="const" specifiers="explicit"><type>bool</type></method>
@@ -45,7 +46,7 @@
         </template><parameter name="arg"><paramtype>arg_type &amp;&amp;</paramtype></parameter><parameter name=""><paramtype>is_derived&lt; arg_type &gt;</paramtype><default>nullptr</default></parameter></constructor>
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
-        </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
+        </template><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
 <constructor><parameter name=""><paramtype><classname>null_type</classname></paramtype></parameter></constructor>
 <constructor/>
 <constructor><template>

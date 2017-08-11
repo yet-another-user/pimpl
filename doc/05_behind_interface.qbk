@@ -4,21 +4,21 @@ The key property of the ['Pimpl] idiom is that the implementation is private. No
 
 Still, the ['deployment pattern] is fairly straightforward to follow and reasonably self-documented. Something like the following will be tucked away in an implementation file: 
 
- template<> struct pimpl<Book>::implementation
+ template<> struct boost::impl_ptr<Book>::implementation
  {
     implementation(string const& the_title, string const& the_author)
     :
-        title(the_title), author(the_author), price(0)
+        title(the_title), author(the_author)
     {}
     ...
     bool check_isbn_10_digit();
     ...
     string  title;
     string author;
-    int     price;
+    int     price =0;
  };
   
- Book::Book(string const& title, string const& author) : pimpl_type(title, author) {}
+ Book::Book(string const& title, string const& author) : impl_ptr_type(in_place, title, author) {}
  
  string const& Book::author () const { return (*this)->author; }
  void          Book:: price (int new_price) { (*this)->price = new_price; }
@@ -35,13 +35,12 @@ As mentioned earlier, if comparison functionality is required, a class with valu
  bool
  Book::operator==(Book const& other) const
  {
-    implementation const& impl = **this;
-    return impl.title == other->title && impl.author == other->author;
+    return (*this)->title == other->title && (*this)->author == other->author;
  }
  
-Here the ['pimpl<Book>::implementation] is again a ['struct] rather than a ['class]. As long as ['pimpl<Book>::implementation] is local to one file, there is generally little value in making it a class. 
+Here the ['impl_ptr<Book>::implementation] is again a ['struct] rather than a ['class]. As long as ['impl_impl<Book>::implementation] is local to one file, there is generally little value in making it a class. 
 
-Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['pimpl<Book>::implementation] encapsulates ['private implementation] (data and behavior).
+Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['impl_ptr<Book>::implementation] encapsulates ['private implementation] (data and behavior).
 
 [note :-) Another reconciliatory and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the leading or trailing underscores, the 'm_' prefix or the myriad others). Member variables are named naturally and accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.]
 

@@ -88,10 +88,8 @@ template<> struct boost::impl_ptr<Book>::implementation
 
 Book::Book(string const& title, string const& author)
 :
-//  impl_ptr_type(title, author)
-    impl_ptr_type(std::allocator<implementation>(), title, author)
-//  impl_ptr_type(std::make_shared<implementation>(title, author))
-//  impl_ptr_type(std::allocate_shared<implementation>(std::allocator<implementation>(), title, author))
+//  impl_ptr_type(in_place, title, author)
+    impl_ptr_type(in_place, std::allocator<implementation>(), title, author)
 {
     // Various ways of initializing the impl_ptr base:
     // 1) Internally calls std::make_shared
@@ -153,13 +151,13 @@ string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Shared::value () const { return (*this)->int_; }
 int    Shared::   id () const { return (*this)->id_; }
 
-Shared::Shared () {}
-Shared::Shared (int k)          : impl_ptr_type(k) {}
-Shared::Shared (int k, int l)   : impl_ptr_type(k, l) {}
-Shared::Shared (Foo&       foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const& foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo*       foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const* foo) : impl_ptr_type(foo) {} // Make sure 'const' handled properly
+Shared::Shared ()               : impl_ptr_type(in_place) {}
+Shared::Shared (int k)          : impl_ptr_type(in_place, k) {}
+Shared::Shared (int k, int l)   : impl_ptr_type(in_place, k, l) {}
+Shared::Shared (Foo&       foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const& foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo*       foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
+Shared::Shared (Foo const* foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
 Shared::Shared (singleton_type) : impl_ptr_type(impl_ptr<Shared>::null())
 {
   static Shared single = implementation::create_single();
@@ -198,8 +196,8 @@ template<> struct impl_ptr<Copied>::implementation
     local::uid        id_;
 };
 
-Copied::Copied () {}
-Copied::Copied (int k) : impl_ptr_type(k) {}
+Copied::Copied ()      : impl_ptr_type(in_place) {}
+Copied::Copied (int k) : impl_ptr_type(in_place, k) {}
 
 string Copied::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Copied::value () const { return (*this)->int_; }
@@ -234,8 +232,8 @@ template<> struct impl_ptr<Unique>::implementation
     local::uid        id_;
 };
 
-Unique::Unique () {}
-Unique::Unique (int k) : impl_ptr_type(k) {}
+Unique::Unique ()      : impl_ptr_type(in_place) {}
+Unique::Unique (int k) : impl_ptr_type(in_place, k) {}
 
 string Unique::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Unique::value () const { return (*this)->int_; }
@@ -302,7 +300,7 @@ struct Derived2Impl : Derived1Impl
     int more_int_;
 };
 
-Base::Base(int k) : impl_ptr_type(k)
+Base::Base(int k) : impl_ptr_type(in_place, k)
 {
 }
 

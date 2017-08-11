@@ -14,7 +14,8 @@ namespace detail
 {
     template<typename> struct  shared;
 
-    struct null_type {};
+    struct     null_type {};
+    struct in_place_type {};
 }
 
 template<typename impl_type>
@@ -88,6 +89,8 @@ class impl_ptr<user_type>::base
     using implementation = typename impl_ptr<user_type>::implementation;
     using  impl_ptr_type = base;
 
+    static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
+
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
 
@@ -139,7 +142,7 @@ class impl_ptr<user_type>::base
     base(arg_type&& arg, is_derived<arg_type> =nullptr) : impl_(arg.impl_) {}
 
     template<typename... arg_types>
-    base(arg_types&&... args) { impl_.emplace<implementation>(std::forward<arg_types>(args)...); }
+    base(detail::in_place_type, arg_types&&... args) { impl_.emplace<implementation>(std::forward<arg_types>(args)...); }
 
     private: policy_type impl_;
 };

@@ -1,12 +1,15 @@
 [section Pimpl with Exclusive-Ownership Properties]
 
-['Pimpl] with the ['exclusive-ownership] properties behaves as a ['unique-proxy]. It solely owns and manages the data (rather than shares). Consequently, for such ['Pimpls] the implementation gets more involved and might look as follows:
+['Pimpl] with the ['exclusive-ownership] properties behaves as a ['unique-proxy]. That proxy solely owns and manages the data (rather than shares). Consequently, for such ['Pimpls] the implementation is likely to get more involved and might look as follows:
 
  struct Book
  {
    ~Book ();
     Book (string const& title, string const& author);
 
+    string const&  title() const;
+    string const& author() const;
+    
     // If Book needs to be copyable
     Book (Book const&);
     Book& operator=(Book const&);
@@ -15,26 +18,30 @@
     Book (Book&&);
     Book& operator=(Book&&);
   
-    string const&  title() const;
-    string const& author() const;
-    
     // If Book needs to be comparable
     bool operator==(Book const&) const;
     bool operator!=(Book const&) const;
   
+    // If Book needs to support an invalid state
+    explicit operator bool () const { return  bool(impl_); }
+    bool         operator! () const { return !bool(impl_); }
+
     private:
   
     struct implementation;
     implementation* impl_;
  };
 
-In the example above it is only natural to replace the raw pointer with ['std::unique_ptr<implementation>] ([link 13 \[13\]], [link 14 \[14\]]). It needs to be mentioned though that ['std::unique_ptr] has been developed with certain strict goals in mind -- namely, no overhead and maximum efficiency. It intentionally avoids the overhead of the incomplete-type management. Consequently, for ['Pimpl] the benefits of the ['std::unique_ptr] deployment are relatively modest as the ['special member functions] are still our responsibility: 
+In the example above it is only natural to replace the raw pointer with ['std::unique_ptr<implementation>] ([link 13 \[13\]], [link 14 \[14\]]). It needs to be mentioned though that ['std::unique_ptr] has been developed with certain strict goals in mind -- namely, no (additional) overhead and maximum efficiency -- and it intentionally avoids the overhead of the incomplete-type management (available with ['std::shared_ptr]). Consequently, for ['Pimpl] purposes the benefits of the ['std::unique_ptr] deployment are relatively modest as the ['special member functions] are still our responsibility: 
 
  struct Book
  {
    ~Book ();
     Book (string const& title, string const& author);
 
+    string const&  title() const;
+    string const& author() const;
+    
     // If Book needs to be copyable
     Book (Book const&);
     Book& operator=(Book const&);
@@ -43,12 +50,13 @@ In the example above it is only natural to replace the raw pointer with ['std::u
     Book (Book&&);
     Book& operator=(Book&&);
   
-    string const&  title() const;
-    string const& author() const;
-    
     // If Book needs to be comparable
     bool operator==(Book const&) const;
     bool operator!=(Book const&) const;
+  
+    // If Book needs to support an invalid state
+    explicit operator bool () const { return  bool(impl_); }
+    bool         operator! () const { return !bool(impl_); }
   
     private:
   
@@ -56,9 +64,9 @@ In the example above it is only natural to replace the raw pointer with ['std::u
     std::unique_ptr<implementation> impl_;
  };
 
-To address that ['impl_ptr] (as ['std::shared_ptr]) internally implements the incomplete-type-management technique (originally by Peter Dimov) and is used for the ['Pimpls] with exclusive-ownership properties. That allows the code above to shrink down to: 
+To address that ['boost::impl_ptr] (as ['std::shared_ptr]) internally implements the incomplete-type-management technique (originally by Peter Dimov) and is used for the ['Pimpls] with exclusive-ownership properties. That allows the code above to shrink down to: 
 
- struct Book : impl_ptr<Book>::unique
+ struct Book : boost::impl_ptr<Book>::unique
  {
     Book(string const& title, string const& author);
     
@@ -70,17 +78,17 @@ To address that ['impl_ptr] (as ['std::shared_ptr]) internally implements the in
     bool operator!=(Book const&) const;
  };
 
-with auto-generated ['special member functions], with no private-part implementation detail, no loss in functionality and with the same benefits as before -- shorter, application-focused and reasonably self-documented.
+with the same benefits as before -- shorter, application-focused and reasonably self-documented.
 
-As the ['impl_ptr<Book>::unique] policy name suggests the ['Book] class is moveable but not copyable similar to the ['std::unique_ptr]-base implementation. Changing the policy to
+As the ['impl_ptr<Book>::unique] policy name suggests the ['Book] class is moveable but not copyable similar to  ['std::unique_ptr] behavior. Changing the policy to
 
- struct Book : impl_ptr<Book>::copied { ... };
+ struct Book : boost::impl_ptr<Book>::copied { ... };
 
-makes the ['Book] copyable. 
+makes the ['Book] moveable and copyable. 
 
-[note A notable difference (compared to pointer-semantics classes) is that the comparison operators are not freebies. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
+[note One difference (compared to ['impl_ptr<Book>::shared]) is that the comparison operators are not freebies. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
   
-So far the three ['impl_ptr]-based deployments (using the shared, unique-ownership and copied-ownership policies) look almost identical and internal implementations (as we'll see later) are as close. That property is important for orderly and painless evolution of commercial large-scale systems as it allows to minimize the required effort and the impact of a design or requirement change. 
+So far the three ['impl_ptr]-based deployments (using the shared, unique-ownership and copied-ownership policies respectively) look almost identical and internal implementations (as we'll see later) are as close. That is important for orderly evolution of commercial large-scale systems as it allows to minimize the required effort and the impact of a design or requirement change. 
 
 [endsect]
 

@@ -1,36 +1,23 @@
-[section Construction and pimpl::null()]
+[section Construction and impl_ptr<Book>::null()]
 
-Тhe ['pimpl_type] base-class is initialized with:
+Тhe ['Pimpl] base class (aliased as ['impl_ptr_type]) is initialized with:
 
  Book::Book(string const& title, string const& author)
  :
-    pimpl_type(title, author)
+    impl_ptr_type(in_place, title, author)
  {} 
  
-instead of the smart-pointer style: 
+Arguments passed to the ['impl_ptr_type] are forwarded to the corresponding ['impl_ptr<Book>::implementation] constructor. Consequently, a ['Book] constructor with no matching ['impl_ptr<Book>::implementation] constructor will fail to compile. 
 
- Book::Book(string const& title, string const& author)
- :
-    pimpl_type(new implementation(title, author)) // Incorrect
- {}
- 
-All arguments passed to the ['pimpl_type] are forwarded to the corresponding ['pimpl<Book>::implementation] constructor. Consequently, a ['Book] constructor with no matching ['pimpl<Book>::implementation] constructor will fail to compile. 
+That same mechanism works for the default constructor as well. That is, 
 
-That mechanism works the same for the default constructor as well. That is, 
-
- Book::Book() {}
+ Book::Book() : impl_ptr_type(in_place) {}
  
-or the same but explicit  
- 
- Book::Book() : pimpl_type() {}
- 
-will try calling ['pimpl<Book>::implementation::implementation()] and will fail to compile if there is no such. Hence, 
-
-[note the default behavior is that there is always an implementation data behind an interface object.] 
+will try calling the default ['implementation()] constructor and will fail to compile if there is no such.
 
 Sometimes it is beneficial to break that proxy-implementation association.
 
- Book::Book() : pimpl_type(null_type())
+ Book::Book() : impl_ptr_type(impl_ptr<Book>::null())
  {
     // An invalid Book object is created with no implementation behind it
  }
@@ -41,7 +28,7 @@ Sometimes it is beneficial to break that proxy-implementation association.
     if (!*this)
     {
         // Implementation is created later.
-        this->reset(new implementation(...));
+        this->emplace<implementation>(...));
     }
     ...
  } 

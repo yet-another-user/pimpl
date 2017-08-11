@@ -29,12 +29,13 @@
 <dl class="toc">
 <dt><span class="section"><a href="index.html#impl_ptr.introduction">Introduction</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/the_basics.html">The Basics</a></span></dt>
-<dt><span class="section"><a href="impl_ptr/getting_started.html">Getting Started</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/getting_started_pimpl_with_share.html">Getting Started.
+    Pimpl with Shared-Ownership Properties</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/pimpl_with_exclusive_ownership_p.html">Pimpl with Exclusive-Ownership
     Properties</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/behind_the_interface.html">Behind the Interface</a></span></dt>
-<dt><span class="section"><a href="impl_ptr/construction_and_pimpl_null.html">Construction and
-    pimpl::null()</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/construction_and_impl_ptr_book_n.html">Construction
+    and impl_ptr&lt;Book&gt;::null()</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/deep_const.html">Deep Const </a></span></dt>
 <dt><span class="section"><a href="impl_ptr/customization.html">Customization</a></span></dt>
 <dd><dl>
@@ -72,6 +73,18 @@
 <tr><td align="left" valign="top"><p>
       This documentation is based on the article (<a class="link" href="impl_ptr/references.html#1">[1]</a>) originally
       published in the C/C++ Users Journal.
+    </p></td></tr>
+</table></div>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Important]" src="images/important.png"></td>
+<th align="left">Important</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+      This library is not part of the Boost C++ Libraries collection. A potential
+      submission is being considered. That is the reason for possible usage/deployment
+      of <span class="emphasis"><em>impl_ptr</em></span> under the <span class="emphasis"><em>boost</em></span> namespace.
+      I apologize for the inconvenience and potential confusion.
     </p></td></tr>
 </table></div>
 <div class="section">
@@ -119,12 +132,11 @@
       Popularized by Sutter (<a class="link" href="impl_ptr/references.html#2">[2]</a>, <a class="link" href="impl_ptr/references.html#3">[3]</a>,
       <a class="link" href="impl_ptr/references.html#11">[11]</a>, <a class="link" href="impl_ptr/references.html#12">[12]</a>, <a class="link" href="impl_ptr/references.html#13">[13]</a>,
       <a class="link" href="impl_ptr/references.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
-      name (as for "pointer to implementation" in Hungarian notation) the
-      technique and its variations have been known long before under various names
-      -- the D-pointer (in Qt), the Cheshire Cat (in <a class="link" href="impl_ptr/references.html#4">[4]</a>),
-      the Handle/Body (in <a class="link" href="impl_ptr/references.html#5">[5]</a> and <a class="link" href="impl_ptr/references.html#6">[6]</a>),
-      the Bridge (in <a class="link" href="impl_ptr/references.html#6">[6]</a>) -- and conceptually deployed in
-      C and C++ as far back as at least early eighties (<a class="link" href="impl_ptr/references.html#7">[7]</a>).
+      name (as for "pointer to implementation") the technique has been
+      known under various names -- the D-pointer (in Qt), the Cheshire Cat (in <a class="link" href="impl_ptr/references.html#4">[4]</a>), the Handle/Body (in <a class="link" href="impl_ptr/references.html#5">[5]</a> and
+      <a class="link" href="impl_ptr/references.html#6">[6]</a>), the Bridge (in <a class="link" href="impl_ptr/references.html#6">[6]</a>)
+      -- and conceptually deployed in C and C++ as far back as at least early eighties
+      (<a class="link" href="impl_ptr/references.html#7">[7]</a>).
     </p>
 <p>
       Still, it does not seem to be sufficiently widely deployed. In part that might
@@ -132,12 +144,13 @@
       to additional implementation-related overhead associated with the technique.
     </p>
 <p>
-      This one-header "library" provides the supporting infrastructure
-      and a deployment pattern in an attempt
+      This header-only library provides a deployment pattern and the supporting infrastructure
+      in an attempt
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
-          to minimize the hassle and the potential for error,
+          to minimize the deployment and maintenance hassle and the potential for
+          error,
         </li>
 <li class="listitem">
           to ease and, importantly,
@@ -149,7 +162,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: August 08, 2017 at 04:17:43 GMT</small></p></td>
+<td align="left"><p><small>Last revised: August 11, 2017 at 03:17:39 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

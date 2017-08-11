@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Getting Started</title>
+<title>Getting Started. Pimpl with Shared-Ownership Properties</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
@@ -15,10 +15,11 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="impl_ptr.getting_started"></a><a class="link" href="getting_started.html" title="Getting Started">Getting Started</a>
+<a name="impl_ptr.getting_started_pimpl_with_share"></a><a class="link" href="getting_started_pimpl_with_share.html" title="Getting Started. Pimpl with Shared-Ownership Properties">Getting Started.
+    Pimpl with Shared-Ownership Properties</a>
 </h2></div></div></div>
 <p>
-      Let's take a fairly basic and conventional
+      Let's begin with something basic and conventional
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
@@ -35,15 +36,14 @@
 <span class="special">};</span>
 </pre>
 <p>
-      Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span> we would
-      like to transform it to a <span class="emphasis"><em>Pimpl</em></span>-style class with the
-      <span class="emphasis"><em>shared/pointer</em></span> properties. That is:
+      Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span>, we
+      would like to deploy the <span class="emphasis"><em>Pimpl</em></span> technique with the <span class="emphasis"><em>shared/pointer</em></span>
+      properties. That is:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
           we intend to separate the interface from the implementation and to hide
-          the implementation through the deployment of the <span class="emphasis"><em>Pimpl</em></span>
-          idiom;
+          the implementation;
         </li>
 <li class="listitem">
           we intend <span class="emphasis"><em>Book</em></span> instances to have <span class="emphasis"><em>pointer
@@ -75,22 +75,21 @@
 <span class="special">};</span>
 </pre>
 <p>
-      So far applying the <span class="emphasis"><em>Pimpl</em></span> idiom is fairly straightforward
-      as <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the implementation-related
-      hassle. The auto-generated "special member functions" (the destructor,
-      the copy constructor, etc.) suffice and writing the comparison operators is
-      straightforward.
+      Applying the <span class="emphasis"><em>Pimpl</em></span> idiom is fairly straightforward as
+      <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the implementation-related
+      hassle. The auto-generated <span class="emphasis"><em>special member functions</em></span> (the
+      destructor, the copy constructor, etc.) suffice and writing the comparison,
+      Boolean-conversion operators is straightforward.
     </p>
 <p>
       Still, from design perspectives lumping the application logic with the infrastructure
       scaffolding is unfortunate. Moreover, in our (admittedly simple) example more
-      than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related scaffolding
-      (implementation detail). For one class in isolation that might not be that
-      big a deal. On a larger scale though, reading, understanding and maintaining
-      extra code, mentally separating the application logic from the infrastructure
-      detail, repeatedly making sure nothing is forgotten, misused, or misplaced
-      is a tiring and error-prone exercise. The following, therefore, seems like
-      an improvement:
+      than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related implementation
+      detail. For one class in isolation that might not be that big a deal. On a
+      larger scale though, reading, understanding and maintaining extra code, mentally
+      separating the application logic from the infrastructure detail, making sure
+      nothing is forgotten, misused, or misplaced is a tiring and error-prone exercise.
+      The following, therefore, seems like an improvement:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
@@ -127,7 +126,7 @@
         on those contractual obligations (imposed by the API) and with the service-provider
         working towards meeting those contractual obligations. The better/cleaner
         the interface/implementation separation of concerns is, the fewer there are
-        dependencies and interruptions of that parallel development process.
+        interruptions of that parallel development process.
       </p>
 </td></tr>
 </table></div>
