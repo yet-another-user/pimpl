@@ -35,31 +35,21 @@ static
 void
 test_swap()
 {
-    Shared pt16 (5);
-    Shared pt17 (5);
-    Copied  vt13 (5);
-    Copied  vt14 (5);
+    Shared sh01 (1);
+    Shared sh02 (2);
+    Copied vt13 (5);
+    Copied vt14 (5);
 
-    BOOST_TEST(pt16.trace() == "Shared::implementation(int)");
-    BOOST_TEST(pt17.trace() == "Shared::implementation(int)");
-    BOOST_TEST(pt16 != pt17);
-    BOOST_TEST(pt16.id() != pt17.id());
-    BOOST_TEST(vt13.trace() == "Copied::implementation(int)");
-    BOOST_TEST(vt14.trace() == "Copied::implementation(int)");
-    BOOST_TEST(vt13.id() != vt14.id());
+    BOOST_TEST(sh01.trace() == "Shared(int)");
+    BOOST_TEST(sh02.trace() == "Shared(int)");
+    BOOST_TEST(sh01 != sh02);
+    BOOST_TEST(&*sh01 != &*sh02);
+    BOOST_TEST(vt13.trace() == "Copied(int)");
+    BOOST_TEST(vt14.trace() == "Copied(int)");
+    BOOST_TEST(&*vt13 != &*vt14);
 
-    int old_pt16_id = pt16.id();
-    int old_pt17_id = pt17.id();
-    int old_vt13_id = vt13.id();
-    int old_vt14_id = vt14.id();
-
-    pt16.swap(pt17);
+    sh01.swap(sh02);
     vt13.swap(vt14);
-
-    BOOST_TEST(pt16.id() == old_pt17_id);
-    BOOST_TEST(pt17.id() == old_pt16_id);
-    BOOST_TEST(vt13.id() == old_vt14_id);
-    BOOST_TEST(vt14.id() == old_vt13_id);
 }
 
 static
@@ -72,13 +62,13 @@ test_runtime_polymorphic_behavior()
     Base        base2 (derived1);
     Base        base3 (derived2);
     Base        base4 (Derived2(2,3,4)/*const ref to temporary*/);
-    Base*         bp1 = &base1;
-    Base*         bp2 = &base2;
+    Base*         bs1 = &base1;
+    Base*         bs2 = &base2;
     Base*         bp3 = &base3;
     Base*         bp4 = &derived1;
     Base*         bp5 = &derived2;
-    Base         bad1 = impl_ptr<Base>::null();
-    Base         bad2 = impl_ptr<Base>::null();
+    Base         bad1 = Base::null();
+    Base         bad2 = Base::null();
     Base         bad3 = impl_ptr<Derived1>::null();
     Base         bad4 = impl_ptr<Derived2>::null();
     Derived1     bad5 (impl_ptr<Derived1>::null());
@@ -108,21 +98,21 @@ test_runtime_polymorphic_behavior()
 
     BOOST_TEST(base2.call_virtual() == "Derived1::call_virtual()");
     BOOST_TEST(base3.call_virtual() == "Derived2::call_virtual()");
-    BOOST_TEST(bp1->call_virtual() == "Base::call_virtual()");
-    BOOST_TEST(bp2->call_virtual() == "Derived1::call_virtual()");
-    BOOST_TEST(bp3->call_virtual() == "Derived2::call_virtual()");
-    BOOST_TEST(bp4->call_virtual() == "Derived1::call_virtual()");
-    BOOST_TEST(bp5->call_virtual() == "Derived2::call_virtual()");
+    BOOST_TEST(bs1 ->call_virtual() == "Base::call_virtual()");
+    BOOST_TEST(bs2 ->call_virtual() == "Derived1::call_virtual()");
+    BOOST_TEST(bp3 ->call_virtual() == "Derived2::call_virtual()");
+    BOOST_TEST(bp4 ->call_virtual() == "Derived1::call_virtual()");
+    BOOST_TEST(bp5 ->call_virtual() == "Derived2::call_virtual()");
 }
 
 static
 void
 test_null()
 {
-    Shared p01 = impl_ptr<Shared>::null(); BOOST_TEST(p01.trace() == "null");
-    Shared p02 (impl_ptr<Shared>::null()); BOOST_TEST(p02.trace() == "null");
-    Copied  v01 = impl_ptr<Copied>::null();  BOOST_TEST(v01.trace() == "null");
-    Copied  v02 (impl_ptr<Copied>::null());  BOOST_TEST(v02.trace() == "null");
+    Shared s01 = impl_ptr<Shared>::null(); BOOST_TEST(s01.trace() == "null");
+    Shared s02 (impl_ptr<Shared>::null()); BOOST_TEST(s02.trace() == "null");
+    Copied c01 = impl_ptr<Copied>::null(); BOOST_TEST(c01.trace() == "null");
+    Copied c02 (impl_ptr<Copied>::null()); BOOST_TEST(c02.trace() == "null");
 
     Base     p03 (impl_ptr<    Base>::null()); BOOST_TEST(p03.trace() == "null");
     Derived1 p04 (impl_ptr<Derived1>::null()); BOOST_TEST(p04.trace() == "null");
@@ -134,57 +124,79 @@ test_null()
 
 static
 void
-test_constructors()
+test_shared()
 {
     singleton_type single;
     Foo               foo;
-    Foo const   const_foo = foo;
+    Foo const   const_foo;
     Foo&              ref = foo;
     Foo const&  const_ref = const_foo;
     Foo*              ptr = &foo;
     Foo const*  const_ptr = &const_foo;
 
-    Shared p11;             BOOST_TEST(p11.trace() == "Shared::implementation()");
-    Shared p12 (5);         BOOST_TEST(p12.trace() == "Shared::implementation(int)");
-    Shared p15 (5, 6);      BOOST_TEST(p15.trace() == "Shared::implementation(int, int)");
-    Shared p13 = p12;       BOOST_TEST(p13.id() == p12.id()); // No copying. Implementation shared.
-    Shared p14 (p12);       BOOST_TEST(p14.id() == p12.id()); // No copying. Implementation shared.
-                            BOOST_TEST(p13.trace() == "Shared::implementation(int)"); // trace state is the same
-                            BOOST_TEST(p14.trace() == "Shared::implementation(int)"); // trace state is the same
-    Shared p16 (single);    BOOST_TEST(p16.trace() == "Shared::implementation()");
-    Shared p17 (single);    BOOST_TEST(p17.trace() == "Shared::implementation()");
-                            BOOST_TEST(p17.id() == p16.id()); // No copying. Implementation shared.
+    Shared s11;            BOOST_TEST(s11.trace() == "Shared()");
+    Shared s12 (5);        BOOST_TEST(s12.trace() == "Shared(int)");
+    Shared s15 (5, 6);     BOOST_TEST(s15.trace() == "Shared(int, int)");
+    Shared s13 = s12;      BOOST_TEST(&*s13 == &*s12); // Implementation shared.
+    Shared s14 (s12);      BOOST_TEST(&*s14 == &*s12); // Implementation shared.
+                           BOOST_TEST(s13.trace() == "Shared(int)"); // trace state is the same
+                           BOOST_TEST(s14.trace() == "Shared(int)"); // trace state is the same
+    Shared s16 (single);   BOOST_TEST(s16.trace() == "Shared()");
+    Shared s17 (single);   BOOST_TEST(s17.trace() == "Shared()");
+                           BOOST_TEST(&*s17 == &*s16); // Implementation shared.
 
-    Shared p21(foo);        BOOST_TEST(p21.trace() == "Shared::implementation(Foo&)");
-    Shared p22(const_foo);  BOOST_TEST(p22.trace() == "Shared::implementation(Foo const&)");
-    Shared p23(ref);        BOOST_TEST(p23.trace() == "Shared::implementation(Foo&)");
-    Shared p24(const_ref);  BOOST_TEST(p24.trace() == "Shared::implementation(Foo const&)");
-    Shared p25(ptr);        BOOST_TEST(p25.trace() == "Shared::implementation(Foo*)");
-    Shared p26(const_ptr);  BOOST_TEST(p26.trace() == "Shared::implementation(Foo const*)");
+    Shared s21(foo);       BOOST_TEST(s21.trace() == "Shared(Foo&)");
+    Shared s22(const_foo); BOOST_TEST(s22.trace() == "Shared(Foo const&)");
+    Shared s23(ref);       BOOST_TEST(s23.trace() == "Shared(Foo&)");
+    Shared s24(const_ref); BOOST_TEST(s24.trace() == "Shared(Foo const&)");
+    Shared s25(ptr);       BOOST_TEST(s25.trace() == "Shared(Foo*)");
+    Shared s26(const_ptr); BOOST_TEST(s26.trace() == "Shared(Foo const*)");
 
-    Copied v11;              BOOST_TEST(v11.trace() == "Copied::implementation()");
-    Copied v12 (5);          BOOST_TEST(v12.trace() == "Copied::implementation(int)");
-    Copied v13 = v12;        BOOST_TEST(v13.trace() == "Copied::implementation(Copied::implementation const&)");
-    Copied v14 (v12);        BOOST_TEST(v14.trace() == "Copied::implementation(Copied::implementation const&)");
-                            BOOST_TEST(v13.id() != v12.id()); // Copied.
-                            BOOST_TEST(v14.id() != v12.id()); // Copied.
+    Shared s31;
+    Shared s32 (5);
+    Shared s33 = s32;
+
+    BOOST_TEST(s32 != s31); // calls impl_ptr::op!=()
+    BOOST_TEST(s32 == s33); // calls impl_ptr::op==()
 }
 
 static
 void
-test_assignments()
+test_copied()
 {
-    Copied v11 (3);
-    Copied v12 (5);
+    Copied c11;       BOOST_TEST(c11.trace() == "Copied()");
+    Copied c12 (5);   BOOST_TEST(c12.trace() == "Copied(int)");
+    Copied c13 = c12; BOOST_TEST(c13.trace() == "Copied(Copied const&)");
+    Copied c14 (c12); BOOST_TEST(c14.trace() == "Copied(Copied const&)");
+                      BOOST_TEST(&*c13 != &*c12); // Copied.
+                      BOOST_TEST(&*c14 != &*c12); // Copied.
 
-    BOOST_TEST(v11 != v12);
-    BOOST_TEST(v11.id() != v12.id());
+    Copied c21 (3);
+    Copied c22 (5);
 
-    v11 = v12;
+    BOOST_TEST(&*c21 != &*c22);
+    BOOST_TEST(c21 != c22);
 
-    BOOST_TEST(v11 == v12);
-    BOOST_TEST(v11.id() != v12.id());
+    c21 = c22;
 
+    BOOST_TEST(c21.trace() == "Copied::operator=(Copied const&)");
+    BOOST_TEST(&*c21 != &*c22);
+    BOOST_TEST(c21 == c22);
+
+    Copied c31;
+    Copied c32 (5);
+    Copied c33 = c32;
+
+    BOOST_TEST(c32 == c33);
+    BOOST_TEST(c32.trace() == "Copied::operator==(Copied const&)");
+    BOOST_TEST(c32 != c31);
+    BOOST_TEST(c32.trace() == "Copied::operator==(Copied const&)");
+}
+
+static
+void
+test_unique()
+{
     Unique u11 (3); BOOST_TEST(u11.value() == 3);
     Unique u12 (5); BOOST_TEST(u12.value() == 5);
 
@@ -196,43 +208,24 @@ static
 void
 test_bool_conversions()
 {
-    Shared p1;
-    Copied  v1;
-    Shared p2 = impl_ptr<Shared>::null();
-    Copied  v2 = impl_ptr<Copied>::null();
+    Shared s1;
+    Copied c1;
+    Shared s2 = Shared::null();
+    Copied c2 = Copied::null();
 
-    BOOST_TEST(p1.trace() == "Shared::implementation()");
-    BOOST_TEST(v1.trace() == "Copied::implementation()");
-    BOOST_TEST(p2.trace() == "null");
-    BOOST_TEST(v2.trace() == "null");
+    BOOST_TEST(s1.trace() == "Shared()");
+    BOOST_TEST(c1.trace() == "Copied()");
+    BOOST_TEST(s2.trace() == "null");
+    BOOST_TEST(c2.trace() == "null");
 
-    BOOST_TEST(bool(p1));
-    BOOST_TEST(!!p1);
-    BOOST_TEST(bool(v1));
-    BOOST_TEST(!!v1);
-    BOOST_TEST(!bool(p2));
-    BOOST_TEST(!p2);
-    BOOST_TEST(!bool(v2));
-    BOOST_TEST(!v2);
-}
-
-static
-void
-test_comparisons()
-{
-    Shared p1;
-    Shared p2 (5);
-    Shared p3 = p2;
-    Copied  v1;
-    Copied  v2 (5);
-    Copied  v3 = v2;
-
-    BOOST_TEST(p2 != p1); // calls impl_ptr::op!=()
-    BOOST_TEST(p2 == p3); // calls impl_ptr::op==()
-    BOOST_TEST(v2 == v3);
-    BOOST_TEST(v2.trace() == "Copied::operator==(Copied const&)");
-    BOOST_TEST(v2 != v1);
-    BOOST_TEST(v2.trace() == "Copied::operator==(Copied const&)");
+    BOOST_TEST(bool(s1));
+    BOOST_TEST(!!s1);
+    BOOST_TEST(bool(c1));
+    BOOST_TEST(!!c1);
+    BOOST_TEST(!bool(s2));
+    BOOST_TEST(!s2);
+    BOOST_TEST(!bool(c2));
+    BOOST_TEST(!c2);
 }
 
 static
@@ -241,22 +234,13 @@ test_singleton()
 {
     singleton_type single;
 
-    Shared p1 (single);
-    Shared p2 (single);
-    std::set<Shared> collected;
+    Shared s1 (single);
+    Shared s2 (single);
 
-    collected.insert(p1);
-    collected.insert(p2);
-
-    BOOST_TEST(p1 == p2);       // Equality test
-    BOOST_ASSERT (!(p1 < p2));  // Equivalence test
-    BOOST_ASSERT (!(p2 < p1));  // Equivalence test
-    BOOST_TEST(collected.size() == 1);
-}
-
-void
-foo(std::unique_ptr<int> a)
-{
+    BOOST_TEST (&*s1 == &*s2);
+    BOOST_TEST (s1 == s2);    // Equality test
+    BOOST_TEST (!(s1 < s2));  // Equivalence test
+    BOOST_TEST (!(s2 < s1));  // Equivalence test
 }
 
 int
@@ -265,10 +249,10 @@ main(int argc, char const* argv[])
     test_basics();
     test_null();
     test_is_pimpl();
-    test_constructors();
-    test_assignments();
+    test_shared();
+    test_copied();
+    test_unique();
     test_bool_conversions();
-    test_comparisons();
     test_runtime_polymorphic_behavior();
     test_swap();
     test_singleton();

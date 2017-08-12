@@ -53,20 +53,18 @@ struct detail::traits::copy_type : detail::traits::copy_base<impl_type>
     using base_type = detail::traits::copy_base<impl_type>;
 
     void    destroy (impl_type*& p) const { boost::checked_delete(p); p = 0; }
-    impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : 0; }
+    impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : nullptr; }
 
+//  void assign (impl_type*& a, impl_type const* b) const
+//  {
+//      if (a != b) destroy(a), a = copy(b);
+//  }
     void assign (impl_type*& a, impl_type const* b) const
     {
-        if (a != b) destroy(a), a = copy(b);
+        /**/ if (a == b);
+        else if (a && b) *a = *b;
+        else             destroy(a), a = copy(b);
     }
-    // TODO: add selection using is_copy_assignable
-//        void assign (impl_type*& a, impl_type const* b) const
-//        {
-//            /**/ if ( a ==  b);
-//            else if ( a &&  b) *a = *b;
-//            else if (!a &&  b) a = copy(b);
-//            else if ( a && !b) destroy(a);
-//        }
     operator base_type const*() { static this_type trait; return &trait; }
 };
 

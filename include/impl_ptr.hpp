@@ -8,7 +8,6 @@
 #include "./detail/copied.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/onstack.hpp"
-#include "./detail/cow.hpp"
 
 namespace detail
 {
@@ -48,7 +47,7 @@ struct impl_ptr
     using   shared = base<detail::shared <implementation>>;
     using   unique = base<detail::unique <implementation>>;
     using   copied = base<detail::copied <implementation>>;
-    using      cow = base<detail::cow    <implementation>>;
+//  using      cow = base<detail::cow    <implementation>>;
     using  onstack = base<detail::onstack<implementation>>;
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
@@ -128,21 +127,27 @@ class impl_ptr<user_type>::base
     // 1) These methods are public because they are only usable
     //    in the code where impl_ptr<>::implementation is visible.
     // 2) For better or worse the original deep-constness behavior has been changed
-    //    to match std::shared_ptr, etc. to avoid questions, confusion, etc.
+    //    to match std::shared_ptr et al to avoid questions, confusion, etc.
     implementation* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
     implementation& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
+
+    template<typename other_type>
+    static other_type null() { return impl_ptr<other_type>::null(); }
+    static user_type  null() { return impl_ptr< user_type>::null(); }
 
     protected:
 
     template<typename> friend class impl_ptr;
 
     base (detail::null_type) {}
-
-    template<class arg_type>
-    base(arg_type&& arg, is_derived<arg_type> =nullptr) : impl_(arg.impl_) {}
+//  base (this_type const& other) : impl_(other.impl_) {}
+//  base (this_type&& other) : impl_(std::move(other.impl_)) {}
 
     template<typename... arg_types>
-    base(detail::in_place_type, arg_types&&... args) { impl_.emplace<implementation>(std::forward<arg_types>(args)...); }
+    base(detail::in_place_type, arg_types&&... args)
+    {
+        impl_.emplace<implementation>(std::forward<arg_types>(args)...);
+    }
 
     private: policy_type impl_;
 };

@@ -1,22 +1,5 @@
 #include "./test.hpp"
 
-namespace { namespace local
-{
-    static int uid_counter;
-
-    struct uid
-    {
-        uid() : id_(++uid_counter) {}
-
-        uid(uid const&) =delete;
-        uid& operator=(uid const&) =delete;
-
-        operator int() const { return id_; }
-
-        private: int const id_;
-    };
-}}
-
 template <class T>
 struct my_allocator
 {
@@ -102,118 +85,6 @@ string const& Book:: title() const { return (*this)->title; }
 string const& Book::author() const { return (*this)->author; }
 
 ///////////////////////////////////////////////////
-// Shared
-///////////////////////////////////////////////////
-
-// This internal implementation usually only have destructor, constructors,
-// data and probably internal methods. Given it is already internal by design,
-// it does not need to be a 'class'. All public methods are declared in the
-// external visible Shared class. Then, data in this structure are accessed as
-// (*this)->data or (**this).data.
-template<> struct boost::impl_ptr<Shared>::implementation
-{
-    using this_type = implementation;
-
-    implementation ()                       { trace_ = "Shared::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ = "Shared::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "Shared::implementation(int, int)"; }
-    implementation (Foo&)                   { trace_ = "Shared::implementation(Foo&)"; }
-    implementation (Foo const&)             { trace_ = "Shared::implementation(Foo const&)"; }
-    implementation (Foo*)                   { trace_ = "Shared::implementation(Foo*)"; }
-    implementation (Foo const*)             { trace_ = "Shared::implementation(Foo const*)"; }
-
-    implementation(this_type const&) =delete;
-    this_type& operator=(this_type const&) =delete;
-
-    static Shared create_single()
-    {
-        Shared single = impl_ptr<Shared>::null();
-        single.emplace<implementation>();
-        return single;
-    }
-
-    void* operator new(size_t sz)
-    {
-        BOOST_ASSERT(0); // Never called. Use allocators for custom mem. mgmt
-        return malloc(sz);
-    };
-    void operator delete(void* p, size_t)
-    {
-        BOOST_ASSERT(0); // Never called. Use allocators for custom mem. mgmt
-        if (p) free(p);
-    }
-    int             int_ = 0;
-    std::string   trace_;
-    local::uid const id_;
-};
-
-string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
-int    Shared::value () const { return (*this)->int_; }
-int    Shared::   id () const { return (*this)->id_; }
-
-Shared::Shared ()               : impl_ptr_type(in_place) {}
-Shared::Shared (int k)          : impl_ptr_type(in_place, k) {}
-Shared::Shared (int k, int l)   : impl_ptr_type(in_place, k, l) {}
-Shared::Shared (Foo&       foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const& foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo*       foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const* foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (singleton_type) : impl_ptr_type(impl_ptr<Shared>::null())
-{
-  static Shared single = implementation::create_single();
-  *this = single;
-}
-
-///////////////////////////////////////////////////
-// Copied
-///////////////////////////////////////////////////
-
-template<> struct impl_ptr<Copied>::implementation
-{
-    using this_type = implementation;
-
-    implementation () : int_(0)             { trace_ = "Copied::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ = "Copied::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "Copied::implementation(int, int)"; }
-    implementation (Foo&) : int_(0)         { trace_ = "Copied::implementation(Foo&)"; }
-    implementation (Foo const&) : int_(0)   { trace_ = "Copied::implementation(Foo const&)"; }
-
-    implementation(this_type const& other)
-    :
-        int_(other.int_), trace_("Copied::implementation(Copied::implementation const&)")
-    {}
-
-    void* operator new(size_t sz)
-    {
-        return malloc(sz);
-    };
-    void operator delete(void* p, size_t)
-    {
-        if (p) free(p);
-    }
-    int              int_;
-    mutable string trace_;
-    local::uid        id_;
-};
-
-Copied::Copied ()      : impl_ptr_type(in_place) {}
-Copied::Copied (int k) : impl_ptr_type(in_place, k) {}
-
-string Copied::trace () const { return *this ? (*this)->trace_ : "null"; }
-int    Copied::value () const { return (*this)->int_; }
-int    Copied::   id () const { return (*this)->id_; }
-
-bool
-Copied::operator==(Copied const& that) const
-{
-    (*this)->trace_ = "Copied::operator==(Copied const&)";
-
-    BOOST_ASSERT((*this)->id_ != that->id_);
-
-    return (*this)->int_ == that->int_;
-}
-
-///////////////////////////////////////////////////
 // Unique
 ///////////////////////////////////////////////////
 
@@ -229,7 +100,6 @@ template<> struct impl_ptr<Unique>::implementation
 
     int              int_;
     mutable string trace_;
-    local::uid        id_;
 };
 
 Unique::Unique ()      : impl_ptr_type(in_place) {}
@@ -237,91 +107,4 @@ Unique::Unique (int k) : impl_ptr_type(in_place, k) {}
 
 string Unique::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Unique::value () const { return (*this)->int_; }
-int    Unique::   id () const { return (*this)->id_; }
 
-///////////////////////////////////////////////////
-// Testing polymorphism
-///////////////////////////////////////////////////
-
-template<> struct impl_ptr<Base>::implementation
-{
-    implementation (int k) : base_int_(k), trace_("Base::implementation(int)") {}
-    virtual ~implementation() =default;
-
-    virtual string call_virtual() { return("Base::call_virtual()"); }
-
-    void* operator new(size_t sz)
-    {
-        return malloc(sz);
-    };
-    void operator delete(void* p, size_t)
-    {
-        if (p) free(p);
-    }
-    int base_int_;
-    string trace_;
-};
-
-struct Derived1Impl : impl_ptr<Base>::implementation
-{
-    using this_impl = Derived1Impl;
-    using base_impl = impl_ptr<Base>::implementation;
-
-    Derived1Impl (int k, int l) : base_impl(k), derived_int_(l)
-    {
-        BOOST_TEST(trace_ == "Base::implementation(int)");
-        trace_ = "Derived1::implementation(int, int)";
-    }
-   ~Derived1Impl ()
-    {
-        // printf("Derived1::~implementation()\n");
-    }
-    virtual string call_virtual() { return ("Derived1::call_virtual()"); }
-
-    int derived_int_;
-};
-
-struct Derived2Impl : Derived1Impl
-{
-    typedef Derived1Impl base_impl;
-    typedef Derived2Impl this_impl;
-
-    Derived2Impl (int k, int l, int m) : base_impl(k, l), more_int_(m)
-    {
-        BOOST_TEST(trace_ == "Derived1::implementation(int, int)");
-        trace_ = "Derived2::implementation(int, int, int)";
-    }
-   ~Derived2Impl ()
-    {
-//        printf("Derived2::~implementation()\n");
-    }
-    virtual string call_virtual() { return ("Derived2::call_virtual()"); }
-
-    int more_int_;
-};
-
-Base::Base(int k) : impl_ptr_type(in_place, k)
-{
-}
-
-Derived1::Derived1(int k, int l) : Base(impl_ptr<Base>::null())
-{
-    emplace<Derived1Impl>(k, l);
-}
-
-Derived2::Derived2(int k, int l, int m) : Derived1(impl_ptr<Derived1>::null())
-{
-    emplace<Derived2Impl>(k, l, m);
-}
-
-string
-Base::trace() const
-{
-    return *this ? (*this)->trace_ : "null";
-}
-
-string
-Base::call_virtual()
-{
-    return (*this)->call_virtual();
-}

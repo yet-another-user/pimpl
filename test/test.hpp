@@ -35,7 +35,6 @@ struct Shared : boost::impl_ptr<Shared>::shared // Pure interface.
 
     string trace () const;
     int    value () const;
-    int       id () const;
 };
 
 struct Unique : boost::impl_ptr<Unique>::unique // Pure interface.
@@ -45,7 +44,6 @@ struct Unique : boost::impl_ptr<Unique>::unique // Pure interface.
 
     string trace () const;
     int    value () const;
-    int       id () const;
 };
 
 struct Copied : boost::impl_ptr<Copied>::copied // Pure interface.
@@ -60,7 +58,6 @@ struct Copied : boost::impl_ptr<Copied>::copied // Pure interface.
 
     string trace () const;
     int    value () const;
-    int       id () const;
 };
 
 struct Base : boost::impl_ptr<Base>::shared
