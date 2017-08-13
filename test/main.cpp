@@ -1,6 +1,4 @@
 #include "./test.hpp"
-#include <set>
-#include <memory>
 
 static
 void
@@ -126,13 +124,12 @@ static
 void
 test_shared()
 {
-    singleton_type single;
-    Foo               foo;
-    Foo const   const_foo;
-    Foo&              ref = foo;
-    Foo const&  const_ref = const_foo;
-    Foo*              ptr = &foo;
-    Foo const*  const_ptr = &const_foo;
+    Foo              foo;
+    Foo const  const_foo;
+    Foo&             ref = foo;
+    Foo const& const_ref = const_foo;
+    Foo*             ptr = &foo;
+    Foo const* const_ptr = &const_foo;
 
     Shared s11;            BOOST_TEST(s11.trace() == "Shared()");
     Shared s12 (5);        BOOST_TEST(s12.trace() == "Shared(int)");
@@ -141,10 +138,6 @@ test_shared()
     Shared s14 (s12);      BOOST_TEST(&*s14 == &*s12); // Implementation shared.
                            BOOST_TEST(s13.trace() == "Shared(int)"); // trace state is the same
                            BOOST_TEST(s14.trace() == "Shared(int)"); // trace state is the same
-    Shared s16 (single);   BOOST_TEST(s16.trace() == "Shared()");
-    Shared s17 (single);   BOOST_TEST(s17.trace() == "Shared()");
-                           BOOST_TEST(&*s17 == &*s16); // Implementation shared.
-
     Shared s21(foo);       BOOST_TEST(s21.trace() == "Shared(Foo&)");
     Shared s22(const_foo); BOOST_TEST(s22.trace() == "Shared(Foo const&)");
     Shared s23(ref);       BOOST_TEST(s23.trace() == "Shared(Foo&)");
@@ -152,12 +145,18 @@ test_shared()
     Shared s25(ptr);       BOOST_TEST(s25.trace() == "Shared(Foo*)");
     Shared s26(const_ptr); BOOST_TEST(s26.trace() == "Shared(Foo const*)");
 
+    Shared s16 (test::singleton); BOOST_TEST(s16.trace() == "Shared()");
+    Shared s17 (test::singleton); BOOST_TEST(s17.trace() == "Shared()");
+                                  BOOST_TEST(&*s17 == &*s16); // Implementation shared.
+
     Shared s31;
     Shared s32 (5);
     Shared s33 = s32;
 
     BOOST_TEST(s32 != s31); // calls impl_ptr::op!=()
     BOOST_TEST(s32 == s33); // calls impl_ptr::op==()
+
+    Shared s41 (test::allocator);
 }
 
 static
@@ -232,10 +231,8 @@ static
 void
 test_singleton()
 {
-    singleton_type single;
-
-    Shared s1 (single);
-    Shared s2 (single);
+    Shared s1 (test::singleton);
+    Shared s2 (test::singleton);
 
     BOOST_TEST (&*s1 == &*s2);
     BOOST_TEST (s1 == s2);    // Equality test

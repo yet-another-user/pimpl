@@ -1,5 +1,5 @@
-#ifndef PIMPLE_TEST_HPP
-#define PIMPLE_TEST_HPP
+#ifndef IMPL_PTR_TEST_HPP
+#define IMPL_PTR_TEST_HPP
 
 #include "../include/impl_ptr.hpp"
 #include <boost/detail/lightweight_test.hpp>
@@ -15,7 +15,15 @@ struct Book : boost::impl_ptr<Book>::shared
     string const& author () const;
 };
 
-struct singleton_type {};
+struct test
+{
+    struct singleton_type {};
+    struct allocator_type {};
+
+    static constexpr singleton_type singleton {};
+    static constexpr allocator_type allocator {};
+};
+
 struct Foo {};
 
 struct Shared : boost::impl_ptr<Shared>::shared // Pure interface.
@@ -31,7 +39,8 @@ struct Shared : boost::impl_ptr<Shared>::shared // Pure interface.
     Shared (Foo&, Foo&);
     Shared (Foo*);
     Shared (Foo const*);
-    Shared (singleton_type);
+    Shared (test::singleton_type);
+    Shared (test::allocator_type);
 
     string trace () const;
     int    value () const;
@@ -71,4 +80,4 @@ struct Base : boost::impl_ptr<Base>::shared
 struct Derived1 : Base { Derived1 (int, int); };
 struct Derived2 : Derived1 { Derived2 (int, int, int); };
 
-#endif // PIMPLE_TEST_HPP
+#endif // IMPL_PTR_TEST_HPP

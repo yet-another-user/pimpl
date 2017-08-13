@@ -1,4 +1,5 @@
 #include "./test.hpp"
+#include "./allocator.hpp"
 
 // This internal implementation usually only have destructor, constructors,
 // data and probably internal methods. Given it is already internal by design,
@@ -44,11 +45,17 @@ Shared::Shared (Foo&       foo) : impl_ptr_type(in_place, foo) {} // Make sure '
 Shared::Shared (Foo const& foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
 Shared::Shared (Foo*       foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
 Shared::Shared (Foo const* foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (singleton_type) : impl_ptr_type(null())
+
+Shared::Shared (test::singleton_type) : impl_ptr_type(null())
 {
     static Shared single = Shared::null();
     static bool   inited = (single.emplace<implementation>(), true);
 
     *this = single;
 }
+
+Shared::Shared(test::allocator_type)
+:
+    impl_ptr_type(in_place, my_allocator<implementation>())
+{}
 
