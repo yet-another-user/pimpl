@@ -2,7 +2,7 @@
 <library-reference id="impl_ptr_reference"><title>impl_ptr Reference</title><header name="/home/vbatov/dev/impl_ptr/include/impl_ptr.hpp">
 <struct name="impl_ptr"><template>
       <template-type-parameter name="user_type"/>
-    </template><struct name="base"><template>
+    </template><class name="base"><template>
       <template-type-parameter name="policy_type"/>
     </template><typedef name="implementation"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
 <typedef name="impl_ptr_type"><type><classname>base</classname></type></typedef>
@@ -21,44 +21,22 @@
         </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></method>
 <method name="operator-&gt;" cv="const"><type>implementation *</type></method>
 <method name="operator*" cv="const"><type>implementation &amp;</type></method>
-<method name="operator!" cv="const"><type>bool</type></method>
-<method name="conversion-operator" cv="const" specifiers="explicit"><type>bool</type></method>
-<method name="operator==" cv="const"><type>bool</type><parameter name="that"><paramtype><classname>base_type</classname> const &amp;</paramtype></parameter></method>
-<method name="operator!=" cv="const"><type>bool</type><parameter name="that"><paramtype><classname>base_type</classname> const &amp;</paramtype></parameter></method>
-<method name="operator&lt;" cv="const"><type>bool</type><parameter name="that"><paramtype><classname>base_type</classname> const &amp;</paramtype></parameter></method>
-<method name="swap"><type>void</type><parameter name="that"><paramtype><classname>base_type</classname> &amp;</paramtype></parameter></method>
-<method name="reset"><type>void</type><parameter name="p"><paramtype>implementation *</paramtype></parameter></method>
-<method name="reset"><type>void</type><template>
-          <template-type-parameter name="Y"/>
-          <template-type-parameter name="D"/>
-        </template><parameter name="p"><paramtype>Y *</paramtype></parameter><parameter name="d"><paramtype>D</paramtype></parameter></method>
-<method name="operator-&gt;" cv="const"><type>implementation const *</type></method>
-<method name="operator*" cv="const"><type>implementation const &amp;</type></method>
-<method name="operator-&gt;"><type>implementation *</type></method>
-<method name="operator*"><type>implementation &amp;</type></method>
-<method name="use_count" cv="const"><type>long</type></method>
+</method-group>
+<method-group name="public static functions">
+<method name="null" specifiers="static"><type>other_type</type><template>
+          <template-type-parameter name="other_type"/>
+        </template></method>
+<method name="null" specifiers="static"><type>user_type</type></method>
 </method-group>
 <method-group name="protected member functions">
 </method-group>
 <constructor><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter></constructor>
 <constructor><template>
-          <template-type-parameter name="arg_type"/>
-        </template><parameter name="arg"><paramtype>arg_type &amp;&amp;</paramtype></parameter><parameter name=""><paramtype>is_derived&lt; arg_type &gt;</paramtype><default>nullptr</default></parameter></constructor>
-<constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
-<constructor><parameter name=""><paramtype><classname>null_type</classname></paramtype></parameter></constructor>
-<constructor/>
-<constructor><template>
-          <template-type-parameter name="arg_type"/>
-        </template><parameter name="arg"><paramtype>arg_type &amp;&amp;</paramtype></parameter><parameter name=""><paramtype>is_derived&lt; arg_type &gt;</paramtype><default>nullptr</default></parameter></constructor>
-<constructor><template>
-          <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
-        </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
-</struct><typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
+</class><typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="unique"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="copied"><type><emphasis>unspecified</emphasis></type></typedef>
-<typedef name="cow"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="yes_type"><type>boost::type_traits::yes_type</type></typedef>
 <typedef name="no_type"><type>boost::type_traits::no_type</type></typedef>
@@ -69,22 +47,12 @@
         </template><parameter name=""><paramtype>Y *</paramtype></parameter><parameter name=""><paramtype>typename Y::impl_ptr_type *</paramtype><default>nullptr</default></parameter></method>
 <method name="test" specifiers="static"><type>no_type</type><parameter name=""><paramtype>...</paramtype></parameter></method>
 <method name="null" specifiers="static"><type>user_type</type></method>
-<method name="test" specifiers="static"><type>yes_type</type><template>
-          <template-type-parameter name="Y"/>
-        </template><parameter name=""><paramtype>Y *</paramtype></parameter><parameter name=""><paramtype>typename Y::base_type *</paramtype><default>nullptr</default></parameter></method>
-<method name="test" specifiers="static"><type>no_type</type><parameter name=""><paramtype>...</paramtype></parameter></method>
-<method name="null" specifiers="static"><type>user_type</type></method>
 </method-group>
 <method-group name="public member functions">
-<method name="BOOST_STATIC_CONSTANT"><type/><parameter name=""><paramtype>bool</paramtype></parameter><parameter name=""><paramtype>value</paramtype><default>(1==sizeof(test(ptr_type(nullptr))))</default></parameter></method>
 <method name="BOOST_STATIC_CONSTANT"><type/><parameter name=""><paramtype>bool</paramtype></parameter><parameter name=""><paramtype>value</paramtype><default>(1==sizeof(test(ptr_type(nullptr))))</default></parameter></method>
 </method-group>
 </struct><namespace name="boost">
 <typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; user_type &gt;</type></typedef>
-</namespace>
-</header>
-<header name="/home/vbatov/dev/impl_ptr/include/wip.hpp">
-<namespace name="boost">
 </namespace>
 </header>
 </library-reference>

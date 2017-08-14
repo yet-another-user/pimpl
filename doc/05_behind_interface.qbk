@@ -30,6 +30,8 @@ Still, the ['deployment pattern] is fairly straightforward to follow and reasona
     ...
  }
  
+Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['impl_ptr<Book>::implementation] encapsulates ['private implementation] (data and behavior).
+
 As mentioned earlier, if comparison functionality is required, a class with value semantics will have to implement something like the following:  
  
  bool
@@ -40,8 +42,6 @@ As mentioned earlier, if comparison functionality is required, a class with valu
  
 Here the ['impl_ptr<Book>::implementation] is again a ['struct] rather than a ['class]. As long as ['impl_impl<Book>::implementation] is local to one file, there is generally little value in making it a class. 
 
-Again, the public ['Book] class describes and implements the ['public interface] (behavior) and the internal ['impl_ptr<Book>::implementation] encapsulates ['private implementation] (data and behavior).
-
-[note :-) Another reconciliatory and unifying feature is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the leading or trailing underscores, the 'm_' prefix or the myriad others). Member variables are named naturally and accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.]
+Another reconciliatory and unifying :-) property is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the leading or trailing underscores, the 'm_' prefix or the myriad others). Member variables are named naturally and accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.
 
 [endsect]

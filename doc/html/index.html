@@ -34,14 +34,12 @@
 <dt><span class="section"><a href="impl_ptr/pimpl_with_exclusive_ownership_p.html">Pimpl with Exclusive-Ownership
     Properties</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/behind_the_interface.html">Behind the Interface</a></span></dt>
-<dt><span class="section"><a href="impl_ptr/construction_and_impl_ptr_book_n.html">Construction
-    and impl_ptr&lt;Book&gt;::null()</a></span></dt>
-<dt><span class="section"><a href="impl_ptr/deep_const.html">Deep Const </a></span></dt>
+<dt><span class="section"><a href="impl_ptr/construction_and_book_null.html">Construction and Book::null()</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/customization.html">Customization</a></span></dt>
 <dd><dl>
 <dt><span class="section"><a href="impl_ptr/customization.html#impl_ptr.customization.custom_allocator">Custom Allocator</a></span></dt>
-<dt><span class="section"><a href="impl_ptr/customization/custom_management_policy.html">Custom
-      Management Policy</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/customization/custom_proxy_implementation_rela.html">Custom
+      Proxy-Implementation Relationship Policy</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom.html">Applications
     of the Pimpl Idiom</a></span></dt>
@@ -62,7 +60,7 @@
 </dl></dd>
 <dt><span class="section"><a href="impl_ptr/references.html">References</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/acknowledgements.html">Acknowledgements</a></span></dt>
-<dt><span class="section"><a href="index/s12.html">Index</a></span></dt>
+<dt><span class="section"><a href="index/s11.html">Index</a></span></dt>
 </dl>
 </div>
 <div class="note"><table border="0" summary="Note">
@@ -83,8 +81,8 @@
 <tr><td align="left" valign="top"><p>
       This library is not part of the Boost C++ Libraries collection. A potential
       submission is being considered. That is the reason for possible usage/deployment
-      of <span class="emphasis"><em>impl_ptr</em></span> under the <span class="emphasis"><em>boost</em></span> namespace.
-      I apologize for the inconvenience and potential confusion.
+      of <span class="emphasis"><em>impl_ptr</em></span> as <span class="emphasis"><em>boost::impl_ptr</em></span>. I
+      apologize for the potential confusion and inconvenience.
     </p></td></tr>
 </table></div>
 <div class="section">
@@ -93,7 +91,7 @@
 </h2></div></div></div>
 <p>
       In the domain of <span class="emphasis"><em>commercial large-scale</em></span> software development
-      the following design principles come to the fore:
+      the following design principles become important:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -106,7 +104,7 @@
           minimization of compilation and component dependencies,
         </li>
 <li class="listitem">
-          separation of concerns (<a class="link" href="impl_ptr/references.html#8">[8]</a>, <a class="link" href="impl_ptr/references.html#9">[9]</a>),
+          modularity, separation of concerns (<a class="link" href="impl_ptr/references.html#8">[8]</a>, <a class="link" href="impl_ptr/references.html#9">[9]</a>),
         </li>
 <li class="listitem">
           consistent and recognizable implementation and deployment patterns,
@@ -132,7 +130,8 @@
       Popularized by Sutter (<a class="link" href="impl_ptr/references.html#2">[2]</a>, <a class="link" href="impl_ptr/references.html#3">[3]</a>,
       <a class="link" href="impl_ptr/references.html#11">[11]</a>, <a class="link" href="impl_ptr/references.html#12">[12]</a>, <a class="link" href="impl_ptr/references.html#13">[13]</a>,
       <a class="link" href="impl_ptr/references.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
-      name (as for "pointer to implementation") the technique has been
+      name (as for "pointer to implementation" and more precisely "pointer
+      to <span class="emphasis"><em>opaque</em></span> implementation") the technique has been
       known under various names -- the D-pointer (in Qt), the Cheshire Cat (in <a class="link" href="impl_ptr/references.html#4">[4]</a>), the Handle/Body (in <a class="link" href="impl_ptr/references.html#5">[5]</a> and
       <a class="link" href="impl_ptr/references.html#6">[6]</a>), the Bridge (in <a class="link" href="impl_ptr/references.html#6">[6]</a>)
       -- and conceptually deployed in C and C++ as far back as at least early eighties
@@ -162,7 +161,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: August 11, 2017 at 03:17:39 GMT</small></p></td>
+<td align="left"><p><small>Last revised: August 14, 2017 at 03:13:36 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

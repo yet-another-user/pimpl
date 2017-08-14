@@ -2,22 +2,42 @@
 [section Custom Allocator]
 TODO
 
- struct Book : public pimpl<Book, my_allocator>::shared
- {
-    Book(string const& title, string const& author);
-    
-    string const&  title() const;
-    string const& author() const;
- };
+ Book::Book(string const& title, string const& author)
+ :
+    impl_ptr_type(in_place, my_allocator<implementation>(), title, author)
+ {} 
 
 [endsect] 
-[section Custom Management Policy]
-TODO
+[section Custom Proxy-Implementation Relationship Policy]
 
-shared
-unique
-copy-oon-write (COW)
-onstack
+An important property of the library is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a stack-based-implementation policy might be another.
+
+ template<typename impl_type>
+ struct detail::onstack
+ {
+     // Proof of concept
+     // Need to extract storage size from more_types
+     static size_t const size_ = 32;
+     char storage_[size_];
+ 
+     template<typename derived_type, typename... arg_types>
+     void
+     emplace(arg_types&&... args)
+     {
+         BOOST_ASSERT(size_ <= sizeof(derived_type));
+ 
+         new (storage_) derived_type(std::forward<arg_types>(args)...);
+     }
+     onstack () =default;
+ };
+ template<typename user_type>
+ struct impl_ptr
+ { ...
+     using      cow = base<detail::cow    <implementation>>;
+     using  onstack = base<detail::onstack<implementation>>;
+ };
+ ...
+ struct Book : boost::impl_ptr<Book>::onstack { ... };
 
 [endsect] 
 [endsect] 

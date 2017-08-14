@@ -11,12 +11,15 @@ struct detail::onstack
 {
     // Proof of concept
     // Need to extract storage size from more_types
-    char storage_[32];
+    static size_t const size_ = 32;
+    char storage_[size_];
 
     template<typename derived_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
+        BOOST_ASSERT(size_ <= sizeof(derived_type));
+
         new (storage_) derived_type(std::forward<arg_types>(args)...);
     }
     onstack () =default;

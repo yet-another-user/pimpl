@@ -38,18 +38,16 @@
 <p>
       Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span>, we
       would like to deploy the <span class="emphasis"><em>Pimpl</em></span> technique with the <span class="emphasis"><em>shared/pointer</em></span>
-      properties. That is:
+      properties. That is, we intend:
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
-          we intend to separate the interface from the implementation and to hide
-          the implementation;
+          to separate the interface from the implementation and to hide the implementation;
         </li>
 <li class="listitem">
-          we intend <span class="emphasis"><em>Book</em></span> instances to have <span class="emphasis"><em>pointer
-          properties</em></span>, i.e. with regard to the underlying data they will
-          behave in the shared-proxy fashion by allowing shared access to the actual
-          implementation data.
+          <span class="emphasis"><em>Book</em></span> instances to have <span class="emphasis"><em>pointer properties</em></span>,
+          i.e. with regard to the underlying data they will behave in the shared-proxy
+          fashion by allowing shared access to the actual implementation data.
         </li>
 </ul></div>
 <p>
@@ -83,13 +81,13 @@
     </p>
 <p>
       Still, from design perspectives lumping the application logic with the infrastructure
-      scaffolding is unfortunate. Moreover, in our (admittedly simple) example more
-      than half of the code is the <span class="emphasis"><em>Pimpl</em></span>-related implementation
-      detail. For one class in isolation that might not be that big a deal. On a
-      larger scale though, reading, understanding and maintaining extra code, mentally
-      separating the application logic from the infrastructure detail, making sure
-      nothing is forgotten, misused, or misplaced is a tiring and error-prone exercise.
-      The following, therefore, seems like an improvement:
+      scaffolding is unfortunate. In our (admittedly simple) example more than half
+      of the code is the <span class="emphasis"><em>Pimpl</em></span>-related implementation detail.
+      For one class in isolation that might not be that big a deal. On a larger scale
+      though, reading, understanding and maintaining extra code, mentally separating
+      the application logic from the infrastructure detail, making sure nothing is
+      forgotten, misused, or misplaced is a tiring and error-prone exercise. The
+      following, therefore, seems like an improvement:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>

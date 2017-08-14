@@ -55,15 +55,15 @@
 <span class="special">};</span>
 </pre>
 <p>
-      In the example above it is only natural to replace the raw pointer with <span class="emphasis"><em>std::unique_ptr&lt;implementation&gt;</em></span>
-      (<a class="link" href="references.html#13">[13]</a>, <a class="link" href="references.html#14">[14]</a>). It needs
-      to be mentioned though that <span class="emphasis"><em>std::unique_ptr</em></span> has been developed
-      with certain strict goals in mind -- namely, no (additional) overhead and maximum
-      efficiency -- and it intentionally avoids the overhead of the incomplete-type
-      management (available with <span class="emphasis"><em>std::shared_ptr</em></span>). Consequently,
-      for <span class="emphasis"><em>Pimpl</em></span> purposes the benefits of the <span class="emphasis"><em>std::unique_ptr</em></span>
-      deployment are relatively modest as the <span class="emphasis"><em>special member functions</em></span>
-      are still our responsibility:
+      In the example above it is only natural to replace the raw pointer with <span class="emphasis"><em>std::unique_ptr</em></span>
+      (<a class="link" href="references.html#13">[13]</a>, <a class="link" href="references.html#14">[14]</a>, <a class="link" href="references.html#15">[15]</a>).
+      It needs to be mentioned though that <span class="emphasis"><em>std::unique_ptr</em></span> has
+      been developed with certain strict goals in mind -- namely, maximum efficiency
+      and no (additional) overhead -- it intentionally avoids the overhead of the
+      incomplete-type management (available with <span class="emphasis"><em>std::shared_ptr</em></span>).
+      Consequently, for <span class="emphasis"><em>Pimpl</em></span> purposes the benefits of the
+      <span class="emphasis"><em>std::unique_ptr</em></span> deployment are relatively modest as the
+      <span class="emphasis"><em>special member functions</em></span> are still our responsibility:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
@@ -118,9 +118,9 @@
       self-documented.
     </p>
 <p>
-      As the <span class="emphasis"><em>impl_ptr&lt;Book&gt;::unique</em></span> policy name suggests
-      the <span class="emphasis"><em>Book</em></span> class is moveable but not copyable similar to
-      <span class="emphasis"><em>std::unique_ptr</em></span> behavior. Changing the policy to
+      As the <span class="emphasis"><em>impl_ptr&lt;Book&gt;::unique</em></span> name suggests the
+      <span class="emphasis"><em>Book</em></span> class is moveable but not copyable similar to <span class="emphasis"><em>std::unique_ptr</em></span>
+      behavior. Changing the policy to
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
@@ -134,12 +134,13 @@
 </tr>
 <tr><td align="left" valign="top"><p>
         One difference (compared to <span class="emphasis"><em>impl_ptr&lt;Book&gt;::shared</em></span>)
-        is that the comparison operators are not freebies. In fact, they are never
-        freebies (they are never auto-generated). However, in the case of the pointer-semantics
-        classes those operators are reduced to pointer comparisons and generalized.
-        That's not the case with the value-semantics classes. Consequently, for value-semantics
-        classes the comparison operators become part of the <span class="emphasis"><em>user-provided
-        interface</em></span> (if such a class needs to be comparable).
+        is that the comparison operators are user's responsibility. In fact, they
+        are never freebies (they are never auto-generated). However, in the case
+        of the pointer-semantics classes those operators are reduced to pointer comparisons
+        and generalized. That's not the case with the value-semantics classes. Consequently,
+        for value-semantics classes the comparison operators become part of the
+        <span class="emphasis"><em>user-provided interface</em></span> (if such a class needs to be
+        comparable).
       </p></td></tr>
 </table></div>
 <p>

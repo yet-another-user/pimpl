@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Custom Proxy-Implementation Relationship Policy</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="up" href="../customization.html" title="Customization">
+<link rel="prev" href="../customization.html" title="Customization">
+<link rel="next" href="../applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../customization.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../customization.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="impl_ptr.customization.custom_proxy_implementation_rela"></a><a class="link" href="custom_proxy_implementation_rela.html" title="Custom Proxy-Implementation Relationship Policy">Custom
+      Proxy-Implementation Relationship Policy</a>
+</h3></div></div></div>
+<p>
+        An important property of the library is its extendibility. It currently provides
+        several policies but more are easy to incorporate. For example, a <span class="emphasis"><em>copy-on-write</em></span>
+        policy might be one such extension. Then, a stack-based-implementation policy
+        might be another.
+      </p>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span>
+<span class="special">{</span>
+    <span class="comment">// Proof of concept</span>
+    <span class="comment">// Need to extract storage size from more_types</span>
+    <span class="keyword">static</span> <span class="identifier">size_t</span> <span class="keyword">const</span> <span class="identifier">size_</span> <span class="special">=</span> <span class="number">32</span><span class="special">;</span>
+    <span class="keyword">char</span> <span class="identifier">storage_</span><span class="special">[</span><span class="identifier">size_</span><span class="special">];</span>
+
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">derived_type</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">arg_types</span><span class="special">&gt;</span>
+    <span class="keyword">void</span>
+    <span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span><span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="identifier">BOOST_ASSERT</span><span class="special">(</span><span class="identifier">size_</span> <span class="special">&lt;=</span> <span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">derived_type</span><span class="special">));</span>
+
+        <span class="keyword">new</span> <span class="special">(</span><span class="identifier">storage_</span><span class="special">)</span> <span class="identifier">derived_type</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">arg_types</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">)...);</span>
+    <span class="special">}</span>
+    <span class="identifier">onstack</span> <span class="special">()</span> <span class="special">=</span><span class="keyword">default</span><span class="special">;</span>
+<span class="special">};</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">user_type</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">impl_ptr</span>
+<span class="special">{</span> <span class="special">...</span>
+    <span class="keyword">using</span>      <span class="identifier">cow</span> <span class="special">=</span> <span class="identifier">base</span><span class="special">&lt;</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">cow</span>    <span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;&gt;;</span>
+    <span class="keyword">using</span>  <span class="identifier">onstack</span> <span class="special">=</span> <span class="identifier">base</span><span class="special">&lt;</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;&gt;;</span>
+<span class="special">};</span>
+<span class="special">...</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">onstack</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+</pre>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2018 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../customization.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../customization.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-[section Construction and impl_ptr<Book>::null()]
+[section Construction and Book::null()]
 
 Тhe ['Pimpl] base class (aliased as ['impl_ptr_type]) is initialized with:
 
@@ -7,7 +7,7 @@
     impl_ptr_type(in_place, title, author)
  {} 
  
-Arguments passed to the ['impl_ptr_type] are forwarded to the corresponding ['impl_ptr<Book>::implementation] constructor. Consequently, a ['Book] constructor with no matching ['impl_ptr<Book>::implementation] constructor will fail to compile. 
+The first ['in_place] argument is the disambiguation tag indicating that the underlying ['impl_ptr<Book>::implementation] should be constructed in-place with the remaining arguments. Consequently, a ['Book] constructor with no matching ['impl_ptr<Book>::implementation] constructor will fail to compile. 
 
 That same mechanism works for the default constructor as well. That is, 
 
@@ -15,11 +15,11 @@ That same mechanism works for the default constructor as well. That is,
  
 will try calling the default ['implementation()] constructor and will fail to compile if there is no such.
 
-Sometimes it is beneficial to break that proxy-implementation association.
+To avoid potential confusion ['impl_ptr] does not have the default constructor. To create a proxy with no implementation use ['Book::null()]:
 
- Book::Book() : impl_ptr_type(impl_ptr<Book>::null())
+ Book::Book() : impl_ptr_type(null())
  {
-    // An invalid Book object is created with no implementation behind it
+    // A Book proxy object is created with no implementation behind it
  }
  
  void
@@ -33,14 +33,14 @@ Sometimes it is beneficial to break that proxy-implementation association.
     ...
  } 
  
-In the example the underlying ['pimpl_type] and, threrefore, ['Book] are created invalid (like ['nullptr] or an empty ['std::shared_ptr())]. Later a ['pimpl<Book>::implementation] instance is explicitly created and the ['pimpl_type] is assigned to manage it. 
+In the example the underlying ['impl_ptr_type] and, consequently, ['Book] are created "invalid" (like ['nullptr] or an empty ['std::shared_ptr())]. Later a ['pimpl<Book>::implementation] instance is explicitly created using ['emplace<implementation>()]. 
 
-The library generalizes that invalid-['Pimpl] concept and provides ['pimpl::null()]. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later. It can be used to indicate a no-book condition: 
+The ['impl_ptr] library generalizes that ['nullptr]-like concept via ['impl_ptr<Book>::null()] and its convenience ['Book::null()] interface. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later. It can be used to indicate a no-book condition: 
 
  Book
  find_book()
  {  ...
-    return pimpl<Book>::null(); // found nothing
+    return Book::null(); // found nothing
  }
  ...
  if (Book book = find_book()) do something useful;

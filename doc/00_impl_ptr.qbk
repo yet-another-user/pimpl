@@ -22,7 +22,7 @@
  
 [note This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal.]
 
-[important This library is not part of the Boost C++ Libraries collection. A potential submission is being considered. That is the reason for possible usage/deployment of ['impl_ptr] under the ['boost] namespace. I apologize for the inconvenience and potential confusion.]
+[important This library is not part of the Boost C++ Libraries collection. A potential submission is being considered. That is the reason for possible usage/deployment of ['impl_ptr] as ['boost::impl_ptr]. I apologize for the potential confusion and inconvenience.]
 
 [include 01_introduction.qbk]
 [include 02_the_basics.qbk]
@@ -30,7 +30,6 @@
 [include 04_value_semantics.qbk]
 [include 05_behind_interface.qbk]
 [include 07_construction.qbk]
-[include 09_deep_const.qbk]
 [include 09_customization.qbk]
 [include 20_applications.qbk]
 [include 21_delegating_constructors.qbk]
