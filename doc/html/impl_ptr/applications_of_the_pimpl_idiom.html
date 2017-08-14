@@ -22,10 +22,10 @@
 <dt><span class="section"><a href="applications_of_the_pimpl_idiom.html#impl_ptr.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
       Constructors</a></span></dt>
 <dt><span class="section"><a href="applications_of_the_pimpl_idiom/singleton.html">Singleton</a></span></dt>
-<dt><span class="section"><a href="applications_of_the_pimpl_idiom/extendible_dictionary.html">Extendible
-      Dictionary</a></span></dt>
-<dt><span class="section"><a href="applications_of_the_pimpl_idiom/non_extendible_dictionary.html">Non-Extendible
-      Dictionary</a></span></dt>
+<dt><span class="section"><a href="applications_of_the_pimpl_idiom/extendible_unique_entry_collecti.html">Extendible
+      Unique-Entry Collection</a></span></dt>
+<dt><span class="section"><a href="applications_of_the_pimpl_idiom/non_extendible_unique_entry_coll.html">Non-Extendible
+      Unique-Entry Collection</a></span></dt>
 <dt><span class="section"><a href="applications_of_the_pimpl_idiom/internal_implementation_only_run.html">Internal
       (Implementation-Only) Run-Time Polymorphism</a></span></dt>
 <dt><span class="section"><a href="applications_of_the_pimpl_idiom/run_time_polymorphic_class_hiera.html">Run-Time
@@ -49,9 +49,9 @@
    <span class="identifier">Foo</span> <span class="special">(</span><span class="keyword">int</span><span class="special">);</span>
 <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">v</span><span class="special">)</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">v</span><span class="special">)</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">pimpl_type</span><span class="special">(</span><span class="identifier">null_type</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
 <span class="special">{</span>
   <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="number">42</span><span class="special">);</span> <span class="comment">// Calling the actual (non-delegating) constructor</span>
 <span class="special">};</span>

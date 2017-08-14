@@ -2,44 +2,14 @@
 
 A quick singleton implementation might look as follows:
 
- struct deleter
+ Single::Single() : impl_ptr_type(null())
  {
-    // Convenience deleter allows to "manage" objects without actually managing them.
-    struct no { void operator()(void*) {}};
- };
+     static Single single = Single::null();
+     static bool   inited = (single.emplace<implementation>(...), true);
 
- Book::Book() : pimpl_type(pimpl<Book>::null())
- {
-    static implementation impl;
-
-    reset(&impl, deleter::no()); // Always point to the same implementation.
+     *this = single; // All point to the same implementation.
  }
 
-The singleton is well-behaved. It passes both the ['equality] and the ['equivalence] tests (see [link 10 \[10\]] for details about equality vs. equivalence):
-
- Book book1;
- Book book2;
-
- BOOST_ASSERT (book1 == book2); // Equality test passed. Good.
- BOOST_ASSERT (!(book1 < book2)); 
- BOOST_ASSERT (!(book2 < book1)); // Equivalence test passed. Good.
-
-An alternative implementation might look as the following:
-
- struct Book : public pimpl<Book>::shared // In the declaration file
- {
-    Book();
-
-    private:
-
-    Book(singleton-related-parameters);
- };
-
- Book::Book() : base(null()) // In the implementation file
- {
-    static Book single(singleton-related-parameters);
-
-    *this = single;
- }
+All instances of ['Single] share the same implementation.
 
 [endsect]

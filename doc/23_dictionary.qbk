@@ -1,41 +1,40 @@
-[section Extendible Dictionary]
+[section Extendible Unique-Entry Collection]
 
 The implementation file:
 
- typedef std::map<std::string, Book> AllBooks;
- typedef boost::mutex Mutex;
- typedef boost::mutex::scoped_lock Lock;
- typedef std::pair<Books::iterator, bool> Inserted;
+ using   All = std::map<std::string, Book>;
+ using Mutex = boost::mutex;
+ using  Lock = boost::mutex::scoped_lock;
 
- static Mutex mutex;
- static AllBooks books;
-
- Book::Book(std::string const& title) : base_type(pimpl<Book>::null())
+ Book::Book(std::string const& title) : impl_ptr_type(null())
  {
-    std::pair<std::string, Book> dummy (title, pimpl<Book>::null());
-    Lock lock (mutex);
-    Inserted inserted (books.insert(dummy));
-    Book& book (inserted.first->second);
+    static Mutex mutex;
+    static All   books;
+    Lock          lock (mutex);
+    auto        result = books.emplace(title, null());
+    Book&         book = result.first->second;
 
-    if (inserted.second)
-        book.reset(new implementation(parameters));
+    if (result.second)
+        book.emplace<implementation>(...);
 
     *this = book;
  }
 
 [endsect]
-[section Non-Extendible Dictionary]
+[section Non-Extendible Unique-Entry Collection]
 
 The implementation file:
 
  Book::Book(string const& title) : base(null())
  {
-    Lock lock (mutex);
-    AllBooks::iterator it (books.find(title));
+    static Mutex mutex;
+    static All   books;
+    Lock          lock (mutex);
+    auto         found = books.find(title);
     
     // If the title found, return it.
     // Otherwise, return an invalid book.
-    if (it != books.end()) *this = it->second;
+    if (found != books.end()) *this = found->second;
  }
 
 [endsect]
