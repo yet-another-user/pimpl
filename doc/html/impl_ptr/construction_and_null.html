@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Construction and Book::null()</title>
+<title>Construction and null()</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
@@ -15,7 +15,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="impl_ptr.construction_and_book_null"></a><a class="link" href="construction_and_book_null.html" title="Construction and Book::null()">Construction and Book::null()</a>
+<a name="impl_ptr.construction_and_null"></a><a class="link" href="construction_and_null.html" title="Construction and null()">Construction and null()</a>
 </h2></div></div></div>
 <p>
       &#1058;he <span class="emphasis"><em>Pimpl</em></span> base class (aliased as <span class="emphasis"><em>impl_ptr_type</em></span>)
@@ -29,12 +29,10 @@
 <p>
       The first <span class="emphasis"><em>in_place</em></span> argument is the disambiguation tag
       indicating that the underlying <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
-      should be constructed in-place with the remaining arguments. Consequently,
-      a <span class="emphasis"><em>Book</em></span> constructor with no matching <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
-      constructor will fail to compile.
-    </p>
-<p>
-      That same mechanism works for the default constructor as well. That is,
+      is constructed in-place with the remaining arguments. Consequently, a <span class="emphasis"><em>Book</em></span>
+      constructor with no matching <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
+      constructor will fail to compile. That goes for the default constructor as
+      well:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">)</span> <span class="special">{}</span>
 </pre>
@@ -43,8 +41,8 @@
       and will fail to compile if there is no such.
     </p>
 <p>
-      To avoid potential confusion <span class="emphasis"><em>impl_ptr</em></span> does not have the
-      default constructor. To create a proxy with no implementation use <span class="emphasis"><em>Book::null()</em></span>:
+      To avoid potential confusion <span class="emphasis"><em>impl_ptr_type</em></span> does not have
+      the default constructor. To create a proxy with no implementation use <span class="emphasis"><em>Book::null()</em></span>:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
@@ -57,7 +55,7 @@
    <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
    <span class="special">{</span>
        <span class="comment">// Implementation is created later.</span>
-       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(...));</span>
+       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(...);</span>
    <span class="special">}</span>
    <span class="special">...</span>
 <span class="special">}</span>
@@ -65,15 +63,15 @@
 <p>
       In the example the underlying <span class="emphasis"><em>impl_ptr_type</em></span> and, consequently,
       <span class="emphasis"><em>Book</em></span> are created "invalid" (like <span class="emphasis"><em>nullptr</em></span>
-      or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>. Later a <span class="emphasis"><em>pimpl&lt;Book&gt;::implementation</em></span>
-      instance is explicitly created using <span class="emphasis"><em>emplace&lt;implementation&gt;()</em></span>.
+      or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>. Later a <span class="emphasis"><em>impl_ptr_type&lt;Book&gt;::implementation</em></span>
+      instance is explicitly created using <span class="emphasis"><em>impl_ptr_type::emplace&lt;implementation&gt;()</em></span>.
     </p>
 <p>
       The <span class="emphasis"><em>impl_ptr</em></span> library generalizes that <span class="emphasis"><em>nullptr</em></span>-like
       concept via <span class="emphasis"><em>impl_ptr&lt;Book&gt;::null()</em></span> and its convenience
       <span class="emphasis"><em>Book::null()</em></span> interface. That is useful for lazy-instantiation
-      optimization (as in the example above) or to support dynamic polymorphism that
-      is discussed later. It can be used to indicate a no-book condition:
+      optimization (as in the example above) or to support dynamic polymorphism (as
+      discussed later) or to indicate a no-book condition:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span>
 <span class="identifier">find_book</span><span class="special">()</span>

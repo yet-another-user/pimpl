@@ -33,6 +33,7 @@
 [include 09_customization.qbk]
 [include 20_applications.qbk]
 [include 21_delegating_constructors.qbk]
+[include 26_lazy_instantiation.qbk]
 [include 22_singleton.qbk]
 [include 23_dictionary.qbk]
 [include 24_internal_polymorphism.qbk]

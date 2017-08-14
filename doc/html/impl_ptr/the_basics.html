@@ -30,8 +30,9 @@
         </li>
 </ul></div>
 <p>
-      described as the "intent" and "applicability" of the <span class="emphasis"><em>Bridge</em></span>
-      incarnation of the pattern in <a class="link" href="references.html#6">[6]</a>.
+      described in <a class="link" href="references.html#6">[6]</a> as the "intent" and the
+      "applicability" in the <span class="emphasis"><em>Bridge</em></span> incarnation of
+      the pattern.
     </p>
 <div class="important"><table border="0" summary="Important">
 <tr>
@@ -41,7 +42,7 @@
 <tr><td align="left" valign="top">
 <p>
         The Object-Oriented programming paradigm -- the association between data
-        and behavior -- is enshrined in the fundamental concept of an <span class="emphasis"><em>object</em></span>
+        and behavior -- is realized in the fundamental concept of an <span class="emphasis"><em>object</em></span>
         or a <span class="emphasis"><em>class</em></span> and is routinely seen and implemented as
         such -- one class.
       </p>
@@ -51,10 +52,10 @@
         conventional class is split in two is not between <span class="emphasis"><em>data and behavior</em></span>.
         It is, rather, between <span class="emphasis"><em>public interface</em></span> (public behavior)
         and <span class="emphasis"><em>private implementation</em></span> (private data and behavior)
-        -- two different views of a system. They serve different purposes and are
-        better managed when kept separate. The <span class="emphasis"><em>Pimpl</em></span> technique
-        seems to fit that objective better with <span class="emphasis"><em>actual</em></span> rather
-        than <span class="emphasis"><em>notional</em></span> separation.
+        -- two different (external and internal) views of a system. They serve different
+        purposes and are better managed when kept separate. The <span class="emphasis"><em>Pimpl</em></span>
+        technique seems to fit that objective better with <span class="emphasis"><em>actual</em></span>
+        rather than <span class="emphasis"><em>notional</em></span> separation.
       </p>
 </td></tr>
 </table></div>
@@ -67,10 +68,7 @@
       inseparable yin and yang, part and parcel of the <span class="emphasis"><em>Pimpl</em></span>
       idiom. Consequently, the <span class="emphasis"><em>relationship</em></span> between those two
       objects is an important part of the idiom (at the very least from the practical
-      angle).
-    </p>
-<p>
-      That relationship might exhibit
+      angle). That relationship might exhibit
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -80,8 +78,8 @@
         </li>
 <li class="listitem">
           ) the <span class="emphasis"><em>exclusive-ownership</em></span> properties where every proxy
-          represents and corresponds to its own single implementation object (no
-          sharing); such exclusive-ownership relationship might be further of
+          represents/owns its own implementation object; such exclusive ownership
+          might be further of
           <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
 <li class="listitem">
                 ) the <span class="emphasis"><em>unique-ownership</em></span> nature (i.e. non-copyable,
@@ -95,7 +93,8 @@
 </ul></div>
         </li>
 <li class="listitem">
-          ) other properties such as <span class="emphasis"><em>copy-on-write</em></span>, etc.
+          ) other relationship policies such as <span class="emphasis"><em>copy-on-write</em></span>,
+          etc.
         </li>
 </ul></div>
 <p>

@@ -1,4 +1,4 @@
-[section Derived Classes Overriding the pimpl::operator bool_type()]
+[section Derived Classes Overriding the impl_ptr_type::operator bool()]
 
 TODO
 

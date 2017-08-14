@@ -38,20 +38,8 @@
 <p>
       Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span>, we
       would like to deploy the <span class="emphasis"><em>Pimpl</em></span> technique with the <span class="emphasis"><em>shared/pointer</em></span>
-      properties. That is, we intend:
-    </p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem">
-          to separate the interface from the implementation and to hide the implementation;
-        </li>
-<li class="listitem">
-          <span class="emphasis"><em>Book</em></span> instances to have <span class="emphasis"><em>pointer properties</em></span>,
-          i.e. with regard to the underlying data they will behave in the shared-proxy
-          fashion by allowing shared access to the actual implementation data.
-        </li>
-</ul></div>
-<p>
-      In that setting the <span class="emphasis"><em>Book</em></span> definition might change as follows:
+      properties. In that setting the <span class="emphasis"><em>Book</em></span> definition might
+      look as follows:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
@@ -84,9 +72,8 @@
       scaffolding is unfortunate. In our (admittedly simple) example more than half
       of the code is the <span class="emphasis"><em>Pimpl</em></span>-related implementation detail.
       For one class in isolation that might not be that big a deal. On a larger scale
-      though, reading, understanding and maintaining extra code, mentally separating
-      the application logic from the infrastructure detail, making sure nothing is
-      forgotten, misused, or misplaced is a tiring and error-prone exercise. The
+      though, reading, understanding and maintaining extra code, making sure nothing
+      is forgotten, misused, or misplaced is a tiring and error-prone exercise. The
       following, therefore, seems like an improvement:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
@@ -108,25 +95,11 @@
 <td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td>
 <th align="left">Note</th>
 </tr>
-<tr><td align="left" valign="top">
-<p>
+<tr><td align="left" valign="top"><p>
         With such a clean <span class="emphasis"><em>separation of concerns</em></span> (public interface
         and private implementation) the technique is ideal for building large-scale
         systems and, importantly, managing orderly evolution of those systems.
-      </p>
-<p>
-        In general, large-scale systems are easier evolved and maintained if they
-        follow the principle which might be described as the <span class="emphasis"><em>API-centered
-        design</em></span>. For such systems considerable initial effort goes into
-        designing interface specifications for modules/components (high-level/architectural
-        design) and classes (low-level/detailed design). That allows further development
-        to proceed to a large degree in parallel -- with the service-consumer relying
-        on those contractual obligations (imposed by the API) and with the service-provider
-        working towards meeting those contractual obligations. The better/cleaner
-        the interface/implementation separation of concerns is, the fewer there are
-        interruptions of that parallel development process.
-      </p>
-</td></tr>
+      </p></td></tr>
 </table></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

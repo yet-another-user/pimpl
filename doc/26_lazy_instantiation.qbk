@@ -1,0 +1,19 @@
+[section Lazy-Instantiation Optimization]
+
+ Book::Book() : impl_ptr_type(null())
+ {
+    // A Book proxy object is created with no implementation.
+ }
+ 
+ void
+ Book::do_something()
+ {
+    if (!*this)
+    {
+        // Implementation is created later.
+        this->emplace<implementation>(...);
+    }
+    ...
+ } 
+
+[endsect]

@@ -5,21 +5,19 @@ The defining properties of the technique are
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding 
 
-described in [link 6 \[6\]] as the "intent" and the "applicability" of the ['Bridge] incarnation of the pattern.
+described in [link 6 \[6\]] as the "intent" and the "applicability" in the ['Bridge] incarnation of the pattern.
 
-[important The Object-Oriented programming paradigm -- the association between data and behavior -- is enshrined in the fundamental concept of an ['object] or a ['class] and is routinely seen and implemented as such -- one class. 
+[important The Object-Oriented programming paradigm -- the association between data and behavior -- is realized in the fundamental concept of an ['object] or a ['class] and is routinely seen and implemented as such -- one class. 
 
-That one-class approach is not exactly ideal for the purposes mentioned in the ['Introduction]. However, the fault-line where the conventional class is split in two is not between ['data and behavior]. It is, rather, between ['public interface] (public behavior) and ['private implementation] (private data and behavior) -- two different views of a system. They serve different purposes and are better managed when kept separate. The ['Pimpl] technique seems to fit that objective better with ['actual] rather than ['notional] separation.]  
+That one-class approach is not exactly ideal for the purposes mentioned in the ['Introduction]. However, the fault-line where the conventional class is split in two is not between ['data and behavior]. It is, rather, between ['public interface] (public behavior) and ['private implementation] (private data and behavior) -- two different (external and internal) views of a system. They serve different purposes and are better managed when kept separate. The ['Pimpl] technique seems to fit that objective better with ['actual] rather than ['notional] separation.]  
 
-The separation results in two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. Conceptually (from the design perspective) that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In reality (from the implementation perspective), however, those two classes/objects complement each other and ['inherently coupled]. They are inseparable yin and yang, part and parcel of the ['Pimpl] idiom. Consequently, the ['relationship] between those two objects is an important part of the idiom (at the very least from the practical angle).
-
-That relationship might exhibit 
+The separation results in two classes/objects -- the Handle and the Body ([link 5 \[5\]]), the interface proxy and the actual implementation, a level of indirection. Conceptually (from the design perspective) that "decouples an abstraction from its implementation" ([link 6 \[6\]]). In reality (from the implementation perspective), however, those two classes/objects complement each other and ['inherently coupled]. They are inseparable yin and yang, part and parcel of the ['Pimpl] idiom. Consequently, the ['relationship] between those two objects is an important part of the idiom (at the very least from the practical angle). That relationship might exhibit 
 
 *) the ['pointer/shared] properties where several proxy objects are sharing access to the same underlying implementation object (similar to ['std::shared_ptr] behavior);
-*) the ['exclusive-ownership] properties where every proxy represents and corresponds to its own single implementation object (no sharing); such exclusive-ownership might be further of
+*) the ['exclusive-ownership] properties where every proxy represents/owns its own implementation object; such exclusive ownership might be further of
  *) the ['unique-ownership] nature (i.e. non-copyable, similar to ['std::unique_ptr] behavior) or 
  *) the ['copied-ownership] nature where copying of the proxy creates a new (copied) implementation to go with the new (copied) proxy;
-*) other properties such as ['copy-on-write], etc.
+*) other relationship policies such as ['copy-on-write], etc.
 
 Taking care of all that variability on case-by-case basis might be laborious and error-prone. Replacing one relationship policy with another in the middle of the development (or maintenance) cycle might be even more disruptive. This proposed policy-based library considerably reduces (if not eliminates) the impact and the hassle.
 

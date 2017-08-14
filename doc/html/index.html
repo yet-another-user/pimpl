@@ -34,7 +34,7 @@
 <dt><span class="section"><a href="impl_ptr/pimpl_with_exclusive_ownership_p.html">Pimpl with Exclusive-Ownership
     Properties</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/behind_the_interface.html">Behind the Interface</a></span></dt>
-<dt><span class="section"><a href="impl_ptr/construction_and_book_null.html">Construction and Book::null()</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/construction_and_null.html">Construction and null()</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/customization.html">Customization</a></span></dt>
 <dd><dl>
 <dt><span class="section"><a href="impl_ptr/customization.html#impl_ptr.customization.custom_allocator">Custom Allocator</a></span></dt>
@@ -46,6 +46,8 @@
 <dd><dl>
 <dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom.html#impl_ptr.applications_of_the_pimpl_idiom.delegating_constructors">Delegating
       Constructors</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/lazy_instantiation_optimization.html">Lazy-Instantiation
+      Optimization</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/singleton.html">Singleton</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/extendible_unique_entry_collecti.html">Extendible
       Unique-Entry Collection</a></span></dt>
@@ -55,8 +57,8 @@
       (Implementation-Only) Run-Time Polymorphism</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/run_time_polymorphic_class_hiera.html">Run-Time
       Polymorphic Class Hierarchy</a></span></dt>
-<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/derived_classes_overriding_the_p.html">Derived
-      Classes Overriding the pimpl::operator bool_type()</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/applications_of_the_pimpl_idiom/derived_classes_overriding_the_i.html">Derived
+      Classes Overriding the impl_ptr_type::operator bool()</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="impl_ptr/references.html">References</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/acknowledgements.html">Acknowledgements</a></span></dt>
@@ -98,13 +100,13 @@
           API-centered design,
         </li>
 <li class="listitem">
+          modularity, separation of concerns (<a class="link" href="impl_ptr/references.html#8">[8]</a>, <a class="link" href="impl_ptr/references.html#9">[9]</a>),
+        </li>
+<li class="listitem">
           implementation hiding,
         </li>
 <li class="listitem">
           minimization of compilation and component dependencies,
-        </li>
-<li class="listitem">
-          modularity, separation of concerns (<a class="link" href="impl_ptr/references.html#8">[8]</a>, <a class="link" href="impl_ptr/references.html#9">[9]</a>),
         </li>
 <li class="listitem">
           consistent and recognizable implementation and deployment patterns,
@@ -138,13 +140,14 @@
       (<a class="link" href="impl_ptr/references.html#7">[7]</a>).
     </p>
 <p>
-      Still, it does not seem to be sufficiently widely deployed. In part that might
-      be due to efficiency considerations (valid or misguided) and potentially due
-      to additional implementation-related overhead associated with the technique.
+      Still, it does not seem to be sufficiently widely and uniformly deployed. In
+      part that might be due to efficiency considerations (valid or misguided) and
+      potentially due to additional implementation-related overhead associated with
+      the technique.
     </p>
 <p>
-      This header-only library provides a deployment pattern and the supporting infrastructure
-      in an attempt
+      This header-only library provides a <span class="emphasis"><em>deployment pattern</em></span>
+      and the supporting infrastructure in an attempt
     </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -161,7 +164,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: August 14, 2017 at 03:51:22 GMT</small></p></td>
+<td align="left"><p><small>Last revised: August 14, 2017 at 10:03:16 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

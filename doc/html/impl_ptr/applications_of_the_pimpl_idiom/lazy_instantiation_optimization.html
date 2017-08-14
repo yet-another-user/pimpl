@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Lazy-Instantiation Optimization</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
+<link rel="up" href="../applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">
+<link rel="prev" href="../applications_of_the_pimpl_idiom.html" title="Applications of the Pimpl Idiom">
+<link rel="next" href="singleton.html" title="Singleton">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="singleton.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="impl_ptr.applications_of_the_pimpl_idiom.lazy_instantiation_optimization"></a><a class="link" href="lazy_instantiation_optimization.html" title="Lazy-Instantiation Optimization">Lazy-Instantiation
+      Optimization</a>
+</h3></div></div></div>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<span class="special">{</span>
+   <span class="comment">// A Book proxy object is created with no implementation.</span>
+<span class="special">}</span>
+
+<span class="keyword">void</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">do_something</span><span class="special">()</span>
+<span class="special">{</span>
+   <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
+   <span class="special">{</span>
+       <span class="comment">// Implementation is created later.</span>
+       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(...);</span>
+   <span class="special">}</span>
+   <span class="special">...</span>
+<span class="special">}</span>
+</pre>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2006-2018 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0. (See copy at
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../applications_of_the_pimpl_idiom.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="singleton.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
