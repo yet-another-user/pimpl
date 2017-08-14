@@ -64,7 +64,7 @@ In the example above it is only natural to replace the raw pointer with ['std::u
     std::unique_ptr<implementation> impl_;
  };
 
-To address that ['boost::impl_ptr] (as ['std::shared_ptr]) internally implements the incomplete-type-management technique (originally by Peter Dimov) and is used for the ['Pimpls] with exclusive-ownership properties. That allows the code above to shrink down to: 
+To address that ['boost::impl_ptr] (as ['std::shared_ptr]) internally implements the incomplete-type-management technique (originally by Peter Dimov) that is used for the ['Pimpls] with exclusive-ownership properties. That allows the code above to shrink down to: 
 
  struct Book : boost::impl_ptr<Book>::unique
  {
@@ -84,9 +84,9 @@ As the ['impl_ptr<Book>::unique] name suggests the ['Book] class is moveable but
 
  struct Book : boost::impl_ptr<Book>::copied { ... };
 
-makes the ['Book] moveable and copyable. 
+makes the ['Book] moveable ['and] copyable. 
 
-[note One difference (compared to ['impl_ptr<Book>::shared]) is that the comparison operators are user's responsibility. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
+[note One difference (compared to ['impl_ptr<Book>::shared]) is that the comparison operators are still user's responsibility. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
   
 So far the three ['impl_ptr]-based deployments (using the shared, unique-ownership and copied-ownership policies respectively) look almost identical and internal implementations (as we'll see later) are as close. That is important for orderly evolution of commercial large-scale systems as it allows to minimize the required effort and the impact of a design or requirement change. 
 

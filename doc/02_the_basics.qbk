@@ -5,7 +5,7 @@ The defining properties of the technique are
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding 
 
-described as the "intent" and "applicability" of the ['Bridge] incarnation of the pattern in [link 6 \[6\]].
+described in [link 6 \[6\]] as the "intent" and the "applicability" of the ['Bridge] incarnation of the pattern.
 
 [important The Object-Oriented programming paradigm -- the association between data and behavior -- is enshrined in the fundamental concept of an ['object] or a ['class] and is routinely seen and implemented as such -- one class. 
 
@@ -16,7 +16,7 @@ The separation results in two classes/objects -- the Handle and the Body ([link 
 That relationship might exhibit 
 
 *) the ['pointer/shared] properties where several proxy objects are sharing access to the same underlying implementation object (similar to ['std::shared_ptr] behavior);
-*) the ['exclusive-ownership] properties where every proxy represents and corresponds to its own single implementation object (no sharing); such exclusive-ownership relationship might be further of
+*) the ['exclusive-ownership] properties where every proxy represents and corresponds to its own single implementation object (no sharing); such exclusive-ownership might be further of
  *) the ['unique-ownership] nature (i.e. non-copyable, similar to ['std::unique_ptr] behavior) or 
  *) the ['copied-ownership] nature where copying of the proxy creates a new (copied) implementation to go with the new (copied) proxy;
 *) other properties such as ['copy-on-write], etc.

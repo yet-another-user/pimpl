@@ -17,12 +17,7 @@ Let's begin with something basic and conventional
  };
 
 
-Say, due to reasons mentioned in the ['Introduction], we would like to deploy the ['Pimpl] technique with the ['shared/pointer] properties. That is, we intend:
-
-* to separate the interface from the implementation and to hide the implementation;
-* ['Book] instances to have ['pointer properties], i.e. with regard to the underlying data they will behave in the shared-proxy fashion by allowing shared access to the actual implementation data.
-
-In that setting the ['Book] definition might change as follows: 
+Say, due to reasons mentioned in the ['Introduction], we would like to deploy the ['Pimpl] technique with the ['shared/pointer] properties. In that setting the ['Book] definition might change as follows: 
 
  struct Book
  {

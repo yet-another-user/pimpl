@@ -7,7 +7,7 @@
     impl_ptr_type(in_place, title, author)
  {} 
  
-The first ['in_place] argument is the disambiguation tag indicating that the underlying ['impl_ptr<Book>::implementation] should be constructed in-place with the remaining arguments. Consequently, a ['Book] constructor with no matching ['impl_ptr<Book>::implementation] constructor will fail to compile. 
+The first ['in_place] argument is the disambiguation tag indicating that the underlying ['impl_ptr<Book>::implementation] is constructed in-place with the remaining arguments. Consequently, a ['Book] constructor with no matching ['impl_ptr<Book>::implementation] constructor will fail to compile. 
 
 That same mechanism works for the default constructor as well. That is, 
 
@@ -28,14 +28,14 @@ To avoid potential confusion ['impl_ptr] does not have the default constructor. 
     if (!*this)
     {
         // Implementation is created later.
-        this->emplace<implementation>(...));
+        this->emplace<implementation>(...);
     }
     ...
  } 
  
 In the example the underlying ['impl_ptr_type] and, consequently, ['Book] are created "invalid" (like ['nullptr] or an empty ['std::shared_ptr())]. Later a ['pimpl<Book>::implementation] instance is explicitly created using ['emplace<implementation>()]. 
 
-The ['impl_ptr] library generalizes that ['nullptr]-like concept via ['impl_ptr<Book>::null()] and its convenience ['Book::null()] interface. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later. It can be used to indicate a no-book condition: 
+The ['impl_ptr] library generalizes that ['nullptr]-like concept via ['impl_ptr<Book>::null()] and its convenience ['Book::null()] interface. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism that is discussed later or to indicate a no-book condition: 
 
  Book
  find_book()

@@ -2,34 +2,34 @@
 
 For details and explanations see the ['Non-Virtual Interface] idiom in [link 11 \[11\]] and Rule #39 in [link 12 \[12\]].
 
- struct Book : public pimpl<Book>::shared // The public interface class is not virtual
+ struct Book : impl_ptr<Book>::shared // The public interface class is not virtual
  {
-    Book(parameters);
+    Book(args);
     
     string const&  title() const;
     string const& author() const;
  };
 
- template<> struct pimpl<Book>::implementation
+ template<> struct impl_ptr<Book>::implementation
  {
-    implementation(parameters) {...}
+    implementation(args) {...}
 
     virtual ~implementation() {...}
  }
 
- struct Implementation1 : public pimpl<Book>::implementation
+ struct Implementation1 : impl_ptr<Book>::implementation
  {
-    Implementation1() : implementation(parameters) {}
+    Implementation1() : implementation(args) { ... }
  };
 
- struct Implementation2 : public pimpl<Book>::implementation
+ struct Implementation2 : impl_ptr<Book>::implementation
  {
-    Implementation2() : implementation(parameters) {}
+    Implementation2() : implementation(args) { ... }
  };
 
  Book::Book(parameters) : base_type(null())
  {
-    reset(some_condition ? new Implementation1(parameters) : new Implementation2(parameters));
+    some_condition ? emplace<Implementation1>(args) : emplace<Implementation2>(args);
  }
 
 [endsect]

@@ -6,57 +6,55 @@ The declaration file:
 
  // If you are not planning on applying dynamic_cast<> to 
  // the public interface base class, then it does not need to be virtual
- struct Book : public pimpl<Book>::shared
+ struct Book : boost::impl_ptr<Book>::shared
  {
-    Book(parameters);
+    Book(args);
     
     string const&  title() const;
     string const& author() const;
  };
 
- struct ThickBook : public Book
+ struct ThickBook : Book
  {
-    ThickBook(parameters);
+    ThickBook(args);
  };
 
- struct ThickestBook : public ThickBook
+ struct ThickestBook : ThickBook
  {
-    ThickestBook(parameters);
+    ThickestBook(args);
  };
 
 The implementation file:
 
- typedef pimpl<Book>::implementation implementation;
-
- template<> struct pimpl<Book>::implementation
+ template<> struct impl_ptr<Book>::implementation
  {
-    implementation(parameters) {...}
+    implementation(args) {...}
 
     virtual ~implementation() {...}
     ...
  };
  
- struct ThickBookImpl : public implementation
+ struct ThickBookImpl : impl_ptr<Book>::implementation
  {
-    ThickBookImpl(parameters) : implementation(parameters) {...}
+    ThickBookImpl(args) : implementation(args) {...}
     ...
  };
 
- struct ThickestBookImpl : public ThickBookImpl
- {
-    ThickestBookImpl(parameters) : ThickBookImpl(parameters) {...}
+ struct ThickestBookImpl : ThickBookImpl
+ { 
+    ThickestBookImpl(args) : ThickBookImpl(args) {...}
     ...
  };
 
- ThickBook:: ThickBook(parameters) : Book(pimpl<Book>::null())
+ ThickBook:: ThickBook(args) : Book(null())
  {
-    reset(new ThickBook(parameters));
+    emplace<ThickBookImpl>(args);
     ...
  }
 
- ThickestBook:: ThickestBook(parameters) : ThickBook(pimpl<ThickBook>::null())
+ ThickestBook::ThickestBook(args) : ThickBook(impl_ptr<ThickBook>::null())
  {
-    reset(new ThickestBook(parameters));
+    emplace<ThickestBookImpl>(args);
     ...
  }
 
