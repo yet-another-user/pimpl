@@ -14,19 +14,19 @@ static
 void
 test_is_pimpl()
 {
-    BOOST_TEST(false == impl_ptr<Foo>::value);
-    BOOST_TEST(false == impl_ptr<int>::value);
-    BOOST_TEST(false == impl_ptr<int*>::value);
-    BOOST_TEST(false == impl_ptr<int const&>::value);
-    BOOST_TEST(true  == impl_ptr<Shared>::value);
-    BOOST_TEST(true  == impl_ptr<Shared const>::value);
-    BOOST_TEST(false == impl_ptr<Shared*>::value);
-    BOOST_TEST(true  == impl_ptr<Copied>::value);
-    BOOST_TEST(true  == impl_ptr<Base>::value);
-    BOOST_TEST(true  == impl_ptr<Derived1>::value);
-    BOOST_TEST(true  == impl_ptr<Derived1 const>::value);
-    BOOST_TEST(true  == impl_ptr<Derived1 const&>::value);
-    BOOST_TEST(true  == impl_ptr<Derived2>::value);
+    BOOST_TEST(false == boost::impl_ptr<Foo>::value);
+    BOOST_TEST(false == boost::impl_ptr<int>::value);
+    BOOST_TEST(false == boost::impl_ptr<int*>::value);
+    BOOST_TEST(false == boost::impl_ptr<int const&>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Shared>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Shared const>::value);
+    BOOST_TEST(false == boost::impl_ptr<Shared*>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Copied>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Base>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Derived1>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Derived1 const>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Derived1 const&>::value);
+    BOOST_TEST(true  == boost::impl_ptr<Derived2>::value);
 }
 
 static
@@ -67,10 +67,10 @@ test_runtime_polymorphic_behavior()
     Base*         bp5 = &derived2;
     Base         bad1 = Base::null();
     Base         bad2 = Base::null();
-    Base         bad3 = impl_ptr<Derived1>::null();
-    Base         bad4 = impl_ptr<Derived2>::null();
-    Derived1     bad5 (impl_ptr<Derived1>::null());
-    Derived2     bad6 (impl_ptr<Derived2>::null());
+    Base         bad3 = boost::impl_ptr<Derived1>::null();
+    Base         bad4 = boost::impl_ptr<Derived2>::null();
+    Derived1     bad5 (boost::impl_ptr<Derived1>::null());
+    Derived2     bad6 (boost::impl_ptr<Derived2>::null());
 
     BOOST_TEST(derived1.trace() == "Derived1::implementation(int, int)");
     BOOST_TEST(derived2.trace() == "Derived2::implementation(int, int, int)");
@@ -107,14 +107,14 @@ static
 void
 test_null()
 {
-    Shared s01 = impl_ptr<Shared>::null(); BOOST_TEST(s01.trace() == "null");
-    Shared s02 (impl_ptr<Shared>::null()); BOOST_TEST(s02.trace() == "null");
-    Copied c01 = impl_ptr<Copied>::null(); BOOST_TEST(c01.trace() == "null");
-    Copied c02 (impl_ptr<Copied>::null()); BOOST_TEST(c02.trace() == "null");
+    Shared s01 = boost::impl_ptr<Shared>::null(); BOOST_TEST(s01.trace() == "null");
+    Shared s02 (boost::impl_ptr<Shared>::null()); BOOST_TEST(s02.trace() == "null");
+    Copied c01 = boost::impl_ptr<Copied>::null(); BOOST_TEST(c01.trace() == "null");
+    Copied c02 (boost::impl_ptr<Copied>::null()); BOOST_TEST(c02.trace() == "null");
 
-    Base     p03 (impl_ptr<    Base>::null()); BOOST_TEST(p03.trace() == "null");
-    Derived1 p04 (impl_ptr<Derived1>::null()); BOOST_TEST(p04.trace() == "null");
-    Derived2 p05 (impl_ptr<Derived2>::null()); BOOST_TEST(p05.trace() == "null");
+    Base     p03 (boost::impl_ptr<    Base>::null()); BOOST_TEST(p03.trace() == "null");
+    Derived1 p04 (boost::impl_ptr<Derived1>::null()); BOOST_TEST(p04.trace() == "null");
+    Derived2 p05 (boost::impl_ptr<Derived2>::null()); BOOST_TEST(p05.trace() == "null");
     Base     p06 (p03); BOOST_TEST(p06.trace() == "null");
     Base     p07 (p04); BOOST_TEST(p07.trace() == "null");
     Base     p08 (p05); BOOST_TEST(p08.trace() == "null");
