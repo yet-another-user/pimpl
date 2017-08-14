@@ -30,7 +30,7 @@ string const& Book::author() const { return (*this)->author; }
 // Unique
 ///////////////////////////////////////////////////
 
-template<> struct impl_ptr<Unique>::implementation
+template<> struct boost::impl_ptr<Unique>::implementation
 {
     using this_type = implementation;
 

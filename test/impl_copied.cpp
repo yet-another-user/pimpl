@@ -1,6 +1,6 @@
 #include "./test.hpp"
 
-template<> struct impl_ptr<Copied>::implementation
+template<> struct boost::impl_ptr<Copied>::implementation
 {
     using this_type = implementation;
 

@@ -1,6 +1,6 @@
 #include "./test.hpp"
 
-template<> struct impl_ptr<Base>::implementation
+template<> struct boost::impl_ptr<Base>::implementation
 {
     implementation (int k) : base_int_(k), trace_("Base::implementation(int)") {}
     virtual ~implementation() =default;
@@ -19,10 +19,10 @@ template<> struct impl_ptr<Base>::implementation
     string trace_;
 };
 
-struct Derived1Impl : impl_ptr<Base>::implementation
+struct Derived1Impl : boost::impl_ptr<Base>::implementation
 {
     using this_impl = Derived1Impl;
-    using base_impl = impl_ptr<Base>::implementation;
+    using base_impl = boost::impl_ptr<Base>::implementation;
 
     Derived1Impl (int k, int l) : base_impl(k), derived_int_(l)
     {
