@@ -26,6 +26,8 @@ An important property of the library is its extendibility. It currently provides
  
          new (storage_) derived_type(std::forward<arg_types>(args)...);
      }
+     impl_type* get () const { return (impl_type*) storage_; }
+ 
      onstack () =default;
  };
  template<typename user_type>
