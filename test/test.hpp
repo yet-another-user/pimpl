@@ -69,6 +69,20 @@ struct Copied : boost::impl_ptr<Copied>::copied // Pure interface.
     int    value () const;
 };
 
+struct OnStack : boost::impl_ptr<OnStack>::onstack
+{
+    OnStack ();
+    OnStack (int);
+
+    // Value-semantics Pimpl must explicitly define comparison operators
+    // if it wants to be comparable. The same as normal classes do.
+    bool operator==(OnStack const& o) const;
+    bool operator!=(OnStack const& o) const { return !operator==(o); }
+
+    string trace () const;
+    int    value () const;
+};
+
 struct Base : boost::impl_ptr<Base>::shared
 {
     Base (int);

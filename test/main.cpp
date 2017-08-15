@@ -226,6 +226,20 @@ test_unique()
 
 static
 void
+test_onstack()
+{
+    OnStack s11 (3); BOOST_TEST(s11.value() == 3);
+    OnStack s12 (5); BOOST_TEST(s12.value() == 5);
+//  OnStack s13 = OnStack::null(); Does not compile.
+
+    BOOST_ASSERT((void*) &s11 == (void*) &*s11);
+
+    s11 = s12;          BOOST_TEST(s11.value() == 5);
+    s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
+}
+
+static
+void
 test_bool_conversions()
 {
     Shared s1;
@@ -257,6 +271,7 @@ main(int argc, char const* argv[])
     test_shared();
     test_copied();
     test_unique();
+    test_onstack();
     test_bool_conversions();
     test_runtime_polymorphic_behavior();
     test_swap();

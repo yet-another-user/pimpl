@@ -18,10 +18,12 @@ struct detail::onstack
     void
     emplace(arg_types&&... args)
     {
-        BOOST_ASSERT(size_ <= sizeof(derived_type));
+        BOOST_ASSERT(sizeof(derived_type) <= size_);
 
         new (storage_) derived_type(std::forward<arg_types>(args)...);
     }
+    impl_type* get () const { return (impl_type*) storage_; }
+
     onstack () =default;
 };
 
