@@ -55,16 +55,8 @@ struct impl_ptr
 
 template<typename user_type>
 template<typename policy_type>
-class impl_ptr<user_type>::base
+struct impl_ptr<user_type>::base
 {
-    using this_type = base;
-
-    template<typename T> using     rm_ref = typename std::remove_reference<T>::type;
-    template<typename T> using is_base_of = typename std::is_base_of<this_type, rm_ref<T>>;
-    template<typename T> using is_derived = typename std::enable_if<is_base_of<T>::value, detail::null_type*>::type;
-
-    public:
-
     using implementation = typename impl_ptr<user_type>::implementation;
     using  impl_ptr_type = base;
 
@@ -83,11 +75,11 @@ class impl_ptr<user_type>::base
     // Trying to call this base::op==() for unique-based impl_ptr will fail to compile
     // (no unique::op==()) and will indicate that the user forgot to declare
     // T::operator==(T const&).
-    bool operator==(this_type const& that) const { return impl_ == that.impl_; }
-    bool operator!=(this_type const& that) const { return impl_ != that.impl_; }
-    bool operator< (this_type const& that) const { return impl_  < that.impl_; }
+    bool operator==(user_type const& that) const { return impl_ == that.impl_; }
+    bool operator!=(user_type const& that) const { return impl_ != that.impl_; }
+    bool operator< (user_type const& that) const { return impl_  < that.impl_; }
 
-    void      swap (this_type& that) { impl_.swap(that.impl_); }
+    void      swap (user_type& that) { impl_.swap(that.impl_); }
     long use_count () const { return impl_.use_count(); }
 
 //    template<class Y>                   void reset (Y* p) { impl_.reset(p); }
