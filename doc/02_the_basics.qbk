@@ -5,7 +5,7 @@ The defining properties of the technique are
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding 
 
-described in [link 6 \[6\]] as the "intent" and the "applicability" in the ['Bridge] incarnation of the pattern.
+They are described in [link 6 \[6\]] as the "intent" and the "applicability" in the ['Bridge] incarnation of the pattern.
 
 [important The Object-Oriented programming paradigm -- the association between data and behavior -- is realized in the fundamental concept of an ['object] or a ['class] and is routinely seen and implemented as such -- one class. 
 
