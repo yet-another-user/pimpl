@@ -3,22 +3,20 @@
 
 namespace detail
 {
-    template<typename> struct onstack;
+    template<typename, size_t> struct onstack;
 }
 
-template<typename impl_type>
+template<typename impl_type, size_t sz>
 struct detail::onstack
 {
     // Proof of concept
-    // Need to extract storage size from more_types
-    static size_t const size_ = 32;
-    char storage_[size_];
+    char storage_[sz];
 
     template<typename derived_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        BOOST_ASSERT(sizeof(derived_type) <= size_);
+        BOOST_ASSERT(sizeof(derived_type) <= sz);
 
         new (storage_) derived_type(std::forward<arg_types>(args)...);
     }

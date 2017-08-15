@@ -12,19 +12,17 @@ TODO
 
 An important property of the library is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a stack-based-implementation policy might be another.
 
- template<typename impl_type>
+ template<typename impl_type, size_t allocated_size>
  struct detail::onstack
  {
      // Proof of concept
-     // Need to extract storage size from more_types
-     static size_t const size_ = 32;
-     char storage_[size_];
+     char storage_[allocated_size];
  
      template<typename derived_type, typename... arg_types>
      void
      emplace(arg_types&&... args)
      {
-         BOOST_ASSERT(size_ <= sizeof(derived_type));
+         BOOST_ASSERT(sizeof(derived_type) <= allocated_size);
  
          new (storage_) derived_type(std::forward<arg_types>(args)...);
      }
@@ -33,11 +31,10 @@ An important property of the library is its extendibility. It currently provides
  template<typename user_type>
  struct impl_ptr
  { ...
-     using      cow = base<detail::cow    <implementation>>;
-     using  onstack = base<detail::onstack<implementation>>;
+     template<size_t sz> using onstack = base<detail::onstack<implementation, sz>>;
  };
  ...
- struct Book : boost::impl_ptr<Book>::onstack { ... };
+ struct Book : boost::impl_ptr<Book>::onstack<32> { ... };
 
 [endsect] 
 [endsect] 

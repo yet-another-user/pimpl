@@ -26,7 +26,9 @@ struct impl_ptr
     using   unique = base<detail::unique <implementation>>;
     using   copied = base<detail::copied <implementation>>;
 //  using      cow = base<detail::cow    <implementation>>;
-    using  onstack = base<detail::onstack<implementation>>;
+
+    template<size_t sz> using onstack = base<detail::onstack<implementation, sz>>;
+
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
     using ptr_type = typename std::remove_reference<user_type>::type*;
