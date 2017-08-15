@@ -3,7 +3,7 @@
 The defining properties of the technique are 
 
 * the separation of ['public interface] and ['private implementation] and then 
-* implementation hiding 
+* implementation hiding. 
 
 They are described in [link 6 \[6\]] as the "intent" and the "applicability" in the ['Bridge] incarnation of the pattern.
 

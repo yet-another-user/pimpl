@@ -36,10 +36,10 @@
 <span class="special">};</span>
 </pre>
 <p>
-      Say, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span>, we
+      Now, due to reasons mentioned in the <span class="emphasis"><em>Introduction</em></span>, we
       would like to deploy the <span class="emphasis"><em>Pimpl</em></span> technique with the <span class="emphasis"><em>shared/pointer</em></span>
       properties. In that setting the <span class="emphasis"><em>Book</em></span> definition might
-      look as follows:
+      change as follows:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
@@ -61,11 +61,12 @@
 <span class="special">};</span>
 </pre>
 <p>
-      Applying the <span class="emphasis"><em>Pimpl</em></span> idiom is fairly straightforward as
-      <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the implementation-related
-      hassle. The auto-generated <span class="emphasis"><em>special member functions</em></span> (the
-      destructor, the copy constructor, etc.) suffice and writing the comparison,
-      Boolean-conversion operators is straightforward.
+      With <span class="emphasis"><em>std::shared_ptr</em></span> applying the <span class="emphasis"><em>Pimpl</em></span>
+      idiom is fairly straightforward as <span class="emphasis"><em>std::shared_ptr</em></span> takes
+      care of much of the implementation-related hassle. The auto-generated <span class="emphasis"><em>special
+      member functions</em></span> (the destructor, the copy constructor, etc.) suffice
+      and writing the comparison, Boolean-conversion operators is as easy as it can
+      be.
     </p>
 <p>
       Still, from design perspectives lumping the application logic with the infrastructure
