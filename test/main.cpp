@@ -33,21 +33,43 @@ static
 void
 test_swap()
 {
-    Shared sh01 (1);
-    Shared sh02 (2);
-    Copied vt13 (5);
-    Copied vt14 (5);
+    Shared s01 (1);
+    Shared s02 (2);
+    Copied c03 (5);
+    Copied c04 (6);
+    void const* p01 = &*s01;
+    void const* p02 = &*s02;
+    void const* p03 = &*c03;
+    void const* p04 = &*c04;
 
-    BOOST_TEST(sh01.trace() == "Shared(int)");
-    BOOST_TEST(sh02.trace() == "Shared(int)");
-    BOOST_TEST(sh01 != sh02);
-    BOOST_TEST(&*sh01 != &*sh02);
-    BOOST_TEST(vt13.trace() == "Copied(int)");
-    BOOST_TEST(vt14.trace() == "Copied(int)");
-    BOOST_TEST(&*vt13 != &*vt14);
+    BOOST_TEST(s01.trace() == "Shared(int)");
+    BOOST_TEST(s02.trace() == "Shared(int)");
+    BOOST_TEST(s01 != s02);
+    BOOST_TEST(&*s01 != &*s02);
+    BOOST_TEST(c03.trace() == "Copied(int)");
+    BOOST_TEST(c04.trace() == "Copied(int)");
+    BOOST_TEST(&*c03 != &*c04);
 
-    sh01.swap(sh02);
-    vt13.swap(vt14);
+    BOOST_TEST(s01.value() == 1);
+    BOOST_TEST(s02.value() == 2);
+    BOOST_TEST(&*s01 == p01);
+    BOOST_TEST(&*s02 == p02);
+    BOOST_TEST(c03.value() == 5);
+    BOOST_TEST(c04.value() == 6);
+    BOOST_TEST(&*c03 == p03);
+    BOOST_TEST(&*c04 == p04);
+
+    s01.swap(s02);
+    c03.swap(c04);
+
+    BOOST_TEST(s01.value() == 2);
+    BOOST_TEST(s02.value() == 1);
+    BOOST_TEST(&*s01 == p02);
+    BOOST_TEST(&*s02 == p01);
+    BOOST_TEST(c03.value() == 6);
+    BOOST_TEST(c04.value() == 5);
+    BOOST_TEST(&*c03 == p04);
+    BOOST_TEST(&*c04 == p03);
 }
 
 static
