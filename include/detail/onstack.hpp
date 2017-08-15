@@ -16,7 +16,7 @@ struct detail::onstack
     void
     emplace(arg_types&&... args)
     {
-        BOOST_ASSERT(sizeof(derived_type) <= sz);
+        static_assert(sizeof(derived_type) <= sz, "");
 
         new (storage_) derived_type(std::forward<arg_types>(args)...);
     }

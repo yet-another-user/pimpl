@@ -22,7 +22,7 @@ An important property of the library is its extendibility. It currently provides
      void
      emplace(arg_types&&... args)
      {
-         BOOST_ASSERT(sizeof(derived_type) <= allocated_size);
+         static_assert(sizeof(derived_type) <= allocated_size, "");
  
          new (storage_) derived_type(std::forward<arg_types>(args)...);
      }

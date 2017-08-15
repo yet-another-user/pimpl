@@ -2,7 +2,7 @@
 <library-reference id="impl_ptr_reference"><title>impl_ptr Reference</title><header name="/home/vbatov/dev/impl_ptr/include/impl_ptr.hpp">
 <struct name="impl_ptr"><template>
       <template-type-parameter name="user_type"/>
-    </template><class name="base"><template>
+    </template><struct name="base"><template>
       <template-type-parameter name="policy_type"/>
     </template><typedef name="implementation"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
 <typedef name="impl_ptr_type"><type><classname>base</classname></type></typedef>
@@ -10,10 +10,10 @@
 <method-group name="public member functions">
 <method name="operator!" cv="const"><type>bool</type></method>
 <method name="conversion-operator" cv="const" specifiers="explicit"><type>bool</type></method>
-<method name="operator==" cv="const"><type>bool</type><parameter name="that"><paramtype><classname>this_type</classname> const &amp;</paramtype></parameter></method>
-<method name="operator!=" cv="const"><type>bool</type><parameter name="that"><paramtype><classname>this_type</classname> const &amp;</paramtype></parameter></method>
-<method name="operator&lt;" cv="const"><type>bool</type><parameter name="that"><paramtype><classname>this_type</classname> const &amp;</paramtype></parameter></method>
-<method name="swap"><type>void</type><parameter name="that"><paramtype><classname>this_type</classname> &amp;</paramtype></parameter></method>
+<method name="operator==" cv="const"><type>bool</type><parameter name="that"><paramtype>user_type const &amp;</paramtype></parameter></method>
+<method name="operator!=" cv="const"><type>bool</type><parameter name="that"><paramtype>user_type const &amp;</paramtype></parameter></method>
+<method name="operator&lt;" cv="const"><type>bool</type><parameter name="that"><paramtype>user_type const &amp;</paramtype></parameter></method>
+<method name="swap"><type>void</type><parameter name="that"><paramtype>user_type &amp;</paramtype></parameter></method>
 <method name="use_count" cv="const"><type>long</type></method>
 <method name="emplace"><type>void</type><template>
           <template-type-parameter name="impl_type"/>
@@ -34,7 +34,7 @@
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
-</class><typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
+</struct><typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="unique"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="copied"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
