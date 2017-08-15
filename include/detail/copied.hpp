@@ -1,5 +1,5 @@
-#ifndef IMPL_PTR_DETAIL_SINGLE_HPP
-#define IMPL_PTR_DETAIL_SINGLE_HPP
+#ifndef IMPL_PTR_DETAIL_COPIED_HPP
+#define IMPL_PTR_DETAIL_COPIED_HPP
 
 #include "./traits.hpp"
 #include "./is_allocator.hpp"
@@ -57,4 +57,4 @@ struct detail::copied
     base_traits_type const* traits_ = nullptr;
 };
 
-#endif // IMPL_PTR_DETAIL_SINGLE_HPP
+#endif // IMPL_PTR_DETAIL_COPIED_HPP

@@ -5,38 +5,16 @@
 #ifndef IMPL_PTR_HPP
 #define IMPL_PTR_HPP
 
+#include "./detail/shared.hpp"
 #include "./detail/copied.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/onstack.hpp"
 
 namespace detail
 {
-    template<typename> struct  shared;
-
     struct     null_type {};
     struct in_place_type {};
 }
-
-template<typename impl_type>
-struct detail::shared : std::shared_ptr<impl_type>
-{
-    using this_type = shared;
-    using base_type = std::shared_ptr<impl_type>;
-    using  base_ref = base_type&;
-
-    template<typename derived_type, typename... arg_types>
-    typename std::enable_if<is_allocator<typename first<arg_types...>::type>::value, void>::type
-    emplace(arg_types&&... args)
-    {
-        base_ref(*this) = std::allocate_shared<derived_type>(std::forward<arg_types>(args)...);
-    }
-    template<typename derived_type, typename... arg_types>
-    typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
-    emplace(arg_types&&... args)
-    {
-        base_ref(*this) = std::make_shared<derived_type>(std::forward<arg_types>(args)...);
-    }
-};
 
 template<typename user_type>
 struct impl_ptr
@@ -69,7 +47,7 @@ struct impl_ptr
         detail::null_type arg;
         impl_ptr_type    null (arg);
 
-        return std::move(*(user_type*) &null);
+        return std::move(static_cast<user_type&>(null));
     }
 };
 

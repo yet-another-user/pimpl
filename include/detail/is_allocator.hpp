@@ -2,6 +2,7 @@
 #define IMPL_PTR_DETAIL_IS_ALLOCATOR_HPP
 
 #include <boost/convert/detail/has_member.hpp>
+#include <type_traits>
 
 namespace detail
 {

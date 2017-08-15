@@ -52,7 +52,7 @@ The implementation file:
     ...
  }
 
- ThickestBook::ThickestBook(args) : ThickBook(impl_ptr<ThickBook>::null())
+ ThickestBook::ThickestBook(args) : ThickBook(null<ThickBook>())
  {
     emplace<ThickestBookImpl>(args);
     ...
