@@ -47,7 +47,7 @@
 <p>
         The implementation file:
       </p>
-<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
    <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">args</span><span class="special">)</span> <span class="special">{...}</span>
 
@@ -55,7 +55,7 @@
    <span class="special">...</span>
 <span class="special">};</span>
 
-<span class="keyword">struct</span> <span class="identifier">ThickBookImpl</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+<span class="keyword">struct</span> <span class="identifier">ThickBookImpl</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
    <span class="identifier">ThickBookImpl</span><span class="special">(</span><span class="identifier">args</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">args</span><span class="special">)</span> <span class="special">{...}</span>
    <span class="special">...</span>

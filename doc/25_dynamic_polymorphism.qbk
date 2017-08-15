@@ -26,7 +26,7 @@ The declaration file:
 
 The implementation file:
 
- template<> struct impl_ptr<Book>::implementation
+ template<> struct boost::impl_ptr<Book>::implementation
  {
     implementation(args) {...}
 
@@ -34,7 +34,7 @@ The implementation file:
     ...
  };
  
- struct ThickBookImpl : impl_ptr<Book>::implementation
+ struct ThickBookImpl : boost::impl_ptr<Book>::implementation
  {
     ThickBookImpl(args) : implementation(args) {...}
     ...
