@@ -170,7 +170,6 @@ test_shared()
     Shared s16 (test::singleton); BOOST_TEST(s16.trace() == "Shared()");
     Shared s17 (test::singleton); BOOST_TEST(s17.trace() == "Shared()");
                                   BOOST_TEST(&*s17 == &*s16); // Implementation shared.
-
     Shared s31;
     Shared s32 (5);
     Shared s33 = s32;
@@ -249,19 +248,6 @@ test_bool_conversions()
     BOOST_TEST(!c2);
 }
 
-static
-void
-test_singleton()
-{
-    Shared s1 (test::singleton);
-    Shared s2 (test::singleton);
-
-    BOOST_TEST (&*s1 == &*s2);
-    BOOST_TEST (s1 == s2);    // Equality test
-    BOOST_TEST (!(s1 < s2));  // Equivalence test
-    BOOST_TEST (!(s2 < s1));  // Equivalence test
-}
-
 int
 main(int argc, char const* argv[])
 {
@@ -274,7 +260,6 @@ main(int argc, char const* argv[])
     test_bool_conversions();
     test_runtime_polymorphic_behavior();
     test_swap();
-    test_singleton();
 
     return boost::report_errors();
 }
