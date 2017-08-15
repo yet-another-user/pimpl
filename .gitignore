@@ -10,6 +10,7 @@ bin.v2/
 .settings/
 .cproject
 a.out
+doc/bin/
 
 Debug/
 Release/
