@@ -1,6 +1,6 @@
 [section Behind the Interface]
 
-The key property of the ['Pimpl] idiom is that the implementation is private. Not only notionally declared as such, not merely separated into another class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
+The second fundamental property of the ['Pimpl] idiom is the ['implementation hiding]. Not only notionally declared as private, not merely separated into another class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
 
 Still, the ['deployment pattern] is fairly straightforward to follow and reasonably self-documented. Something like the following will be tucked away in an implementation file: 
 
@@ -42,6 +42,6 @@ As mentioned earlier, if comparison functionality is required, a class with valu
  
 Here the ['impl_ptr<Book>::implementation] is again a ['struct] rather than a ['class]. As long as ['impl_impl<Book>::implementation] is local to one file, there is generally little value in making it a class. 
 
-:-) Another reconciliatory and unifying property is that we do not have to follow (and fight over) a particular naming convention to draw attention to member variables (like the leading or trailing underscores, the 'm_' prefix or the myriad others). Member variables are named naturally and accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.
+:-) Another reconciliatory and unifying property might be that we do not have to fight over a particular naming convention to draw attention to member variables (like the leading or trailing underscores, the 'm_' prefix or the myriad others). Member variables can be named naturally, accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.
 
 [endsect]

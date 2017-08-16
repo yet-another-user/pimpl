@@ -3,7 +3,7 @@ impl_ptr/the_basics.html
 impl_ptr/getting_started_pimpl_with_share.html
 impl_ptr/pimpl_with_exclusive_ownership_p.html
 impl_ptr/behind_the_interface.html
-impl_ptr/construction_and_null.html
+impl_ptr/construction_and_impl_ptr_null.html
 impl_ptr/customization.html
 impl_ptr/customization/custom_proxy_implementation_rela.html
 impl_ptr/applications_of_the_pimpl_idiom.html

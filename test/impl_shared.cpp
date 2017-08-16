@@ -49,7 +49,7 @@ Shared::Shared (Foo const* foo) : impl_ptr_type(in_place, foo) {} // Make sure '
 Shared::Shared (test::singleton_type) : impl_ptr_type(null())
 {
     static Shared single = Shared::null();
-    static bool   inited = (single.emplace<implementation>(), true);
+    static bool   inited = (single.emplace(), true);
 
     *this = single;
 }

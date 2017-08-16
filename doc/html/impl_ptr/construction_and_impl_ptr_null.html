@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Construction and null()</title>
+<title>Construction and impl_ptr::null()</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
@@ -15,7 +15,8 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="impl_ptr.construction_and_null"></a><a class="link" href="construction_and_null.html" title="Construction and null()">Construction and null()</a>
+<a name="impl_ptr.construction_and_impl_ptr_null"></a><a class="link" href="construction_and_impl_ptr_null.html" title="Construction and impl_ptr::null()">Construction and
+    impl_ptr::null()</a>
 </h2></div></div></div>
 <p>
       &#1058;he <span class="emphasis"><em>Pimpl</em></span> base class (aliased as <span class="emphasis"><em>impl_ptr_type</em></span>)
@@ -27,8 +28,9 @@
 <span class="special">{}</span>
 </pre>
 <p>
-      The first <span class="emphasis"><em>in_place</em></span> argument is the disambiguation tag
-      indicating that the underlying <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
+      In line with <span class="emphasis"><em>std::optional, std::variant and std::any</em></span>
+      the <span class="emphasis"><em>in_place</em></span> argument is the disambiguation tag indicating
+      that the underlying <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
       is constructed in-place with the remaining arguments. Consequently, a <span class="emphasis"><em>Book</em></span>
       constructor with no matching <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
       constructor will fail to compile. That goes for the default constructor as
@@ -46,16 +48,16 @@
     </p>
 <pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
-   <span class="comment">// A Book proxy object is created with no implementation behind it</span>
+   <span class="comment">// A Book proxy object is created with no implementation.</span>
 <span class="special">}</span>
 
 <span class="keyword">void</span>
 <span class="identifier">Book</span><span class="special">::</span><span class="identifier">do_something</span><span class="special">()</span>
 <span class="special">{</span>
-   <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
+   <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span> <span class="comment">// If no implementation, create it.</span>
    <span class="special">{</span>
        <span class="comment">// Implementation is created later.</span>
-       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(...);</span>
+       <span class="identifier">impl_ptr_type</span><span class="special">::</span><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">args</span><span class="special">);</span>
    <span class="special">}</span>
    <span class="special">...</span>
 <span class="special">}</span>
@@ -64,7 +66,7 @@
       In the example the underlying <span class="emphasis"><em>impl_ptr_type</em></span> and, consequently,
       <span class="emphasis"><em>Book</em></span> are created "invalid" (like <span class="emphasis"><em>nullptr</em></span>
       or an empty <span class="emphasis"><em>std::shared_ptr())</em></span>. Later a <span class="emphasis"><em>impl_ptr_type&lt;Book&gt;::implementation</em></span>
-      instance is explicitly created using <span class="emphasis"><em>impl_ptr_type::emplace&lt;implementation&gt;()</em></span>.
+      instance is explicitly created using <span class="emphasis"><em>impl_ptr_type::emplace()</em></span>.
     </p>
 <p>
       The <span class="emphasis"><em>impl_ptr</em></span> library generalizes that <span class="emphasis"><em>nullptr</em></span>-like

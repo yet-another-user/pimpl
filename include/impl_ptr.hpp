@@ -94,6 +94,12 @@ struct impl_ptr<user_type>::base
 
         impl_.emplace<impl_type>(std::forward<arg_types>(args)...);
     }
+    template<typename... arg_types>
+    void
+    emplace(arg_types&&... args)
+    {
+        impl_.emplace<implementation>(std::forward<arg_types>(args)...);
+    }
 
     // Access To the Implementation.
     // 1) These methods are public because they are only usable

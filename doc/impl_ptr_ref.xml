@@ -19,6 +19,9 @@
           <template-type-parameter name="impl_type"/>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></method>
+<method name="emplace"><type>void</type><template>
+          <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
+        </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></method>
 <method name="operator-&gt;" cv="const"><type>implementation *</type></method>
 <method name="operator*" cv="const"><type>implementation &amp;</type></method>
 </method-group>
