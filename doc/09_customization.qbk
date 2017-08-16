@@ -1,23 +1,26 @@
 [section Customization]
 [section Custom Proxy-Implementation Relationship Policy]
 
-An important property of the library is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a stack-based-implementation policy might be another.
+An important property of the library is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a stack-based-implementation policy might be another:
 
- template<typename impl_type, size_t allocated_size>
- struct detail::onstack
+ template<typename impl_type, size_t sz>
+ struct detail::onstack // Proof of concept
  {
-     // Proof of concept
-     char storage_[allocated_size];
+     using buffer = char[sz];
+ 
+     buffer storage_ = {0};
+     bool     valid_ = 0;
  
      template<typename derived_type, typename... arg_types>
      void
      emplace(arg_types&&... args)
      {
-         static_assert(sizeof(derived_type) <= allocated_size, "");
+         static_assert(sizeof(derived_type) <= sz, "");
  
          new (storage_) derived_type(std::forward<arg_types>(args)...);
+         valid_ = true;
      }
-     impl_type* get () const { return (impl_type*) storage_; }
+     impl_type* get () const { return valid_ ? (impl_type*) storage_ : nullptr; }
  
      onstack () =default;
  };

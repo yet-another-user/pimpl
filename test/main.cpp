@@ -230,9 +230,10 @@ test_onstack()
 {
     OnStack s11 (3); BOOST_TEST(s11.value() == 3);
     OnStack s12 (5); BOOST_TEST(s12.value() == 5);
-//  OnStack s13 = OnStack::null(); Does not compile.
+    OnStack s13 = OnStack::null();
 
     BOOST_ASSERT((void*) &s11 == (void*) &*s11);
+    BOOST_ASSERT(!s13);
 
     s11 = s12;          BOOST_TEST(s11.value() == 5);
     s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
