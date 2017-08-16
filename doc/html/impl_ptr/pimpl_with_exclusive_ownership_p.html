@@ -21,8 +21,7 @@
 <p>
       <span class="emphasis"><em>Pimpl</em></span> with the <span class="emphasis"><em>exclusive-ownership</em></span>
       properties is a <span class="emphasis"><em>unique-proxy</em></span> that owns and manages the
-      data. Consequently, for such <span class="emphasis"><em>Pimpls</em></span> the implementation
-      is likely to get more involved and might look as follows:
+      data. For such <span class="emphasis"><em>Pimpls</em></span> the definition might look as follows:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span>
 <span class="special">{</span>
@@ -57,7 +56,7 @@
 <p>
       In the example above it is only natural to reach out for <span class="emphasis"><em>std::unique_ptr</em></span>
       (<a class="link" href="references.html#13">[13]</a>, <a class="link" href="references.html#14">[14]</a>, <a class="link" href="references.html#15">[15]</a>)
-      to replace the raw pointer. However, <span class="emphasis"><em>std::unique_ptr</em></span> has
+      instead of the raw pointer. However, <span class="emphasis"><em>std::unique_ptr</em></span> has
       been developed with certain strict goals in mind -- maximum efficiency and
       no (additional) overhead. So, it intentionally avoids the overhead of the incomplete-type
       management (available with <span class="emphasis"><em>std::shared_ptr</em></span>). Consequently,
@@ -143,11 +142,11 @@
 </tr>
 <tr><td align="left" valign="top"><p>
         One notable difference (compared to <span class="emphasis"><em>impl_ptr&lt;Book&gt;::shared</em></span>)
-        is that the comparison operators are still user's responsibility. In fact,
+        is that the comparison operators are now user's responsibility. In fact,
         they are never freebies (they are never auto-generated). However, in the
         case of the pointer-semantics classes those operators are reduced to pointer
         comparisons and generalized. That's not applicable to the value-semantics
-        classes. Consequently, the comparison operators become part of the <span class="emphasis"><em>user-provided
+        classes. Consequently, the comparison operators remain part of the <span class="emphasis"><em>user-provided
         interface</em></span> (if such a class needs to be comparable).
       </p></td></tr>
 </table></div>

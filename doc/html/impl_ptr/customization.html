@@ -28,19 +28,15 @@
       Proxy-Implementation Relationship Policy</a>
 </h3></div></div></div>
 <p>
-        An important property of the library is its extendibility. It currently provides
-        several policies but more are easy to incorporate. For example, a <span class="emphasis"><em>copy-on-write</em></span>
-        policy might be one such extension. Then, a stack-based-implementation policy
+        An important property of <span class="emphasis"><em>impl_ptr</em></span> is its extendibility.
+        It currently provides several policies but more are easy to incorporate.
+        For example, a <span class="emphasis"><em>copy-on-write</em></span> policy might be one such
+        extension. Then, a <span class="emphasis"><em>stack-based-implementation</em></span> policy
         might be another:
       </p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">size_t</span> <span class="identifier">sz</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span> <span class="comment">// Proof of concept</span>
 <span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">buffer</span> <span class="special">=</span> <span class="keyword">char</span><span class="special">[</span><span class="identifier">sz</span><span class="special">];</span>
-
-    <span class="identifier">buffer</span> <span class="identifier">storage_</span> <span class="special">=</span> <span class="special">{</span><span class="number">0</span><span class="special">};</span>
-    <span class="keyword">bool</span>     <span class="identifier">valid_</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
-
     <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">derived_type</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">arg_types</span><span class="special">&gt;</span>
     <span class="keyword">void</span>
     <span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span><span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span>
@@ -50,9 +46,14 @@
         <span class="keyword">new</span> <span class="special">(</span><span class="identifier">storage_</span><span class="special">)</span> <span class="identifier">derived_type</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">arg_types</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">)...);</span>
         <span class="identifier">valid_</span> <span class="special">=</span> <span class="keyword">true</span><span class="special">;</span>
     <span class="special">}</span>
-    <span class="identifier">impl_type</span><span class="special">*</span> <span class="identifier">get</span> <span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">valid_</span> <span class="special">?</span> <span class="special">(</span><span class="identifier">impl_type</span><span class="special">*)</span> <span class="identifier">storage_</span> <span class="special">:</span> <span class="keyword">nullptr</span><span class="special">;</span> <span class="special">}</span>
+    <span class="identifier">impl_type</span><span class="special">*</span> <span class="identifier">get</span><span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">valid_</span> <span class="special">?</span> <span class="special">(</span><span class="identifier">impl_type</span><span class="special">*)</span> <span class="identifier">storage_</span> <span class="special">:</span> <span class="keyword">nullptr</span><span class="special">;</span> <span class="special">}</span>
 
-    <span class="identifier">onstack</span> <span class="special">()</span> <span class="special">=</span><span class="keyword">default</span><span class="special">;</span>
+    <span class="keyword">private</span><span class="special">:</span>
+
+    <span class="keyword">using</span> <span class="identifier">buffer</span> <span class="special">=</span> <span class="keyword">char</span><span class="special">[</span><span class="identifier">sz</span><span class="special">];</span>
+
+    <span class="identifier">buffer</span> <span class="identifier">storage_</span> <span class="special">=</span> <span class="special">{</span><span class="number">0</span><span class="special">};</span>
+    <span class="keyword">bool</span>     <span class="identifier">valid_</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">};</span>
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">user_type</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">impl_ptr</span>
@@ -63,8 +64,8 @@
 <span class="keyword">struct</span> <span class="identifier">OnStack</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="number">32</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-        then <span class="emphasis"><em>OnStack</em></span> can be used as any other <span class="emphasis"><em>Pimpl</em></span>-based
-        objects:
+        Then <span class="emphasis"><em>OnStack</em></span> could be used no differently from other
+        <span class="emphasis"><em>Pimpl</em></span>-based objects:
       </p>
 <pre class="programlisting"><span class="identifier">OnStack</span> <span class="identifier">s11</span> <span class="special">(</span><span class="number">3</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">3</span><span class="special">);</span>
 <span class="identifier">OnStack</span> <span class="identifier">s12</span> <span class="special">(</span><span class="number">5</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s12</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>
@@ -77,6 +78,20 @@
 <span class="identifier">s11</span> <span class="special">=</span> <span class="identifier">s12</span><span class="special">;</span>          <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>
 <span class="identifier">s11</span> <span class="special">=</span> <span class="identifier">OnStack</span><span class="special">(</span><span class="number">6</span><span class="special">);</span>   <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">6</span><span class="special">);</span>
 </pre>
+<p>
+        or a switch from
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span> <span class="comment">// Heap-based implementation allocation</span>
+</pre>
+<p>
+        to
+      </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="number">32</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span> <span class="comment">// Stack-based implementation allocation</span>
+</pre>
+<p>
+        could be done later due to efficiency requirements or heap constraints with
+        minimal or no disruption to the existing code.
+      </p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

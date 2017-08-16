@@ -9,11 +9,6 @@ namespace detail
 template<typename impl_type, size_t sz>
 struct detail::onstack // Proof of concept
 {
-    using buffer = char[sz];
-
-    buffer storage_ = {0};
-    bool     valid_ = 0;
-
     template<typename derived_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
@@ -25,7 +20,12 @@ struct detail::onstack // Proof of concept
     }
     impl_type* get () const { return valid_ ? (impl_type*) storage_ : nullptr; }
 
-    onstack () =default;
+    private:
+
+    using buffer = char[sz];
+
+    buffer storage_ = {0};
+    bool     valid_ = 0;
 };
 
 #endif // IMPL_PTR_DETAIL_ONSTACK_HPP

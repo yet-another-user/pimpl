@@ -1,16 +1,11 @@
 [section Customization]
 [section Custom Proxy-Implementation Relationship Policy]
 
-An important property of the library is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a stack-based-implementation policy might be another:
+An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a ['stack-based-implementation] policy might be another:
 
  template<typename impl_type, size_t sz>
  struct detail::onstack // Proof of concept
  {
-     using buffer = char[sz];
- 
-     buffer storage_ = {0};
-     bool     valid_ = 0;
- 
      template<typename derived_type, typename... arg_types>
      void
      emplace(arg_types&&... args)
@@ -20,9 +15,14 @@ An important property of the library is its extendibility. It currently provides
          new (storage_) derived_type(std::forward<arg_types>(args)...);
          valid_ = true;
      }
-     impl_type* get () const { return valid_ ? (impl_type*) storage_ : nullptr; }
+     impl_type* get() const { return valid_ ? (impl_type*) storage_ : nullptr; }
+
+     private:
+
+     using buffer = char[sz];
  
-     onstack () =default;
+     buffer storage_ = {0};
+     bool     valid_ = 0;
  };
  template<typename user_type>
  struct impl_ptr
@@ -32,7 +32,7 @@ An important property of the library is its extendibility. It currently provides
  ...
  struct OnStack : boost::impl_ptr<OnStack>::onstack<32> { ... };
 
-then ['OnStack] can be used as any other ['Pimpl]-based objects:
+Then ['OnStack] could be used no differently from other ['Pimpl]-based objects:
 
  OnStack s11 (3); BOOST_TEST(s11.value() == 3);
  OnStack s12 (5); BOOST_TEST(s12.value() == 5);
@@ -44,6 +44,16 @@ then ['OnStack] can be used as any other ['Pimpl]-based objects:
 
  s11 = s12;          BOOST_TEST(s11.value() == 5);
  s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
+
+or a switch from
+
+ struct Book : boost::impl_ptr<Book>::copied { ... }; // Heap-based implementation allocation
+
+to
+
+ struct Book : boost::impl_ptr<Book>::onstack<32> { ... }; // Stack-based implementation allocation
+
+could be done later due to efficiency requirements or heap constraints with minimal or no disruption to the existing code. 
 
 [endsect] 
 [section Custom Allocator]

@@ -133,18 +133,17 @@
       Popularized by Sutter (<a class="link" href="impl_ptr/references.html#2">[2]</a>, <a class="link" href="impl_ptr/references.html#3">[3]</a>,
       <a class="link" href="impl_ptr/references.html#11">[11]</a>, <a class="link" href="impl_ptr/references.html#12">[12]</a>, <a class="link" href="impl_ptr/references.html#13">[13]</a>,
       <a class="link" href="impl_ptr/references.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
-      name (as for "pointer to implementation" and more precisely "pointer
+      name (as for "pointer to implementation" or more precisely "pointer
       to <span class="emphasis"><em>opaque</em></span> implementation") the technique has been
       known under various names -- the D-pointer (in Qt), the Cheshire Cat (in <a class="link" href="impl_ptr/references.html#4">[4]</a>), the Handle/Body (in <a class="link" href="impl_ptr/references.html#5">[5]</a> and
       <a class="link" href="impl_ptr/references.html#6">[6]</a>), the Bridge (in <a class="link" href="impl_ptr/references.html#6">[6]</a>)
-      -- and conceptually deployed in C and C++ as far back as at least early eighties
-      (<a class="link" href="impl_ptr/references.html#7">[7]</a>).
+      -- and deployed in C and C++ as far back as at least early eighties (<a class="link" href="impl_ptr/references.html#7">[7]</a>).
     </p>
 <p>
-      Still, it does not seem to be sufficiently widely and uniformly deployed. In
-      part that might be due to efficiency considerations (valid or misguided) and
-      potentially due to additional implementation-related overhead associated with
-      the technique.
+      Still, on a smaller scale it does not seem to be widely embraced and uniformly
+      deployed. In part that might be due to efficiency considerations (valid or
+      misguided) and potentially due to additional implementation-related overhead
+      associated with the technique.
     </p>
 <p>
       This header-only library provides a <span class="emphasis"><em>deployment pattern</em></span>
@@ -156,16 +155,13 @@
           error,
         </li>
 <li class="listitem">
-          to ease and, importantly,
-        </li>
-<li class="listitem">
           to formalize the deployment of the idiom.
         </li>
 </ul></div>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: August 16, 2017 at 01:44:55 GMT</small></p></td>
+<td align="left"><p><small>Last revised: August 16, 2017 at 03:19:24 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

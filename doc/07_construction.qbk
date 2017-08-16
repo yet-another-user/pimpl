@@ -23,7 +23,7 @@ To avoid potential confusion ['impl_ptr_type] does not have the default construc
  void
  Book::do_something()
  {
-    if (!*this) // If no implementation, create it.
+    if (!*this) // If no implementation, create one.
     {
         // Implementation is created later.
         impl_ptr_type::emplace(args);

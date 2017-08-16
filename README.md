@@ -14,7 +14,6 @@ The Pimpl idiom can help great deal achieving these goals. It is a simple yet ro
 This header-only library provides a deployment pattern and the supporting infrastructure in an attempt
 
 * to minimize the deployment and maintenance hassle and the potential for error,
-* to ease and, importantly,
 * to formalize the deployment of the idiom.
 
 **HTML documentation is available [here](http://yet-another-user.github.io/pimpl).**

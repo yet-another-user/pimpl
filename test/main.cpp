@@ -234,7 +234,8 @@ test_onstack()
 
     // Check that implementation is allocated on the stack.
     BOOST_TEST((void*) &s11 == (void*) &*s11);
-    BOOST_TEST(!s13);
+    BOOST_TEST(!bool(s13)); // Test op bool()
+    BOOST_TEST(!s13);       // Test op!()
 
     s11 = s12;          BOOST_TEST(s11.value() == 5);
     s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
@@ -254,8 +255,8 @@ test_bool_conversions()
     BOOST_TEST(s2.trace() == "null");
     BOOST_TEST(c2.trace() == "null");
 
-    BOOST_TEST(bool(s1));
-    BOOST_TEST(!!s1);
+    BOOST_TEST(bool(s1));   // Test op bool()
+    BOOST_TEST(!!s1);       // Test op!()
     BOOST_TEST(bool(c1));
     BOOST_TEST(!!c1);
     BOOST_TEST(!bool(s2));

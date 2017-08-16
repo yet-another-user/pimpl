@@ -26,8 +26,8 @@
     </p>
 <p>
       Still, the <span class="emphasis"><em>deployment pattern</em></span> is fairly straightforward
-      to follow and reasonably self-documented. Something like the following will
-      be tucked away in an implementation file:
+      and reasonably self-documented. Something like the following will be tucked
+      away in an implementation file:
     </p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
@@ -74,12 +74,13 @@
       Here the <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span> is again
       a <span class="emphasis"><em>struct</em></span> rather than a <span class="emphasis"><em>class</em></span>. As
       long as <span class="emphasis"><em>impl_impl&lt;Book&gt;::implementation</em></span> is local
-      to one file, there is generally little value in making it a class.
+      to one file, i.e. it is <span class="emphasis"><em>private </em></span> (although physically
+      rather than notionally), there is generally little value in making it a class.
     </p>
 <p>
-      :-) Another reconciliatory and unifying property might be that we do not have
-      to fight over a particular naming convention to draw attention to member variables
-      (like the leading or trailing underscores, the 'm_' prefix or the myriad others).
+      :-) Another reconciliatory and unifying property might be that no need to fight
+      over a particular naming convention to draw attention to member variables (like
+      the leading or trailing underscores, the 'm_' prefix or the myriad others).
       Member variables can be named naturally, accessed and identified as <span class="emphasis"><em>impl.title</em></span>
       or <span class="emphasis"><em>(*this)-&gt;title</em></span> or something of that sort.
     </p>
