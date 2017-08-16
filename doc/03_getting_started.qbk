@@ -38,11 +38,11 @@ Now, due to reasons mentioned in the ['Introduction], we would like to deploy th
     std::shared_ptr<implementation> impl_;
  };
 
-With ['std::shared_ptr] applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] takes care of much of the implementation-related hassle. The auto-generated ['special member functions] (the destructor, the copy constructor, etc.) suffice and writing the comparison, Boolean-conversion operators is as easy as it can be.
+Applying the ['Pimpl] idiom is fairly straightforward as ['std::shared_ptr] takes care of much of the implementation-related hassle. The auto-generated ['special member functions] (the destructor, the copy constructor, etc.) suffice and the comparison, Boolean-conversion operators аrе easy.
 
-Still, from design perspectives lumping the application logic with the infrastructure scaffolding is unfortunate. In our (admittedly simple) example more than half of the code is the ['Pimpl]-related implementation detail. For one class in isolation that might not be that big a deal. On a larger scale though, reading, understanding and maintaining extra code, making sure nothing is forgotten, misused, or misplaced is a tiring and error-prone exercise. The following, therefore, seems like an improvement: 
+Still, from design perspectives lumping the application logic with the infrastructure scaffolding is unfortunate. In our (admittedly simple) example more than half of the code is the ['Pimpl]-related implementation detail. For one class in isolation that might not be that big a deal. On a larger scale though, reading and maintaining extra code, making sure nothing is forgotten or misplaced is a tiring and error-prone exercise. The following, therefore, seems like an improvement: 
 
- struct Book : impl_ptr<Book>::shared
+ struct Book : boost::impl_ptr<Book>::shared
  {
     Book(string const& title, string const& author);
     
@@ -50,7 +50,7 @@ Still, from design perspectives lumping the application logic with the infrastru
     string const& author() const;
  };
 
-With no loss in functionality it is shorter, application-focused and reasonably self-documented. The most important quality though is that it consists of nothing but ['pure application-specific interface]. It is not even a class as there is nothing to restrict access to. 
+With no loss in functionality it is shorter, application-focused and reasonably self-documented. Importantly, it consists of nothing but ['pure public interface]. It is not even a class as there is nothing to restrict access to. 
 
 [note With such a clean ['separation of concerns] (public interface and private implementation) the technique is ideal for building large-scale systems and, importantly, managing orderly evolution of those systems. ]
 

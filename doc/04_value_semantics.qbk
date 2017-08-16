@@ -1,6 +1,6 @@
 [section Pimpl with Exclusive-Ownership Properties]
 
-['Pimpl] with the ['exclusive-ownership] properties behaves as a ['unique-proxy]. That proxy owns and manages the data (rather than shares). Consequently, for such ['Pimpls] the implementation is likely to get more involved and might look as follows:
+['Pimpl] with the ['exclusive-ownership] properties is a ['unique-proxy] that owns and manages the data. Consequently, for such ['Pimpls] the implementation is likely to get more involved and might look as follows:
 
  struct Book
  {
@@ -32,7 +32,7 @@
     implementation* impl_;
  };
 
-In the example above it is only natural to replace the raw pointer with ['std::unique_ptr] ([link 13 \[13\]], [link 14 \[14\]], [link 15 \[15\]]). It needs to be mentioned though that ['std::unique_ptr] has been developed with certain strict goals in mind -- namely, maximum efficiency and no (additional) overhead. So, it intentionally avoids the overhead of the incomplete-type management (available with ['std::shared_ptr]). Consequently, for ['Pimpl] purposes the benefits of the ['std::unique_ptr] deployment are relatively modest: 
+In the example above it is only natural to reach out for ['std::unique_ptr] ([link 13 \[13\]], [link 14 \[14\]], [link 15 \[15\]]) to replace the raw pointer. However, ['std::unique_ptr] has been developed with certain strict goals in mind -- maximum efficiency and no (additional) overhead. So, it intentionally avoids the overhead of the incomplete-type management (available with ['std::shared_ptr]). Consequently, for ['Pimpl] purposes the benefits of the ['std::unique_ptr] deployment are relatively modest: 
 
  struct Book
  {
@@ -93,9 +93,9 @@ makes the ['Book] moveable ['and] copyable and, in fact, copied as in:
  ubook b2 = b1; // Compile error
 
  cbook b3 (args);
- cbook b4 = b3; // b4 is a copy of b3
+ cbook b4 = b3; // b4 is a deep copy of b3
 
-[note One difference (compared to ['impl_ptr<Book>::shared]) is that the comparison operators are still user's responsibility. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not the case with the value-semantics classes. Consequently, for value-semantics classes the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
+[note One notable difference (compared to ['impl_ptr<Book>::shared]) is that the comparison operators are still user's responsibility. In fact, they are never freebies (they are never auto-generated). However, in the case of the pointer-semantics classes those operators are reduced to pointer comparisons and generalized. That's not applicable to the value-semantics classes. Consequently, the comparison operators become part of the ['user-provided interface] (if such a class needs to be comparable).]
   
 So far the three ['impl_ptr]-based deployments (using the shared, unique and copied ownership policies respectively) look almost identical and internal implementations (as we'll see later) are as close. That is important for orderly evolution of commercial large-scale systems as it allows to minimize the required effort and the impact of a design or requirement change. 
 

@@ -61,23 +61,22 @@
 <span class="special">};</span>
 </pre>
 <p>
-      With <span class="emphasis"><em>std::shared_ptr</em></span> applying the <span class="emphasis"><em>Pimpl</em></span>
-      idiom is fairly straightforward as <span class="emphasis"><em>std::shared_ptr</em></span> takes
-      care of much of the implementation-related hassle. The auto-generated <span class="emphasis"><em>special
-      member functions</em></span> (the destructor, the copy constructor, etc.) suffice
-      and writing the comparison, Boolean-conversion operators is as easy as it can
-      be.
+      Applying the <span class="emphasis"><em>Pimpl</em></span> idiom is fairly straightforward as
+      <span class="emphasis"><em>std::shared_ptr</em></span> takes care of much of the implementation-related
+      hassle. The auto-generated <span class="emphasis"><em>special member functions</em></span> (the
+      destructor, the copy constructor, etc.) suffice and the comparison, Boolean-conversion
+      operators &#1072;r&#1077; easy.
     </p>
 <p>
       Still, from design perspectives lumping the application logic with the infrastructure
       scaffolding is unfortunate. In our (admittedly simple) example more than half
       of the code is the <span class="emphasis"><em>Pimpl</em></span>-related implementation detail.
       For one class in isolation that might not be that big a deal. On a larger scale
-      though, reading, understanding and maintaining extra code, making sure nothing
-      is forgotten, misused, or misplaced is a tiring and error-prone exercise. The
-      following, therefore, seems like an improvement:
+      though, reading and maintaining extra code, making sure nothing is forgotten
+      or misplaced is a tiring and error-prone exercise. The following, therefore,
+      seems like an improvement:
     </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
    <span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">);</span>
 
@@ -87,9 +86,9 @@
 </pre>
 <p>
       With no loss in functionality it is shorter, application-focused and reasonably
-      self-documented. The most important quality though is that it consists of nothing
-      but <span class="emphasis"><em>pure application-specific interface</em></span>. It is not even
-      a class as there is nothing to restrict access to.
+      self-documented. Importantly, it consists of nothing but <span class="emphasis"><em>pure public
+      interface</em></span>. It is not even a class as there is nothing to restrict
+      access to.
     </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
