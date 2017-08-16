@@ -1,4 +1,4 @@
-// Copyright (c) 2006-2016 Vladimir Batov.
+// Copyright (c) 2006-2018 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
@@ -6,8 +6,8 @@
 #define IMPL_PTR_HPP
 
 #include "./detail/shared.hpp"
-#include "./detail/copied.hpp"
 #include "./detail/unique.hpp"
+#include "./detail/copied.hpp"
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
 
@@ -23,12 +23,12 @@ struct impl_ptr
     struct          implementation;
     template<typename> struct base;
 
-    using   shared = base<detail::shared <implementation>>;
-    using   unique = base<detail::unique <implementation>>;
-    using   copied = base<detail::copied <implementation>>;
-    using      cow = base<detail::cow    <implementation>>;
-
-    template<size_t sz> using onstack = base<detail::onstack<implementation, sz>>;
+    template<size_t sz>
+    using onstack = base<detail::onstack<implementation, sz>>;
+    using  shared = base<detail::shared <implementation>>;
+    using  unique = base<detail::unique <implementation>>;
+    using  copied = base<detail::copied <implementation>>;
+    using     cow = base<detail::cow    <implementation>>;
 
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
