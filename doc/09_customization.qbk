@@ -30,7 +30,20 @@ An important property of the library is its extendibility. It currently provides
      template<size_t sz> using onstack = base<detail::onstack<implementation, sz>>;
  };
  ...
- struct Book : boost::impl_ptr<Book>::onstack<32> { ... };
+ struct OnStack : boost::impl_ptr<OnStack>::onstack<32> { ... };
+
+then OnStack can be used as any other Pimpl-based objects:
+
+ OnStack s11 (3); BOOST_TEST(s11.value() == 3);
+ OnStack s12 (5); BOOST_TEST(s12.value() == 5);
+ OnStack s13 = OnStack::null();
+
+ // Check that implementation is allocated on the stack.
+ BOOST_TEST((void*) &s11 == (void*) &*s11);
+ BOOST_TEST(!s13);
+
+ s11 = s12;          BOOST_TEST(s11.value() == 5);
+ s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
 
 [endsect] 
 [section Custom Allocator]
