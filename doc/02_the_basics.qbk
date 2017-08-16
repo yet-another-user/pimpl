@@ -5,7 +5,7 @@ The defining properties of the technique are
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding. 
 
-They are described in [link 6 \[6\]] as the "intent" and the "applicability" in the ['Bridge] incarnation of the pattern.
+In [link 6 \[6\]] they are described as the "intent" and the "applicability" of the ['Bridge] incarnation of the pattern.
 
 [important The Object-Oriented programming paradigm -- the association between data and behavior -- is realized in the fundamental concept of an ['object] or a ['class] and is routinely seen and implemented as such -- one class. 
 
@@ -17,7 +17,7 @@ The separation results in two classes/objects -- the Handle and the Body ([link 
 *) the ['exclusive-ownership] properties where every proxy represents/owns its own implementation object; such exclusive ownership might be further of
  *) the ['unique-ownership] nature (i.e. non-copyable, similar to ['std::unique_ptr] behavior) or 
  *) the ['copied-ownership] nature where copying of the proxy creates a new (copied) implementation to go with the new (copied) proxy;
-*) other relationship policies such as ['copy-on-write], etc.
+*) other relationship policies such as ['copy-on-write] or implementation-specific policies such as ['stack-allocated-implementation], etc.
 
 Taking care of all that variability on case-by-case basis might be laborious and error-prone. Replacing one relationship policy with another in the middle of the development (or maintenance) cycle might be even more disruptive. This proposed policy-based library considerably reduces (if not eliminates) the impact and the hassle.
 

@@ -32,7 +32,7 @@ An important property of the library is its extendibility. It currently provides
  ...
  struct OnStack : boost::impl_ptr<OnStack>::onstack<32> { ... };
 
-then OnStack can be used as any other Pimpl-based objects:
+then ['OnStack] can be used as any other ['Pimpl]-based objects:
 
  OnStack s11 (3); BOOST_TEST(s11.value() == 3);
  OnStack s12 (5); BOOST_TEST(s12.value() == 5);

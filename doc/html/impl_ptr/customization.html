@@ -63,7 +63,8 @@
 <span class="keyword">struct</span> <span class="identifier">OnStack</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="number">32</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-        then OnStack can be used as any other Pimpl-based objects:
+        then <span class="emphasis"><em>OnStack</em></span> can be used as any other <span class="emphasis"><em>Pimpl</em></span>-based
+        objects:
       </p>
 <pre class="programlisting"><span class="identifier">OnStack</span> <span class="identifier">s11</span> <span class="special">(</span><span class="number">3</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">3</span><span class="special">);</span>
 <span class="identifier">OnStack</span> <span class="identifier">s12</span> <span class="special">(</span><span class="number">5</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s12</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>
