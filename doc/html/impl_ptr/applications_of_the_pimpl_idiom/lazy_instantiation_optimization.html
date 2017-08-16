@@ -27,10 +27,7 @@
 <span class="identifier">Book</span><span class="special">::</span><span class="identifier">do_something</span><span class="special">()</span>
 <span class="special">{</span>
    <span class="keyword">if</span> <span class="special">(!*</span><span class="keyword">this</span><span class="special">)</span>
-   <span class="special">{</span>
-       <span class="comment">// Implementation is created later.</span>
-       <span class="keyword">this</span><span class="special">-&gt;</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(...);</span>
-   <span class="special">}</span>
+       <span class="identifier">impl_ptr_type</span><span class="special">::</span><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">args</span><span class="special">);</span> <span class="comment">// Implementation is created later.</span>
    <span class="special">...</span>
 <span class="special">}</span>
 </pre>

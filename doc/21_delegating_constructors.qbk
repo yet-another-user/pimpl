@@ -2,7 +2,7 @@
 
 The ['delegating constructors] functionality is available in C++11. For implementation reasons that functionality might instead be implemented using ['Pimpl]:
 
- struct Foo : public pimpl<Foo>::shared
+ struct Foo : boost::impl_ptr<Foo>::shared
  {
     Foo ();
     Foo (int);
@@ -12,7 +12,7 @@ The ['delegating constructors] functionality is available in C++11. For implemen
 
  Foo::Foo() : impl_ptr_type(null()) // Delegating constructor
  {
-   *this = Foo(42); // Calling the actual (non-delegating) constructor
+   *this = Foo(42); // Calling the actual constructor
  };
 
 [endsect]

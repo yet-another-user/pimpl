@@ -22,7 +22,7 @@
         For details and explanations see the <span class="emphasis"><em>Non-Virtual Interface</em></span>
         idiom in <a class="link" href="../references.html#11">[11]</a> and Rule #39 in <a class="link" href="../references.html#12">[12]</a>.
       </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span> <span class="comment">// The public interface class is not virtual</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span> <span class="comment">// The public interface class is not virtual</span>
 <span class="special">{</span>
    <span class="identifier">Book</span><span class="special">(</span><span class="identifier">args</span><span class="special">);</span>
 
@@ -30,26 +30,28 @@
    <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">};</span>
 
-<span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+<span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
    <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">args</span><span class="special">)</span> <span class="special">{...}</span>
 
    <span class="keyword">virtual</span> <span class="special">~</span><span class="identifier">implementation</span><span class="special">()</span> <span class="special">{...}</span>
 <span class="special">}</span>
 
-<span class="keyword">struct</span> <span class="identifier">Implementation1</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+<span class="keyword">struct</span> <span class="identifier">Implementation1</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
    <span class="identifier">Implementation1</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">args</span><span class="special">)</span> <span class="special">{</span> <span class="special">...</span> <span class="special">}</span>
 <span class="special">};</span>
 
-<span class="keyword">struct</span> <span class="identifier">Implementation2</span> <span class="special">:</span> <span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+<span class="keyword">struct</span> <span class="identifier">Implementation2</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
    <span class="identifier">Implementation2</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">implementation</span><span class="special">(</span><span class="identifier">args</span><span class="special">)</span> <span class="special">{</span> <span class="special">...</span> <span class="special">}</span>
 <span class="special">};</span>
 
-<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">base_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">parameters</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
-   <span class="identifier">some_condition</span> <span class="special">?</span> <span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">Implementation1</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">Implementation2</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">);</span>
+   <span class="identifier">some_condition</span>
+       <span class="special">?</span> <span class="identifier">impl_ptr_type</span><span class="special">::</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">Implementation1</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">)</span>
+       <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">::</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">Implementation2</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">);</span>
 <span class="special">}</span>
 </pre>
 </div>

@@ -45,7 +45,7 @@
         in C++11. For implementation reasons that functionality might instead be
         implemented using <span class="emphasis"><em>Pimpl</em></span>:
       </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Foo</span> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">pimpl</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;::</span><span class="identifier">shared</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Foo</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Foo</span><span class="special">&gt;::</span><span class="identifier">shared</span>
 <span class="special">{</span>
    <span class="identifier">Foo</span> <span class="special">();</span>
    <span class="identifier">Foo</span> <span class="special">(</span><span class="keyword">int</span><span class="special">);</span>
@@ -55,7 +55,7 @@
 
 <span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
 <span class="special">{</span>
-  <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="number">42</span><span class="special">);</span> <span class="comment">// Calling the actual (non-delegating) constructor</span>
+  <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="number">42</span><span class="special">);</span> <span class="comment">// Calling the actual constructor</span>
 <span class="special">};</span>
 </pre>
 </div>

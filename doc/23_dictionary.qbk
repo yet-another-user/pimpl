@@ -15,7 +15,7 @@ The implementation file:
     Book&         book = result.first->second;
 
     if (result.second)
-        book.emplace<implementation>(...);
+        book.emplace(args);
 
     *this = book;
  }

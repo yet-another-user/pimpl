@@ -5,11 +5,11 @@ A quick singleton implementation might look as follows:
  Single::Single() : impl_ptr_type(null())
  {
      static Single single = Single::null();
-     static bool   inited = (single.emplace<implementation>(...), true);
+     static bool   inited = (single.emplace(args), true);
 
-     *this = single; // All point to the same implementation.
+     *this = single; // All share one single implementation.
  }
 
-All instances of ['Single] share the same implementation.
+All instances of ['Single] share one single implementation.
 
 [endsect]

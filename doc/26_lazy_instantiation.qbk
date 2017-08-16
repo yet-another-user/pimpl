@@ -9,10 +9,7 @@
  Book::do_something()
  {
     if (!*this)
-    {
-        // Implementation is created later.
-        this->emplace<implementation>(...);
-    }
+        impl_ptr_type::emplace(args); // Implementation is created later.
     ...
  } 
 

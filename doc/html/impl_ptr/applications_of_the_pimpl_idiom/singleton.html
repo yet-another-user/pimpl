@@ -23,13 +23,13 @@
 <pre class="programlisting"><span class="identifier">Single</span><span class="special">::</span><span class="identifier">Single</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
     <span class="keyword">static</span> <span class="identifier">Single</span> <span class="identifier">single</span> <span class="special">=</span> <span class="identifier">Single</span><span class="special">::</span><span class="identifier">null</span><span class="special">();</span>
-    <span class="keyword">static</span> <span class="keyword">bool</span>   <span class="identifier">inited</span> <span class="special">=</span> <span class="special">(</span><span class="identifier">single</span><span class="special">.</span><span class="identifier">emplace</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(...),</span> <span class="keyword">true</span><span class="special">);</span>
+    <span class="keyword">static</span> <span class="keyword">bool</span>   <span class="identifier">inited</span> <span class="special">=</span> <span class="special">(</span><span class="identifier">single</span><span class="special">.</span><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">args</span><span class="special">),</span> <span class="keyword">true</span><span class="special">);</span>
 
-    <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">single</span><span class="special">;</span> <span class="comment">// All point to the same implementation.</span>
+    <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">single</span><span class="special">;</span> <span class="comment">// All share one single implementation.</span>
 <span class="special">}</span>
 </pre>
 <p>
-        All instances of <span class="emphasis"><em>Single</em></span> share the same implementation.
+        All instances of <span class="emphasis"><em>Single</em></span> share one single implementation.
       </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
