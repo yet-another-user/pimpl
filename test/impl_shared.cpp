@@ -51,6 +51,8 @@ Shared::Shared (test::singleton_type) : impl_ptr_type(null())
     static Shared single = Shared::null();
     static bool   inited = (single.emplace(), true);
 
+    BOOST_ASSERT(inited);
+
     *this = single;
 }
 

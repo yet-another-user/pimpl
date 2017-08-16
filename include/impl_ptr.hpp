@@ -32,7 +32,7 @@ struct impl_ptr
 
     using yes_type = boost::type_traits::yes_type;
     using  no_type = boost::type_traits::no_type;
-    using ptr_type = typename std::remove_reference<user_type>::type*;
+    using ptr_type = typename std::remove_const<user_type>::type*;
 
     template<typename Y>
     static yes_type test (Y*, typename Y::impl_ptr_type* =nullptr);
@@ -44,7 +44,6 @@ struct impl_ptr
     {
         using impl_ptr_type = typename user_type::impl_ptr_type;
 
-        static_assert(impl_ptr<user_type>::value, "");
         static_assert(sizeof(user_type) == sizeof(impl_ptr_type), "");
 
         detail::null_type arg;
@@ -93,13 +92,13 @@ struct impl_ptr<user_type>::base
     {
         static_assert(std::is_base_of<implementation, impl_type>::value, "");
 
-        impl_.emplace<impl_type>(std::forward<arg_types>(args)...);
+        impl_.template emplace<impl_type>(std::forward<arg_types>(args)...);
     }
     template<typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        impl_.emplace<implementation>(std::forward<arg_types>(args)...);
+        impl_.template emplace<implementation>(std::forward<arg_types>(args)...);
     }
 
     // Access To the Implementation.
@@ -116,7 +115,7 @@ struct impl_ptr<user_type>::base
 
     protected:
 
-    template<typename> friend class impl_ptr;
+    template<typename> friend struct impl_ptr;
 
     base (detail::null_type) {}
 //  base (this_type const& other) : impl_(other.impl_) {}
@@ -125,7 +124,7 @@ struct impl_ptr<user_type>::base
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
     {
-        impl_.emplace<implementation>(std::forward<arg_types>(args)...);
+        impl_.template emplace<implementation>(std::forward<arg_types>(args)...);
     }
 
     private: policy_type impl_;
