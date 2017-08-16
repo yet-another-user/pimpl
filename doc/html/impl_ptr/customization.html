@@ -7,32 +7,57 @@
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;The Pimpl C++11">
 <link rel="prev" href="construction_and_impl_ptr_null.html" title="Construction and impl_ptr::null()">
-<link rel="next" href="customization/custom_proxy_implementation_rela.html" title="Custom Proxy-Implementation Relationship Policy">
+<link rel="next" href="customization/custom_allocator.html" title="Custom Allocator">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="customization/custom_proxy_implementation_rela.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="customization/custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="impl_ptr.customization"></a><a class="link" href="customization.html" title="Customization">Customization</a>
 </h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="customization.html#impl_ptr.customization.custom_allocator">Custom Allocator</a></span></dt>
-<dt><span class="section"><a href="customization/custom_proxy_implementation_rela.html">Custom
+<dt><span class="section"><a href="customization.html#impl_ptr.customization.custom_proxy_implementation_rela">Custom
       Proxy-Implementation Relationship Policy</a></span></dt>
+<dt><span class="section"><a href="customization/custom_allocator.html">Custom Allocator</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="impl_ptr.customization.custom_allocator"></a><a class="link" href="customization.html#impl_ptr.customization.custom_allocator" title="Custom Allocator">Custom Allocator</a>
+<a name="impl_ptr.customization.custom_proxy_implementation_rela"></a><a class="link" href="customization.html#impl_ptr.customization.custom_proxy_implementation_rela" title="Custom Proxy-Implementation Relationship Policy">Custom
+      Proxy-Implementation Relationship Policy</a>
 </h3></div></div></div>
 <p>
-        TODO
+        An important property of the library is its extendibility. It currently provides
+        several policies but more are easy to incorporate. For example, a <span class="emphasis"><em>copy-on-write</em></span>
+        policy might be one such extension. Then, a stack-based-implementation policy
+        might be another.
       </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
-<span class="special">:</span>
-   <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">&gt;(),</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span>
-<span class="special">{}</span>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">size_t</span> <span class="identifier">allocated_size</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span>
+<span class="special">{</span>
+    <span class="comment">// Proof of concept</span>
+    <span class="keyword">char</span> <span class="identifier">storage_</span><span class="special">[</span><span class="identifier">allocated_size</span><span class="special">];</span>
+
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">derived_type</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">arg_types</span><span class="special">&gt;</span>
+    <span class="keyword">void</span>
+    <span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span><span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">static_assert</span><span class="special">(</span><span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">derived_type</span><span class="special">)</span> <span class="special">&lt;=</span> <span class="identifier">allocated_size</span><span class="special">,</span> <span class="string">""</span><span class="special">);</span>
+
+        <span class="keyword">new</span> <span class="special">(</span><span class="identifier">storage_</span><span class="special">)</span> <span class="identifier">derived_type</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">arg_types</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">)...);</span>
+    <span class="special">}</span>
+    <span class="identifier">impl_type</span><span class="special">*</span> <span class="identifier">get</span> <span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="special">(</span><span class="identifier">impl_type</span><span class="special">*)</span> <span class="identifier">storage_</span><span class="special">;</span> <span class="special">}</span>
+
+    <span class="identifier">onstack</span> <span class="special">()</span> <span class="special">=</span><span class="keyword">default</span><span class="special">;</span>
+<span class="special">};</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">user_type</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">impl_ptr</span>
+<span class="special">{</span> <span class="special">...</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="identifier">size_t</span> <span class="identifier">sz</span><span class="special">&gt;</span> <span class="keyword">using</span> <span class="identifier">onstack</span> <span class="special">=</span> <span class="identifier">base</span><span class="special">&lt;</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">,</span> <span class="identifier">sz</span><span class="special">&gt;&gt;;</span>
+<span class="special">};</span>
+<span class="special">...</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="number">32</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 </div>
 </div>
@@ -46,7 +71,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="customization/custom_proxy_implementation_rela.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="customization/custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

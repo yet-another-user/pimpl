@@ -38,13 +38,13 @@ template<> struct boost::impl_ptr<Shared>::implementation
 string Shared::trace () const { return *this ? (*this)->trace_ : "null"; }
 int    Shared::value () const { return (*this)->int_; }
 
-Shared::Shared ()               : impl_ptr_type(in_place) {}
-Shared::Shared (int k)          : impl_ptr_type(in_place, k) {}
-Shared::Shared (int k, int l)   : impl_ptr_type(in_place, k, l) {}
-Shared::Shared (Foo&       foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const& foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo*       foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
-Shared::Shared (Foo const* foo) : impl_ptr_type(in_place, foo) {} // Make sure 'const' handled properly
+Shared::Shared ()             : impl_ptr_type(in_place) {}
+Shared::Shared (int k)        : impl_ptr_type(in_place, k) {}
+Shared::Shared (int k, int l) : impl_ptr_type(in_place, k, l) {}
+Shared::Shared (Foo&       f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
+Shared::Shared (Foo const& f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
+Shared::Shared (Foo*       f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
+Shared::Shared (Foo const* f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
 
 Shared::Shared (test::singleton_type) : impl_ptr_type(null())
 {

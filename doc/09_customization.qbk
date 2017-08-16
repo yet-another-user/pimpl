@@ -1,13 +1,4 @@
 [section Customization]
-[section Custom Allocator]
-TODO
-
- Book::Book(string const& title, string const& author)
- :
-    impl_ptr_type(in_place, my_allocator<implementation>(), title, author)
- {} 
-
-[endsect] 
 [section Custom Proxy-Implementation Relationship Policy]
 
 An important property of the library is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a stack-based-implementation policy might be another.
@@ -37,6 +28,15 @@ An important property of the library is its extendibility. It currently provides
  };
  ...
  struct Book : boost::impl_ptr<Book>::onstack<32> { ... };
+
+[endsect] 
+[section Custom Allocator]
+TODO
+
+ Book::Book(string const& title, string const& author)
+ :
+    impl_ptr_type(in_place, my_allocator<implementation>(), title, author)
+ {} 
 
 [endsect] 
 [endsect] 
