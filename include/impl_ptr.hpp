@@ -109,8 +109,6 @@ struct impl_ptr<user_type>::base
     template<typename> friend struct impl_ptr;
 
     base (detail::null_type) {}
-//  base (this_type const& other) : impl_(other.impl_) {}
-//  base (this_type&& other) : impl_(std::move(other.impl_)) {}
 
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
