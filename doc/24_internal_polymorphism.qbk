@@ -2,7 +2,7 @@
 
 For details and explanations see the ['Non-Virtual Interface] idiom in [link 11 \[11\]] and Rule #39 in [link 12 \[12\]].
 
- struct Book : boost::impl_ptr<Book>::shared // The public interface class is not virtual
+ struct Book : boost::impl_ptr<Book>::shared // Not virtual
  {
     Book(args);
     
@@ -27,7 +27,7 @@ For details and explanations see the ['Non-Virtual Interface] idiom in [link 11 
     Implementation2() : implementation(args) { ... }
  };
 
- Book::Book(parameters) : impl_ptr_type(null())
+ Book::Book(args) : impl_ptr_type(null())
  {
     some_condition 
         ? impl_ptr_type::emplace<Implementation1>(args) 

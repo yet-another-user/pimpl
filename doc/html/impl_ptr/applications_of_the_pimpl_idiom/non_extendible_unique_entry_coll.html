@@ -21,7 +21,7 @@
 <p>
         The implementation file:
       </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">base</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
    <span class="keyword">static</span> <span class="identifier">Mutex</span> <span class="identifier">mutex</span><span class="special">;</span>
    <span class="keyword">static</span> <span class="identifier">All</span>   <span class="identifier">books</span><span class="special">;</span>

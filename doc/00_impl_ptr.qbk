@@ -22,7 +22,7 @@
  
 [note This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal.]
 
-[important This library is not part of the Boost C++ Libraries collection. A potential submission is being considered. That is the reason for ['impl_ptr] appearing as ['boost::impl_ptr] in the documentation. I apologize for potential confusion and inconvenience.]
+[important This library is not part of the Boost C++ Libraries collection. A potential submission is being considered. That is the reason for ['impl_ptr] appearing as ['boost::impl_ptr] in the documentation. I apologize for any potential confusion and inconvenience.]
 
 [include 01_introduction.qbk]
 [include 02_the_basics.qbk]

@@ -8,7 +8,7 @@ The ['delegating constructors] functionality is available in C++11. For implemen
     Foo (int);
  };
 
- Foo::Foo(int v) : impl_ptr_type(v) { ... };
+ Foo::Foo(int v) : impl_ptr_type(in_place, v) { ... };
 
  Foo::Foo() : impl_ptr_type(null()) // Delegating constructor
  {

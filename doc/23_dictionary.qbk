@@ -25,7 +25,7 @@ The implementation file:
 
 The implementation file:
 
- Book::Book(string const& title) : base(null())
+ Book::Book(string const& title) : impl_ptr_type(null())
  {
     static Mutex mutex;
     static All   books;

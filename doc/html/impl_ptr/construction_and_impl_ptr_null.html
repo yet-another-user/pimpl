@@ -69,11 +69,10 @@
       instance is explicitly created using <span class="emphasis"><em>impl_ptr_type::emplace()</em></span>.
     </p>
 <p>
-      The <span class="emphasis"><em>impl_ptr</em></span> library generalizes that <span class="emphasis"><em>nullptr</em></span>-like
-      concept via <span class="emphasis"><em>impl_ptr&lt;Book&gt;::null()</em></span> and its convenience
-      <span class="emphasis"><em>Book::null()</em></span> interface. That is useful for lazy-instantiation
-      optimization (as in the example above) or to support dynamic polymorphism (as
-      discussed later) or to indicate a no-book condition:
+      That <span class="emphasis"><em>nullptr</em></span>-like concept is generalized via <span class="emphasis"><em>impl_ptr&lt;Book&gt;::null()</em></span>
+      and its convenience <span class="emphasis"><em>Book::null()</em></span> interface. That is useful
+      for lazy-instantiation optimization (as in the example above) or to support
+      dynamic polymorphism (as discussed later) or to indicate a no-book condition:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span>
 <span class="identifier">find_book</span><span class="special">()</span>

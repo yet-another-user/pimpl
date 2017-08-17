@@ -1,6 +1,6 @@
 index.html
 impl_ptr/the_basics.html
-impl_ptr/getting_started_pimpl_with_share.html
+impl_ptr/easy_pimpl_with_shared_ownership.html
 impl_ptr/pimpl_with_exclusive_ownership_p.html
 impl_ptr/behind_the_interface.html
 impl_ptr/construction_and_impl_ptr_null.html

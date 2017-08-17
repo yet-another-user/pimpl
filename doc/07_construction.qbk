@@ -33,7 +33,7 @@ To avoid potential confusion ['impl_ptr_type] does not have the default construc
  
 In the example the underlying ['impl_ptr_type] and, consequently, ['Book] are created "invalid" (like ['nullptr] or an empty ['std::shared_ptr())]. Later a ['impl_ptr_type<Book>::implementation] instance is explicitly created using ['impl_ptr_type::emplace()]. 
 
-The ['impl_ptr] library generalizes that ['nullptr]-like concept via ['impl_ptr<Book>::null()] and its convenience ['Book::null()] interface. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism (as discussed later) or to indicate a no-book condition: 
+That ['nullptr]-like concept is generalized via ['impl_ptr<Book>::null()] and its convenience ['Book::null()] interface. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism (as discussed later) or to indicate a no-book condition: 
 
  Book
  find_book()

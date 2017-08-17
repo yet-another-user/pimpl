@@ -1,3 +1,13 @@
 [section Acknowledgements]
 
+Many thanks to:
+
+* ..., the Boost Review Manager, and ... for their endorsement of the library; without their support ['impl_ptr] would not be in Boost;
+
+* Peter Dimov for his incomplete-type-management technique;
+
+* Glen Fernandes and Gavin Lambert for their ['boost::is_impl_ptr];
+
+* Glen Fernandes, Gavin Lambert, Edward Diener, Andrzej Krzemienski, Vicente J. Botet Escriba, Hans Dembinski for their participation in and contributions during the review; 
+
 [endsect]

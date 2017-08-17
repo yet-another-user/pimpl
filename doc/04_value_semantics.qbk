@@ -32,7 +32,7 @@
     implementation* impl_;
  };
 
-In the example above it is only natural to reach out for ['std::unique_ptr] ([link 13 \[13\]], [link 14 \[14\]], [link 15 \[15\]]) instead of the raw pointer. However, ['std::unique_ptr] has been developed with certain strict goals in mind -- maximum efficiency and no (additional) overhead. So, it intentionally avoids the overhead of the incomplete-type management (available with ['std::shared_ptr]). Consequently, for ['Pimpl] purposes the benefits of the ['std::unique_ptr] deployment are relatively modest: 
+In the example above it is only natural to reach out for ['std::unique_ptr] ([link 13 \[13\]], [link 14 \[14\]], [link 15 \[15\]]) instead of the raw pointer. However, ['std::unique_ptr] has been developed with certain strict goals in mind -- maximum efficiency and no (additional) overhead. So, it intentionally avoids the overhead associated with the incomplete-type management (available with ['std::shared_ptr]). Consequently, for ['Pimpl] purposes the benefits of the ['std::unique_ptr] deployment are relatively modest: 
 
  struct Book
  {
