@@ -14,7 +14,7 @@ The ['Pimpl] idiom can help great deal achieving these goals. It is a simple yet
 * the separation of ['public interface] and ['private implementation] and then 
 * implementation hiding. 
 
-Popularized by Sutter ([link 2 \[2\]], [link 3 \[3\]], [link 11 \[11\]], [link 12 \[12\]], [link 13 \[13\]], [link 14 \[14\]]) under the cheeky ['Pimpl] name (as for "pointer to implementation" or more precisely "pointer to ['opaque] implementation") the technique has been known under various names -- the D-pointer (in Qt), the Cheshire Cat (in [link 4 \[4\]]), the Handle/Body (in [link 5 \[5\]] and [link 6 \[6\]]), the Bridge (in [link 6 \[6\]]) -- and deployed in C and C++ as far back as at least early eighties ([link 7 \[7\]]).
+Popularized by Sutter ([link 2 \[2\]], [link 3 \[3\]], [link 11 \[11\]], [link 12 \[12\]], [link 13 \[13\]], [link 14 \[14\]]) under the cheeky ['Pimpl] name (as for "pointer to implementation" and more precisely "pointer to ['opaque] implementation") the technique has been known under various names -- the D-pointer (in Qt), the Cheshire Cat (in [link 4 \[4\]]), the Handle/Body (in [link 5 \[5\]] and [link 6 \[6\]]), the Bridge (in [link 6 \[6\]]) -- and deployed in C and C++ as far back as at least early eighties ([link 7 \[7\]]).
 
 Still, on a smaller scale it does not seem to be widely embraced and uniformly deployed. In part that might be due to efficiency considerations (valid or misguided) and potentially due to additional implementation-related overhead associated with the technique. 
 

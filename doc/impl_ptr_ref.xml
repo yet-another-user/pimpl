@@ -37,25 +37,21 @@
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
-</struct><typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
+</struct><typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
+<typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="unique"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="copied"><type><emphasis>unspecified</emphasis></type></typedef>
-<typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
-<typedef name="yes_type"><type>boost::type_traits::yes_type</type></typedef>
-<typedef name="no_type"><type>boost::type_traits::no_type</type></typedef>
-<typedef name="ptr_type"><type>typename std::remove_reference&lt; user_type &gt;::type *</type></typedef>
+<typedef name="cow"><type><emphasis>unspecified</emphasis></type></typedef>
 <method-group name="public static functions">
-<method name="test" specifiers="static"><type>yes_type</type><template>
-          <template-type-parameter name="Y"/>
-        </template><parameter name=""><paramtype>Y *</paramtype></parameter><parameter name=""><paramtype>typename Y::impl_ptr_type *</paramtype><default>nullptr</default></parameter></method>
-<method name="test" specifiers="static"><type>no_type</type><parameter name=""><paramtype>...</paramtype></parameter></method>
 <method name="null" specifiers="static"><type>user_type</type></method>
 </method-group>
-<method-group name="public member functions">
-<method name="BOOST_STATIC_CONSTANT"><type/><parameter name=""><paramtype>bool</paramtype></parameter><parameter name=""><paramtype>value</paramtype><default>(1==sizeof(test(ptr_type(nullptr))))</default></parameter></method>
-</method-group>
 </struct><namespace name="boost">
-<typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; user_type &gt;</type></typedef>
+<struct name="is_impl_ptr"><template>
+      <template-type-parameter name=""/>
+      <template-type-parameter name=""><default>void</default></template-type-parameter>
+    </template><inherit access="public">false_type</inherit></struct><struct-specialization name="is_impl_ptr"><template>
+      <template-type-parameter name="T"/>
+    </template><specialization><template-arg>T</template-arg><template-arg>boost::void_t&lt; typename T::impl_ptr_type &gt;</template-arg></specialization><inherit access="public">true_type</inherit></struct-specialization><typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; user_type &gt;</type></typedef>
 </namespace>
 </header>
 </library-reference>
