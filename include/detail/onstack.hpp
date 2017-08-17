@@ -25,7 +25,7 @@ struct detail::onstack // Proof of concept
     using buffer = char[sz];
 
     buffer storage_ = {0};
-    bool     valid_ = 0;
+    bool     valid_ = false;
 };
 
 #endif // IMPL_PTR_DETAIL_ONSTACK_HPP

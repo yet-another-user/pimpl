@@ -22,7 +22,7 @@ An important property of ['impl_ptr] is its extendibility. It currently provides
      using buffer = char[sz];
  
      buffer storage_ = {0};
-     bool     valid_ = 0;
+     bool     valid_ = false;
  };
  template<typename user_type>
  struct impl_ptr
