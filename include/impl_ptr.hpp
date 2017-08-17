@@ -122,6 +122,15 @@ struct impl_ptr<user_type>::base
 namespace boost
 {
     template<typename user_type> using impl_ptr = ::impl_ptr<user_type>;
+
+    template <typename user_type>
+    struct is_impl_ptr
+    {
+        template <typename Y> static typename Y::impl_ptr_type test(int);
+        template <typename Y> static void                      test(...);
+
+        enum { value = !std::is_void<decltype(test<user_type>(0))>::value };
+    };
 }
 
 #endif // IMPL_PTR_HPP
