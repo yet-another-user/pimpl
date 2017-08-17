@@ -30,15 +30,10 @@ struct impl_ptr
     using  copied = base<detail::copied <implementation>>;
     using     cow = base<detail::cow    <implementation>>;
 
-    using yes_type = boost::type_traits::yes_type;
-    using  no_type = boost::type_traits::no_type;
-    using ptr_type = typename std::remove_const<user_type>::type*;
+    template <typename Y> static typename Y::impl_ptr_type test(int);
+    template <typename Y> static void                      test(...);
 
-    template<typename Y>
-    static yes_type test (Y*, typename Y::impl_ptr_type* =nullptr);
-    static no_type  test (...);
-
-    BOOST_STATIC_CONSTANT(bool, value = (1 == sizeof(test(ptr_type(nullptr)))));
+    enum { value = !std::is_void<decltype(test<user_type>(0))>::value };
 
     static user_type null()
     {
