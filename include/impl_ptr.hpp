@@ -11,6 +11,8 @@
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
 
+#include <boost/type_traits.hpp>
+
 namespace detail
 {
     struct     null_type {};
@@ -123,14 +125,11 @@ namespace boost
 {
     template<typename user_type> using impl_ptr = ::impl_ptr<user_type>;
 
-    template <typename user_type>
-    struct is_impl_ptr
-    {
-        template <typename Y> static typename Y::impl_ptr_type test(int);
-        template <typename Y> static void                      test(...);
+    template<typename, typename =void>
+    struct is_impl_ptr : boost::false_type {};
 
-        enum { value = !std::is_void<decltype(test<user_type>(0))>::value };
-    };
+    template<typename T>
+    struct is_impl_ptr<T, boost::void_t<typename T::impl_ptr_type>> : boost::true_type {};
 }
 
 #endif // IMPL_PTR_HPP
