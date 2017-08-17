@@ -12,23 +12,6 @@ test_basics()
 
 static
 void
-test_is_pimpl()
-{
-    BOOST_TEST(false == boost::impl_ptr<Foo>::value);
-    BOOST_TEST(false == boost::impl_ptr<int>::value);
-    BOOST_TEST(false == boost::impl_ptr<int*>::value);
-// TODO: clang fails BOOST_TEST(true  == boost::impl_ptr<Shared>::value);
-    BOOST_TEST(true  == boost::impl_ptr<Shared const>::value);
-    BOOST_TEST(false == boost::impl_ptr<Shared*>::value);
-// TODO: clang fails BOOST_TEST(true  == boost::impl_ptr<Copied>::value);
-// TODO: clang fails BOOST_TEST(true  == boost::impl_ptr<Base>::value);
-    BOOST_TEST(true  == boost::impl_ptr<Derived1>::value);
-    BOOST_TEST(true  == boost::impl_ptr<Derived1 const>::value);
-    BOOST_TEST(true  == boost::impl_ptr<Derived2>::value);
-}
-
-static
-void
 test_swap()
 {
     Shared s01 (1);
@@ -268,7 +251,6 @@ main(int argc, char const* argv[])
 {
     test_basics();
     test_null();
-    test_is_pimpl();
     test_shared();
     test_copied();
     test_unique();

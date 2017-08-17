@@ -15,6 +15,8 @@ namespace detail
 {
     struct     null_type {};
     struct in_place_type {};
+
+    constexpr null_type null_arg {};
 }
 
 template<typename user_type>
@@ -30,19 +32,13 @@ struct impl_ptr
     using  copied = base<detail::copied <implementation>>;
     using     cow = base<detail::cow    <implementation>>;
 
-    template <typename Y> static typename Y::impl_ptr_type test(int);
-    template <typename Y> static void                      test(...);
-
-    enum { value = !std::is_void<decltype(test<user_type>(0))>::value };
-
     static user_type null()
     {
         using impl_ptr_type = typename user_type::impl_ptr_type;
 
         static_assert(sizeof(user_type) == sizeof(impl_ptr_type), "");
 
-        detail::null_type arg;
-        impl_ptr_type    null (arg);
+        impl_ptr_type null (detail::null_arg);
 
         return std::move(static_cast<user_type&>(null));
     }
