@@ -6,10 +6,10 @@
 
 namespace detail
 {
-    template<typename, size_t> struct onstack;
+    template<typename, typename, size_t> struct onstack;
 }
 
-template<typename impl_type, size_t sz>
+template<typename impl_type, typename allocator, size_t sz>
 struct detail::onstack // Proof of concept
 {
     struct traits : detail::traits<traits, impl_type>

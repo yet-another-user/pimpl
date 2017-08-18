@@ -13,8 +13,7 @@ template<> struct boost::impl_ptr<Book>::implementation
 
 Book::Book(string const& title, string const& author)
 :
-//  impl_ptr_type(in_place, title, author)
-    impl_ptr_type(in_place, std::allocator<implementation>(), title, author)
+    impl_ptr_type(in_place, title, author)
 {
     // Various ways of initializing the impl_ptr base:
     // 1) Internally calls std::make_shared

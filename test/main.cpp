@@ -174,8 +174,6 @@ test_shared()
 
     BOOST_TEST(s32 != s31); // calls impl_ptr::op!=()
     BOOST_TEST(s32 == s33); // calls impl_ptr::op==()
-
-    Shared s41 (test::allocator);
 }
 
 static

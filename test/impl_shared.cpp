@@ -50,9 +50,3 @@ Shared::Shared (test::singleton_type) : impl_ptr_type(null())
 
     *this = single;
 }
-
-Shared::Shared(test::allocator_type)
-:
-    impl_ptr_type(in_place, my_allocator<implementation>())
-{}
-

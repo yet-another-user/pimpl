@@ -22,18 +22,29 @@ namespace detail
     constexpr null_type null_arg {};
 }
 
-template<typename user_type>
+// C1. Always use the impl_ptr<user_type>::implementation specialization,
+//     i.e. the one with the defaulted allocator.
+//     That allows the implementation developer to only declare/define one
+//     implementation:
+//         template<> struct impl_ptr<user_type>::implementation { ... };
+//     regardless of the allocator passed in externally.
+//     That is, that simplifies the internal implementation.
+
+template<typename user_type, typename allocator =std::allocator<void>>
 struct impl_ptr
 {
     struct          implementation;
     template<typename> struct base;
 
+    using      impl_type = typename impl_ptr<user_type>::implementation; //C1
+    using allocator_type = typename allocator::template rebind<impl_type>::other;
+
     template<size_t sz>
-    using onstack = base<detail::onstack<implementation, sz>>;
-    using  shared = base<detail::shared <implementation>>;
-    using  unique = base<detail::unique <implementation>>;
-    using  copied = base<detail::copied <implementation>>;
-    using     cow = base<detail::cow    <implementation>>;
+    using onstack = base<detail::onstack<impl_type, allocator_type, sz>>;
+    using  shared = base<detail::shared <impl_type, allocator_type>>;
+    using  unique = base<detail::unique <impl_type, allocator_type>>;
+    using  copied = base<detail::copied <impl_type>>;
+    using     cow = base<detail::cow    <impl_type>>;
 
     static user_type null()
     {
@@ -47,12 +58,13 @@ struct impl_ptr
     }
 };
 
-template<typename user_type>
+template<typename user_type, typename allocator>
 template<typename policy_type>
-struct impl_ptr<user_type>::base
+struct impl_ptr<user_type, allocator>::base
 {
-    using implementation = typename impl_ptr<user_type>::implementation;
+    using implementation = typename impl_ptr<user_type>::implementation; //C1
     using  impl_ptr_type = base;
+    using allocator_type = allocator;
 
     static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
 
@@ -109,7 +121,7 @@ struct impl_ptr<user_type>::base
 
     protected:
 
-    template<typename> friend struct impl_ptr;
+    template<typename, typename> friend struct impl_ptr;
 
     base (detail::null_type) {}
 
@@ -124,7 +136,7 @@ struct impl_ptr<user_type>::base
 
 namespace boost
 {
-    template<typename user_type> using impl_ptr = ::impl_ptr<user_type>;
+    template<typename user_type, typename allocator =std::allocator<void>> using impl_ptr = ::impl_ptr<user_type, allocator>;
 
     template<typename, typename =void>
     struct is_impl_ptr : boost::false_type {};

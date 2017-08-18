@@ -2,7 +2,6 @@
 #define IMPL_PTR_DETAIL_COW_HPP
 
 #include "./traits.hpp"
-#include "./is_allocator.hpp"
 
 namespace detail
 {

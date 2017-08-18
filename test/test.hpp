@@ -18,10 +18,8 @@ struct Book : boost::impl_ptr<Book>::shared
 struct test
 {
     struct singleton_type {};
-    struct allocator_type {};
 
     static constexpr singleton_type singleton {};
-    static constexpr allocator_type allocator {};
 };
 
 struct Foo {};
@@ -40,7 +38,6 @@ struct Shared : boost::impl_ptr<Shared>::shared // Pure interface.
     Shared (Foo*);
     Shared (Foo const*);
     Shared (test::singleton_type);
-    Shared (test::allocator_type);
 
     string trace () const;
     int    value () const;

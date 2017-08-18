@@ -2,37 +2,38 @@
 #define IMPL_PTR_DETAIL_UNIQUE_HPP
 
 #include "./traits.hpp"
-#include "./is_allocator.hpp"
 
 namespace detail
 {
-    template<typename> struct unique;
+    template<typename, typename> struct unique;
 }
 
-template<typename impl_type>
+template<typename impl_type, typename allocator>
 struct detail::unique
 {
+    template<typename T> using alloc = typename allocator::template rebind<T>::other;
+
     struct traits : detail::traits<traits, impl_type>
     {
-        void destroy(impl_type* p) const override { boost::checked_delete(p); }
-    };
+        void destroy(impl_type* p) const override
+        {
+            alloc<impl_type> a;
 
-    // Smart-pointer with the unique-value-semantics behavior.
+            a.destroy(p);
+            a.deallocate(p, 1);
+        }
+    };
 
     using this_type = unique;
 
-//  template<typename derived_type, typename alloc_type, typename... arg_types>
-//  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
-//  emplace(alloc_type&& alloc, arg_types&&... args)
-//  {
-//      void* mem = std::allocator_traits<alloc_type>::allocate(alloc, 1);
-//      reset(new(mem) derived_type(std::forward<arg_types>(args)...));
-//  }
     template<typename derived_type, typename... arg_types>
-    typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
+    void
     emplace(arg_types&&... args)
     {
-        impl_type* impl = new derived_type(std::forward<arg_types>(args)...);
+        alloc<derived_type> a;
+        impl_type*       impl = a.allocate(1);
+
+        a.construct(impl, std::forward<arg_types>(args)...);
 
         this_type(impl).swap(*this);
     }

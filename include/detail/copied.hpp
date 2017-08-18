@@ -2,7 +2,6 @@
 #define IMPL_PTR_DETAIL_COPIED_HPP
 
 #include "./traits.hpp"
-#include "./is_allocator.hpp"
 
 namespace detail
 {
@@ -23,15 +22,8 @@ struct detail::copied
 
     using this_type = copied;
 
-//  template<typename derived_type, typename alloc_type, typename... arg_types>
-//  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
-//  emplace(alloc_type&& alloc, arg_types&&... args)
-//  {
-//      void* mem = std::allocator_traits<alloc_type>::allocate(alloc, 1);
-//      reset(new(mem) derived_type(std::forward<arg_types>(args)...));
-//  }
     template<typename derived_type, typename... arg_types>
-    typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
+    void
     emplace(arg_types&&... args)
     {
         reset(new derived_type(std::forward<arg_types>(args)...));
