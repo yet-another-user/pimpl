@@ -4,7 +4,7 @@
     Use, modification and distribution is subject to the Boost Software
     License, Version 1.0. (See a copy at http://www.boost.org/LICENSE_1_0.txt)
 ===============================================================================/]
-[library The Pimpl
+[library impl_ptr
     [quickbook 1.6]
     [version C++11]
     [id impl_ptr]
@@ -22,7 +22,7 @@
  
 [note This documentation is based on the article ([link 1 \[1\]]) originally published in the C/C++ Users Journal.]
 
-[important This library is not part of the Boost C++ Libraries collection. A potential submission is being considered. That is the reason for ['impl_ptr] appearing as ['boost::impl_ptr] in the documentation. I apologize for any potential confusion and inconvenience.]
+[important This library is not part of the Boost C++ Libraries collection. An endorsement/review request has been submitted. That is the reason for ['impl_ptr] appearing as ['boost::impl_ptr] in the documentation. I apologize for any potential confusion and inconvenience.]
 
 [include 01_introduction.qbk]
 [include 02_the_basics.qbk]
