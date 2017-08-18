@@ -12,10 +12,14 @@ namespace detail
 template<typename impl_type>
 struct detail::unique
 {
+    struct traits : detail::traits<traits, impl_type>
+    {
+        void destroy(impl_type* p) const override { boost::checked_delete(p); }
+    };
+
     // Smart-pointer with the unique-value-semantics behavior.
 
-    using   this_type = unique;
-    using traits_type = traits::unique<impl_type>;
+    using this_type = unique;
 
 //  template<typename derived_type, typename alloc_type, typename... arg_types>
 //  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
@@ -35,7 +39,7 @@ struct detail::unique
 
    ~unique () { if (traits_) traits_->destroy(impl_); }
     unique () {}
-    unique (impl_type* p) : impl_(p), traits_(traits_type()) {}
+    unique (impl_type* p) : impl_(p), traits_(traits()) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }
@@ -50,8 +54,8 @@ struct detail::unique
 
     private:
 
-    impl_type*                   impl_ = nullptr;
-    traits::pointer<impl_type> traits_ = nullptr;
+    impl_type*              impl_ = nullptr;
+    traits_ptr<impl_type> traits_ = nullptr;
 };
 
 #endif // IMPL_PTR_DETAIL_UNIQUE_HPP

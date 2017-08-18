@@ -12,10 +12,16 @@ namespace detail
 template<typename impl_type>
 struct detail::copied
 {
-    // Smart-pointer with the value-semantics behavior.
+    struct traits : detail::traits<traits, impl_type>
+    {
+        void   destroy (impl_type* p) const override { boost::checked_delete(p); }
+        void construct (void*      to, impl_type const& from) const override { ::new(to) impl_type(from); }
+        void    assign (impl_type* to, impl_type const& from) const override { *to = from; }
 
-    using   this_type = copied;
-    using traits_type = traits::copyable<impl_type>;
+        impl_type* copy_allocate (impl_type const* p) const override { return p ? new impl_type(*p) : nullptr; }
+    };
+
+    using this_type = copied;
 
 //  template<typename derived_type, typename alloc_type, typename... arg_types>
 //  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
@@ -33,7 +39,7 @@ struct detail::copied
 
    ~copied () { if (traits_) traits_->destroy(impl_); }
     copied () {}
-    copied (impl_type* p) : impl_(p), traits_(traits_type()) {}
+    copied (impl_type* p) : impl_(p), traits_(traits()) {}
     copied (this_type&& o) { swap(o); }
     copied (this_type const& o) : traits_(o.traits_)
     {
@@ -62,8 +68,8 @@ struct detail::copied
 
     private:
 
-    impl_type*                   impl_ = nullptr;
-    traits::pointer<impl_type> traits_ = nullptr;
+    impl_type*              impl_ = nullptr;
+    traits_ptr<impl_type> traits_ = nullptr;
 };
 
 #endif // IMPL_PTR_DETAIL_COPIED_HPP

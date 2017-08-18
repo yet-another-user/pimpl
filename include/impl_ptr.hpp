@@ -5,13 +5,14 @@
 #ifndef IMPL_PTR_HPP
 #define IMPL_PTR_HPP
 
+#include <boost/type_traits.hpp>
+#include <boost/utility.hpp>
+
 #include "./detail/shared.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
-
-#include <boost/type_traits.hpp>
 
 namespace detail
 {
