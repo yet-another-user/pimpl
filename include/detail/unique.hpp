@@ -15,8 +15,8 @@ struct detail::unique
     // Smart-pointer with the unique-value-semantics behavior.
 
     using        this_type = unique;
-    using real_traits_type = detail::traits::destroy_type<impl_type>;
-    using base_traits_type = typename real_traits_type::base_type;
+    using real_traits_type = detail::traits::managed_type<impl_type>;
+    using base_traits_type = detail::traits::base<impl_type>;
 
 //  template<typename derived_type, typename alloc_type, typename... arg_types>
 //  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
