@@ -14,9 +14,8 @@ struct detail::copied
 {
     // Smart-pointer with the value-semantics behavior.
 
-    using        this_type = copied;
-    using real_traits_type = detail::traits::copy_type<impl_type>;
-    using base_traits_type = detail::traits::base<impl_type>;
+    using   this_type = copied;
+    using traits_type = traits::copyable<impl_type>;
 
 //  template<typename derived_type, typename alloc_type, typename... arg_types>
 //  typename std::enable_if<is_allocator<alloc_type>::value, void>::type
@@ -34,17 +33,27 @@ struct detail::copied
 
    ~copied () { if (traits_) traits_->destroy(impl_); }
     copied () {}
-    copied (impl_type* p) : impl_(p), traits_(real_traits_type()) {}
+    copied (impl_type* p) : impl_(p), traits_(traits_type()) {}
     copied (this_type&& o) { swap(o); }
-    copied (this_type const& o)
-    :
-        impl_(o.traits_ ? o.traits_->copy(o.impl_) : nullptr),
-        traits_(o.traits_)
-    {}
+    copied (this_type const& o) : traits_(o.traits_)
+    {
+        if (traits_)
+            impl_ = traits_->copy_allocate(o.impl_);
+    }
 
-    this_type& operator= (this_type&& o) { swap(o); return *this; }
-    this_type& operator= (this_type const& o) { traits_ = o.traits_; traits_->assign(impl_, o.impl_); return *this; }
     bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
+    this_type& operator= (this_type&& o) { swap(o); return *this; }
+    this_type& operator= (this_type const& o)
+    {
+        /**/ if ( impl_ ==  o.impl_);
+        else if ( impl_ &&  o.impl_) traits_->assign(impl_, *o.impl_);
+        else if ( impl_ && !o.impl_) traits_->destroy(impl_);
+        else if (!impl_ &&  o.impl_) impl_ = o.traits_->copy_allocate(o.impl_);
+
+        traits_ = o.traits_;
+
+        return *this;
+    }
 
     void     reset (impl_type* p) { this_type(p).swap(*this); }
     void      swap (this_type& o) { std::swap(impl_, o.impl_), std::swap(traits_, o.traits_); }
@@ -53,8 +62,8 @@ struct detail::copied
 
     private:
 
-    impl_type*                impl_ = nullptr;
-    base_traits_type const* traits_ = nullptr;
+    impl_type*                   impl_ = nullptr;
+    traits::pointer<impl_type> traits_ = nullptr;
 };
 
 #endif // IMPL_PTR_DETAIL_COPIED_HPP

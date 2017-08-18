@@ -1,11 +1,6 @@
 #include "./test.hpp"
 #include "./allocator.hpp"
 
-// This internal implementation usually only have destructor, constructors,
-// data and probably internal methods. Given it is already internal by design,
-// it does not need to be a 'class'. All public methods are declared in the
-// external visible Shared class. Then, data in this structure are accessed as
-// (*this)->data or (**this).data.
 template<> struct boost::impl_ptr<Shared>::implementation
 {
     using this_type = implementation;

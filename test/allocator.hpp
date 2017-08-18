@@ -29,7 +29,7 @@ struct my_allocator
         return (pointer) ::operator new(num * sizeof(T));
     }
     // initialize elements of allocated storage p with value value
-    void construct(pointer p, const T& value)
+    void construct(pointer p, T const& value)
     {
         new ((void*) p) T(value);
     }

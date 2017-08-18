@@ -26,27 +26,3 @@ Book::Book(string const& title, string const& author)
 string const& Book:: title() const { return (*this)->title; }
 string const& Book::author() const { return (*this)->author; }
 
-///////////////////////////////////////////////////
-// Unique
-///////////////////////////////////////////////////
-
-template<> struct boost::impl_ptr<Unique>::implementation
-{
-    using this_type = implementation;
-
-    implementation () : int_(0)             { trace_ = "Unique::implementation()"; }
-    implementation (int k) : int_(k)        { trace_ = "Unique::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "Unique::implementation(int, int)"; }
-    implementation (Foo&) : int_(0)         { trace_ = "Unique::implementation(Foo&)"; }
-    implementation (Foo const&) : int_(0)   { trace_ = "Unique::implementation(Foo const&)"; }
-
-    int              int_;
-    mutable string trace_;
-};
-
-Unique::Unique ()      : impl_ptr_type(in_place) {}
-Unique::Unique (int k) : impl_ptr_type(in_place, k) {}
-
-string Unique::trace () const { return *this ? (*this)->trace_ : "null"; }
-int    Unique::value () const { return (*this)->int_; }
-
