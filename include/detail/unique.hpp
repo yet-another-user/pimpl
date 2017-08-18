@@ -28,7 +28,9 @@ struct detail::unique
     typename std::enable_if<!is_allocator<typename first<arg_types...>::type>::value, void>::type
     emplace(arg_types&&... args)
     {
-        reset(new derived_type(std::forward<arg_types>(args)...));
+        impl_type* impl = new derived_type(std::forward<arg_types>(args)...);
+
+        this_type(impl).swap(*this);
     }
 
    ~unique () { if (traits_) traits_->destroy(impl_); }
@@ -42,7 +44,6 @@ struct detail::unique
     this_type& operator= (this_type const&) =delete;
 
     bool operator< (this_type const& o) const { return impl_ < o.impl_; }
-    void     reset (impl_type* p) { this_type(p).swap(*this); }
     void      swap (this_type& o) { std::swap(impl_, o.impl_), std::swap(traits_, o.traits_); }
     impl_type* get () const { return impl_; }
     long use_count () const { return 1; }
