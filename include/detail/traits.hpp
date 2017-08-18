@@ -30,11 +30,16 @@ struct detail::traits::base
     virtual void    destroy (impl_type*) const =0;
     virtual impl_type* copy (impl_type const*) const { BOOST_ASSERT(0); }
     virtual void     assign (impl_type*&, impl_type const*) const { BOOST_ASSERT(0); }
+    virtual void  construct (void*, impl_type const*) const =0;
 };
 
 template<template<class> class derived_type, class impl_type>
 struct detail::traits::ptr : detail::traits::base<impl_type>
 {
+    void construct(void* to, impl_type const* from) const override
+    {
+        ::new(to) impl_type(*from);
+    }
     operator base<impl_type> const*()
     {
         static derived_type<impl_type> trait; return &trait;
@@ -44,22 +49,22 @@ struct detail::traits::ptr : detail::traits::base<impl_type>
 template<typename impl_type>
 struct detail::traits::managed_type : detail::traits::ptr<managed_type, impl_type>
 {
-    void destroy (impl_type* p) const { boost::checked_delete(p); }
+    void destroy (impl_type* p) const override { boost::checked_delete(p); }
 };
 
 template<typename impl_type>
 struct detail::traits::onstack_type : detail::traits::ptr<onstack_type, impl_type>
 {
-    void destroy (impl_type* p) const { p->~impl_type(); }
+    void destroy (impl_type* p) const override { if (p) p->~impl_type(); }
 };
 
 template<typename impl_type>
 struct detail::traits::copy_type : detail::traits::ptr<copy_type, impl_type>
 {
-    void    destroy (impl_type* p) const { boost::checked_delete(p); }
-    impl_type* copy (impl_type const* p) const { return p ? new impl_type(*p) : nullptr; }
+    void    destroy (impl_type* p) const override { boost::checked_delete(p); }
+    impl_type* copy (impl_type const* p) const override { return p ? new impl_type(*p) : nullptr; }
 
-    void assign (impl_type*& a, impl_type const* b) const
+    void assign (impl_type*& a, impl_type const* b) const override
     {
         /**/ if (a == b);
         else if (a && b) *a = *b;
