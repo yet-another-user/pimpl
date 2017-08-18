@@ -1,5 +1,5 @@
 [section Customization]
-[section Custom Proxy-Implementation Relationship Policy]
+[section Custom Policy]
 
 An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a ['stack-based-implementation] policy might be another:
 
