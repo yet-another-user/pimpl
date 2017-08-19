@@ -11,6 +11,8 @@
 #include "./detail/shared.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
+#include "./detail/unique_au.hpp"
+#include "./detail/copied_au.hpp"
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
 
@@ -40,11 +42,13 @@ struct impl_ptr
     using allocator_type = typename allocator::template rebind<impl_type>::other;
 
     template<size_t sz>
-    using onstack = base<detail::onstack<impl_type, sz>>;
-    using  shared = base<detail::shared <impl_type, allocator_type>>;
-    using  unique = base<detail::unique <impl_type, allocator_type>>;
-    using  copied = base<detail::copied <impl_type, allocator_type>>;
-    using     cow = base<detail::cow    <impl_type, allocator_type>>;
+    using   onstack = base<detail::onstack   <impl_type, sz>>;
+    using    shared = base<detail::shared    <impl_type, allocator_type>>;
+    using    unique = base<detail::unique    <impl_type, allocator_type>>;
+    using    copied = base<detail::copied    <impl_type, allocator_type>>;
+    using unique_au = base<detail::unique_au <impl_type, allocator_type>>;
+    using copied_au = base<detail::copied_au <impl_type, allocator_type>>;
+    using       cow = base<detail::cow       <impl_type, allocator_type>>;
 
     static user_type null()
     {
