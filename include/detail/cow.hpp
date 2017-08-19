@@ -5,10 +5,10 @@
 
 namespace detail
 {
-    template<typename> struct cow;
+    template<typename, typename> struct cow;
 }
 
-template<typename impl_type>
+template<typename impl_type, typename allocator>
 struct detail::cow
 {
 };

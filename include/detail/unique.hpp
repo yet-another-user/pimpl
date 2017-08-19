@@ -13,18 +13,9 @@ struct detail::unique
 {
     template<typename T> using alloc = typename allocator::template rebind<T>::other;
 
-    struct traits : detail::traits<traits, impl_type>
-    {
-        void destroy(impl_type* p) const override
-        {
-            alloc<impl_type> a;
-
-            a.destroy(p);
-            a.deallocate(p, 1);
-        }
-    };
-
-    using this_type = unique;
+    using   this_type = unique;
+    using traits_type = detail::unique_traits<impl_type, allocator>;
+    using  traits_ptr = typename traits_type::pointer;
 
     template<typename derived_type, typename... arg_types>
     void
@@ -40,7 +31,7 @@ struct detail::unique
 
    ~unique () { if (traits_) traits_->destroy(impl_); }
     unique () {}
-    unique (impl_type* p) : impl_(p), traits_(traits()) {}
+    unique (impl_type* p) : impl_(p), traits_(traits_type()) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }
@@ -55,8 +46,8 @@ struct detail::unique
 
     private:
 
-    impl_type*              impl_ = nullptr;
-    traits_ptr<impl_type> traits_ = nullptr;
+    impl_type*   impl_ = nullptr;
+    traits_ptr traits_ = nullptr;
 };
 
 #endif // IMPL_PTR_DETAIL_UNIQUE_HPP

@@ -6,21 +6,21 @@
 
 namespace detail
 {
-    template<typename, typename, size_t> struct onstack;
+    template<typename, size_t> struct onstack;
 }
 
-template<typename impl_type, typename allocator, size_t sz>
+template<typename impl_type, size_t sz>
 struct detail::onstack // Proof of concept
 {
-    struct traits : detail::traits<traits, impl_type>
+    struct allocator : std::allocator<impl_type>
     {
-        void   destroy (impl_type* p) const override { if (p) p->~impl_type(); }
-        void construct (void*      to, impl_type const& from) const override { ::new(to) impl_type(from); }
-        void    assign (impl_type* to, impl_type const& from) const override { *to = from; }
+        void deallocate(impl_type*, size_t) {}
     };
 
     using    this_type = onstack;
     using storage_type = typename boost::aligned_storage<sz, 8>::type;
+    using  traits_type = detail::copyable_traits<impl_type, allocator>;
+    using   traits_ptr = typename traits_type::pointer;
 
    ~onstack () { if (traits_) traits_->destroy(get()); }
     onstack () {}
@@ -48,14 +48,14 @@ struct detail::onstack // Proof of concept
         static_assert(sizeof(derived_type) <= sz, "");
 
         ::new (storage_.address()) derived_type(std::forward<arg_types>(args)...);
-        traits_ = traits();
+        traits_ = traits_type();
     }
     impl_type* get () const { return traits_ ? (impl_type*) storage_.address() : nullptr; }
 
     private:
 
-    storage_type         storage_;
-    traits_ptr<impl_type> traits_ = nullptr;
+    storage_type storage_;
+    traits_ptr    traits_ = nullptr;
 };
 
 #endif // IMPL_PTR_DETAIL_ONSTACK_HPP
