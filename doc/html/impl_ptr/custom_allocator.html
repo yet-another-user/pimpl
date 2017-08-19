@@ -28,6 +28,8 @@
       It can be changed with
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;::</span><span class="identifier">shared</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;::</span><span class="identifier">unique</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
