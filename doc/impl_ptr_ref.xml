@@ -2,10 +2,12 @@
 <library-reference id="impl_ptr_reference"><title>impl_ptr Reference</title><header name="/home/vbatov/dev/impl_ptr/include/impl_ptr.hpp">
 <struct name="impl_ptr"><template>
       <template-type-parameter name="user_type"/>
+      <template-type-parameter name="allocator"><default>std::allocator&lt;void&gt;</default></template-type-parameter>
     </template><struct name="base"><template>
       <template-type-parameter name="policy_type"/>
     </template><typedef name="implementation"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
 <typedef name="impl_ptr_type"><type><classname>base</classname></type></typedef>
+<typedef name="allocator_type"><type>allocator</type></typedef>
 <data-member name="in_place" specifiers="static"><type><emphasis>unspecified</emphasis></type></data-member>
 <method-group name="public member functions">
 <method name="operator!" cv="const"><type>bool</type></method>
@@ -37,7 +39,9 @@
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
-</struct><typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
+</struct><typedef name="impl_type"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
+<typedef name="allocator_type"><type>typename allocator::template rebind&lt; impl_type &gt;::other</type></typedef>
+<typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="unique"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="copied"><type><emphasis>unspecified</emphasis></type></typedef>
@@ -51,7 +55,7 @@
       <template-type-parameter name=""><default>void</default></template-type-parameter>
     </template><inherit access="public">false_type</inherit></struct><struct-specialization name="is_impl_ptr"><template>
       <template-type-parameter name="T"/>
-    </template><specialization><template-arg>T</template-arg><template-arg>boost::void_t&lt; typename T::impl_ptr_type &gt;</template-arg></specialization><inherit access="public">true_type</inherit></struct-specialization><typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; user_type &gt;</type></typedef>
+    </template><specialization><template-arg>T</template-arg><template-arg>boost::void_t&lt; typename T::impl_ptr_type &gt;</template-arg></specialization><inherit access="public">true_type</inherit></struct-specialization><typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; user_type, allocator &gt;</type></typedef>
 </namespace>
 </header>
 </library-reference>

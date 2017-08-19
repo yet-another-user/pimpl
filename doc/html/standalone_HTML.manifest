@@ -4,8 +4,8 @@ impl_ptr/easy_pimpl_with_shared_ownership.html
 impl_ptr/pimpl_with_exclusive_ownership_p.html
 impl_ptr/behind_the_interface.html
 impl_ptr/construction_and_impl_ptr_null.html
-impl_ptr/customization.html
-impl_ptr/customization/custom_allocator.html
+impl_ptr/custom_policy.html
+impl_ptr/custom_allocator.html
 impl_ptr/applications.html
 impl_ptr/applications/lazy_instantiation_optimization.html
 impl_ptr/applications/singleton.html
@@ -15,4 +15,4 @@ impl_ptr/applications/internal_implementation_only_run.html
 impl_ptr/applications/run_time_polymorphic_class_hiera.html
 impl_ptr/references.html
 impl_ptr/acknowledgements.html
-index/s11.html
+index/s12.html

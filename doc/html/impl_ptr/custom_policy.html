@@ -1,37 +1,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Customization</title>
+<title>Custom Policy</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;impl_ptr C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;impl_ptr C++11">
 <link rel="prev" href="construction_and_impl_ptr_null.html" title="Construction and impl_ptr::null()">
-<link rel="next" href="customization/custom_allocator.html" title="Custom Allocator">
+<link rel="next" href="custom_allocator.html" title="Custom Allocator">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="customization/custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="impl_ptr.customization"></a><a class="link" href="customization.html" title="Customization">Customization</a>
+<a name="impl_ptr.custom_policy"></a><a class="link" href="custom_policy.html" title="Custom Policy">Custom Policy</a>
 </h2></div></div></div>
-<div class="toc"><dl class="toc">
-<dt><span class="section"><a href="customization.html#impl_ptr.customization.custom_policy">Custom Policy</a></span></dt>
-<dt><span class="section"><a href="customization/custom_allocator.html">Custom Allocator</a></span></dt>
-</dl></div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="impl_ptr.customization.custom_policy"></a><a class="link" href="customization.html#impl_ptr.customization.custom_policy" title="Custom Policy">Custom Policy</a>
-</h3></div></div></div>
 <p>
-        An important property of <span class="emphasis"><em>impl_ptr</em></span> is its extendibility.
-        It currently provides several policies but more are easy to incorporate.
-        For example, a <span class="emphasis"><em>copy-on-write</em></span> policy might be one such
-        extension. Then, a <span class="emphasis"><em>stack-based-implementation</em></span> policy
-        might be another:
-      </p>
+      An important property of <span class="emphasis"><em>impl_ptr</em></span> is its extendibility.
+      It currently provides several policies but more are easy to incorporate. For
+      example, a <span class="emphasis"><em>copy-on-write</em></span> policy might be one such extension.
+      Then, a <span class="emphasis"><em>stack-based-implementation</em></span> policy might be another:
+    </p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">size_t</span> <span class="identifier">sz</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span> <span class="comment">// Proof of concept</span>
 <span class="special">{</span>
@@ -76,9 +67,9 @@
 <span class="keyword">struct</span> <span class="identifier">OnStack</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="number">32</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-        Then <span class="emphasis"><em>OnStack</em></span> could be used no differently from other
-        <span class="emphasis"><em>Pimpl</em></span>-based objects:
-      </p>
+      Then <span class="emphasis"><em>OnStack</em></span> could be used no differently from other
+      <span class="emphasis"><em>Pimpl</em></span>-based objects:
+    </p>
 <pre class="programlisting"><span class="identifier">OnStack</span> <span class="identifier">s11</span> <span class="special">(</span><span class="number">3</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">3</span><span class="special">);</span>
 <span class="identifier">OnStack</span> <span class="identifier">s12</span> <span class="special">(</span><span class="number">5</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s12</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>
 <span class="identifier">OnStack</span> <span class="identifier">s13</span> <span class="special">=</span> <span class="identifier">OnStack</span><span class="special">::</span><span class="identifier">null</span><span class="special">();</span>
@@ -91,22 +82,21 @@
 <span class="identifier">s11</span> <span class="special">=</span> <span class="identifier">OnStack</span><span class="special">(</span><span class="number">6</span><span class="special">);</span>   <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">6</span><span class="special">);</span>
 </pre>
 <p>
-        or a switch from
-      </p>
+      or a switch from
+    </p>
 <pre class="programlisting"><span class="comment">// Heap-based implementation allocation</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-        to
-      </p>
+      to
+    </p>
 <pre class="programlisting"><span class="comment">// Stack-based implementation allocation</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="number">32</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-        could be done later due to efficiency requirements or heap constraints with
-        minimal or no disruption to the existing code.
-      </p>
-</div>
+      could be done later due to efficiency requirements or heap constraints with
+      minimal or no disruption to the existing code.
+    </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -117,7 +107,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="customization/custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

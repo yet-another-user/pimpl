@@ -1,4 +1,3 @@
-[section Customization]
 [section Custom Policy]
 
 An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a ['stack-based-implementation] policy might be another:
@@ -71,15 +70,5 @@ to
 
 could be done later due to efficiency requirements or heap constraints with minimal or no disruption to the existing code. 
 
-[endsect] 
-[section Custom Allocator]
-TODO
-
- Book::Book(string const& title, string const& author)
- :
-    impl_ptr_type(in_place, my_allocator<implementation>(), title, author)
- {} 
-
-[endsect] 
 [endsect] 
 
