@@ -30,7 +30,17 @@ namespace detail
 //     implementation:
 //         template<> struct impl_ptr<user_type>::implementation { ... };
 //     regardless of the allocator passed in externally.
-//     That is, that simplifies the internal implementation.
+//     That (obviously) simplifies the internal implementation.
+// C2. Comparison Operators.
+//     base::op==() transfers the comparison to 'impl_'. Consequently,
+//     ptr-semantics (shared_ptr-based) pimpls are comparable due to shared_ptr::op==().
+//     However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT --
+//     the standard value-semantics behavior -- due to NO unique::op==().
+//     If a value-semantics class T needs to be comparable, then it has to provide
+//     T::op==(T const&) EXPLICITLY as part of its own public interface.
+//     Trying to call this base::op==() for unique-based impl_ptr will fail to compile
+//     (no unique::op==()) and will indicate that the user forgot to declare
+//     T::operator==(T const&).
 
 template<typename user_type, typename allocator =std::allocator<void>>
 struct impl_ptr
@@ -75,26 +85,12 @@ struct impl_ptr<user_type, allocator>::base
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
 
-    // Comparison Operators.
-    // base::op==() transfers the comparison to 'impl_'. Consequently,
-    // ptr-semantics (shared_ptr-based) pimpls are comparable due to shared_ptr::op==().
-    // However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT --
-    // the standard value-semantics behavior -- due to NO unique::op==().
-    // If a value-semantics class T needs to be comparable, then it has to provide
-    // T::op==(T const&) EXPLICITLY as part of its own public interface.
-    // Trying to call this base::op==() for unique-based impl_ptr will fail to compile
-    // (no unique::op==()) and will indicate that the user forgot to declare
-    // T::operator==(T const&).
-    bool operator==(user_type const& that) const { return impl_ == that.impl_; }
-    bool operator!=(user_type const& that) const { return impl_ != that.impl_; }
+    bool operator==(user_type const& that) const { return impl_ == that.impl_; } //C2
+    bool operator!=(user_type const& that) const { return impl_ != that.impl_; } //C2
     bool operator< (user_type const& that) const { return impl_  < that.impl_; }
 
     void      swap (user_type& that) { impl_.swap(that.impl_); }
     long use_count () const { return impl_.use_count(); }
-
-//    template<class Y>                   void reset (Y* p) { impl_.reset(p); }
-//    template<class Y, class D>          void reset (Y* p, D d) { impl_.reset(p, d); }
-//    template<class Y, class D, class A> void reset (Y* p, D d, A a) { impl_.reset(p, d, a); }
 
     template<typename impl_type, typename... arg_types>
     void
