@@ -63,6 +63,11 @@ or a switch from
 
 to
 
+ // Custom-based implementation allocation
+ struct Book : boost::impl_ptr<Book, my_allocator>::copied { ... };
+
+or to
+
  // Stack-based implementation allocation
  struct Book : boost::impl_ptr<Book, char[64]>::onstack { ... };
 

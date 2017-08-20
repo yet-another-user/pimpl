@@ -88,6 +88,12 @@
 <p>
       to
     </p>
+<pre class="programlisting"><span class="comment">// Custom-based implementation allocation</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+</pre>
+<p>
+      or to
+    </p>
 <pre class="programlisting"><span class="comment">// Stack-based implementation allocation</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="keyword">char</span><span class="special">[</span><span class="number">64</span><span class="special">]&gt;::</span><span class="identifier">onstack</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
