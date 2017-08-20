@@ -58,12 +58,12 @@ Then ['OnStack] could be used no differently from other ['Pimpl]-based objects:
 
 or a switch from
 
- // Heap-based implementation allocation
+ // std::allocator-based implementation allocation
  struct Book : boost::impl_ptr<Book>::copied { ... };
 
 to
 
- // Custom-based implementation allocation
+ // Custom-allocator-based implementation allocation
  struct Book : boost::impl_ptr<Book, my_allocator>::copied { ... };
 
 or to
