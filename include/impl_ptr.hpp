@@ -42,23 +42,22 @@ namespace detail
 //     (no unique::op==()) and will indicate that the user forgot to declare
 //     T::operator==(T const&).
 
-template<typename user_type, typename allocator =std::allocator<void>>
+template<typename user_type, typename... more_types>
 struct impl_ptr
 {
     struct          implementation;
     template<typename> struct base;
 
-    using      impl_type = typename impl_ptr<user_type>::implementation; //C1
-    using allocator_type = typename allocator::template rebind<impl_type>::other;
+    using impl_type = typename impl_ptr<user_type>::implementation; //C1
 
     template<size_t sz>
     using   onstack = base<detail::onstack   <impl_type, sz>>;
-    using    shared = base<detail::shared    <impl_type, allocator_type>>;
-    using    unique = base<detail::unique    <impl_type, allocator_type>>;
-    using    copied = base<detail::copied    <impl_type, allocator_type>>;
-    using unique_au = base<detail::unique_au <impl_type, allocator_type>>;
-    using copied_au = base<detail::copied_au <impl_type, allocator_type>>;
-    using       cow = base<detail::cow       <impl_type, allocator_type>>;
+    using    shared = base<detail::shared    <impl_type, more_types...>>;
+    using    unique = base<detail::unique    <impl_type, more_types...>>;
+    using    copied = base<detail::copied    <impl_type, more_types...>>;
+    using unique_au = base<detail::unique_au <impl_type, more_types...>>;
+    using copied_au = base<detail::copied_au <impl_type, more_types...>>;
+    using       cow = base<detail::cow       <impl_type, more_types...>>;
 
     static user_type null()
     {
@@ -72,13 +71,12 @@ struct impl_ptr
     }
 };
 
-template<typename user_type, typename allocator>
+template<typename user_type, typename... more_types>
 template<typename policy_type>
-struct impl_ptr<user_type, allocator>::base
+struct impl_ptr<user_type, more_types...>::base
 {
     using implementation = typename impl_ptr<user_type>::implementation; //C1
     using  impl_ptr_type = base;
-    using allocator_type = allocator;
 
     static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
 
@@ -121,7 +119,7 @@ struct impl_ptr<user_type, allocator>::base
 
     protected:
 
-    template<typename, typename> friend struct impl_ptr;
+    template<typename, typename...> friend struct impl_ptr;
 
     base (detail::null_type) {}
 
@@ -136,7 +134,7 @@ struct impl_ptr<user_type, allocator>::base
 
 namespace boost
 {
-    template<typename user_type, typename allocator =std::allocator<void>> using impl_ptr = ::impl_ptr<user_type, allocator>;
+    template<typename user_type, typename... more_types> using impl_ptr = ::impl_ptr<user_type, more_types...>;
 
     template<typename, typename =void>
     struct is_impl_ptr : boost::false_type {};

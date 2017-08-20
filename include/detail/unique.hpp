@@ -5,14 +5,12 @@
 
 namespace detail
 {
-    template<typename, typename> struct unique;
+    template<typename, typename =std::allocator<void>> struct unique;
 }
 
 template<typename impl_type, typename allocator>
 struct detail::unique
 {
-    template<typename T> using alloc = typename allocator::template rebind<T>::other;
-
     using   this_type = unique;
     using traits_type = detail::unique_traits<impl_type, allocator>;
     using  traits_ptr = typename traits_type::pointer;
@@ -21,8 +19,10 @@ struct detail::unique
     void
     emplace(arg_types&&... args)
     {
-        alloc<derived_type> a;
-        impl_type*       impl = a.allocate(1);
+        using alloc_type = typename allocator::template rebind<derived_type>::other;
+
+        alloc_type    a;
+        impl_type* impl = a.allocate(1);
 
         a.construct(impl, std::forward<arg_types>(args)...);
 

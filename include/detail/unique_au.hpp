@@ -5,7 +5,7 @@
 
 namespace detail
 {
-    template<typename, typename> struct unique_au;
+    template<typename, typename =std::allocator<void>> struct unique_au;
 }
 
 template<typename impl_type, typename allocator>
