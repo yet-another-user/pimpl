@@ -82,13 +82,13 @@
 <p>
       or a switch from
     </p>
-<pre class="programlisting"><span class="comment">// Heap-based implementation allocation</span>
+<pre class="programlisting"><span class="comment">// std::allocator-based implementation allocation</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
       to
     </p>
-<pre class="programlisting"><span class="comment">// Custom-based implementation allocation</span>
+<pre class="programlisting"><span class="comment">// Custom-allocator-based implementation allocation</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
