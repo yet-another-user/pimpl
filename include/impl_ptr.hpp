@@ -24,16 +24,15 @@ namespace detail
     constexpr null_type null_arg {};
 }
 
-// C1. Always use the impl_ptr<user_type>::implementation specialization,
-//     i.e. the one with the defaulted allocator.
+// C1. Always use the impl_ptr<user_type>::implementation specialization.
 //     That allows the implementation developer to only declare/define one
 //     implementation:
 //         template<> struct impl_ptr<user_type>::implementation { ... };
-//     regardless of the allocator passed in externally.
+//     regardless of the extra types/args passed in externally.
 //     That (obviously) simplifies the internal implementation.
 // C2. Comparison Operators.
 //     base::op==() transfers the comparison to 'impl_'. Consequently,
-//     ptr-semantics (shared_ptr-based) pimpls are comparable due to shared_ptr::op==().
+//     shared_ptr-based pimpls are comparable due to shared_ptr::op==().
 //     However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT --
 //     the standard value-semantics behavior -- due to NO unique::op==().
 //     If a value-semantics class T needs to be comparable, then it has to provide
@@ -49,12 +48,12 @@ struct impl_ptr
     template<typename> struct base;
 
     using impl_type = typename impl_ptr<user_type>::implementation; //C1
-    using   onstack = base<detail::onstack   <impl_type, more_types...>>;
     using    shared = base<detail::shared    <impl_type, more_types...>>;
     using    unique = base<detail::unique    <impl_type, more_types...>>;
-    using    copied = base<detail::copied    <impl_type, more_types...>>;
     using unique_au = base<detail::unique_au <impl_type, more_types...>>;
+    using    copied = base<detail::copied    <impl_type, more_types...>>;
     using copied_au = base<detail::copied_au <impl_type, more_types...>>;
+    using   onstack = base<detail::onstack   <impl_type, more_types...>>;
     using       cow = base<detail::cow       <impl_type, more_types...>>;
 
     static user_type null()
@@ -132,13 +131,13 @@ struct impl_ptr<user_type, more_types...>::base
 
 namespace boost
 {
-    template<typename user_type, typename... more_types> using impl_ptr = ::impl_ptr<user_type, more_types...>;
+    template<typename U, typename... M> using impl_ptr = ::impl_ptr<U, M...>;
 
     template<typename, typename =void>
-    struct is_impl_ptr : boost::false_type {};
+    struct is_impl_ptr : false_type {};
 
     template<typename T>
-    struct is_impl_ptr<T, boost::void_t<typename T::impl_ptr_type>> : boost::true_type {};
+    struct is_impl_ptr<T, void_t<typename T::impl_ptr_type>> : true_type {};
 }
 
 #endif // IMPL_PTR_HPP
