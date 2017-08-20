@@ -6,20 +6,21 @@
 
 namespace detail
 {
-    template<typename, size_t> struct onstack;
+    template<typename, typename =void> struct onstack;
 }
 
-template<typename impl_type, size_t sz>
+template<typename impl_type, typename size_type>
 struct detail::onstack // Proof of concept
 {
-    struct allocator : std::allocator<impl_type>
+    template<typename T =void> struct allocator : std::allocator<T>
     {
-        void deallocate(impl_type*, size_t) {}
-    };
+        void deallocate(T*, size_t) {}
 
+        template<typename Y> struct rebind { using other = allocator<Y>; };
+    };
     using    this_type = onstack;
-    using storage_type = typename boost::aligned_storage<sz, 8>::type;
-    using  traits_type = detail::copyable_traits<impl_type, allocator>;
+    using storage_type = boost::aligned_storage<sizeof(size_type), sizeof(size_type)>;
+    using  traits_type = detail::copyable_traits<impl_type, allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
    ~onstack () { if (traits_) traits_->destroy(get()); }
@@ -45,7 +46,7 @@ struct detail::onstack // Proof of concept
     void
     emplace(arg_types&&... args)
     {
-        static_assert(sizeof(derived_type) <= sz, "");
+        static_assert(sizeof(derived_type) <= storage_type::size, "");
 
         ::new (storage_.address()) derived_type(std::forward<arg_types>(args)...);
         traits_ = traits_type();

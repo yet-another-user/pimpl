@@ -33,25 +33,29 @@ struct detail::traits_base
     }
 };
 
-template<typename impl_type, typename allocator_type>
-struct detail::unique_traits : detail::traits_base<unique_traits<impl_type, allocator_type>, impl_type>
+template<typename impl_type, typename allocator>
+struct detail::unique_traits : detail::traits_base<unique_traits<impl_type, allocator>, impl_type>
 {
+    using alloc_type = typename allocator::template rebind<impl_type>::other;
+
     void destroy(impl_type* p) const override
     {
-        allocator_type a;
+        alloc_type a;
 
         a.destroy(p);
         a.deallocate(p, 1);
     }
 };
 
-template<typename impl_type, typename allocator_type>
-struct detail::copyable_traits : detail::traits_base<copyable_traits<impl_type, allocator_type>, impl_type>
+template<typename impl_type, typename allocator>
+struct detail::copyable_traits : detail::traits_base<copyable_traits<impl_type, allocator>, impl_type>
 {
+    using alloc_type = typename allocator::template rebind<impl_type>::other;
+
     void
     destroy(impl_type* p) const override
     {
-        allocator_type a;
+        alloc_type a;
 
         a.destroy(p);
         a.deallocate(p, 1);
@@ -59,7 +63,7 @@ struct detail::copyable_traits : detail::traits_base<copyable_traits<impl_type, 
     impl_type*
     construct(void* p, impl_type const& from) const override
     {
-        if (!p) p = allocator_type().allocate(1);
+        if (!p) p = alloc_type().allocate(1);
         return ::new(p) impl_type(from);
     }
     void

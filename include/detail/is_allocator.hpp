@@ -5,13 +5,6 @@
 
 namespace detail
 {
-    template <typename first_type =void, typename...> struct first { using type = first_type; };
-
-//    using alloc = typename std::conditional<
-//                  sizeof...(arg_types) == 0,
-//                  std::allocator<impl_type>,
-//                  typename first<arg_types...>::type>::type;
-
     template<typename, typename =void>
     struct is_allocator { BOOST_STATIC_CONSTANT(bool, value = false); };
 

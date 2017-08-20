@@ -5,7 +5,7 @@
 
 namespace detail
 {
-    template<typename, typename> struct cow;
+    template<typename, typename =std::allocator<void>> struct cow;
 }
 
 template<typename impl_type, typename allocator>

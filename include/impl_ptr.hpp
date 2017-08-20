@@ -24,31 +24,37 @@ namespace detail
     constexpr null_type null_arg {};
 }
 
-// C1. Always use the impl_ptr<user_type>::implementation specialization,
-//     i.e. the one with the defaulted allocator.
+// C1. Always use the impl_ptr<user_type>::implementation specialization.
 //     That allows the implementation developer to only declare/define one
 //     implementation:
 //         template<> struct impl_ptr<user_type>::implementation { ... };
-//     regardless of the allocator passed in externally.
-//     That is, that simplifies the internal implementation.
+//     regardless of the extra types/args passed in externally.
+//     That (obviously) simplifies the internal implementation.
+// C2. Comparison Operators.
+//     base::op==() transfers the comparison to 'impl_'. Consequently,
+//     shared_ptr-based pimpls are comparable due to shared_ptr::op==().
+//     However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT --
+//     the standard value-semantics behavior -- due to NO unique::op==().
+//     If a value-semantics class T needs to be comparable, then it has to provide
+//     T::op==(T const&) EXPLICITLY as part of its own public interface.
+//     Trying to call this base::op==() for unique-based impl_ptr will fail to compile
+//     (no unique::op==()) and will indicate that the user forgot to declare
+//     T::operator==(T const&).
 
-template<typename user_type, typename allocator =std::allocator<void>>
+template<typename user_type, typename... more_types>
 struct impl_ptr
 {
     struct          implementation;
     template<typename> struct base;
 
-    using      impl_type = typename impl_ptr<user_type>::implementation; //C1
-    using allocator_type = typename allocator::template rebind<impl_type>::other;
-
-    template<size_t sz>
-    using   onstack = base<detail::onstack   <impl_type, sz>>;
-    using    shared = base<detail::shared    <impl_type, allocator_type>>;
-    using    unique = base<detail::unique    <impl_type, allocator_type>>;
-    using    copied = base<detail::copied    <impl_type, allocator_type>>;
-    using unique_au = base<detail::unique_au <impl_type, allocator_type>>;
-    using copied_au = base<detail::copied_au <impl_type, allocator_type>>;
-    using       cow = base<detail::cow       <impl_type, allocator_type>>;
+    using impl_type = typename impl_ptr<user_type>::implementation; //C1
+    using    shared = base<detail::shared    <impl_type, more_types...>>;
+    using    unique = base<detail::unique    <impl_type, more_types...>>;
+    using unique_au = base<detail::unique_au <impl_type, more_types...>>;
+    using    copied = base<detail::copied    <impl_type, more_types...>>;
+    using copied_au = base<detail::copied_au <impl_type, more_types...>>;
+    using   onstack = base<detail::onstack   <impl_type, more_types...>>;
+    using       cow = base<detail::cow       <impl_type, more_types...>>;
 
     static user_type null()
     {
@@ -62,39 +68,24 @@ struct impl_ptr
     }
 };
 
-template<typename user_type, typename allocator>
+template<typename user_type, typename... more_types>
 template<typename policy_type>
-struct impl_ptr<user_type, allocator>::base
+struct impl_ptr<user_type, more_types...>::base
 {
     using implementation = typename impl_ptr<user_type>::implementation; //C1
     using  impl_ptr_type = base;
-    using allocator_type = allocator;
 
     static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
 
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
 
-    // Comparison Operators.
-    // base::op==() transfers the comparison to 'impl_'. Consequently,
-    // ptr-semantics (shared_ptr-based) pimpls are comparable due to shared_ptr::op==().
-    // However, value-semantics (unique-based) pimpls are NOT COMPARABLE BY DEFAULT --
-    // the standard value-semantics behavior -- due to NO unique::op==().
-    // If a value-semantics class T needs to be comparable, then it has to provide
-    // T::op==(T const&) EXPLICITLY as part of its own public interface.
-    // Trying to call this base::op==() for unique-based impl_ptr will fail to compile
-    // (no unique::op==()) and will indicate that the user forgot to declare
-    // T::operator==(T const&).
-    bool operator==(user_type const& that) const { return impl_ == that.impl_; }
-    bool operator!=(user_type const& that) const { return impl_ != that.impl_; }
+    bool operator==(user_type const& that) const { return impl_ == that.impl_; } //C2
+    bool operator!=(user_type const& that) const { return impl_ != that.impl_; } //C2
     bool operator< (user_type const& that) const { return impl_  < that.impl_; }
 
     void      swap (user_type& that) { impl_.swap(that.impl_); }
     long use_count () const { return impl_.use_count(); }
-
-//    template<class Y>                   void reset (Y* p) { impl_.reset(p); }
-//    template<class Y, class D>          void reset (Y* p, D d) { impl_.reset(p, d); }
-//    template<class Y, class D, class A> void reset (Y* p, D d, A a) { impl_.reset(p, d, a); }
 
     template<typename impl_type, typename... arg_types>
     void
@@ -125,7 +116,7 @@ struct impl_ptr<user_type, allocator>::base
 
     protected:
 
-    template<typename, typename> friend struct impl_ptr;
+    template<typename, typename...> friend struct impl_ptr;
 
     base (detail::null_type) {}
 
@@ -140,13 +131,13 @@ struct impl_ptr<user_type, allocator>::base
 
 namespace boost
 {
-    template<typename user_type, typename allocator =std::allocator<void>> using impl_ptr = ::impl_ptr<user_type, allocator>;
+    template<typename U, typename... M> using impl_ptr = ::impl_ptr<U, M...>;
 
     template<typename, typename =void>
-    struct is_impl_ptr : boost::false_type {};
+    struct is_impl_ptr : false_type {};
 
     template<typename T>
-    struct is_impl_ptr<T, boost::void_t<typename T::impl_ptr_type>> : boost::true_type {};
+    struct is_impl_ptr<T, void_t<typename T::impl_ptr_type>> : true_type {};
 }
 
 #endif // IMPL_PTR_HPP

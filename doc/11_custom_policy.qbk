@@ -2,12 +2,24 @@
 
 An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a ['stack-based-implementation] policy might be another:
 
- template<typename impl_type, size_t sz>
+ namespace detail
+ {
+     template<typename, typename =void> struct onstack;
+ }
+ 
+ template<typename impl_type, typename size_type>
  struct detail::onstack // Proof of concept
  {
+     template<typename T =void> struct allocator : std::allocator<T>
+     {
+         void deallocate(T*, size_t) {}
+ 
+         template<typename Y> struct rebind { using other = allocator<Y>; };
+     };
      using    this_type = onstack;
-     using  traits_type = traits::onstack<impl_type>;
-     using storage_type = typename boost::aligned_storage<sz, 8>::type;
+     using storage_type = boost::aligned_storage<sizeof(size_type), sizeof(size_type)>;
+     using  traits_type = detail::copyable_traits<impl_type, allocator<>>;
+     using   traits_ptr = typename traits_type::pointer;
  
     ~onstack () { if (traits_) traits_->destroy(get()); }
      onstack () {}
@@ -16,34 +28,20 @@ An important property of ['impl_ptr] is its extendibility. It currently provides
          if (traits_)
              traits_->construct(storage_.address(), *o.get());
      }
-     template<typename derived_type, typename... arg_types>
-     void
-     emplace(arg_types&&... args)
-     {
-         static_assert(sizeof(derived_type) <= sz, "");
- 
-         ::new (storage_.address()) derived_type(std::forward<arg_types>(args)...);
-         traits_ = traits_type();
-     }
-     impl_type* get() const 
-     { 
-         return traits_ ? (impl_type*) storage_.address() : nullptr; 
-     }
- 
      ...
-
+ 
      private:
  
-     storage_type              storage_;
-     traits::pointer<impl_type> traits_ = nullptr;
+     storage_type storage_;
+     traits_ptr    traits_ = nullptr;
  };
- template<typename user_type>
+ template<typename user_type, typename... more_types>
  struct impl_ptr
- { ...
-     template<size_t sz> using onstack = base<detail::onstack<implementation, sz>>;
+ {
+     using onstack = base<detail::onstack<impl_type, more_types...>>;
  };
  ...
- struct OnStack : boost::impl_ptr<OnStack>::onstack<32> { ... };
+ struct OnStack : boost::impl_ptr<OnStack, int[16]>::onstack { ... };
 
 Then ['OnStack] could be used no differently from other ['Pimpl]-based objects:
 
@@ -60,13 +58,18 @@ Then ['OnStack] could be used no differently from other ['Pimpl]-based objects:
 
 or a switch from
 
- // Heap-based implementation allocation
+ // std::allocator-based implementation allocation
  struct Book : boost::impl_ptr<Book>::copied { ... };
 
 to
 
+ // Custom-allocator-based implementation allocation
+ struct Book : boost::impl_ptr<Book, my_allocator>::copied { ... };
+
+or to
+
  // Stack-based implementation allocation
- struct Book : boost::impl_ptr<Book>::onstack<32> { ... };
+ struct Book : boost::impl_ptr<Book, char[64]>::onstack { ... };
 
 could be done later due to efficiency requirements or heap constraints with minimal or no disruption to the existing code. 
 
