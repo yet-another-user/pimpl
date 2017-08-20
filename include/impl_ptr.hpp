@@ -49,9 +49,7 @@ struct impl_ptr
     template<typename> struct base;
 
     using impl_type = typename impl_ptr<user_type>::implementation; //C1
-
-    template<size_t sz>
-    using   onstack = base<detail::onstack   <impl_type, sz>>;
+    using   onstack = base<detail::onstack   <impl_type, more_types...>>;
     using    shared = base<detail::shared    <impl_type, more_types...>>;
     using    unique = base<detail::unique    <impl_type, more_types...>>;
     using    copied = base<detail::copied    <impl_type, more_types...>>;
