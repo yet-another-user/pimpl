@@ -64,7 +64,7 @@ or a switch from
 to
 
  // Stack-based implementation allocation
- struct Book : boost::impl_ptr<Book>::onstack<32> { ... };
+ struct Book : boost::impl_ptr<Book, char[64]>::onstack { ... };
 
 could be done later due to efficiency requirements or heap constraints with minimal or no disruption to the existing code. 
 
