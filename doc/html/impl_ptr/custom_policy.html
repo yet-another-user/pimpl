@@ -23,12 +23,24 @@
       example, a <span class="emphasis"><em>copy-on-write</em></span> policy might be one such extension.
       Then, a <span class="emphasis"><em>stack-based-implementation</em></span> policy might be another:
     </p>
-<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">size_t</span> <span class="identifier">sz</span><span class="special">&gt;</span>
+<pre class="programlisting"><span class="keyword">namespace</span> <span class="identifier">detail</span>
+<span class="special">{</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">,</span> <span class="keyword">typename</span> <span class="special">=</span><span class="keyword">void</span><span class="special">&gt;</span> <span class="keyword">struct</span> <span class="identifier">onstack</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">size_type</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span> <span class="comment">// Proof of concept</span>
 <span class="special">{</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span> <span class="special">=</span><span class="keyword">void</span><span class="special">&gt;</span> <span class="keyword">struct</span> <span class="identifier">allocator</span> <span class="special">:</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">allocator</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;</span>
+    <span class="special">{</span>
+        <span class="keyword">void</span> <span class="identifier">deallocate</span><span class="special">(</span><span class="identifier">T</span><span class="special">*,</span> <span class="identifier">size_t</span><span class="special">)</span> <span class="special">{}</span>
+
+        <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Y</span><span class="special">&gt;</span> <span class="keyword">struct</span> <span class="identifier">rebind</span> <span class="special">{</span> <span class="keyword">using</span> <span class="identifier">other</span> <span class="special">=</span> <span class="identifier">allocator</span><span class="special">&lt;</span><span class="identifier">Y</span><span class="special">&gt;;</span> <span class="special">};</span>
+    <span class="special">};</span>
     <span class="keyword">using</span>    <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">onstack</span><span class="special">;</span>
-    <span class="keyword">using</span>  <span class="identifier">traits_type</span> <span class="special">=</span> <span class="identifier">traits</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">&gt;;</span>
-    <span class="keyword">using</span> <span class="identifier">storage_type</span> <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">aligned_storage</span><span class="special">&lt;</span><span class="identifier">sz</span><span class="special">,</span> <span class="number">8</span><span class="special">&gt;::</span><span class="identifier">type</span><span class="special">;</span>
+    <span class="keyword">using</span> <span class="identifier">storage_type</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">aligned_storage</span><span class="special">&lt;</span><span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">size_type</span><span class="special">),</span> <span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">size_type</span><span class="special">)&gt;;</span>
+    <span class="keyword">using</span>  <span class="identifier">traits_type</span> <span class="special">=</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">copyable_traits</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">allocator</span><span class="special">&lt;&gt;&gt;;</span>
+    <span class="keyword">using</span>   <span class="identifier">traits_ptr</span> <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">traits_type</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">;</span>
 
    <span class="special">~</span><span class="identifier">onstack</span> <span class="special">()</span> <span class="special">{</span> <span class="keyword">if</span> <span class="special">(</span><span class="identifier">traits_</span><span class="special">)</span> <span class="identifier">traits_</span><span class="special">-&gt;</span><span class="identifier">destroy</span><span class="special">(</span><span class="identifier">get</span><span class="special">());</span> <span class="special">}</span>
     <span class="identifier">onstack</span> <span class="special">()</span> <span class="special">{}</span>
@@ -37,34 +49,20 @@
         <span class="keyword">if</span> <span class="special">(</span><span class="identifier">traits_</span><span class="special">)</span>
             <span class="identifier">traits_</span><span class="special">-&gt;</span><span class="identifier">construct</span><span class="special">(</span><span class="identifier">storage_</span><span class="special">.</span><span class="identifier">address</span><span class="special">(),</span> <span class="special">*</span><span class="identifier">o</span><span class="special">.</span><span class="identifier">get</span><span class="special">());</span>
     <span class="special">}</span>
-    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">derived_type</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">arg_types</span><span class="special">&gt;</span>
-    <span class="keyword">void</span>
-    <span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span><span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span>
-    <span class="special">{</span>
-        <span class="keyword">static_assert</span><span class="special">(</span><span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">derived_type</span><span class="special">)</span> <span class="special">&lt;=</span> <span class="identifier">sz</span><span class="special">,</span> <span class="string">""</span><span class="special">);</span>
-
-        <span class="special">::</span><span class="keyword">new</span> <span class="special">(</span><span class="identifier">storage_</span><span class="special">.</span><span class="identifier">address</span><span class="special">())</span> <span class="identifier">derived_type</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">arg_types</span><span class="special">&gt;(</span><span class="identifier">args</span><span class="special">)...);</span>
-        <span class="identifier">traits_</span> <span class="special">=</span> <span class="identifier">traits_type</span><span class="special">();</span>
-    <span class="special">}</span>
-    <span class="identifier">impl_type</span><span class="special">*</span> <span class="identifier">get</span><span class="special">()</span> <span class="keyword">const</span>
-    <span class="special">{</span>
-        <span class="keyword">return</span> <span class="identifier">traits_</span> <span class="special">?</span> <span class="special">(</span><span class="identifier">impl_type</span><span class="special">*)</span> <span class="identifier">storage_</span><span class="special">.</span><span class="identifier">address</span><span class="special">()</span> <span class="special">:</span> <span class="keyword">nullptr</span><span class="special">;</span>
-    <span class="special">}</span>
-
     <span class="special">...</span>
 
     <span class="keyword">private</span><span class="special">:</span>
 
-    <span class="identifier">storage_type</span>              <span class="identifier">storage_</span><span class="special">;</span>
-    <span class="identifier">traits</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">&gt;</span> <span class="identifier">traits_</span> <span class="special">=</span> <span class="keyword">nullptr</span><span class="special">;</span>
+    <span class="identifier">storage_type</span> <span class="identifier">storage_</span><span class="special">;</span>
+    <span class="identifier">traits_ptr</span>    <span class="identifier">traits_</span> <span class="special">=</span> <span class="keyword">nullptr</span><span class="special">;</span>
 <span class="special">};</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">user_type</span><span class="special">&gt;</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">user_type</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">more_types</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">impl_ptr</span>
-<span class="special">{</span> <span class="special">...</span>
-    <span class="keyword">template</span><span class="special">&lt;</span><span class="identifier">size_t</span> <span class="identifier">sz</span><span class="special">&gt;</span> <span class="keyword">using</span> <span class="identifier">onstack</span> <span class="special">=</span> <span class="identifier">base</span><span class="special">&lt;</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">implementation</span><span class="special">,</span> <span class="identifier">sz</span><span class="special">&gt;&gt;;</span>
+<span class="special">{</span>
+    <span class="keyword">using</span> <span class="identifier">onstack</span> <span class="special">=</span> <span class="identifier">base</span><span class="special">&lt;</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">more_types</span><span class="special">...&gt;&gt;;</span>
 <span class="special">};</span>
 <span class="special">...</span>
-<span class="keyword">struct</span> <span class="identifier">OnStack</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="number">32</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">OnStack</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">,</span> <span class="keyword">int</span><span class="special">[</span><span class="number">16</span><span class="special">]&gt;::</span><span class="identifier">onstack</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
       Then <span class="emphasis"><em>OnStack</em></span> could be used no differently from other
