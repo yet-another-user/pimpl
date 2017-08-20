@@ -15,6 +15,8 @@ struct detail::onstack // Proof of concept
     struct allocator : std::allocator<impl_type>
     {
         void deallocate(impl_type*, size_t) {}
+
+        template<typename Y> struct rebind { using other = allocator; };
     };
 
     using    this_type = onstack;
