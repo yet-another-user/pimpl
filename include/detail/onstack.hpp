@@ -19,7 +19,7 @@ struct detail::onstack // Proof of concept
         template<typename Y> struct rebind { using other = allocator<Y>; };
     };
     using    this_type = onstack;
-    using storage_type = boost::aligned_storage<sizeof(size_type), sizeof(size_type)>;
+    using storage_type = boost::aligned_storage<sizeof(size_type)>;
     using  traits_type = detail::copyable_traits<impl_type, allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
