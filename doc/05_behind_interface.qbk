@@ -1,6 +1,6 @@
 [section Behind the Interface]
 
-The second fundamental property of the ['Pimpl] idiom is the ['implementation hiding]. Not only notionally declared as private, not merely separated into another class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to optimize, to modify, to improve as they need. 
+The second fundamental property of the ['Pimpl] idiom is the ['implementation hiding]. Not only notionally declared private, not merely separated into another class or a header file, but truly internal and hidden (from the user). Behind the public interface it is all for developers to implement, to modify, to optimize, to improve as they need. 
 
 Still, the ['deployment pattern] is fairly straightforward and reasonably self-documented. Something like the following will be tucked away in an implementation file: 
 
@@ -18,7 +18,9 @@ Still, the ['deployment pattern] is fairly straightforward and reasonably self-d
     int     price =0;
  };
   
- Book::Book(string const& title, string const& author) : impl_ptr_type(in_place, title, author) {}
+ Book::Book(string const& title, string const& author) 
+ : 
+     impl_ptr_type(in_place, title, author) {}
  
  string const& Book::author () const { return (*this)->author; }
  void          Book:: price (int new_price) { (*this)->price = new_price; }

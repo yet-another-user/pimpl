@@ -20,9 +20,9 @@
 <p>
       The second fundamental property of the <span class="emphasis"><em>Pimpl</em></span> idiom is
       the <span class="emphasis"><em>implementation hiding</em></span>. Not only notionally declared
-      as private, not merely separated into another class or a header file, but truly
+      private, not merely separated into another class or a header file, but truly
       internal and hidden (from the user). Behind the public interface it is all
-      for developers to implement, to optimize, to modify, to improve as they need.
+      for developers to implement, to modify, to optimize, to improve as they need.
     </p>
 <p>
       Still, the <span class="emphasis"><em>deployment pattern</em></span> is fairly straightforward
@@ -43,7 +43,9 @@
    <span class="keyword">int</span>     <span class="identifier">price</span> <span class="special">=</span><span class="number">0</span><span class="special">;</span>
 <span class="special">};</span>
 
-<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">,</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span> <span class="special">{}</span>
+<span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">(</span><span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">author</span><span class="special">)</span>
+<span class="special">:</span>
+    <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">,</span> <span class="identifier">title</span><span class="special">,</span> <span class="identifier">author</span><span class="special">)</span> <span class="special">{}</span>
 
 <span class="identifier">string</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">Book</span><span class="special">::</span><span class="identifier">author</span> <span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)-&gt;</span><span class="identifier">author</span><span class="special">;</span> <span class="special">}</span>
 <span class="keyword">void</span>          <span class="identifier">Book</span><span class="special">::</span> <span class="identifier">price</span> <span class="special">(</span><span class="keyword">int</span> <span class="identifier">new_price</span><span class="special">)</span> <span class="special">{</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)-&gt;</span><span class="identifier">price</span> <span class="special">=</span> <span class="identifier">new_price</span><span class="special">;</span> <span class="special">}</span>
