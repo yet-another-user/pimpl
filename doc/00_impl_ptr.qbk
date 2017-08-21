@@ -1,5 +1,5 @@
 [/==============================================================================
-    Copyright (C) 2009-2018 Vladimir Batov
+    Copyright (C) 2008-2018 Vladimir Batov
 
     Use, modification and distribution is subject to the Boost Software
     License, Version 1.0. (See a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -9,7 +9,7 @@
     [version C++11]
     [id impl_ptr]
     [dirname pimpl]
-    [copyright 2009-2018 Vladimir Batov]
+    [copyright 2008-2018 Vladimir Batov]
     [purpose Generalization of The Pimpl Idiom]
     [category generic]
     [authors [Batov, Vladimir]]

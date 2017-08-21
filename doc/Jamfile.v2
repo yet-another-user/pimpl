@@ -1,5 +1,5 @@
 # impl_ptr documentation Jamfile
-# Copyright 2009-2018 Vladimir Batov
+# Copyright 2008-2018 Vladimir Batov
 
 using boostbook ;
 using quickbook ;
