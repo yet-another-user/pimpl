@@ -39,12 +39,12 @@ namespace detail
 //     T::operator==(T const&).
 
 template<typename user_type, typename... more_types>
-struct _internal_impl_ptr
+struct boost_impl_ptr_detail
 {
     struct          implementation;
     template<typename> struct base;
 
-    using impl_type = typename _internal_impl_ptr<user_type>::implementation; //C1
+    using impl_type = typename boost_impl_ptr_detail<user_type>::implementation; //C1
     using    shared = base<detail::shared    <impl_type, more_types...>>;
     using    unique = base<detail::unique    <impl_type, more_types...>>;
     using unique_au = base<detail::unique_au <impl_type, more_types...>>;
@@ -67,9 +67,9 @@ struct _internal_impl_ptr
 
 template<typename user_type, typename... more_types>
 template<typename policy_type>
-struct _internal_impl_ptr<user_type, more_types...>::base
+struct boost_impl_ptr_detail<user_type, more_types...>::base
 {
-    using implementation = typename _internal_impl_ptr<user_type>::implementation; //C1
+    using implementation = typename boost_impl_ptr_detail<user_type>::implementation; //C1
     using  impl_ptr_type = base;
 
     static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
@@ -108,12 +108,12 @@ struct _internal_impl_ptr<user_type, more_types...>::base
     implementation& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
 
     template<typename other_type>
-    static other_type null() { return _internal_impl_ptr<other_type>::null(); }
-    static user_type  null() { return _internal_impl_ptr< user_type>::null(); }
+    static other_type null() { return boost_impl_ptr_detail<other_type>::null(); }
+    static user_type  null() { return boost_impl_ptr_detail< user_type>::null(); }
 
     protected:
 
-    template<typename, typename...> friend struct _internal_impl_ptr;
+    template<typename, typename...> friend struct boost_impl_ptr_detail;
 
     base (nullptr_t) {}
 
@@ -128,7 +128,7 @@ struct _internal_impl_ptr<user_type, more_types...>::base
 
 namespace boost
 {
-    template<typename U, typename... M> using impl_ptr = ::_internal_impl_ptr<U, M...>;
+    template<typename U, typename... M> using impl_ptr = ::boost_impl_ptr_detail<U, M...>;
 
     template<typename, typename =void>
     struct is_impl_ptr : false_type {};

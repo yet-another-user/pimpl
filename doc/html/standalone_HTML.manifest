@@ -14,10 +14,10 @@ impl_ptr/applications/non_extendible_unique_entry_coll.html
 impl_ptr/applications/internal_implementation_only_run.html
 impl_ptr/applications/run_time_polymorphic_class_hiera.html
 reference.html
-_internal_impl_ptr.html
-_internal_impl_ptr/base.html
+boost_impl_ptr_detail.html
+boost_impl_ptr_detail/base.html
 boost/is_impl_ptr.html
-boost/is_impl__idm45890314612688.html
+boost/is_impl__idm46345737442080.html
 impl_ptr/bibliography.html
 impl_ptr/acknowledgements.html
 index/s13.html

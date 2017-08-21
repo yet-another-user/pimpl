@@ -42,7 +42,7 @@ As mentioned earlier, if comparison functionality is required, a class with valu
     return (*this)->title == other->title && (*this)->author == other->author;
  }
  
-Here the ['impl_ptr<Book>::implementation] is again a ['struct] rather than a ['class]. As long as ['impl_impl<Book>::implementation] is local to one file, i.e. it is ['private ] (although physically rather than notionally), there is generally little value in making it a class. 
+Here the ['impl_ptr<Book>::implementation] is again a ['struct] rather than a ['class]. As long as ['impl_impl<Book>::implementation] is local to one file, i.e. ['private ] (although physically rather than notionally), there is generally little value in making it a class. 
 
 :-) Another reconciliatory and unifying property might be that no need to fight over a particular naming convention to draw attention to member variables (like the leading or trailing underscores, the 'm_' prefix or the myriad others). Member variables can be named naturally, accessed and identified as ['impl.title] or ['(*this)->title] or something of that sort.
 
