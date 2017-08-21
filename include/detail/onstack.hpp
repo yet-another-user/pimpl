@@ -1,3 +1,7 @@
+// Copyright (c) 2008-2018 Vladimir Batov.
+// Use, modification and distribution are subject to the Boost Software License,
+// Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
+
 #ifndef IMPL_PTR_DETAIL_ONSTACK_HPP
 #define IMPL_PTR_DETAIL_ONSTACK_HPP
 

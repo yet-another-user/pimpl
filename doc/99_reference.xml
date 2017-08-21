@@ -1,25 +1,25 @@
 <?xml version="1.0" standalone="yes"?>
-<library-reference id="reference"><title>Reference</title><header name="/home/vbatov/dev/impl_ptr/include/detail/copied.hpp">
+<library-reference id="reference"><title>Reference</title><header name="detail/copied.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/copied_au.hpp">
+<header name="detail/copied_au.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/cow.hpp">
+<header name="detail/cow.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/first.hpp">
+<header name="detail/first.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/is_allocator.hpp">
+<header name="detail/is_allocator.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/onstack.hpp">
+<header name="detail/onstack.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/shared.hpp">
+<header name="detail/shared.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/traits.hpp">
+<header name="detail/traits.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/unique.hpp">
+<header name="detail/unique.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/detail/unique_au.hpp">
+<header name="detail/unique_au.hpp">
 </header>
-<header name="/home/vbatov/dev/impl_ptr/include/impl_ptr.hpp">
+<header name="impl_ptr.hpp">
 <struct name="_internal_impl_ptr"><template>
       <template-type-parameter name="user_type"/>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>

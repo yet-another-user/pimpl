@@ -17,7 +17,7 @@ if --enable-index in  [ modules.peek : ARGV ]
    project impl_ptr_doc : requirements
              <auto-index>on
              <auto-index-script>index.idx
-             <auto-index-prefix>../include
+             <auto-index-prefix>.
              <auto-index-verbose>on
              <format>html:<auto-index-internal>on
              <format>html:<xsl:param>generate.index=0
@@ -31,17 +31,22 @@ else
    ECHO "Building the impl_ptr docs with automatic index generation disabled. Try building with --enable-index." ;
 }
 
-doxygen reference
+doxygen 99_reference
   :
-    [ glob $(here)/../include/*.hpp ]
+    $(here)/../include/detail/shared.hpp
+    $(here)/../include/impl_ptr.hpp
     [ glob $(here)/../include/detail/*.hpp ]
   : 
     <doxygen:param>PROJECT_NAME="IMPL_PTR"
     <doxygen:param>PROJECT_NUMBER=3
     <doxygen:param>SORT_MEMBER_DOCS=NO
-    <doxygen:param>SHOW_INCLUDE_FILES=NO
+    <doxygen:param>SHOW_INCLUDE_FILES=YES
     <doxygen:param>MAX_INITIALIZER_LINES=0
     <doxygen:param>VERBATIM_HEADERS=NO
+    <doxygen:param>FULL_PATH_NAMES=YES
+    <doxygen:param>STRIP_FROM_PATH=$(here)/../include
+    <doxygen:param>EXCLUDE_SYMBOLS=""
+    <doxygen:param>EXTRACT_ALL=YES
     <reftitle>"Reference"
 ;
 
@@ -49,7 +54,7 @@ xml impl_ptr
   :
     00_impl_ptr.qbk
   :
-    <dependency>reference
+    <dependency>99_reference
 ;
 
 boostbook standalone
