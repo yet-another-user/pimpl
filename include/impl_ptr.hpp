@@ -18,10 +18,7 @@
 
 namespace detail
 {
-    struct     null_type {};
     struct in_place_type {};
-
-    constexpr null_type null_arg {};
 }
 
 // C1. Always use the impl_ptr<user_type>::implementation specialization.
@@ -62,7 +59,7 @@ struct _internal_impl_ptr
 
         static_assert(sizeof(user_type) == sizeof(impl_ptr_type), "");
 
-        impl_ptr_type null (detail::null_arg);
+        impl_ptr_type null (nullptr);
 
         return std::move(static_cast<user_type&>(null));
     }
@@ -118,7 +115,7 @@ struct _internal_impl_ptr<user_type, more_types...>::base
 
     template<typename, typename...> friend struct _internal_impl_ptr;
 
-    base (detail::null_type) {}
+    base (nullptr_t) {}
 
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
