@@ -16,7 +16,7 @@
 <div><div class="author"><h3 class="author">
 <span class="firstname">Vladimir</span> <span class="surname">Batov</span>
 </h3></div></div>
-<div><p class="copyright">Copyright &#169; 2006-2018 Vladimir Batov</p></div>
+<div><p class="copyright">Copyright &#169; 2009-2018 Vladimir Batov</p></div>
 <div><div class="legalnotice">
 <a name="impl_ptr.legal"></a><p>
         Distributed under the Boost Software License, Version 1.0 (<a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>).
@@ -53,9 +53,14 @@
 <dt><span class="section"><a href="impl_ptr/applications/run_time_polymorphic_class_hiera.html">Run-Time
       Polymorphic Class Hierarchy</a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="impl_ptr/references.html">References</a></span></dt>
+<dt><span class="section"><a href="reference.html">Reference</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="reference.html#header..home.vbatov.dev.impl_ptr.include.impl_ptr_hpp">Header &lt;/home/vbatov/dev/impl_ptr/include/impl_ptr.hpp&gt;</a></span></dt>
+<dd><dl></dl></dd>
+</dl></dd>
+<dt><span class="section"><a href="index/s11.html">Index</a></span></dt>
+<dt><span class="section"><a href="impl_ptr/bibliography.html">Bibliography</a></span></dt>
 <dt><span class="section"><a href="impl_ptr/acknowledgements.html">Acknowledgements</a></span></dt>
-<dt><span class="section"><a href="index/s12.html">Index</a></span></dt>
 </dl>
 </div>
 <div class="note"><table border="0" summary="Note">
@@ -64,7 +69,7 @@
 <th align="left">Note</th>
 </tr>
 <tr><td align="left" valign="top"><p>
-      This documentation is based on the article (<a class="link" href="impl_ptr/references.html#1">[1]</a>) originally
+      This documentation is based on the article (<a class="link" href="impl_ptr/bibliography.html#1">[1]</a>) originally
       published in the C/C++ Users Journal.
     </p></td></tr>
 </table></div>
@@ -75,9 +80,8 @@
 </tr>
 <tr><td align="left" valign="top"><p>
       This library is not part of the Boost C++ Libraries collection. An endorsement/review
-      request has been submitted. That is the reason for <span class="emphasis"><em>impl_ptr</em></span>
-      appearing as <span class="emphasis"><em>boost::impl_ptr</em></span> in the documentation. I apologize
-      for any potential confusion and inconvenience.
+      request has been submitted. The documentation has been adjusted for the purpose.
+      I apologize for any potential confusion and inconvenience.
     </p></td></tr>
 </table></div>
 <div class="section">
@@ -93,7 +97,7 @@
           API-centered design,
         </li>
 <li class="listitem">
-          modularity, separation of concerns (<a class="link" href="impl_ptr/references.html#8">[8]</a>, <a class="link" href="impl_ptr/references.html#9">[9]</a>),
+          modularity, separation of concerns (<a class="link" href="impl_ptr/bibliography.html#8">[8]</a>, <a class="link" href="impl_ptr/bibliography.html#9">[9]</a>),
         </li>
 <li class="listitem">
           implementation hiding,
@@ -122,14 +126,14 @@
         </li>
 </ul></div>
 <p>
-      Popularized by Sutter (<a class="link" href="impl_ptr/references.html#2">[2]</a>, <a class="link" href="impl_ptr/references.html#3">[3]</a>,
-      <a class="link" href="impl_ptr/references.html#11">[11]</a>, <a class="link" href="impl_ptr/references.html#12">[12]</a>, <a class="link" href="impl_ptr/references.html#13">[13]</a>,
-      <a class="link" href="impl_ptr/references.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
+      Popularized by Sutter (<a class="link" href="impl_ptr/bibliography.html#2">[2]</a>, <a class="link" href="impl_ptr/bibliography.html#3">[3]</a>,
+      <a class="link" href="impl_ptr/bibliography.html#11">[11]</a>, <a class="link" href="impl_ptr/bibliography.html#12">[12]</a>, <a class="link" href="impl_ptr/bibliography.html#13">[13]</a>,
+      <a class="link" href="impl_ptr/bibliography.html#14">[14]</a>) under the cheeky <span class="emphasis"><em>Pimpl</em></span>
       name (as for "pointer to implementation" and more precisely "pointer
       to <span class="emphasis"><em>opaque</em></span> implementation") the technique has been
-      known under various names -- the D-pointer (in Qt), the Cheshire Cat (in <a class="link" href="impl_ptr/references.html#4">[4]</a>), the Handle/Body (in <a class="link" href="impl_ptr/references.html#5">[5]</a> and
-      <a class="link" href="impl_ptr/references.html#6">[6]</a>), the Bridge (in <a class="link" href="impl_ptr/references.html#6">[6]</a>)
-      -- and deployed in C and C++ as far back as at least early eighties (<a class="link" href="impl_ptr/references.html#7">[7]</a>).
+      known under various names -- the D-pointer (in Qt), the Cheshire Cat (in <a class="link" href="impl_ptr/bibliography.html#4">[4]</a>), the Handle/Body (in <a class="link" href="impl_ptr/bibliography.html#5">[5]</a> and
+      <a class="link" href="impl_ptr/bibliography.html#6">[6]</a>), the Bridge (in <a class="link" href="impl_ptr/bibliography.html#6">[6]</a>)
+      -- and deployed in C and C++ as far back as at least early eighties (<a class="link" href="impl_ptr/bibliography.html#7">[7]</a>).
     </p>
 <p>
       Still, on a smaller scale it does not seem to be widely embraced and uniformly
@@ -153,7 +157,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: August 20, 2017 at 02:13:15 GMT</small></p></td>
+<td align="left"><p><small>Last revised: August 21, 2017 at 00:15:26 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

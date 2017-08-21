@@ -1,5 +1,25 @@
 <?xml version="1.0" standalone="yes"?>
-<library-reference id="impl_ptr_reference"><title>impl_ptr Reference</title><header name="/home/vbatov/dev/impl_ptr/include/impl_ptr.hpp">
+<library-reference id="reference"><title>Reference</title><header name="/home/vbatov/dev/impl_ptr/include/detail/copied.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/copied_au.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/cow.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/first.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/is_allocator.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/onstack.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/shared.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/traits.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/unique.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/detail/unique_au.hpp">
+</header>
+<header name="/home/vbatov/dev/impl_ptr/include/impl_ptr.hpp">
 <struct name="impl_ptr"><template>
       <template-type-parameter name="user_type"/>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
@@ -39,12 +59,12 @@
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
 </struct><typedef name="impl_type"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
-<typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="shared"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="unique"><type><emphasis>unspecified</emphasis></type></typedef>
-<typedef name="copied"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="unique_au"><type><emphasis>unspecified</emphasis></type></typedef>
+<typedef name="copied"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="copied_au"><type><emphasis>unspecified</emphasis></type></typedef>
+<typedef name="onstack"><type><emphasis>unspecified</emphasis></type></typedef>
 <typedef name="cow"><type><emphasis>unspecified</emphasis></type></typedef>
 <method-group name="public static functions">
 <method name="null" specifiers="static"><type>user_type</type></method>
@@ -55,7 +75,7 @@
       <template-type-parameter name=""><default>void</default></template-type-parameter>
     </template><inherit access="public">false_type</inherit></struct><struct-specialization name="is_impl_ptr"><template>
       <template-type-parameter name="T"/>
-    </template><specialization><template-arg>T</template-arg><template-arg>boost::void_t&lt; typename T::impl_ptr_type &gt;</template-arg></specialization><inherit access="public">true_type</inherit></struct-specialization><typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; user_type, more_types... &gt;</type></typedef>
+    </template><specialization><template-arg>T</template-arg><template-arg>void_t&lt; typename T::impl_ptr_type &gt;</template-arg></specialization><inherit access="public">true_type</inherit></struct-specialization><typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; U, M... &gt;</type></typedef>
 </namespace>
 </header>
 </library-reference>

@@ -1,7 +1,5 @@
 # impl_ptr documentation Jamfile
-#
 # Copyright 2009-2018 Vladimir Batov
-#
 
 using boostbook ;
 using quickbook ;
@@ -16,10 +14,10 @@ if --enable-index in  [ modules.peek : ARGV ]
 {
    ECHO "Building the impl_ptr docs with automatic index generation enabled." ;
    using auto-index ;
-   project convert_doc : requirements
+   project impl_ptr_doc : requirements
              <auto-index>on
              <auto-index-script>index.idx
-             <auto-index-prefix>.
+             <auto-index-prefix>../include
              <auto-index-verbose>on
              <format>html:<auto-index-internal>on
              <format>html:<xsl:param>generate.index=0
@@ -33,9 +31,10 @@ else
    ECHO "Building the impl_ptr docs with automatic index generation disabled. Try building with --enable-index." ;
 }
 
-doxygen impl_ptr_ref
+doxygen reference
   :
     [ glob $(here)/../include/*.hpp ]
+    [ glob $(here)/../include/detail/*.hpp ]
   : 
     <doxygen:param>PROJECT_NAME="IMPL_PTR"
     <doxygen:param>PROJECT_NUMBER=3
@@ -43,14 +42,14 @@ doxygen impl_ptr_ref
     <doxygen:param>SHOW_INCLUDE_FILES=NO
     <doxygen:param>MAX_INITIALIZER_LINES=0
     <doxygen:param>VERBATIM_HEADERS=NO
-    <reftitle>"impl_ptr Reference"
+    <reftitle>"Reference"
 ;
 
 xml impl_ptr
   :
     00_impl_ptr.qbk
   :
-    <dependency>impl_ptr_ref
+    <dependency>reference
 ;
 
 boostbook standalone
