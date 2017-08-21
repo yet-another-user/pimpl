@@ -44,7 +44,16 @@
     </p>
 <p>
       To avoid potential confusion <span class="emphasis"><em>impl_ptr_type</em></span> does not have
-      the default constructor. To create a proxy with no implementation use <span class="emphasis"><em>Book::null()</em></span>:
+      the default constructor. To create a proxy with no implementation initialize
+      <span class="emphasis"><em>impl_ptr_type</em></span> as:
+    </p>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="keyword">nullptr</span><span class="special">)</span>
+<span class="special">{</span>
+   <span class="comment">// A Book proxy object is created with no implementation.</span>
+<span class="special">}</span>
+</pre>
+<p>
+      or use <span class="emphasis"><em>Book::null()</em></span>:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>

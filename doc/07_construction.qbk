@@ -13,7 +13,14 @@ In line with ['std::optional, std::variant and std::any] the ['in_place] argumen
  
 will try calling the default ['implementation()] constructor and will fail to compile if there is no such.
 
-To avoid potential confusion ['impl_ptr_type] does not have the default constructor. To create a proxy with no implementation use ['Book::null()]:
+To avoid potential confusion ['impl_ptr_type] does not have the default constructor. To create a proxy with no implementation initialize ['impl_ptr_type] as:
+
+ Book::Book() : impl_ptr_type(nullptr)
+ {
+    // A Book proxy object is created with no implementation.
+ }
+
+or use ['Book::null()]:
 
  Book::Book() : impl_ptr_type(null())
  {

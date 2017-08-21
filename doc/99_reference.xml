@@ -54,7 +54,7 @@
 </method-group>
 <method-group name="protected member functions">
 </method-group>
-<constructor><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter></constructor>
+<constructor><parameter name=""><paramtype>nullptr_t</paramtype></parameter></constructor>
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype><emphasis>unspecified</emphasis></paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
