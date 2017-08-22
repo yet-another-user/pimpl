@@ -2,7 +2,6 @@
 
 In the domain of ['commercial large-scale] software development the following design principles become important:
 
-* API-centered design, 
 * modularity, separation of concerns ([link 8 \[8\]], [link 9 \[9\]]),
 * implementation hiding,
 * minimization of compilation and component dependencies, 
