@@ -125,12 +125,6 @@
 <method name="operator-&gt;" cv="const"><type>implementation *</type></method>
 <method name="operator*" cv="const"><type>implementation &amp;</type></method>
 </method-group>
-<method-group name="public static functions">
-<method name="null" specifiers="static"><type>other_type</type><template>
-          <template-type-parameter name="other_type"/>
-        </template></method>
-<method name="null" specifiers="static"><type>user_type</type></method>
-</method-group>
 <method-group name="protected member functions">
 </method-group>
 <constructor><parameter name=""><paramtype>nullptr_t</paramtype></parameter></constructor>
@@ -140,9 +134,7 @@
 </struct><typedef name="impl_type"><type>typename <classname>boost_impl_ptr_detail</classname>&lt; user_type &gt;::implementation</type></typedef>
 <typedef name="shared"><type><classname>base</classname>&lt; <classname>detail::shared</classname>&lt; impl_type, more_types... &gt;&gt;</type></typedef>
 <typedef name="unique"><type><classname>base</classname>&lt; <classname>detail::unique</classname>&lt; impl_type, more_types... &gt;&gt;</type></typedef>
-<typedef name="unique_au"><type><classname>base</classname>&lt; detail::unique_au&lt; impl_type, more_types... &gt;&gt;</type></typedef>
 <typedef name="copied"><type><classname>base</classname>&lt; <classname>detail::copied</classname>&lt; impl_type, more_types... &gt;&gt;</type></typedef>
-<typedef name="copied_au"><type><classname>base</classname>&lt; detail::copied_au&lt; impl_type, more_types... &gt;&gt;</type></typedef>
 <typedef name="onstack"><type><classname>base</classname>&lt; <classname>detail::onstack</classname>&lt; impl_type, more_types... &gt;&gt;</type></typedef>
 <typedef name="cow"><type><classname>base</classname>&lt; detail::cow&lt; impl_type, more_types... &gt;&gt;</type></typedef>
 <method-group name="public static functions">

@@ -4,6 +4,5 @@
 !scan ../include/detail/copied.hpp
 !scan ../include/detail/onstack.hpp
 !scan ../include/detail/is_allocator.hpp
-!scan ../include/detail/first.hpp
-!scan ../include/detail/traits.hpp
+!scan ../include/detail/detail.hpp
 

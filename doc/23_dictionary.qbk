@@ -6,12 +6,12 @@ The implementation file:
  using Mutex = boost::mutex;
  using  Lock = boost::mutex::scoped_lock;
 
- Book::Book(std::string const& title) : impl_ptr_type(null())
+ Book::Book(std::string const& title) : impl_ptr_type(nullptr)
  {
     static Mutex mutex;
     static All   books;
     Lock          lock (mutex);
-    auto        result = books.emplace(title, null());
+    auto        result = books.emplace(title, boost::impl_ptr<Book>::null());
     Book&         book = result.first->second;
 
     if (result.second)
@@ -25,7 +25,7 @@ The implementation file:
 
 The implementation file:
 
- Book::Book(string const& title) : impl_ptr_type(null())
+ Book::Book(string const& title) : impl_ptr_type(nullptr)
  {
     static Mutex mutex;
     static All   books;

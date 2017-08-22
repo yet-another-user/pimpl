@@ -50,7 +50,7 @@
 
 <span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">,</span> <span class="identifier">v</span><span class="special">)</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 
-<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span> <span class="comment">// Delegating constructor</span>
+<span class="identifier">Foo</span><span class="special">::</span><span class="identifier">Foo</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="keyword">nullptr</span><span class="special">)</span> <span class="comment">// Delegating constructor</span>
 <span class="special">{</span>
   <span class="special">*</span><span class="keyword">this</span> <span class="special">=</span> <span class="identifier">Foo</span><span class="special">(</span><span class="number">42</span><span class="special">);</span> <span class="comment">// Calling the actual constructor</span>
 <span class="special">};</span>

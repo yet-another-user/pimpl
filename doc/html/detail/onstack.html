@@ -40,42 +40,42 @@
       <span class="keyword">typedef</span> <a class="link" href="onstack/allocator.html" title="Struct template allocator">allocator</a><span class="special">&lt;</span> <span class="identifier">Y</span> <span class="special">&gt;</span> <a class="link" href="onstack/allocator/rebind.html#detail.onstack.allocator.rebind.other"><span class="identifier">other</span></a><span class="special">;</span>
     <span class="special">}</span><span class="special">;</span>
 
-    <span class="comment">// <a class="link" href="onstack/allocator.html#idm45821996231568-bb">public member functions</a></span>
-    <span class="keyword">void</span> <a class="link" href="onstack/allocator.html#idm45821996231008-bb"><span class="identifier">deallocate</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">*</span><span class="special">,</span> <span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
+    <span class="comment">// <a class="link" href="onstack/allocator.html#idm46078529305984-bb">public member functions</a></span>
+    <span class="keyword">void</span> <a class="link" href="onstack/allocator.html#idm46078529305424-bb"><span class="identifier">deallocate</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">*</span><span class="special">,</span> <span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
   <span class="special">}</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="onstack.html#detail.onstackconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="onstack.html#idm45821989758608-bb"><span class="identifier">onstack</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="onstack.html#idm45821989758352-bb"><span class="identifier">onstack</span></a><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="special">&amp;</span> <a class="link" href="onstack.html#idm45821989757216-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="onstack.html#idm45821989758864-bb"><span class="special">~</span><span class="identifier">onstack</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="onstack.html#idm46078522774496-bb"><span class="identifier">onstack</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="onstack.html#idm46078522774240-bb"><span class="identifier">onstack</span></a><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="special">&amp;</span> <a class="link" href="onstack.html#idm46078522773104-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="onstack.html#idm46078522774752-bb"><span class="special">~</span><span class="identifier">onstack</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="onstack.html#idm45821996224704-bb">public member functions</a></span>
+  <span class="comment">// <a class="link" href="onstack.html#idm46078529299120-bb">public member functions</a></span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="onstack.html#idm45821996224144-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">impl_type</span> <span class="special">*</span> <a class="link" href="onstack.html#idm45821989759872-bb"><span class="identifier">get</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="onstack.html#idm46078529298560-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">impl_type</span> <span class="special">*</span> <a class="link" href="onstack.html#idm46078522775760-bb"><span class="identifier">get</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idm46163875440624"></a><h2>Description</h2>
+<a name="idm45196810779536"></a><h2>Description</h2>
 <div class="refsect2">
-<a name="idm46163875440240"></a><h3>
+<a name="idm45196810779120"></a><h3>
 <a name="detail.onstackconstruct-copy-destruct"></a><code class="computeroutput">onstack</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><a name="idm45821989758608-bb"></a><span class="identifier">onstack</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a name="idm45821989758352-bb"></a><span class="identifier">onstack</span><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="special">&amp;</span> <a name="idm45821989757216-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a name="idm45821989758864-bb"></a><span class="special">~</span><span class="identifier">onstack</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm46078522774496-bb"></a><span class="identifier">onstack</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm46078522774240-bb"></a><span class="identifier">onstack</span><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="special">&amp;</span> <a name="idm46078522773104-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="onstack.html#detail.onstack.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm46078522774752-bb"></a><span class="special">~</span><span class="identifier">onstack</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idm46163875419536"></a><h3>
-<a name="idm45821996224704-bb"></a><code class="computeroutput">onstack</code> public member functions</h3>
+<a name="idm45196810755600"></a><h3>
+<a name="idm46078529299120-bb"></a><code class="computeroutput">onstack</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idm45821996224144-bb"></a><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="identifier">impl_type</span> <span class="special">*</span> <a name="idm45821989759872-bb"></a><span class="identifier">get</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+  <span class="keyword">void</span> <a name="idm46078529298560-bb"></a><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="identifier">impl_type</span> <span class="special">*</span> <a name="idm46078522775760-bb"></a><span class="identifier">get</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 </div>

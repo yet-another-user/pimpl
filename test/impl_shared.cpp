@@ -43,7 +43,7 @@ Shared::Shared (Foo const* f) : impl_ptr_type(in_place, f) {} // Testing that 'c
 
 Shared::Shared (test::singleton_type) : impl_ptr_type(nullptr)
 {
-    static Shared single = Shared::null();
+    static Shared single = boost::impl_ptr<Shared>::null();
     static bool   inited = (single.emplace(), true);
 
     BOOST_ASSERT(inited);

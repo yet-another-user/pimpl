@@ -7,7 +7,7 @@
     impl_ptr_type(in_place, title, author)
  {} 
  
-In line with ['std::optional, std::variant and std::any] the ['in_place] argument is the disambiguation tag indicating that the underlying ['impl_ptr<Book>::implementation] is constructed in-place with the remaining arguments. Consequently, a ['Book] constructor with no matching ['impl_ptr<Book>::implementation] constructor will fail to compile. That goes for the default constructor as well:
+In line with ['std::optional, std::variant and std::any] the ['in_place] argument is the disambiguation tag indicating that the underlying ['impl_ptr<Book>::implementation] is constructed in-place with the remaining arguments. Consequently, a ['Book] constructor with no matching ['impl_ptr<Book>::implementation] constructor will fail to compile. Same goes for the default constructor:
 
  Book::Book() : impl_ptr_type(in_place) {}
  
@@ -20,9 +20,9 @@ To avoid potential confusion ['impl_ptr_type] does not have the default construc
     // A Book proxy object is created with no implementation.
  }
 
-or use ['Book::null()]:
+or use ['boost::impl_ptr<Book>::null()]:
 
- Book::Book() : impl_ptr_type(null())
+ Book::Book() : impl_ptr_type(boost::impl_ptr<Book>null())
  {
     // A Book proxy object is created with no implementation.
  }
@@ -40,12 +40,12 @@ or use ['Book::null()]:
  
 In the example the underlying ['impl_ptr_type] and, consequently, ['Book] are created "invalid" (like ['nullptr] or an empty ['std::shared_ptr())]. Later an ['impl_ptr_type<Book>::implementation] instance is explicitly created using ['impl_ptr_type::emplace()]. 
 
-That ['nullptr]-like concept is generalized via ['impl_ptr<Book>::null()] and its convenience ['Book::null()] interface. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism (as discussed later) or to indicate a no-book condition: 
+That ['nullptr]-like concept is not part of ['Book] interface. Instead it is generalized via ['impl_ptr<Book>::null()]. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism (as discussed later) or to indicate a no-book condition: 
 
  Book
  find_book()
  {  ...
-    return Book::null(); // found nothing
+    return boost::impl_ptr<Book>::null(); // found nothing
  }
  ...
  if (Book book = find_book()) do something useful;

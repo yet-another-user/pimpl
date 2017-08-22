@@ -2,9 +2,9 @@
 
 A quick singleton implementation might look as follows:
 
- Single::Single() : impl_ptr_type(null())
+ Single::Single() : impl_ptr_type(nullptr)
  {
-     static Single single = Single::null();
+     static Single single = boost::impl_ptr<Single>::null();
      static bool   inited = (single.emplace(args), true);
 
      *this = single; // All share one single implementation.

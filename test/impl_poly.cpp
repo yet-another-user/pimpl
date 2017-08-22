@@ -61,12 +61,12 @@ Base::Base(int k) : impl_ptr_type(in_place, k)
 {
 }
 
-Derived1::Derived1(int k, int l) : Base(null())
+Derived1::Derived1(int k, int l) : Base(boost::impl_ptr<Base>::null())
 {
     emplace<Derived1Impl>(k, l);
 }
 
-Derived2::Derived2(int k, int l, int m) : Derived1(null<Derived1>())
+Derived2::Derived2(int k, int l, int m) : Derived1(boost::impl_ptr<Derived1>::null())
 {
     emplace<Derived2Impl>(k, l, m);
 }

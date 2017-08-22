@@ -1,6 +1,6 @@
 [section Lazy-Instantiation Optimization]
 
- Book::Book() : impl_ptr_type(null())
+ Book::Book() : impl_ptr_type(nullptr)
  {
     // A Book proxy object is created with no implementation.
  }

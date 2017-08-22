@@ -46,13 +46,13 @@ The implementation file:
     ...
  };
 
- ThickBook:: ThickBook(args) : Book(null())
+ ThickBook:: ThickBook(args) : Book(boost::impl_ptr<Book>::null())
  {
     emplace<ThickBookImpl>(args);
     ...
  }
 
- ThickestBook::ThickestBook(args) : ThickBook(null<ThickBook>())
+ ThickestBook::ThickestBook(args) : ThickBook(boost::impl_ptr<ThickBook>::null())
  {
     emplace<ThickestBookImpl>(args);
     ...

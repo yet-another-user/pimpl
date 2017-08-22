@@ -85,8 +85,8 @@ test_runtime_polymorphic_behavior()
     Base*         bp3 = &base3;
     Base*         bp4 = &derived1;
     Base*         bp5 = &derived2;
-    Base         bad1 = Base::null();
-    Base         bad2 = Base::null();
+    Base         bad1 = boost::impl_ptr<Base>::null();
+    Base         bad2 = boost::impl_ptr<Base>::null();
     Base         bad3 = boost::impl_ptr<Derived1>::null();
     Base         bad4 = boost::impl_ptr<Derived2>::null();
     Derived1     bad5 (boost::impl_ptr<Derived1>::null());
@@ -226,7 +226,7 @@ test_onstack()
 {
     OnStack s11 (3); BOOST_TEST(s11.value() == 3);
     OnStack s12 (5); BOOST_TEST(s12.value() == 5);
-    OnStack s13 = OnStack::null();
+    OnStack s13 = boost::impl_ptr<OnStack>::null();
 
     // Check that implementation is allocated on the stack.
     BOOST_TEST((void*) &s11 == (void*) &*s11);
@@ -243,8 +243,8 @@ test_bool_conversions()
 {
     Shared s1;
     Copied c1;
-    Shared s2 = Shared::null();
-    Copied c2 = Copied::null();
+    Shared s2 = boost::impl_ptr<Shared>::null();
+    Copied c2 = boost::impl_ptr<Copied>::null();
 
     BOOST_TEST(s1.trace() == "Shared()");
     BOOST_TEST(c1.trace() == "Copied()");

@@ -100,10 +100,6 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
     implementation* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
     implementation& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
 
-    template<typename other_type>
-    static other_type null() { return boost_impl_ptr_detail<other_type>::null(); }
-    static user_type  null() { return boost_impl_ptr_detail< user_type>::null(); }
-
     protected:
 
     template<typename, typename...> friend struct boost_impl_ptr_detail;

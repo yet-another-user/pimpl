@@ -33,8 +33,7 @@
       that the underlying <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
       is constructed in-place with the remaining arguments. Consequently, a <span class="emphasis"><em>Book</em></span>
       constructor with no matching <span class="emphasis"><em>impl_ptr&lt;Book&gt;::implementation</em></span>
-      constructor will fail to compile. That goes for the default constructor as
-      well:
+      constructor will fail to compile. Same goes for the default constructor:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">in_place</span><span class="special">)</span> <span class="special">{}</span>
 </pre>
@@ -53,9 +52,9 @@
 <span class="special">}</span>
 </pre>
 <p>
-      or use <span class="emphasis"><em>Book::null()</em></span>:
+      or use <span class="emphasis"><em>boost::impl_ptr&lt;Book&gt;::null()</em></span>:
     </p>
-<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">null</span><span class="special">())</span>
+<pre class="programlisting"><span class="identifier">Book</span><span class="special">::</span><span class="identifier">Book</span><span class="special">()</span> <span class="special">:</span> <span class="identifier">impl_ptr_type</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;</span><span class="identifier">null</span><span class="special">())</span>
 <span class="special">{</span>
    <span class="comment">// A Book proxy object is created with no implementation.</span>
 <span class="special">}</span>
@@ -78,15 +77,16 @@
       instance is explicitly created using <span class="emphasis"><em>impl_ptr_type::emplace()</em></span>.
     </p>
 <p>
-      That <span class="emphasis"><em>nullptr</em></span>-like concept is generalized via <span class="emphasis"><em>impl_ptr&lt;Book&gt;::null()</em></span>
-      and its convenience <span class="emphasis"><em>Book::null()</em></span> interface. That is useful
-      for lazy-instantiation optimization (as in the example above) or to support
-      dynamic polymorphism (as discussed later) or to indicate a no-book condition:
+      That <span class="emphasis"><em>nullptr</em></span>-like concept is not part of <span class="emphasis"><em>Book</em></span>
+      interface. Instead it is generalized via <span class="emphasis"><em>impl_ptr&lt;Book&gt;::null()</em></span>.
+      That is useful for lazy-instantiation optimization (as in the example above)
+      or to support dynamic polymorphism (as discussed later) or to indicate a no-book
+      condition:
     </p>
 <pre class="programlisting"><span class="identifier">Book</span>
 <span class="identifier">find_book</span><span class="special">()</span>
 <span class="special">{</span>  <span class="special">...</span>
-   <span class="keyword">return</span> <span class="identifier">Book</span><span class="special">::</span><span class="identifier">null</span><span class="special">();</span> <span class="comment">// found nothing</span>
+   <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">();</span> <span class="comment">// found nothing</span>
 <span class="special">}</span>
 <span class="special">...</span>
 <span class="keyword">if</span> <span class="special">(</span><span class="identifier">Book</span> <span class="identifier">book</span> <span class="special">=</span> <span class="identifier">find_book</span><span class="special">())</span> <span class="keyword">do</span> <span class="identifier">something</span> <span class="identifier">useful</span><span class="special">;</span>
