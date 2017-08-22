@@ -1,7 +1,7 @@
 #ifndef IMPL_PTR_DETAIL_COPIED_HPP
 #define IMPL_PTR_DETAIL_COPIED_HPP
 
-#include "./traits.hpp"
+#include "./detail.hpp"
 
 namespace detail
 {

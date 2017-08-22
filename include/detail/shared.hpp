@@ -5,8 +5,7 @@
 #ifndef IMPL_PTR_DETAIL_SHARED_HPP
 #define IMPL_PTR_DETAIL_SHARED_HPP
 
-#include "./first.hpp"
-#include <memory>
+#include "./detail.hpp"
 
 namespace detail
 {

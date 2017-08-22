@@ -5,8 +5,7 @@
 #ifndef IMPL_PTR_DETAIL_ONSTACK_HPP
 #define IMPL_PTR_DETAIL_ONSTACK_HPP
 
-#include "./traits.hpp"
-#include <boost/type_traits/aligned_storage.hpp>
+#include "./detail.hpp"
 
 namespace detail
 {

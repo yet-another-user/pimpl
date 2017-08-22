@@ -2,13 +2,18 @@
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef IMPL_PTR_DETAIL_TRAITS_HPP
-#define IMPL_PTR_DETAIL_TRAITS_HPP
+#ifndef IMPL_PTR_DETAIL_DETAIL_HPP
+#define IMPL_PTR_DETAIL_DETAIL_HPP
 
+#include <boost/type_traits.hpp>
 #include <boost/assert.hpp>
+#include <type_traits>
+#include <memory>
 
 namespace detail
 {
+    template <typename first_type =void, typename...> struct first { using type = first_type; };
+
     // The incomplete-type management technique
     // is originally by Peter Dimov.
 
@@ -77,4 +82,4 @@ struct detail::copyable_traits : detail::traits_base<copyable_traits<impl_type, 
     }
 };
 
-#endif // IMPL_PTR_DETAIL_TRAITS_HPP
+#endif // IMPL_PTR_DETAIL_DETAIL_HPP

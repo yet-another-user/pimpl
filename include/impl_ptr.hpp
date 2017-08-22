@@ -5,14 +5,9 @@
 #ifndef IMPL_PTR_HPP
 #define IMPL_PTR_HPP
 
-#include <boost/type_traits.hpp>
-#include <boost/utility.hpp>
-
 #include "./detail/shared.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
-#include "./detail/unique_au.hpp"
-#include "./detail/copied_au.hpp"
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
 
@@ -45,13 +40,11 @@ struct boost_impl_ptr_detail
     template<typename> struct base;
 
     using impl_type = typename boost_impl_ptr_detail<user_type>::implementation; //C1
-    using    shared = base<detail::shared    <impl_type, more_types...>>;
-    using    unique = base<detail::unique    <impl_type, more_types...>>;
-    using unique_au = base<detail::unique_au <impl_type, more_types...>>;
-    using    copied = base<detail::copied    <impl_type, more_types...>>;
-    using copied_au = base<detail::copied_au <impl_type, more_types...>>;
-    using   onstack = base<detail::onstack   <impl_type, more_types...>>;
-    using       cow = base<detail::cow       <impl_type, more_types...>>;
+    using    shared = base<detail:: shared <impl_type, more_types...>>;
+    using    unique = base<detail:: unique <impl_type, more_types...>>;
+    using    copied = base<detail:: copied <impl_type, more_types...>>;
+    using   onstack = base<detail::onstack <impl_type, more_types...>>;
+    using       cow = base<detail::    cow <impl_type, more_types...>>;
 
     static user_type null()
     {

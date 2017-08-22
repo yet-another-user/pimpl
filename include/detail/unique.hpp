@@ -5,7 +5,7 @@
 #ifndef IMPL_PTR_DETAIL_UNIQUE_HPP
 #define IMPL_PTR_DETAIL_UNIQUE_HPP
 
-#include "./traits.hpp"
+#include "./detail.hpp"
 
 namespace detail
 {
