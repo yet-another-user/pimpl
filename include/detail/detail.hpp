@@ -23,7 +23,16 @@ namespace boost
 
 namespace detail
 {
-    template <typename first_type =void, typename...> struct first { using type = first_type; };
+    template<typename type1 =void,
+             typename type2 =void,
+             typename type3 =void,
+             typename...>
+    struct types
+    {
+        using  first_type = type1;
+        using second_type = type2;
+        using  third_type = type3;
+    };
 
     // The incomplete-type management technique
     // is originally by Peter Dimov.

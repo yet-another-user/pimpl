@@ -17,9 +17,9 @@ struct detail::shared : std::shared_ptr<impl_type>
 {
     using   base_ref = std::shared_ptr<impl_type>&;
     using alloc_type = typename std::conditional<
-                       sizeof...(more_types) == 0,
-                       std::allocator<impl_type>,
-                       typename first<more_types...>::type>::type;
+                       1 <= sizeof...(more_types),
+                       typename types<more_types...>::first_type,
+                       std::allocator<impl_type>>::type;
 
     template<typename derived_type, typename... arg_types>
     void
