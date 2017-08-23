@@ -12,7 +12,7 @@ template<typename impl_type, typename allocator>
 struct detail::copied
 {
     using   this_type = copied;
-    using traits_type = detail::copyable_traits<impl_type, allocator>;
+    using traits_type = traits::copyable<impl_type, allocator>;
     using  traits_ptr = typename traits_type::pointer;
 
     template<typename derived_type, typename... arg_types>

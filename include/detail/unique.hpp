@@ -16,7 +16,7 @@ template<typename impl_type, typename allocator>
 struct detail::unique
 {
     using   this_type = unique;
-    using traits_type = detail::unique_traits<impl_type, allocator>;
+    using traits_type = traits::unique<impl_type, allocator>;
     using  traits_ptr = typename traits_type::pointer;
 
     template<typename derived_type, typename... arg_types>

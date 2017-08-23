@@ -36,19 +36,21 @@ namespace detail
 
     // The incomplete-type management technique
     // is originally by Peter Dimov.
-
-    template<typename, typename> struct     traits_base;
-    template<typename, typename> struct   unique_traits;
-    template<typename, typename> struct copyable_traits;
+    struct traits
+    {
+        template<typename, typename> struct     base;
+        template<typename, typename> struct   unique;
+        template<typename, typename> struct copyable;
+    };
 }
 
 template<typename traits_type, typename impl_type>
-struct detail::traits_base
+struct detail::traits::base
 {
-    using this_type = traits_base<traits_type, impl_type>;
+    using this_type = base<traits_type, impl_type>;
     using   pointer = this_type const*;
 
-    virtual ~traits_base() =default;
+    virtual ~base() =default;
 
     virtual void         destroy (impl_type*) const =0;
     virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(0); }
@@ -63,7 +65,7 @@ struct detail::traits_base
 };
 
 template<typename impl_type, typename allocator>
-struct detail::unique_traits : detail::traits_base<unique_traits<impl_type, allocator>, impl_type>
+struct detail::traits::unique : base<unique<impl_type, allocator>, impl_type>
 {
     using   alloc_type = typename allocator::template rebind<impl_type>::other;
     using alloc_traits = std::allocator_traits<alloc_type>;
@@ -77,7 +79,7 @@ struct detail::unique_traits : detail::traits_base<unique_traits<impl_type, allo
 };
 
 template<typename impl_type, typename allocator>
-struct detail::copyable_traits : detail::traits_base<copyable_traits<impl_type, allocator>, impl_type>
+struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type>
 {
     using   alloc_type = typename allocator::template rebind<impl_type>::other;
     using alloc_traits = std::allocator_traits<alloc_type>;
