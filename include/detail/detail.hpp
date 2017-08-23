@@ -5,11 +5,21 @@
 #ifndef IMPL_PTR_DETAIL_DETAIL_HPP
 #define IMPL_PTR_DETAIL_DETAIL_HPP
 
-#include <boost/core/pointer_traits.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/assert.hpp>
 #include <type_traits>
 #include <memory>
+
+#if 106500 <= BOOST_VERSION
+#include <boost/core/pointer_traits.hpp>
+#else
+
+namespace boost
+{
+    template<typename T> T to_address(T p) { return p; }
+}
+
+#endif
 
 namespace detail
 {
