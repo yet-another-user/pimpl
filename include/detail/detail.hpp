@@ -5,6 +5,7 @@
 #ifndef IMPL_PTR_DETAIL_DETAIL_HPP
 #define IMPL_PTR_DETAIL_DETAIL_HPP
 
+#include <boost/core/pointer_traits.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/assert.hpp>
 #include <type_traits>
@@ -45,35 +46,41 @@ struct detail::traits_base
 template<typename impl_type, typename allocator>
 struct detail::unique_traits : detail::traits_base<unique_traits<impl_type, allocator>, impl_type>
 {
-    using alloc_type = typename allocator::template rebind<impl_type>::other;
+    using   alloc_type = typename allocator::template rebind<impl_type>::other;
+    using alloc_traits = std::allocator_traits<alloc_type>;
 
     void destroy(impl_type* p) const override
     {
         alloc_type a;
 
-        a.destroy(p);
-        a.deallocate(p, 1);
+        alloc_traits::destroy(a, p), a.deallocate(p, 1);
     }
 };
 
 template<typename impl_type, typename allocator>
 struct detail::copyable_traits : detail::traits_base<copyable_traits<impl_type, allocator>, impl_type>
 {
-    using alloc_type = typename allocator::template rebind<impl_type>::other;
+    using   alloc_type = typename allocator::template rebind<impl_type>::other;
+    using alloc_traits = std::allocator_traits<alloc_type>;
 
     void
     destroy(impl_type* p) const override
     {
         alloc_type a;
 
-        a.destroy(p);
-        a.deallocate(p, 1);
+        alloc_traits::destroy(a, p), a.deallocate(p, 1);
     }
     impl_type*
-    construct(void* p, impl_type const& from) const override
+    construct(void* vp, impl_type const& from) const override
     {
-        if (!p) p = alloc_type().allocate(1);
-        return ::new(p) impl_type(from);
+        alloc_type  a;
+        impl_type* ip = vp
+                      ? static_cast<impl_type*>(vp)
+                      : boost::to_address(a.allocate(1));
+
+        alloc_traits::construct(a, ip, from);
+
+        return ip;
     }
     void
     assign(impl_type* p, impl_type const& from) const override

@@ -19,12 +19,13 @@ struct detail::copied
     void
     emplace(arg_types&&... args)
     {
-        using alloc_type = typename allocator::template rebind<derived_type>::other;
+        using   alloc_type = typename allocator::template rebind<derived_type>::other;
+        using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type    a;
-        impl_type* impl = a.allocate(1);
+        alloc_type       a;
+        derived_type* impl = boost::to_address(a.allocate(1));
 
-        a.construct(impl, std::forward<arg_types>(args)...);
+        alloc_traits::construct(a, impl, std::forward<arg_types>(args)...);
 
         this_type(impl).swap(*this);
     }
