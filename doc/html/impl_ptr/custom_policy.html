@@ -23,23 +23,14 @@
       example, a <span class="emphasis"><em>copy-on-write</em></span> policy might be one such extension.
       Then, a <span class="emphasis"><em>stack-based-implementation</em></span> policy might be another:
     </p>
-<pre class="programlisting"><span class="keyword">namespace</span> <span class="identifier">detail</span>
-<span class="special">{</span>
-    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">,</span> <span class="keyword">typename</span> <span class="special">=</span><span class="keyword">void</span><span class="special">&gt;</span> <span class="keyword">struct</span> <span class="identifier">onstack</span><span class="special">;</span>
-<span class="special">}</span>
-
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">size_type</span><span class="special">&gt;</span>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">size_type</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span> <span class="comment">// Proof of concept</span>
 <span class="special">{</span>
-    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span> <span class="special">=</span><span class="keyword">void</span><span class="special">&gt;</span> <span class="keyword">struct</span> <span class="identifier">allocator</span> <span class="special">:</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">allocator</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;</span>
-    <span class="special">{</span>
-        <span class="keyword">void</span> <span class="identifier">deallocate</span><span class="special">(</span><span class="identifier">T</span><span class="special">*,</span> <span class="identifier">size_t</span><span class="special">)</span> <span class="special">{}</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">&gt;</span> <span class="keyword">struct</span> <span class="identifier">allocator</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 
-        <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Y</span><span class="special">&gt;</span> <span class="keyword">struct</span> <span class="identifier">rebind</span> <span class="special">{</span> <span class="keyword">using</span> <span class="identifier">other</span> <span class="special">=</span> <span class="identifier">allocator</span><span class="special">&lt;</span><span class="identifier">Y</span><span class="special">&gt;;</span> <span class="special">};</span>
-    <span class="special">};</span>
     <span class="keyword">using</span>    <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">onstack</span><span class="special">;</span>
     <span class="keyword">using</span> <span class="identifier">storage_type</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">aligned_storage</span><span class="special">&lt;</span><span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">size_type</span><span class="special">)&gt;;</span>
-    <span class="keyword">using</span>  <span class="identifier">traits_type</span> <span class="special">=</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">copyable_traits</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">allocator</span><span class="special">&lt;&gt;&gt;;</span>
+    <span class="keyword">using</span>  <span class="identifier">traits_type</span> <span class="special">=</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">copyable_traits</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">allocator</span><span class="special">&lt;</span><span class="keyword">void</span><span class="special">&gt;&gt;;</span>
     <span class="keyword">using</span>   <span class="identifier">traits_ptr</span> <span class="special">=</span> <span class="keyword">typename</span> <span class="identifier">traits_type</span><span class="special">::</span><span class="identifier">pointer</span><span class="special">;</span>
 
    <span class="special">~</span><span class="identifier">onstack</span> <span class="special">()</span> <span class="special">{</span> <span class="keyword">if</span> <span class="special">(</span><span class="identifier">traits_</span><span class="special">)</span> <span class="identifier">traits_</span><span class="special">-&gt;</span><span class="identifier">destroy</span><span class="special">(</span><span class="identifier">get</span><span class="special">());</span> <span class="special">}</span>
@@ -66,7 +57,7 @@
 </pre>
 <p>
       Then <span class="emphasis"><em>OnStack</em></span> could be used no differently from other
-      <span class="emphasis"><em>Pimpl</em></span>-based objects:
+      <span class="emphasis"><em>Pimpl</em></span>-based classes:
     </p>
 <pre class="programlisting"><span class="identifier">OnStack</span> <span class="identifier">s11</span> <span class="special">(</span><span class="number">3</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">3</span><span class="special">);</span>
 <span class="identifier">OnStack</span> <span class="identifier">s12</span> <span class="special">(</span><span class="number">5</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s12</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>

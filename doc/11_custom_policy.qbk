@@ -2,23 +2,14 @@
 
 An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a ['stack-based-implementation] policy might be another:
 
- namespace detail
- {
-     template<typename, typename =void> struct onstack;
- }
- 
  template<typename impl_type, typename size_type>
  struct detail::onstack // Proof of concept
  {
-     template<typename T =void> struct allocator : std::allocator<T>
-     {
-         void deallocate(T*, size_t) {}
- 
-         template<typename Y> struct rebind { using other = allocator<Y>; };
-     };
+     template<typename> struct allocator { ... };
+
      using    this_type = onstack;
      using storage_type = boost::aligned_storage<sizeof(size_type)>;
-     using  traits_type = detail::copyable_traits<impl_type, allocator<>>;
+     using  traits_type = detail::copyable_traits<impl_type, allocator<void>>;
      using   traits_ptr = typename traits_type::pointer;
  
     ~onstack () { if (traits_) traits_->destroy(get()); }
@@ -43,7 +34,7 @@ An important property of ['impl_ptr] is its extendibility. It currently provides
  ...
  struct OnStack : boost::impl_ptr<OnStack, int[16]>::onstack { ... };
 
-Then ['OnStack] could be used no differently from other ['Pimpl]-based objects:
+Then ['OnStack] could be used no differently from other ['Pimpl]-based classes:
 
  OnStack s11 (3); BOOST_TEST(s11.value() == 3);
  OnStack s12 (5); BOOST_TEST(s12.value() == 5);

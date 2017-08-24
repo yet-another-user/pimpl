@@ -13,7 +13,7 @@ In line with ['std::optional, std::variant and std::any] the ['in_place] argumen
  
 will try calling the default ['implementation()] constructor and will fail to compile if there is no such.
 
-To avoid potential confusion ['impl_ptr_type] does not have the default constructor. To create a proxy with no implementation initialize ['impl_ptr_type] as:
+To avoid potential ambiguity ['impl_ptr_type] does not have the default constructor. To create a proxy with no implementation (if such is needed) initialize ['impl_ptr_type] explicitly as:
 
  Book::Book() : impl_ptr_type(nullptr)
  {
@@ -40,7 +40,7 @@ or use ['boost::impl_ptr<Book>::null()]:
  
 In the example the underlying ['impl_ptr_type] and, consequently, ['Book] are created "invalid" (like ['nullptr] or an empty ['std::shared_ptr())]. Later an ['impl_ptr_type<Book>::implementation] instance is explicitly created using ['impl_ptr_type::emplace()]. 
 
-That ['nullptr]-like concept is not part of ['Book] interface. Instead it is generalized via ['impl_ptr<Book>::null()]. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism (as discussed later) or to indicate a no-book condition: 
+That ['nullptr]-like concept is generalized via ['impl_ptr<Book>::null()]. That is useful for lazy-instantiation optimization (as in the example above) or to support dynamic polymorphism (as discussed later) or to indicate a no-book condition: 
 
  Book
  find_book()
@@ -51,5 +51,12 @@ That ['nullptr]-like concept is not part of ['Book] interface. Instead it is gen
  if (Book book = find_book()) do something useful;
  else                         report book-not-found;
  
+It is probably worth mentioning that ['impl_ptr<Book>::null()] is not part of ['Book] public interface. It is up to the ['Book] implementer to decide if such 
+
+ Book::Book() : impl_ptr_type(nullptr) {}
+
+"invalid" ['Book] needs to be part of the public interface, if ['impl_ptr<Book>::null()] is used internally, or if that functionality is used at all.
+
+
 [endsect] 
 

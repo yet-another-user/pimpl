@@ -1,6 +1,6 @@
 [section Delegating Constructors]
 
-The ['delegating constructors] functionality is available in C++11. For implementation reasons that functionality might instead be implemented using ['Pimpl]:
+The ['delegating constructors] functionality is available in C++11. For implementation reasons that functionality might be implemented using ['Pimpl]:
 
  struct Foo : boost::impl_ptr<Foo>::shared
  {
