@@ -50,11 +50,9 @@ struct boost_impl_ptr_detail
     {
         using impl_ptr_type = typename user_type::impl_ptr_type;
 
-        static_assert(sizeof(user_type) == sizeof(impl_ptr_type), "");
+        static_assert(sizeof(user_type) == sizeof(impl_ptr_type), "Unsafe to cast");
 
-        impl_ptr_type null (nullptr);
-
-        return std::move(static_cast<user_type&>(null));
+        return std::move(static_cast<user_type&&>(impl_ptr_type(nullptr)));
     }
 };
 

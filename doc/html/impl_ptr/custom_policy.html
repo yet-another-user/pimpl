@@ -70,7 +70,7 @@
     </p>
 <pre class="programlisting"><span class="identifier">OnStack</span> <span class="identifier">s11</span> <span class="special">(</span><span class="number">3</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">3</span><span class="special">);</span>
 <span class="identifier">OnStack</span> <span class="identifier">s12</span> <span class="special">(</span><span class="number">5</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s12</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>
-<span class="identifier">OnStack</span> <span class="identifier">s13</span> <span class="special">=</span> <span class="identifier">OnStack</span><span class="special">::</span><span class="identifier">null</span><span class="special">();</span>
+<span class="identifier">OnStack</span> <span class="identifier">s13</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">();</span>
 
 <span class="comment">// Check that implementation is allocated on the stack.</span>
 <span class="identifier">BOOST_TEST</span><span class="special">((</span><span class="keyword">void</span><span class="special">*)</span> <span class="special">&amp;</span><span class="identifier">s11</span> <span class="special">==</span> <span class="special">(</span><span class="keyword">void</span><span class="special">*)</span> <span class="special">&amp;*</span><span class="identifier">s11</span><span class="special">);</span>
@@ -80,7 +80,8 @@
 <span class="identifier">s11</span> <span class="special">=</span> <span class="identifier">OnStack</span><span class="special">(</span><span class="number">6</span><span class="special">);</span>   <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">6</span><span class="special">);</span>
 </pre>
 <p>
-      or a switch from
+      Then, due to efficiency requirements or heap constraints, we might decide to
+      switch from
     </p>
 <pre class="programlisting"><span class="comment">// std::allocator-based implementation allocation</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
@@ -98,8 +99,7 @@
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="keyword">char</span><span class="special">[</span><span class="number">64</span><span class="special">]&gt;::</span><span class="identifier">onstack</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-      could be done later due to efficiency requirements or heap constraints with
-      minimal or no disruption to the existing code.
+      with minimal or no disruption to the existing code.
     </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

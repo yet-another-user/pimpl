@@ -5,7 +5,7 @@
       <template-type-parameter name="impl_type"/>
       <template-type-parameter name="allocator"/>
     </template><typedef name="this_type"><type><classname>copied</classname></type></typedef>
-<typedef name="traits_type"><type>detail::copyable_traits&lt; impl_type, allocator &gt;</type></typedef>
+<typedef name="traits_type"><type>traits::copyable&lt; impl_type, allocator &gt;</type></typedef>
 <typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
@@ -41,7 +41,7 @@
 </method-group>
 </struct><typedef name="this_type"><type><classname>onstack</classname></type></typedef>
 <typedef name="storage_type"><type>boost::aligned_storage&lt; sizeof(size_type)&gt;</type></typedef>
-<typedef name="traits_type"><type>detail::copyable_traits&lt; impl_type, <classname>allocator</classname>&lt;&gt;&gt;</type></typedef>
+<typedef name="traits_type"><type>traits::copyable&lt; impl_type, <classname>allocator</classname>&lt;&gt;&gt;</type></typedef>
 <typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
@@ -62,7 +62,7 @@
       <template-type-parameter name="impl_type"/>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
     </template><inherit access="public">std::shared_ptr&lt; impl_type &gt;</inherit><typedef name="base_ref"><type>std::shared_ptr&lt; impl_type &gt; &amp;</type></typedef>
-<typedef name="alloc_type"><type>typename std::conditional&lt; sizeof...(more_types)==0, std::allocator&lt; impl_type &gt;, typename first&lt; more_types... &gt;::type &gt;::type</type></typedef>
+<typedef name="alloc_type"><type>typename std::conditional&lt; 1&lt;=sizeof...(more_types), typename types&lt; more_types... &gt;::first_type, std::allocator&lt; impl_type &gt;&gt;::type</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
           <template-type-parameter name="derived_type"/>
@@ -77,7 +77,7 @@
       <template-type-parameter name="impl_type"/>
       <template-type-parameter name="allocator"/>
     </template><typedef name="this_type"><type><classname>unique</classname></type></typedef>
-<typedef name="traits_type"><type>detail::unique_traits&lt; impl_type, allocator &gt;</type></typedef>
+<typedef name="traits_type"><type>traits::unique&lt; impl_type, allocator &gt;</type></typedef>
 <typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
