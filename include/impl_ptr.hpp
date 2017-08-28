@@ -65,6 +65,12 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
     static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
 
+   ~base()                       = default;
+    base(base const&)            = default;
+    base(base&&)                 = default;
+    base& operator=(base const&) = default;
+    base& operator=(base&&)      = default;
+
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
 
