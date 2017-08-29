@@ -33,12 +33,28 @@ struct detail::onstack // Proof of concept
         if (traits_)
             traits_->construct(storage_.address(), *o.get());
     }
+    onstack (this_type&& o) : traits_(o.traits_)
+    {
+        if (traits_)
+            traits_->construct(storage_.address(), std::move(*o.get()));
+    }
     this_type& operator=(this_type const& o)
     {
         /**/ if (!traits_ && !o.traits_);
         else if ( traits_ &&  o.traits_) traits_->assign(get(), *o.get());
         else if ( traits_ && !o.traits_) traits_->destroy(get());
         else if (!traits_ &&  o.traits_) o.traits_->construct(storage_.address(), *o.get());
+
+        traits_ = o.traits_;
+
+        return *this;
+    }
+    this_type& operator=(this_type&& o)
+    {
+        /**/ if (!traits_ && !o.traits_);
+        else if ( traits_ &&  o.traits_) traits_->assign(get(), std::move(*o.get()));
+        else if ( traits_ && !o.traits_) traits_->destroy(get());
+        else if (!traits_ &&  o.traits_) o.traits_->construct(storage_.address(), std::move(*o.get()));
 
         traits_ = o.traits_;
 

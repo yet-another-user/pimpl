@@ -55,7 +55,9 @@ struct detail::traits::base
 
     virtual void         destroy (impl_type*) const =0;
     virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(0); }
+    virtual void          assign (impl_type* p, impl_type&& from) const { assign(p, from); }
     virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(0); return nullptr; }
+    virtual impl_type* construct (void* vp, impl_type&& from) const { return construct(vp, from); }
 
     operator pointer()
     {
@@ -76,6 +78,23 @@ struct detail::traits::unique : base<unique<impl_type, allocator>, impl_type>
         alloc_type a;
 
         alloc_traits::destroy(a, p), a.deallocate(p, 1);
+    }
+    impl_type*
+    construct(void* vp, impl_type&& from) const override
+    {
+        alloc_type  a;
+        impl_type* ip = vp
+                      ? static_cast<impl_type*>(vp)
+                      : boost::to_address(a.allocate(1));
+
+        alloc_traits::construct(a, ip, std::move(from));
+
+        return ip;
+    }
+    void
+    assign(impl_type* p, impl_type&& from) const override
+    {
+        *p = std::move(from);
     }
 };
 
@@ -104,10 +123,27 @@ struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type
 
         return ip;
     }
+    impl_type*
+    construct(void* vp, impl_type&& from) const override
+    {
+        alloc_type  a;
+        impl_type* ip = vp
+                      ? static_cast<impl_type*>(vp)
+                      : boost::to_address(a.allocate(1));
+
+        alloc_traits::construct(a, ip, std::move(from));
+
+        return ip;
+    }
     void
     assign(impl_type* p, impl_type const& from) const override
     {
         *p = from;
+    }
+    void
+    assign(impl_type* p, impl_type&& from) const override
+    {
+        *p = std::move(from);
     }
 };
 
