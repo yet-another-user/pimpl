@@ -108,7 +108,7 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
     template<typename, typename...> friend struct boost_impl_ptr_detail;
 
-    base (nullptr_t) {}
+    base (std::nullptr_t) {}
 
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
