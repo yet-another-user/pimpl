@@ -126,6 +126,9 @@ namespace boost
     template<typename, typename =void>
     struct is_impl_ptr : false_type {};
 
+    template <typename ...>
+    using void_t = void;
+
     template<typename T>
     struct is_impl_ptr<T, void_t<typename T::impl_ptr_type>> : true_type {};
 }
