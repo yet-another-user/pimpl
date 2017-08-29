@@ -55,12 +55,13 @@ struct detail::traits::base
 
     virtual void         destroy (impl_type*) const =0;
     virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(0); }
-    virtual void          assign (impl_type* p, impl_type&& from) const { assign(p, from); }
+    virtual void          assign (impl_type*, impl_type&&) const { BOOST_ASSERT(0); }
     virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(0); return nullptr; }
-    virtual impl_type* construct (void* vp, impl_type&& from) const { return construct(vp, from); }
+    virtual impl_type* construct (void* vp, impl_type&& from) const { BOOST_ASSERT(0); return nullptr; }
 
     operator pointer()
     {
+        static_assert(!std::is_same<this_type, traits_type>::value, "");
         static_assert(std::is_base_of<this_type, traits_type>::value, "");
 
         static traits_type const traits; return &traits;
