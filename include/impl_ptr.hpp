@@ -10,6 +10,7 @@
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
 #include "./detail/onstack.hpp"
+#include "./detail/optional.hpp"
 #include "./detail/cow.hpp"
 
 // C1. Always use the impl_ptr<user_type>::implementation specialization.
@@ -36,11 +37,12 @@ struct boost_impl_ptr_detail
     template<typename> struct base;
 
     using impl_type = typename boost_impl_ptr_detail<user_type>::implementation; //C1
-    using    shared = base<detail:: shared <impl_type, more_types...>>;
-    using    unique = base<detail:: unique <impl_type, more_types...>>;
-    using    copied = base<detail:: copied <impl_type, more_types...>>;
-    using   onstack = base<detail::onstack <impl_type, more_types...>>;
-    using       cow = base<detail::    cow <impl_type, more_types...>>;
+    using    shared = base<detail::  shared <impl_type, more_types...>>;
+    using    unique = base<detail::  unique <impl_type, more_types...>>;
+    using    copied = base<detail::  copied <impl_type, more_types...>>;
+    using   onstack = base<detail:: onstack <impl_type, more_types...>>;
+    using  optional = base<detail::optional <impl_type, more_types...>>;
+    using       cow = base<detail::     cow <impl_type, more_types...>>;
 
     static user_type null()
     {
