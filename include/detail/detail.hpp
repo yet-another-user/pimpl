@@ -79,23 +79,6 @@ struct detail::traits::unique : base<unique<impl_type, allocator>, impl_type>
 
         alloc_traits::destroy(a, p), a.deallocate(p, 1);
     }
-    impl_type*
-    construct(void* vp, impl_type&& from) const override
-    {
-        alloc_type  a;
-        impl_type* ip = vp
-                      ? static_cast<impl_type*>(vp)
-                      : boost::to_address(a.allocate(1));
-
-        alloc_traits::construct(a, ip, std::move(from));
-
-        return ip;
-    }
-    void
-    assign(impl_type* p, impl_type&& from) const override
-    {
-        *p = std::move(from);
-    }
 };
 
 template<typename impl_type, typename allocator>
