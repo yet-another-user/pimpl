@@ -61,6 +61,12 @@ struct detail::onstack // Proof of concept
         return *this;
     }
 
+    template<typename... arg_types>
+    onstack(detail::in_place_type, arg_types&&... args)
+    {
+        emplace<impl_type>(std::forward<arg_types>(args)...);
+    }
+
     template<typename derived_type, typename... arg_types>
     void
     emplace(arg_types&&... args)

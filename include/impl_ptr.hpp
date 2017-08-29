@@ -5,16 +5,12 @@
 #ifndef IMPL_PTR_HPP
 #define IMPL_PTR_HPP
 
+#include "./detail/detail.hpp"
 #include "./detail/shared.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
 #include "./detail/onstack.hpp"
 #include "./detail/cow.hpp"
-
-namespace detail
-{
-    struct in_place_type {};
-}
 
 // C1. Always use the impl_ptr<user_type>::implementation specialization.
 //     That allows the implementation developer to only declare/define one
@@ -112,8 +108,8 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
+        : impl_(in_place, std::forward<arg_types>(args)...)
     {
-        impl_.template emplace<implementation>(std::forward<arg_types>(args)...);
     }
 
     private: policy_type impl_;

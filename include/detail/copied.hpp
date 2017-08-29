@@ -30,6 +30,12 @@ struct detail::copied
         this_type(impl).swap(*this);
     }
 
+    template<typename... arg_types>
+    copied(detail::in_place_type, arg_types&&... args)
+    {
+        emplace<impl_type>(std::forward<arg_types>(args)...);
+    }
+
    ~copied () { if (traits_) traits_->destroy(impl_); }
     copied () {}
     copied (impl_type* p) : impl_(p), traits_(traits_type()) {}

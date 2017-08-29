@@ -23,6 +23,8 @@ namespace boost
 
 namespace detail
 {
+    struct in_place_type {};
+
     template<typename type1 =void,
              typename type2 =void,
              typename type3 =void,
