@@ -17,6 +17,7 @@
 namespace boost
 {
     template<typename T> T to_address(T p) { return p; }
+    template <typename ...> using void_t = void;
 }
 
 #endif
