@@ -110,9 +110,9 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
-        : impl_(in_place, std::forward<arg_types>(args)...)
-    {
-    }
+    :
+        impl_(in_place, std::forward<arg_types>(args)...)
+    {}
 
     private: policy_type impl_;
 };
