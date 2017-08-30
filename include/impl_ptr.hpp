@@ -5,16 +5,13 @@
 #ifndef IMPL_PTR_HPP
 #define IMPL_PTR_HPP
 
+#include "./detail/detail.hpp"
 #include "./detail/shared.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
 #include "./detail/onstack.hpp"
+#include "./detail/optional.hpp"
 #include "./detail/cow.hpp"
-
-namespace detail
-{
-    struct in_place_type {};
-}
 
 // C1. Always use the impl_ptr<user_type>::implementation specialization.
 //     That allows the implementation developer to only declare/define one
@@ -40,11 +37,12 @@ struct boost_impl_ptr_detail
     template<typename> struct base;
 
     using impl_type = typename boost_impl_ptr_detail<user_type>::implementation; //C1
-    using    shared = base<detail:: shared <impl_type, more_types...>>;
-    using    unique = base<detail:: unique <impl_type, more_types...>>;
-    using    copied = base<detail:: copied <impl_type, more_types...>>;
-    using   onstack = base<detail::onstack <impl_type, more_types...>>;
-    using       cow = base<detail::    cow <impl_type, more_types...>>;
+    using    shared = base<detail::  shared <impl_type, more_types...>>;
+    using    unique = base<detail::  unique <impl_type, more_types...>>;
+    using    copied = base<detail::  copied <impl_type, more_types...>>;
+    using   onstack = base<detail:: onstack <impl_type, more_types...>>;
+    using  optional = base<detail::optional <impl_type, more_types...>>;
+    using       cow = base<detail::     cow <impl_type, more_types...>>;
 
     static user_type null()
     {
@@ -112,8 +110,8 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
+        : impl_(in_place, std::forward<arg_types>(args)...)
     {
-        impl_.template emplace<implementation>(std::forward<arg_types>(args)...);
     }
 
     private: policy_type impl_;

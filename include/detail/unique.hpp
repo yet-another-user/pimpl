@@ -34,6 +34,12 @@ struct detail::unique
         this_type(impl).swap(*this);
     }
 
+    template<typename... arg_types>
+    unique(detail::in_place_type, arg_types&&... args)
+    {
+        emplace<impl_type>(std::forward<arg_types>(args)...);
+    }
+
    ~unique () { if (traits_) traits_->destroy(impl_); }
     unique () {}
     unique (impl_type* p) : impl_(p), traits_(traits_type()) {}
