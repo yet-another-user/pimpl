@@ -27,7 +27,7 @@ struct detail::onstack // Proof of concept
     using   traits_ptr = typename traits_type::pointer;
 
    ~onstack () { if (traits_) traits_->destroy(get()); }
-    onstack () {}
+    onstack (std::nullptr_t) {}
     onstack (this_type const& o) : traits_(o.traits_)
     {
         if (traits_)

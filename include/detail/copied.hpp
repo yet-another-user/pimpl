@@ -23,11 +23,15 @@ struct detail::copied
         using alloc_traits = std::allocator_traits<alloc_type>;
 
         alloc_type       a;
-        derived_type* impl = boost::to_address(a.allocate(1));
+        this_type      tmp (nullptr);
+        derived_type* impl (boost::to_address(a.allocate(1)));
 
         alloc_traits::construct(a, impl, std::forward<arg_types>(args)...);
 
-        this_type(impl).swap(*this);
+        tmp.impl_   = impl;
+        tmp.traits_ = traits_type();
+
+        tmp.swap(*this);
     }
 
     template<typename... arg_types>
@@ -37,8 +41,7 @@ struct detail::copied
     }
 
    ~copied () { if (traits_) traits_->destroy(impl_); }
-    copied () {}
-    copied (impl_type* p) : impl_(p), traits_(traits_type()) {}
+    copied (std::nullptr_t) {}
     copied (this_type&& o) { swap(o); }
     copied (this_type const& o) : traits_(o.traits_)
     {

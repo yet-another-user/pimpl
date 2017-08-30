@@ -27,11 +27,15 @@ struct detail::unique
         using alloc_traits = std::allocator_traits<alloc_type>;
 
         alloc_type       a;
-        derived_type* impl = boost::to_address(a.allocate(1));
+        this_type      tmp (nullptr);
+        derived_type* impl (boost::to_address(a.allocate(1)));
 
         alloc_traits::construct(a, impl, std::forward<arg_types>(args)...);
 
-        this_type(impl).swap(*this);
+        tmp.impl_   = impl;
+        tmp.traits_ = traits_type();
+
+        tmp.swap(*this);
     }
 
     template<typename... arg_types>
@@ -41,8 +45,7 @@ struct detail::unique
     }
 
    ~unique () { if (traits_) traits_->destroy(impl_); }
-    unique () {}
-    unique (impl_type* p) : impl_(p), traits_(traits_type()) {}
+    unique (std::nullptr_t) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }

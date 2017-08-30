@@ -28,7 +28,7 @@ struct detail::shared : std::shared_ptr<impl_type>
         base_ref(*this) = std::allocate_shared<derived_type>(alloc_type(), std::forward<arg_types>(args)...);
     }
 
-    shared() {}
+    shared(std::nullptr_t) {}
 
     template<typename... arg_types>
     shared(detail::in_place_type, arg_types&&... args)
