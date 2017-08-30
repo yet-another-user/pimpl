@@ -28,12 +28,12 @@
 //     T::operator==(T const&).
 
 template<typename user_type, typename... more_types>
-struct boost_impl_ptr_detail
+struct impl_ptr
 {
     struct          implementation;
     template<typename> struct base;
 
-    using impl_type = typename boost_impl_ptr_detail<user_type>::implementation; //C1
+    using impl_type = typename impl_ptr<user_type>::implementation; //C1
 
     template<template<typename, typename...> typename PT, typename... MT>
     using policy = base<PT<impl_type, MT...>>;
@@ -56,9 +56,9 @@ struct boost_impl_ptr_detail
 
 template<typename user_type, typename... more_types>
 template<typename policy_type>
-struct boost_impl_ptr_detail<user_type, more_types...>::base
+struct impl_ptr<user_type, more_types...>::base
 {
-    using implementation = typename boost_impl_ptr_detail<user_type>::implementation; //C1
+    using implementation = typename impl_ptr<user_type>::implementation; //C1
     using  impl_ptr_type = base;
 
     static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
@@ -104,7 +104,7 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
     protected:
 
-    template<typename, typename...> friend struct boost_impl_ptr_detail;
+    template<typename, typename...> friend struct impl_ptr;
 
     base(std::nullptr_t) : impl_(nullptr) {}
 
@@ -120,7 +120,7 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 namespace boost
 {
     template <typename ...> using void_type = void;
-    template<typename U, typename... M> using impl_ptr = ::boost_impl_ptr_detail<U, M...>;
+    template<typename U, typename... M> using impl_ptr = ::impl_ptr<U, M...>;
 
     template<typename, typename =void>
     struct is_impl_ptr : false_type {};
