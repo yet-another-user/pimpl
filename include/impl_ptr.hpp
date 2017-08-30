@@ -34,11 +34,15 @@ struct boost_impl_ptr_detail
     template<typename> struct base;
 
     using impl_type = typename boost_impl_ptr_detail<user_type>::implementation; //C1
-    using    shared = base<detail::  shared <impl_type, more_types...>>;
-    using    unique = base<detail::  unique <impl_type, more_types...>>;
-    using    copied = base<detail::  copied <impl_type, more_types...>>;
-    using   onstack = base<detail:: onstack <impl_type, more_types...>>;
-    using       cow = base<detail::     cow <impl_type, more_types...>>;
+
+    template<template<typename IT, typename... MT> typename PT>
+    using policy = base<PT<impl_type, more_types...>>;
+
+    using  shared = policy<detail:: shared>;
+    using  unique = policy<detail:: unique>;
+    using  copied = policy<detail:: copied>;
+    using onstack = policy<detail::onstack>;
+    using     cow = policy<detail::    cow>;
 
     static user_type null()
     {

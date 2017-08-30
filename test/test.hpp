@@ -7,7 +7,8 @@
 
 using string = std::string;
 
-struct Book : boost::impl_ptr<Book>::shared
+//struct Book : boost::impl_ptr<Book>::shared
+struct Book : boost::impl_ptr<Book>::policy<detail::shared>
 {
     Book(string const& title, string const& author);
 
