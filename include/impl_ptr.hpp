@@ -115,13 +115,14 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
 namespace boost
 {
+    template <typename ...> using void_type = void;
     template<typename U, typename... M> using impl_ptr = ::boost_impl_ptr_detail<U, M...>;
 
     template<typename, typename =void>
     struct is_impl_ptr : false_type {};
 
     template<typename T>
-    struct is_impl_ptr<T, void_t<typename T::impl_ptr_type>> : true_type {};
+    struct is_impl_ptr<T, void_type<typename T::impl_ptr_type>> : true_type {};
 }
 
 #endif // IMPL_PTR_HPP

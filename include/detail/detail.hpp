@@ -11,15 +11,12 @@
 #include <memory>
 
 #if 106500 <= BOOST_VERSION
-#include <boost/core/pointer_traits.hpp>
+#   include <boost/core/pointer_traits.hpp>
 #else
-
-namespace boost
-{
-    template<typename T> T to_address(T p) { return p; }
-    template <typename ...> using void_t = void;
-}
-
+    namespace boost
+    {
+        template<typename T> T to_address(T p) { return p; }
+    }
 #endif
 
 namespace detail
