@@ -12,8 +12,7 @@
 #include "./detail/cow.hpp"
 
 // C1. Always use the impl_ptr<user_type>::implementation specialization.
-//     That allows the implementation developer to only declare/define one
-//     implementation:
+//     That allows the developer to only declare/define one implementation:
 //         template<> struct impl_ptr<user_type>::implementation { ... };
 //     regardless of the extra types/args passed in externally.
 //     That (obviously) simplifies the internal implementation.
@@ -103,7 +102,7 @@ struct boost_impl_ptr_detail<user_type, more_types...>::base
 
     template<typename, typename...> friend struct boost_impl_ptr_detail;
 
-    base (std::nullptr_t) : impl_(nullptr) {}
+    base(std::nullptr_t) : impl_(nullptr) {}
 
     template<typename... arg_types>
     base(detail::in_place_type, arg_types&&... args)
