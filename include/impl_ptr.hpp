@@ -35,14 +35,14 @@ struct impl_ptr
 
     using impl_type = typename impl_ptr<user_type>::implementation; //C1
 
-    template<template<typename, typename...> typename PT, typename... MT>
-    using policy = base<PT<impl_type, MT...>>;
+    template<template<typename, typename...> typename policy_type>
+    using policy = base<policy_type<impl_type, more_types...>>;
 
-    using  shared = policy<detail:: shared, more_types...>;
-    using  unique = policy<detail:: unique, more_types...>;
-    using  copied = policy<detail:: copied, more_types...>;
-    using onstack = policy<detail::onstack, more_types...>;
-    using     cow = policy<detail::    cow, more_types...>;
+    using  shared = policy<detail:: shared>;
+    using  unique = policy<detail:: unique>;
+    using  copied = policy<detail:: copied>;
+    using onstack = policy<detail::onstack>;
+    using     cow = policy<detail::    cow>;
 
     static user_type null()
     {

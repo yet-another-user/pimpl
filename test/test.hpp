@@ -68,7 +68,7 @@ struct Copied : boost::impl_ptr<Copied>::copied // Pure interface.
 };
 
 //struct OnStack : boost::impl_ptr<OnStack, int[16]>::onstack
-struct OnStack : boost::impl_ptr<OnStack>::policy<detail::onstack, int[16]>
+struct OnStack : boost::impl_ptr<OnStack, int[16]>::policy<detail::onstack>
 {
     OnStack ();
     OnStack (int);
