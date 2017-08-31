@@ -71,7 +71,10 @@ struct impl_ptr_policy::onstack // Proof of concept
     void
     emplace(arg_types&&... args)
     {
-        static_assert(sizeof(derived_type) <= storage_type::size, "");
+        static_assert(sizeof(derived_type) <= sizeof(storage_type),
+                "Attempting to construct type larger than storage area");
+        static_assert((alignof(storage_type) % alignof(derived_type)) == 0,
+                "Attempting to construct type in storage area that does not have an integer multiple of the type's alignment requirement.");
 
         ::new (storage_.address()) derived_type(std::forward<arg_types>(args)...);
         traits_ = traits_type();
