@@ -1,6 +1,6 @@
 [section Custom Policy]
 
-An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a restricted custom ['stack-based-implementation] policy might be another:
+An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a restricted custom ['stack-based-implementation] policy (suggested by Giel van Schijndel) might be another:
 
  template<typename impl_type, typename size_type>
  struct onstack_no_null : detail::onstack<impl_type, size_type> // Proof of concept

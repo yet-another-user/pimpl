@@ -22,7 +22,7 @@
       It currently provides several policies but more are easy to incorporate. For
       example, a <span class="emphasis"><em>copy-on-write</em></span> policy might be one such extension.
       Then, a restricted custom <span class="emphasis"><em>stack-based-implementation</em></span> policy
-      might be another:
+      (suggested by Giel van Schijndel) might be another:
     </p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">size_type</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">onstack_no_null</span> <span class="special">:</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">&gt;</span> <span class="comment">// Proof of concept</span>
