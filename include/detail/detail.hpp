@@ -54,9 +54,9 @@ struct detail::traits::base
 
     virtual void         destroy (impl_type*) const =0;
     virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(0); }
-    virtual void          assign (impl_type*, impl_type&&) const { BOOST_ASSERT(0); }
+    virtual void          assign (impl_type* p, impl_type&& from) const { assign(p, from); }
     virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(0); return nullptr; }
-    virtual impl_type* construct (void* vp, impl_type&& from) const { BOOST_ASSERT(0); return nullptr; }
+    virtual impl_type* construct (void* p, impl_type&& from) const { return construct(p, from); }
 
     operator pointer()
     {
