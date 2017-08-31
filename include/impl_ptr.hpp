@@ -35,7 +35,7 @@ struct impl_ptr
 
     using impl_type = typename impl_ptr<user_type>::implementation; //C1
 
-    template<template<typename, typename...> typename policy_type>
+    template<template<typename, typename...> class policy_type>
     using policy = base<policy_type<impl_type, more_types...>>;
 
     using  shared = policy<detail:: shared>;
