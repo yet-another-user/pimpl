@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="yes"?>
 <library-reference id="reference"><title>Reference</title><header name="detail/copied.hpp">
-<namespace name="detail">
+<namespace name="impl_ptr_policy">
 <struct name="copied"><template>
       <template-type-parameter name="impl_type"/>
       <template-type-parameter name="allocator"/>
     </template><typedef name="this_type"><type><classname>copied</classname></type></typedef>
-<typedef name="traits_type"><type>traits::copyable&lt; impl_type, allocator &gt;</type></typedef>
+<typedef name="traits_type"><type>detail::traits::copyable&lt; impl_type, allocator &gt;</type></typedef>
 <typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
@@ -29,7 +29,7 @@
 </struct></namespace>
 </header>
 <header name="detail/onstack.hpp">
-<namespace name="detail">
+<namespace name="impl_ptr_policy">
 <struct name="onstack"><template>
       <template-type-parameter name="impl_type"/>
       <template-type-parameter name="size_type"/>
@@ -43,7 +43,7 @@
 </method-group>
 </struct><typedef name="this_type"><type><classname>onstack</classname></type></typedef>
 <typedef name="storage_type"><type>boost::aligned_storage&lt; sizeof(size_type)&gt;</type></typedef>
-<typedef name="traits_type"><type>traits::copyable&lt; impl_type, <classname>allocator</classname>&lt;&gt;&gt;</type></typedef>
+<typedef name="traits_type"><type>detail::traits::copyable&lt; impl_type, <classname>allocator</classname>&lt;&gt;&gt;</type></typedef>
 <typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
@@ -64,11 +64,11 @@
 </struct></namespace>
 </header>
 <header name="detail/shared.hpp">
-<namespace name="detail">
+<namespace name="impl_ptr_policy">
 <struct name="shared"><template>
       <template-type-parameter name="impl_type"/>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
-    </template><inherit access="public">std::shared_ptr&lt; impl_type &gt;</inherit><typedef name="allocator"><type>typename std::conditional&lt; 1&lt;=sizeof...(more_types), typename types&lt; more_types... &gt;::first_type, std::allocator&lt; impl_type &gt;&gt;::type</type></typedef>
+    </template><inherit access="public">std::shared_ptr&lt; impl_type &gt;</inherit><typedef name="allocator"><type>typename std::conditional&lt; 1&lt;=sizeof...(more_types), typename detail::types&lt; more_types... &gt;::first_type, std::allocator&lt; impl_type &gt;&gt;::type</type></typedef>
 <typedef name="alloc_type"><type>typename allocator::template rebind&lt; impl_type &gt;::other</type></typedef>
 <typedef name="base_ref"><type>std::shared_ptr&lt; impl_type &gt; &amp;</type></typedef>
 <method-group name="public member functions">
@@ -84,12 +84,12 @@
 </struct></namespace>
 </header>
 <header name="detail/unique.hpp">
-<namespace name="detail">
+<namespace name="impl_ptr_policy">
 <struct name="unique"><template>
       <template-type-parameter name="impl_type"/>
       <template-type-parameter name="allocator"/>
     </template><typedef name="this_type"><type><classname>unique</classname></type></typedef>
-<typedef name="traits_type"><type>traits::unique&lt; impl_type, allocator &gt;</type></typedef>
+<typedef name="traits_type"><type>detail::traits::unique&lt; impl_type, allocator &gt;</type></typedef>
 <typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
@@ -115,12 +115,19 @@
 <header name="impl_ptr.hpp">
 <struct name="impl_ptr"><template>
       <template-type-parameter name="user_type"/>
+      <template-nontype-parameter name="PT"><type>template&lt; typename, typename... &gt; class</type><default>detail::no_policy</default></template-nontype-parameter>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
-    </template><struct name="base"><template>
-      <template-type-parameter name="policy_type"/>
-    </template><typedef name="implementation"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
-<typedef name="impl_ptr_type"><type><classname>base</classname></type></typedef>
+    </template><typedef name="onstack"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::onstack</classname>, MT... &gt;</type></typedef>
+<typedef name="shared"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::shared</classname> &gt;</type></typedef>
+<typedef name="unique"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::unique</classname> &gt;</type></typedef>
+<typedef name="copied"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::copied</classname> &gt;</type></typedef>
+<typedef name="impl_ptr_type"><type><classname>impl_ptr</classname></type></typedef>
+<typedef name="impl_type"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
+<typedef name="policy_type"><type>PT&lt; impl_type, more_types... &gt;</type></typedef>
 <data-member name="in_place" specifiers="static"><type>constexpr detail::in_place_type</type></data-member>
+<method-group name="public static functions">
+<method name="null" specifiers="static"><type>user_type</type></method>
+</method-group>
 <method-group name="public member functions">
 <method name="operator!" cv="const"><type>bool</type></method>
 <method name="conversion-operator" cv="const" specifiers="explicit"><type>bool</type></method>
@@ -130,36 +137,26 @@
 <method name="swap"><type>void</type><parameter name="that"><paramtype>user_type &amp;</paramtype></parameter></method>
 <method name="use_count" cv="const"><type>long</type></method>
 <method name="emplace"><type>void</type><template>
-          <template-type-parameter name="impl_type"/>
+          <template-type-parameter name="derived_impl_type"/>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></method>
 <method name="emplace"><type>void</type><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></method>
-<method name="operator-&gt;" cv="const"><type>implementation *</type></method>
-<method name="operator*" cv="const"><type>implementation &amp;</type></method>
+<method name="operator-&gt;" cv="const"><type>impl_type *</type></method>
+<method name="operator*" cv="const"><type>impl_type &amp;</type></method>
 </method-group>
 <destructor/>
-<constructor cv="= default"><parameter name=""><paramtype><classname>base</classname> const &amp;</paramtype></parameter></constructor>
-<constructor cv="= default"><parameter name=""><paramtype><classname>base</classname> &amp;&amp;</paramtype></parameter></constructor>
-<copy-assignment cv="= default"><type><classname>base</classname> &amp;</type><parameter name=""><paramtype><classname>base</classname> const &amp;</paramtype></parameter></copy-assignment>
-<copy-assignment cv="= default"><type><classname>base</classname> &amp;</type><parameter name=""><paramtype><classname>base</classname> &amp;&amp;</paramtype></parameter></copy-assignment>
+<constructor cv="= default"><parameter name=""><paramtype><classname>impl_ptr</classname> const &amp;</paramtype></parameter></constructor>
+<constructor cv="= default"><parameter name=""><paramtype><classname>impl_ptr</classname> &amp;&amp;</paramtype></parameter></constructor>
+<copy-assignment cv="= default"><type><classname>impl_ptr</classname> &amp;</type><parameter name=""><paramtype><classname>impl_ptr</classname> const &amp;</paramtype></parameter></copy-assignment>
+<copy-assignment cv="= default"><type><classname>impl_ptr</classname> &amp;</type><parameter name=""><paramtype><classname>impl_ptr</classname> &amp;&amp;</paramtype></parameter></copy-assignment>
 <method-group name="protected member functions">
 </method-group>
 <constructor><parameter name=""><paramtype>std::nullptr_t</paramtype></parameter></constructor>
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype>detail::in_place_type</paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
-</struct><typedef name="impl_type"><type>typename <classname>impl_ptr</classname>&lt; user_type &gt;::implementation</type></typedef>
-<typedef name="policy"><type><classname>base</classname>&lt; policy_type&lt; impl_type, more_types... &gt;&gt;</type></typedef>
-<typedef name="shared"><type><classname>policy</classname>&lt; <classname>detail::shared</classname> &gt;</type></typedef>
-<typedef name="unique"><type><classname>policy</classname>&lt; <classname>detail::unique</classname> &gt;</type></typedef>
-<typedef name="copied"><type><classname>policy</classname>&lt; <classname>detail::copied</classname> &gt;</type></typedef>
-<typedef name="onstack"><type><classname>policy</classname>&lt; <classname>detail::onstack</classname> &gt;</type></typedef>
-<typedef name="cow"><type><classname>policy</classname>&lt; detail::cow &gt;</type></typedef>
-<method-group name="public static functions">
-<method name="null" specifiers="static"><type>user_type</type></method>
-</method-group>
 </struct><namespace name="boost">
 <struct name="is_impl_ptr"><template>
       <template-type-parameter name=""/>
@@ -167,7 +164,7 @@
     </template><inherit access="public">false_type</inherit></struct><struct-specialization name="is_impl_ptr"><template>
       <template-type-parameter name="T"/>
     </template><specialization><template-arg>T</template-arg><template-arg>void_type&lt; typename T::impl_ptr_type &gt;</template-arg></specialization><inherit access="public">true_type</inherit></struct-specialization><typedef name="void_type"><type>void</type></typedef>
-<typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; U, M... &gt;</type></typedef>
+<typedef name="impl_ptr"><type>::<classname>impl_ptr</classname>&lt; U, P, M... &gt;</type></typedef>
 </namespace>
 </header>
 </library-reference>

@@ -9,7 +9,7 @@
 
 namespace impl_ptr_policy
 {
-    template<typename, typename =void> struct onstack;
+    template<typename, typename> struct onstack;
 }
 
 template<typename impl_type, typename size_type>

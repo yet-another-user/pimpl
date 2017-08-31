@@ -1,0 +1,29 @@
+[section Customization]
+
+Previously shown definitions
+
+ struct Book : boost::impl_ptr<Book>::shared { ... };
+ struct Book : boost::impl_ptr<Book>::unique { ... };
+ struct Book : boost::impl_ptr<Book>::copied { ... };
+
+deploy ['shared, unique, copied] base classes. Those are, in fact, convenience short-hand aliases to satisfy the basic default deployment of the respective policies. When those policies are specified explicitly, the definitions look as follows:
+
+ struct Book : boost::impl_ptr<Book, impl_ptr_policy::shared> { ... };
+ struct Book : boost::impl_ptr<Book, impl_ptr_policy::unique> { ... };
+ struct Book : boost::impl_ptr<Book, impl_ptr_policy::copied> { ... };
+
+That declaration form allows far greater flexibility and policy configurability. In particular, custom policies are easily deployed. For example, 
+
+ template<typename impl_type, typename... more_types>
+ struct my_policy { ... };
+ 
+ struct Book : boost::impl_ptr<Book, my_policy> { ... };
+
+Or policies additionally configured to, say, use ['my_allocator]:
+
+ struct Book : boost::impl_ptr<Book, impl_ptr_policy::shared, my_allocator> { ... };
+ struct Book : boost::impl_ptr<Book, impl_ptr_policy::unique, my_allocator> { ... };
+ struct Book : boost::impl_ptr<Book, impl_ptr_policy::copied, my_allocator> { ... };
+
+[endsect] 
+

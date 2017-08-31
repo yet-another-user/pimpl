@@ -21,6 +21,8 @@
 
 namespace detail
 {
+    template<typename>
+    struct     no_policy {};
     struct in_place_type {};
 
     template<typename type1 =void,

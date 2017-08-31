@@ -27,22 +27,23 @@
 //     (no unique::op==()) and will indicate that the user forgot to declare
 //     T::operator==(T const&).
 
-template<typename user_type, typename... more_types>
+template<
+    typename user_type,
+    template<typename, typename...> class PT =detail::no_policy,
+    typename... more_types>
 struct impl_ptr
 {
-    struct          implementation;
-    template<typename> struct base;
+    template<typename... MT>
+    using onstack = impl_ptr<user_type, impl_ptr_policy::onstack, MT...>;
+    using  shared = impl_ptr<user_type, impl_ptr_policy:: shared>;
+    using  unique = impl_ptr<user_type, impl_ptr_policy:: unique>;
+    using  copied = impl_ptr<user_type, impl_ptr_policy:: copied>;
 
-    using impl_type = typename impl_ptr<user_type>::implementation; //C1
+    struct implementation;
 
-    template<template<typename, typename...> class policy_type>
-    using policy = base<policy_type<impl_type, more_types...>>;
-
-    using  shared = policy<impl_ptr_policy:: shared>;
-    using  unique = policy<impl_ptr_policy:: unique>;
-    using  copied = policy<impl_ptr_policy:: copied>;
-    using onstack = policy<impl_ptr_policy::onstack>;
-    using     cow = policy<impl_ptr_policy::    cow>;
+    using impl_ptr_type = impl_ptr;
+    using     impl_type = typename impl_ptr<user_type>::implementation; //C1
+    using   policy_type = PT<impl_type, more_types...>;
 
     static user_type null()
     {
@@ -52,22 +53,14 @@ struct impl_ptr
 
         return std::move(static_cast<user_type&&>(impl_ptr_type(nullptr)));
     }
-};
-
-template<typename user_type, typename... more_types>
-template<typename policy_type>
-struct impl_ptr<user_type, more_types...>::base
-{
-    using implementation = typename impl_ptr<user_type>::implementation; //C1
-    using  impl_ptr_type = base;
 
     static constexpr detail::in_place_type in_place {}; // Until C++17 with std::in_place
 
-   ~base()                       = default;
-    base(base const&)            = default;
-    base(base&&)                 = default;
-    base& operator=(base const&) = default;
-    base& operator=(base&&)      = default;
+   ~impl_ptr()                           = default;
+    impl_ptr(impl_ptr const&)            = default;
+    impl_ptr(impl_ptr&&)                 = default;
+    impl_ptr& operator=(impl_ptr const&) = default;
+    impl_ptr& operator=(impl_ptr&&)      = default;
 
     bool         operator! () const { return !impl_.get(); }
     explicit operator bool () const { return  impl_.get(); }
@@ -79,19 +72,19 @@ struct impl_ptr<user_type, more_types...>::base
     void      swap (user_type& that) { impl_.swap(that.impl_); }
     long use_count () const { return impl_.use_count(); }
 
-    template<typename impl_type, typename... arg_types>
+    template<typename derived_impl_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        static_assert(std::is_base_of<implementation, impl_type>::value, "");
+        static_assert(std::is_base_of<impl_type, derived_impl_type>::value, "");
 
-        impl_.template emplace<impl_type>(std::forward<arg_types>(args)...);
+        impl_.template emplace<derived_impl_type>(std::forward<arg_types>(args)...);
     }
     template<typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        impl_.template emplace<implementation>(std::forward<arg_types>(args)...);
+        impl_.template emplace<impl_type>(std::forward<arg_types>(args)...);
     }
 
     // Access To the Implementation.
@@ -99,17 +92,17 @@ struct impl_ptr<user_type, more_types...>::base
     //    in the code where impl_ptr<>::implementation is visible.
     // 2) For better or worse the original deep-constness behavior has been changed
     //    to match std::shared_ptr et al to avoid questions, confusion, etc.
-    implementation* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
-    implementation& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
+    impl_type* operator->() const { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
+    impl_type& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
 
     protected:
 
-    template<typename, typename...> friend struct impl_ptr;
+    template<typename, template<typename, typename...> class, typename...> friend struct impl_ptr;
 
-    base(std::nullptr_t) : impl_(nullptr) {}
+    impl_ptr(std::nullptr_t) : impl_(nullptr) {}
 
     template<typename... arg_types>
-    base(detail::in_place_type, arg_types&&... args)
+    impl_ptr(detail::in_place_type, arg_types&&... args)
     :
         impl_(in_place, std::forward<arg_types>(args)...)
     {}
@@ -120,7 +113,9 @@ struct impl_ptr<user_type, more_types...>::base
 namespace boost
 {
     template <typename ...> using void_type = void;
-    template<typename U, typename... M> using impl_ptr = ::impl_ptr<U, M...>;
+
+    template<typename U, template<typename, typename...> class P =::detail::no_policy, typename... M>
+    using impl_ptr = ::impl_ptr<U, P, M...>;
 
     template<typename, typename =void>
     struct is_impl_ptr : false_type {};

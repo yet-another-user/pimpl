@@ -1,0 +1,94 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Struct template copied</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
+<link rel="up" href="../reference.html#header.detail.copied_hpp" title="Header &lt;detail/copied.hpp&gt;">
+<link rel="prev" href="../reference.html" title="Reference">
+<link rel="next" href="../header/detail/onstack_hpp.html" title="Header &lt;detail/onstack.hpp&gt;">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../reference.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../reference.html#header.detail.copied_hpp"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../header/detail/onstack_hpp.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="impl_ptr_policy.copied"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Struct template copied</span></h2>
+<p>impl_ptr_policy::copied</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../reference.html#header.detail.copied_hpp" title="Header &lt;detail/copied.hpp&gt;">detail/copied.hpp</a>&gt;
+
+</span><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> impl_type<span class="special">,</span> <span class="keyword">typename</span> allocator<span class="special">&gt;</span> 
+<span class="keyword">struct</span> <a class="link" href="copied.html" title="Struct template copied">copied</a> <span class="special">{</span>
+  <span class="comment">// types</span>
+  <span class="keyword">typedef</span> <a class="link" href="copied.html" title="Struct template copied">copied</a>                                           <a name="impl_ptr_policy.copied.this_type"></a><span class="identifier">this_type</span><span class="special">;</span>  
+  <span class="keyword">typedef</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">traits</span><span class="special">::</span><span class="identifier">copyable</span><span class="special">&lt;</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">allocator</span> <span class="special">&gt;</span> <a name="impl_ptr_policy.copied.traits_type"></a><span class="identifier">traits_type</span><span class="special">;</span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">traits_type</span><span class="special">::</span><span class="identifier">pointer</span>                    <a name="impl_ptr_policy.copied.traits_ptr"></a><span class="identifier">traits_ptr</span><span class="special">;</span> 
+
+  <span class="comment">// <a class="link" href="copied.html#impl_ptr_policy.copiedconstruct-copy-destruct">construct/copy/destruct</a></span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+    <a class="link" href="copied.html#idm139215883700272-bb"><span class="identifier">copied</span></a><span class="special">(</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span><span class="special">,</span> <span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="copied.html#idm139215883697184-bb"><span class="identifier">copied</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="copied.html#idm139215883696208-bb"><span class="identifier">copied</span></a><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="copied.html#idm139215883694944-bb"><span class="identifier">copied</span></a><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;</span> <a class="link" href="copied.html#idm139215883693680-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;</span> <a class="link" href="copied.html#idm139215883691840-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="copied.html#idm139215883697472-bb"><span class="special">~</span><span class="identifier">copied</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="copied.html#idm139215883710496-bb">public member functions</a></span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+    <span class="keyword">void</span> <a class="link" href="copied.html#idm139215883709936-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="copied.html#idm139215883706592-bb"><span class="keyword">operator</span><span class="special">&lt;</span></a><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="copied.html#idm139215883704496-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">impl_type</span> <span class="special">*</span> <a class="link" href="copied.html#idm139215883702672-bb"><span class="identifier">get</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">long</span> <a class="link" href="copied.html#idm139215883701552-bb"><span class="identifier">use_count</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="idm139893699585504"></a><h2>Description</h2>
+<div class="refsect2">
+<a name="idm139893699585088"></a><h3>
+<a name="impl_ptr_policy.copiedconstruct-copy-destruct"></a><code class="computeroutput">copied</code> 
+        public
+       construct/copy/destruct</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+  <a name="idm139215883700272-bb"></a><span class="identifier">copied</span><span class="special">(</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span><span class="special">,</span> <span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm139215883697184-bb"></a><span class="identifier">copied</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm139215883696208-bb"></a><span class="identifier">copied</span><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm139215883694944-bb"></a><span class="identifier">copied</span><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;</span> <a name="idm139215883693680-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;</span> <a name="idm139215883691840-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm139215883697472-bb"></a><span class="special">~</span><span class="identifier">copied</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="idm139893699536976"></a><h3>
+<a name="idm139215883710496-bb"></a><code class="computeroutput">copied</code> public member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+  <span class="keyword">void</span> <a name="idm139215883709936-bb"></a><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">bool</span> <a name="idm139215883706592-bb"></a><span class="keyword">operator</span><span class="special">&lt;</span><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="keyword">const</span> <span class="special">&amp;</span> o<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idm139215883704496-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="copied.html#impl_ptr_policy.copied.this_type">this_type</a> <span class="special">&amp;</span> o<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="identifier">impl_type</span> <span class="special">*</span> <a name="idm139215883702672-bb"></a><span class="identifier">get</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">long</span> <a name="idm139215883701552-bb"></a><span class="identifier">use_count</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+</ol></div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2008-2018 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0 (<a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>).
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../reference.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../reference.html#header.detail.copied_hpp"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../header/detail/onstack_hpp.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
