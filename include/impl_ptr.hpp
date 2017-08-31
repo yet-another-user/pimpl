@@ -9,7 +9,6 @@
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
 #include "./detail/onstack.hpp"
-#include "./detail/cow.hpp"
 
 // C1. Always use the impl_ptr<user_type>::implementation specialization.
 //     That allows the developer to only declare/define one implementation:
