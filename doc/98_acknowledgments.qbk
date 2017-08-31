@@ -8,6 +8,8 @@ Many thanks to:
 
 * Glen Fernandes and Gavin Lambert for their ['boost::is_impl_ptr];
 
+* Giel van Schijndel for his considerable implementation and design related contributions;
+
 * Glen Fernandes, Gavin Lambert, Edward Diener, Andrzej Krzemienski, Vicente J. Botet Escriba, Hans Dembinski, Gary Furnish for their participation in and contributions during the review. 
 
 [endsect]

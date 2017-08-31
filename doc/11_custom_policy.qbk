@@ -1,68 +1,31 @@
 [section Custom Policy]
 
-An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a ['stack-based-implementation] policy might be another:
+An important property of ['impl_ptr] is its extendibility. It currently provides several policies but more are easy to incorporate. For example, a ['copy-on-write] policy might be one such extension. Then, a restricted custom ['stack-based-implementation] policy might be another:
 
  template<typename impl_type, typename size_type>
- struct detail::onstack // Proof of concept
+ struct onstack_no_null : detail::onstack<impl_type, size_type> // Proof of concept
  {
-     template<typename> struct allocator { ... };
+     using detail::onstack<impl_type, size_type>::onstack;
 
-     using    this_type = onstack;
-     using storage_type = boost::aligned_storage<sizeof(size_type)>;
-     using  traits_type = detail::copyable_traits<impl_type, allocator<void>>;
-     using   traits_ptr = typename traits_type::pointer;
- 
-    ~onstack () { if (traits_) traits_->destroy(get()); }
-     onstack () {}
-     onstack (this_type const& o) : traits_(o.traits_)
-     {
-         if (traits_)
-             traits_->construct(storage_.address(), *o.get());
-     }
-     ...
- 
-     private:
- 
-     storage_type storage_;
-     traits_ptr    traits_ = nullptr;
- };
- template<typename user_type, typename... more_types>
- struct impl_ptr
- {
-     using onstack = base<detail::onstack<impl_type, more_types...>>;
+     // Disable the null-state construction.
+     onstack_no_null(std::nullptr_t) =delete;
  };
  ...
- struct OnStack : boost::impl_ptr<OnStack, int[16]>::onstack { ... };
+ struct OnStack : boost::impl_ptr<OnStack, int[16]>::policy<onstack_no_null> { ... };
 
 Then ['OnStack] could be used no differently from other ['Pimpl]-based classes:
 
  OnStack s11 (3); BOOST_TEST(s11.value() == 3);
  OnStack s12 (5); BOOST_TEST(s12.value() == 5);
+
+ // The line below won't compile. OnStack does not have an uninitialized state.
  OnStack s13 = boost::impl_ptr<OnStack>::null();
 
  // Check that implementation is allocated on the stack.
  BOOST_TEST((void*) &s11 == (void*) &*s11);
- BOOST_TEST(!s13);
 
  s11 = s12;          BOOST_TEST(s11.value() == 5);
  s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
-
-Then, due to efficiency requirements or heap constraints, we might decide to switch from
-
- // std::allocator-based implementation allocation
- struct Book : boost::impl_ptr<Book>::copied { ... };
-
-to
-
- // Custom-allocator-based implementation allocation
- struct Book : boost::impl_ptr<Book, my_allocator>::copied { ... };
-
-or to
-
- // Stack-based implementation allocation
- struct Book : boost::impl_ptr<Book, char[64]>::onstack { ... };
-
-with minimal or no disruption to the existing code. 
 
 [endsect] 
 

@@ -1,0 +1,37 @@
+[section On-Stack Implementation Policy]
+
+ ...
+ struct OnStack : boost::impl_ptr<OnStack, int[16]>::onstack { ... };
+
+Then ['OnStack] could be used no differently from other ['Pimpl]-based classes:
+
+ OnStack s11 (3); BOOST_TEST(s11.value() == 3);
+ OnStack s12 (5); BOOST_TEST(s12.value() == 5);
+ OnStack s13 = boost::impl_ptr<OnStack>::null();
+
+ // Check that implementation is allocated on the stack.
+ BOOST_TEST((void*) &s11 == (void*) &*s11);
+ BOOST_TEST(!s13);
+
+ s11 = s12;          BOOST_TEST(s11.value() == 5);
+ s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
+
+Then, due to efficiency requirements or heap constraints, we might decide to switch from
+
+ // std::allocator-based implementation allocation
+ struct Book : boost::impl_ptr<Book>::copied { ... };
+
+to
+
+ // Custom-allocator-based implementation allocation
+ struct Book : boost::impl_ptr<Book, my_allocator>::copied { ... };
+
+or to
+
+ // Stack-based implementation allocation
+ struct Book : boost::impl_ptr<Book, char[64]>::onstack { ... };
+
+with minimal or no disruption to the existing code. 
+
+[endsect] 
+

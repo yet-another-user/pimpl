@@ -1,39 +1,25 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Custom Policy</title>
+<title>On-Stack Implementation Policy</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
-<link rel="prev" href="on_stack_implementation_policy.html" title="On-Stack Implementation Policy">
-<link rel="next" href="custom_allocator.html" title="Custom Allocator">
+<link rel="prev" href="construction_and_impl_ptr_null.html" title="Construction and impl_ptr::null()">
+<link rel="next" href="custom_policy.html" title="Custom Policy">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="on_stack_implementation_policy.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="custom_policy.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="impl_ptr.custom_policy"></a><a class="link" href="custom_policy.html" title="Custom Policy">Custom Policy</a>
+<a name="impl_ptr.on_stack_implementation_policy"></a><a class="link" href="on_stack_implementation_policy.html" title="On-Stack Implementation Policy">On-Stack Implementation
+    Policy</a>
 </h2></div></div></div>
-<p>
-      An important property of <span class="emphasis"><em>impl_ptr</em></span> is its extendibility.
-      It currently provides several policies but more are easy to incorporate. For
-      example, a <span class="emphasis"><em>copy-on-write</em></span> policy might be one such extension.
-      Then, a restricted custom <span class="emphasis"><em>stack-based-implementation</em></span> policy
-      might be another:
-    </p>
-<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">size_type</span><span class="special">&gt;</span>
-<span class="keyword">struct</span> <span class="identifier">onstack_no_null</span> <span class="special">:</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">&gt;</span> <span class="comment">// Proof of concept</span>
-<span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">onstack</span><span class="special">&lt;</span><span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">&gt;::</span><span class="identifier">onstack</span><span class="special">;</span>
-
-    <span class="comment">// Disable the null-state construction.</span>
-    <span class="identifier">onstack_no_null</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span> <span class="special">=</span><span class="keyword">delete</span><span class="special">;</span>
-<span class="special">};</span>
-<span class="special">...</span>
-<span class="keyword">struct</span> <span class="identifier">OnStack</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">,</span> <span class="keyword">int</span><span class="special">[</span><span class="number">16</span><span class="special">]&gt;::</span><span class="identifier">policy</span><span class="special">&lt;</span><span class="identifier">onstack_no_null</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<pre class="programlisting"><span class="special">...</span>
+<span class="keyword">struct</span> <span class="identifier">OnStack</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">,</span> <span class="keyword">int</span><span class="special">[</span><span class="number">16</span><span class="special">]&gt;::</span><span class="identifier">onstack</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
       Then <span class="emphasis"><em>OnStack</em></span> could be used no differently from other
@@ -41,16 +27,37 @@
     </p>
 <pre class="programlisting"><span class="identifier">OnStack</span> <span class="identifier">s11</span> <span class="special">(</span><span class="number">3</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">3</span><span class="special">);</span>
 <span class="identifier">OnStack</span> <span class="identifier">s12</span> <span class="special">(</span><span class="number">5</span><span class="special">);</span> <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s12</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>
-
-<span class="comment">// The line below won't compile. OnStack does not have an uninitialized state.</span>
 <span class="identifier">OnStack</span> <span class="identifier">s13</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">OnStack</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">();</span>
 
 <span class="comment">// Check that implementation is allocated on the stack.</span>
 <span class="identifier">BOOST_TEST</span><span class="special">((</span><span class="keyword">void</span><span class="special">*)</span> <span class="special">&amp;</span><span class="identifier">s11</span> <span class="special">==</span> <span class="special">(</span><span class="keyword">void</span><span class="special">*)</span> <span class="special">&amp;*</span><span class="identifier">s11</span><span class="special">);</span>
+<span class="identifier">BOOST_TEST</span><span class="special">(!</span><span class="identifier">s13</span><span class="special">);</span>
 
 <span class="identifier">s11</span> <span class="special">=</span> <span class="identifier">s12</span><span class="special">;</span>          <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">5</span><span class="special">);</span>
 <span class="identifier">s11</span> <span class="special">=</span> <span class="identifier">OnStack</span><span class="special">(</span><span class="number">6</span><span class="special">);</span>   <span class="identifier">BOOST_TEST</span><span class="special">(</span><span class="identifier">s11</span><span class="special">.</span><span class="identifier">value</span><span class="special">()</span> <span class="special">==</span> <span class="number">6</span><span class="special">);</span>
 </pre>
+<p>
+      Then, due to efficiency requirements or heap constraints, we might decide to
+      switch from
+    </p>
+<pre class="programlisting"><span class="comment">// std::allocator-based implementation allocation</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+</pre>
+<p>
+      to
+    </p>
+<pre class="programlisting"><span class="comment">// Custom-allocator-based implementation allocation</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+</pre>
+<p>
+      or to
+    </p>
+<pre class="programlisting"><span class="comment">// Stack-based implementation allocation</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="keyword">char</span><span class="special">[</span><span class="number">64</span><span class="special">]&gt;::</span><span class="identifier">onstack</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+</pre>
+<p>
+      with minimal or no disruption to the existing code.
+    </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -61,7 +68,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="on_stack_implementation_policy.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="custom_allocator.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="custom_policy.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

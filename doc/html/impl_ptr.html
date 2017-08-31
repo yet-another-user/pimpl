@@ -1,0 +1,95 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Struct template impl_ptr</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
+<link rel="up" href="header/impl_ptr_hpp.html" title="Header &lt;impl_ptr.hpp&gt;">
+<link rel="prev" href="header/impl_ptr_hpp.html" title="Header &lt;impl_ptr.hpp&gt;">
+<link rel="next" href="impl_ptr/base.html" title="Struct template base">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="header/impl_ptr_hpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="header/impl_ptr_hpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="impl_ptr/base.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="impl_ptr"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Struct template impl_ptr</span></h2>
+<p>impl_ptr</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="header/impl_ptr_hpp.html" title="Header &lt;impl_ptr.hpp&gt;">impl_ptr.hpp</a>&gt;
+
+</span><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> user_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> more_types<span class="special">&gt;</span> 
+<span class="keyword">struct</span> <a class="link" href="index.html" title="Chapter&#160;1.&#160;Pimpl C++11">impl_ptr</a> <span class="special">{</span>
+  <span class="comment">// types</span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="link" href="index.html" title="Chapter&#160;1.&#160;Pimpl C++11">impl_ptr</a><span class="special">&lt;</span> <span class="identifier">user_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">implementation</span> <a name="impl_ptr.impl_type"></a><span class="identifier">impl_type</span><span class="special">;</span>
+  <span class="keyword">typedef</span> <a class="link" href="impl_ptr/base.html" title="Struct template base">base</a><span class="special">&lt;</span> <span class="identifier">policy_type</span><span class="special">&lt;</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="identifier">more_types</span><span class="special">...</span> <span class="special">&gt;&gt;</span> <a name="impl_ptr.policy"></a><span class="identifier">policy</span><span class="special">;</span>   
+  <span class="keyword">typedef</span> <a class="link" href="impl_ptr.html#impl_ptr.policy">policy</a><span class="special">&lt;</span> <a class="link" href="detail/shared.html" title="Struct template shared">detail::shared</a> <span class="special">&gt;</span>                       <a name="impl_ptr.shared"></a><span class="identifier">shared</span><span class="special">;</span>   
+  <span class="keyword">typedef</span> <a class="link" href="impl_ptr.html#impl_ptr.policy">policy</a><span class="special">&lt;</span> <a class="link" href="detail/unique.html" title="Struct template unique">detail::unique</a> <span class="special">&gt;</span>                       <a name="impl_ptr.unique"></a><span class="identifier">unique</span><span class="special">;</span>   
+  <span class="keyword">typedef</span> <a class="link" href="impl_ptr.html#impl_ptr.policy">policy</a><span class="special">&lt;</span> <a class="link" href="detail/copied.html" title="Struct template copied">detail::copied</a> <span class="special">&gt;</span>                       <a name="impl_ptr.copied"></a><span class="identifier">copied</span><span class="special">;</span>   
+  <span class="keyword">typedef</span> <a class="link" href="impl_ptr.html#impl_ptr.policy">policy</a><span class="special">&lt;</span> <a class="link" href="detail/onstack.html" title="Struct template onstack">detail::onstack</a> <span class="special">&gt;</span>                      <a name="impl_ptr.onstack"></a><span class="identifier">onstack</span><span class="special">;</span>  
+  <span class="keyword">typedef</span> <a class="link" href="impl_ptr.html#impl_ptr.policy">policy</a><span class="special">&lt;</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">cow</span> <span class="special">&gt;</span>                          <a name="impl_ptr.cow"></a><span class="identifier">cow</span><span class="special">;</span>      
+
+  <span class="comment">// member classes/structs/unions</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> policy_type<span class="special">&gt;</span> 
+  <span class="keyword">struct</span> <a class="link" href="impl_ptr/base.html" title="Struct template base">base</a> <span class="special">{</span>
+    <span class="comment">// types</span>
+    <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="link" href="index.html" title="Chapter&#160;1.&#160;Pimpl C++11">impl_ptr</a><span class="special">&lt;</span> <span class="identifier">user_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">implementation</span> <a class="link" href="impl_ptr/base.html#impl_ptr.base.implementation"><span class="identifier">implementation</span></a><span class="special">;</span>
+    <span class="keyword">typedef</span> <a class="link" href="impl_ptr/base.html" title="Struct template base">base</a>                                           <a class="link" href="impl_ptr/base.html#impl_ptr.base.impl_ptr_type"><span class="identifier">impl_ptr_type</span></a><span class="special">;</span> 
+
+    <span class="comment">// <a class="link" href="impl_ptr/base.html#impl_ptr.baseconstruct-copy-destruct">construct/copy/destruct</a></span>
+    <a class="link" href="impl_ptr/base.html#idm139383069773760-bb"><span class="identifier">base</span></a><span class="special">(</span><a class="link" href="impl_ptr/base.html" title="Struct template base">base</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+    <a class="link" href="impl_ptr/base.html#idm139383069772384-bb"><span class="identifier">base</span></a><span class="special">(</span><a class="link" href="impl_ptr/base.html" title="Struct template base">base</a> <span class="special">&amp;&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+    <a class="link" href="impl_ptr/base.html#idm139383069766608-bb"><span class="identifier">base</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+      <a class="link" href="impl_ptr/base.html#idm139383069765728-bb"><span class="identifier">base</span></a><span class="special">(</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span><span class="special">,</span> <span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+    <a class="link" href="impl_ptr/base.html" title="Struct template base">base</a> <span class="special">&amp;</span> <a class="link" href="impl_ptr/base.html#idm139383069771008-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="impl_ptr/base.html" title="Struct template base">base</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+    <a class="link" href="impl_ptr/base.html" title="Struct template base">base</a> <span class="special">&amp;</span> <a class="link" href="impl_ptr/base.html#idm139383069769120-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="impl_ptr/base.html" title="Struct template base">base</a> <span class="special">&amp;&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+    <a class="link" href="impl_ptr/base.html#idm139383069774016-bb"><span class="special">~</span><span class="identifier">base</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+
+    <span class="comment">// <a class="link" href="impl_ptr/base.html#idm139383069791328-bb">public member functions</a></span>
+    <span class="keyword">bool</span> <a class="link" href="impl_ptr/base.html#idm139383069790832-bb"><span class="keyword">operator</span><span class="special">!</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">explicit</span> <a class="link" href="impl_ptr/base.html#idm139383069789840-bb"><span class="keyword">operator</span> <span class="keyword">bool</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">bool</span> <a class="link" href="impl_ptr/base.html#idm139383069788608-bb"><span class="keyword">operator</span><span class="special">==</span></a><span class="special">(</span><span class="identifier">user_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">bool</span> <a class="link" href="impl_ptr/base.html#idm139383069786992-bb"><span class="keyword">operator</span><span class="special">!=</span></a><span class="special">(</span><span class="identifier">user_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">bool</span> <a class="link" href="impl_ptr/base.html#idm139383069785376-bb"><span class="keyword">operator</span><span class="special">&lt;</span></a><span class="special">(</span><span class="identifier">user_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="impl_ptr/base.html#idm139383069783760-bb"><span class="identifier">swap</span></a><span class="special">(</span><span class="identifier">user_type</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">long</span> <a class="link" href="impl_ptr/base.html#idm139383069782384-bb"><span class="identifier">use_count</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> impl_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+      <span class="keyword">void</span> <a class="link" href="impl_ptr/base.html#idm139383069781392-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="impl_ptr/base.html#idm139383069778512-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">implementation</span> <span class="special">*</span> <a class="link" href="impl_ptr/base.html#idm139383069776128-bb"><span class="keyword">operator</span><span class="special">-&gt;</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="identifier">implementation</span> <span class="special">&amp;</span> <a class="link" href="impl_ptr/base.html#idm139383069775136-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+
+    <span class="comment">// public data members</span>
+    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span> <span class="identifier">in_place</span><span class="special">;</span>
+  <span class="special">}</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="impl_ptr.html#idm139383069754496-bb">public static functions</a></span>
+  <span class="keyword">static</span> <span class="identifier">user_type</span> <a class="link" href="impl_ptr.html#idm139383069754000-bb"><span class="identifier">null</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="idm140151289356720"></a><h2>Description</h2>
+<div class="refsect2">
+<a name="idm140151289356304"></a><h3>
+<a name="idm139383069754496-bb"></a><code class="computeroutput">impl_ptr</code> public static functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="identifier">user_type</span> <a name="idm139383069754000-bb"></a><span class="identifier">null</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li></ol></div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2008-2018 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0 (<a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>).
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="header/impl_ptr_hpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="header/impl_ptr_hpp.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="impl_ptr/base.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
