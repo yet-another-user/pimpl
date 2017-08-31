@@ -7,17 +7,17 @@
 
 #include "./detail.hpp"
 
-namespace detail
+namespace impl_ptr_policy
 {
     template<typename, typename...> struct shared;
 }
 
 template<typename impl_type, typename... more_types>
-struct detail::shared : std::shared_ptr<impl_type>
+struct impl_ptr_policy::shared : std::shared_ptr<impl_type>
 {
     using  allocator = typename std::conditional<
                        1 <= sizeof...(more_types),
-                       typename types<more_types...>::first_type,
+                       typename detail::types<more_types...>::first_type,
                        std::allocator<impl_type>>::type;
     using alloc_type = typename allocator::template rebind<impl_type>::other;
     using   base_ref = std::shared_ptr<impl_type>&;

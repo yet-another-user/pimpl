@@ -7,13 +7,13 @@
 
 #include "./detail.hpp"
 
-namespace detail
+namespace impl_ptr_policy
 {
     template<typename, typename =void> struct onstack;
 }
 
 template<typename impl_type, typename size_type>
-struct detail::onstack // Proof of concept
+struct impl_ptr_policy::onstack // Proof of concept
 {
     template<typename T =void> struct allocator : std::allocator<T>
     {
@@ -23,7 +23,7 @@ struct detail::onstack // Proof of concept
     };
     using    this_type = onstack;
     using storage_type = boost::aligned_storage<sizeof(size_type)>;
-    using  traits_type = traits::copyable<impl_type, allocator<>>;
+    using  traits_type = detail::traits::copyable<impl_type, allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
    ~onstack () { if (traits_) traits_->destroy(get()); }

@@ -8,7 +8,7 @@
 using string = std::string;
 
 //struct Book : boost::impl_ptr<Book>::shared
-struct Book : boost::impl_ptr<Book>::policy<detail::shared>
+struct Book : boost::impl_ptr<Book>::policy<impl_ptr_policy::shared>
 {
     Book(string const& title, string const& author);
 
@@ -68,7 +68,7 @@ struct Copied : boost::impl_ptr<Copied>::copied // Pure interface.
 };
 
 //struct OnStack : boost::impl_ptr<OnStack, int[16]>::onstack
-struct OnStack : boost::impl_ptr<OnStack, int[16]>::policy<detail::onstack>
+struct OnStack : boost::impl_ptr<OnStack, int[16]>::policy<impl_ptr_policy::onstack>
 {
     OnStack ();
     OnStack (int);

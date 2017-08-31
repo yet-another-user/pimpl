@@ -3,13 +3,13 @@
 
 #include "./detail.hpp"
 
-namespace detail
+namespace impl_ptr_policy
 {
     template<typename, typename =std::allocator<void>> struct cow;
 }
 
 template<typename impl_type, typename allocator>
-struct detail::cow
+struct impl_ptr_policy::cow
 {
 };
 

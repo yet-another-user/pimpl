@@ -7,16 +7,16 @@
 
 #include "./detail.hpp"
 
-namespace detail
+namespace impl_ptr_policy
 {
     template<typename, typename =std::allocator<void>> struct unique;
 }
 
 template<typename impl_type, typename allocator>
-struct detail::unique
+struct impl_ptr_policy::unique
 {
     using   this_type = unique;
-    using traits_type = traits::unique<impl_type, allocator>;
+    using traits_type = detail::traits::unique<impl_type, allocator>;
     using  traits_ptr = typename traits_type::pointer;
 
     template<typename derived_type, typename... arg_types>

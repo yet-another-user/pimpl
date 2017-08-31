@@ -38,11 +38,11 @@ struct impl_ptr
     template<template<typename, typename...> class policy_type>
     using policy = base<policy_type<impl_type, more_types...>>;
 
-    using  shared = policy<detail:: shared>;
-    using  unique = policy<detail:: unique>;
-    using  copied = policy<detail:: copied>;
-    using onstack = policy<detail::onstack>;
-    using     cow = policy<detail::    cow>;
+    using  shared = policy<impl_ptr_policy:: shared>;
+    using  unique = policy<impl_ptr_policy:: unique>;
+    using  copied = policy<impl_ptr_policy:: copied>;
+    using onstack = policy<impl_ptr_policy::onstack>;
+    using     cow = policy<impl_ptr_policy::    cow>;
 
     static user_type null()
     {

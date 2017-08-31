@@ -3,13 +3,13 @@
 
 // Andrey. Please add you copyright here.
 
-namespace detail
+namespace impl_ptr_policy
 {
     template<typename, typename =std::allocator<void>> struct copied_au;
 }
 
 template<typename impl_type, typename allocator>
-struct detail::copied_au
+struct impl_ptr_policy::copied_au
 {
 };
 

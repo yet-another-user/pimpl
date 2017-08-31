@@ -3,16 +3,16 @@
 
 #include "./detail.hpp"
 
-namespace detail
+namespace impl_ptr_policy
 {
     template<typename, typename =std::allocator<void>> struct copied;
 }
 
 template<typename impl_type, typename allocator>
-struct detail::copied
+struct impl_ptr_policy::copied
 {
     using   this_type = copied;
-    using traits_type = traits::copyable<impl_type, allocator>;
+    using traits_type = detail::traits::copyable<impl_type, allocator>;
     using  traits_ptr = typename traits_type::pointer;
 
     template<typename derived_type, typename... arg_types>
