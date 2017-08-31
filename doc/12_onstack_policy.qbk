@@ -1,7 +1,10 @@
 [section On-Stack Implementation Policy]
 
- ...
- struct OnStack : boost::impl_ptr<OnStack, impl_ptr_policy::onstack, int[16]> { ... };
+The ['onstack'] policy allocates the implementation's memory inside of the containing class.
+It determines its size based on the first extra parameter.
+The default alignment (that of boost::aligned_storage) can be overridden by giving a type to take the alignment of as second parameter.
+
+ struct OnStack : boost::impl_ptr<OnStack, impl_ptr_policy::onstack, int[16], void*> { ... };
 
 Then ['OnStack] could be used no differently from other ['Pimpl]-based classes:
 
@@ -34,22 +37,23 @@ to
 or to
 
  // Stack-based implementation allocation
- struct Book : boost::impl_ptr<Book, impl_ptr_policy::onstack, char[64]> { ... };
+ struct Book : boost::impl_ptr<Book, impl_ptr_policy::onstack, void*[8], void*> { ... };
 
 with minimal or no disruption to the existing code. 
 
 Then, a restricted custom ['stack-based-implementation] policy (suggested by Giel van Schijndel) might be a further extension of impl_ptr_policy::onstack:
 
- template<typename impl_type, typename size_type>
- struct onstack_no_null : impl_ptr_policy::onstack<impl_type, size_type>
+ template<typename impl_type, typename size_type, typename align_type = void>
+ struct onstack_no_null : impl_ptr_policy::onstack<impl_type, size_type, align_type>
  {
-     using impl_ptr_policy::onstack<impl_type, size_type>::onstack;
+     // Inheriting base' constructors
+     using impl_ptr_policy::onstack<impl_type, size_type, align_type>::onstack;
 
      // Disable the null-state construction.
-     onstack_no_null(std::nullptr_t) =delete;
+     onstack_no_null(std::nullptr_t) = delete;
  };
  ...
- struct OnStack : boost::impl_ptr<OnStack, onstack_no_null, int[16]> { ... };
+ struct OnStack : boost::impl_ptr<OnStack, onstack_no_null, int[16], void*> { ... };
 
 to make sure of the following:
 
