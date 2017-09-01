@@ -30,32 +30,32 @@
   <span class="keyword">typedef</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">impl_type</span> <span class="special">&gt;</span> <span class="special">&amp;</span>                                                                                                               <a name="impl_ptr_policy.shared.base_ref"></a><span class="identifier">base_ref</span><span class="special">;</span>  
 
   <span class="comment">// <a class="link" href="shared.html#impl_ptr_policy.sharedconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="shared.html#idm139476520195888-bb"><span class="identifier">shared</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="shared.html#idm139079387346848-bb"><span class="identifier">shared</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
-    <a class="link" href="shared.html#idm139476520195008-bb"><span class="identifier">shared</span></a><span class="special">(</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span><span class="special">,</span> <span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+    <a class="link" href="shared.html#idm139079387345968-bb"><span class="identifier">shared</span></a><span class="special">(</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span><span class="special">,</span> <span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="shared.html#idm139476520199392-bb">public member functions</a></span>
+  <span class="comment">// <a class="link" href="shared.html#idm139079387350352-bb">public member functions</a></span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="shared.html#idm139476520198896-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="shared.html#idm139079387349856-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idm139375408217504"></a><h2>Description</h2>
+<a name="idm139803281108480"></a><h2>Description</h2>
 <div class="refsect2">
-<a name="idm139375408217088"></a><h3>
+<a name="idm139803281108064"></a><h3>
 <a name="impl_ptr_policy.sharedconstruct-copy-destruct"></a><code class="computeroutput">shared</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><a name="idm139476520195888-bb"></a><span class="identifier">shared</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idm139079387346848-bb"></a><span class="identifier">shared</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">nullptr_t</span><span class="special">)</span><span class="special">;</span></pre></li>
 <li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
-  <a name="idm139476520195008-bb"></a><span class="identifier">shared</span><span class="special">(</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span><span class="special">,</span> <span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li>
+  <a name="idm139079387345968-bb"></a><span class="identifier">shared</span><span class="special">(</span><span class="identifier">detail</span><span class="special">::</span><span class="identifier">in_place_type</span><span class="special">,</span> <span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idm139375408198800"></a><h3>
-<a name="idm139476520199392-bb"></a><code class="computeroutput">shared</code> public member functions</h3>
+<a name="idm139803281089776"></a><h3>
+<a name="idm139079387350352-bb"></a><code class="computeroutput">shared</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idm139476520198896-bb"></a><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li></ol></div>
+  <span class="keyword">void</span> <a name="idm139079387349856-bb"></a><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li></ol></div>
 </div>
 </div>
 </div>
