@@ -1,12 +1,12 @@
 [section Customization]
 
-Previously shown definitions
+Previously mentioned ['Pimpl] class definitions
 
  struct Book : boost::impl_ptr<Book>::shared { ... };
  struct Book : boost::impl_ptr<Book>::unique { ... };
  struct Book : boost::impl_ptr<Book>::copied { ... };
 
-deploy ['shared, unique, copied] as base classes. Those are, in fact, shorthand aliases to abbreviate the basic default deployment of the respective policies. When specified explicitly, the definitions look as follows:
+use ['shared, unique, copied] as base classes. Those are, in fact, shorthand aliases to abbreviate the basic default deployment of the respective policies. When specified explicitly, the definitions look as follows:
 
  using policy = impl_ptr_policy;
 
@@ -14,18 +14,19 @@ deploy ['shared, unique, copied] as base classes. Those are, in fact, shorthand 
  struct Book : boost::impl_ptr<Book, policy::unique> { ... };
  struct Book : boost::impl_ptr<Book, policy::copied> { ... };
 
-That direct form allows far greater flexibility, policy customization and configurability. Namely, custom policies are easily deployed: 
+That direct form allows far greater flexibility, policy customization and configurability. Now custom policies are easily deployed: 
 
  template<typename impl_type, typename... more_types>
  struct my_policy { ... };
  
  struct Book : boost::impl_ptr<Book, my_policy> { ... };
 
-Or policies are additionally configured to, say, use ['my_allocator]:
+Then, policies are easily configured:
 
  struct Book : boost::impl_ptr<Book, policy::shared, my_allocator> { ... };
  struct Book : boost::impl_ptr<Book, policy::unique, my_allocator> { ... };
  struct Book : boost::impl_ptr<Book, policy::copied, my_allocator> { ... };
+ struct Book : boost::impl_ptr<Book, policy::in_place, size_type<64>> { ... };
 
 [endsect] 
 

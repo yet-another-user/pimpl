@@ -18,14 +18,14 @@
 <a name="impl_ptr.customization"></a><a class="link" href="customization.html" title="Customization">Customization</a>
 </h2></div></div></div>
 <p>
-      Previously shown definitions
+      Previously mentioned <span class="emphasis"><em>Pimpl</em></span> class definitions
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">unique</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-      deploy <span class="emphasis"><em>shared, unique, copied</em></span> as base classes. Those are,
+      use <span class="emphasis"><em>shared, unique, copied</em></span> as base classes. Those are,
       in fact, shorthand aliases to abbreviate the basic default deployment of the
       respective policies. When specified explicitly, the definitions look as follows:
     </p>
@@ -37,7 +37,7 @@
 </pre>
 <p>
       That direct form allows far greater flexibility, policy customization and configurability.
-      Namely, custom policies are easily deployed:
+      Now custom policies are easily deployed:
     </p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">more_types</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">my_policy</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
@@ -45,11 +45,12 @@
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_policy</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-      Or policies are additionally configured to, say, use <span class="emphasis"><em>my_allocator</em></span>:
+      Then, policies are easily configured:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">shared</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">unique</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">copied</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">in_place</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">&lt;</span><span class="number">64</span><span class="special">&gt;&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
