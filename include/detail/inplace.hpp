@@ -84,6 +84,11 @@ struct impl_ptr_policy::inplace // Proof of concept
         static_assert((alignof(storage_type) % alignof(derived_type)) == 0,
                 "Attempting to construct type in storage area that does not have an integer multiple of the type's alignment requirement.");
 
+        if (traits_)
+        {
+            traits_->destroy(get());
+            traits_ = nullptr;
+        }
         ::new (storage_.address()) derived_type(std::forward<arg_types>(args)...);
         traits_ = traits_type();
     }
