@@ -26,7 +26,7 @@ Then, policies are easily configured:
  struct Book : boost::impl_ptr<Book, policy::shared, my_allocator> { ... };
  struct Book : boost::impl_ptr<Book, policy::unique, my_allocator> { ... };
  struct Book : boost::impl_ptr<Book, policy::copied, my_allocator> { ... };
- struct Book : boost::impl_ptr<Book, policy::in_place, size_type<64>> { ... };
+ struct Book : boost::impl_ptr<Book, policy::inplace, policy::storage<64>> { ... };
 
 [endsect] 
 

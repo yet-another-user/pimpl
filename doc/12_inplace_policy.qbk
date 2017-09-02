@@ -40,7 +40,7 @@ and then to
 
 with minimal or no disruption to the existing code. 
 
-Then, a restricted custom policy (suggested by Giel van Schijndel) might be a further extension of policy::inplace:
+Then, a restricted custom policy (suggested by Giel van Schijndel) might be a further extension of ['policy::inplace]:
 
  template<typename impl_type, typename size_type>
  struct inplace_no_null : policy::inplace<impl_type, size_type>
