@@ -1,18 +1,20 @@
 // Copyright (c) 2008-2018 Vladimir Batov.
+// Copyright (c) 2017      Giel van Schijndel.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
 #ifndef IMPL_PTR_DETAIL_ONSTACK_HPP
 #define IMPL_PTR_DETAIL_ONSTACK_HPP
 
+#include <type_traits>
 #include "./detail.hpp"
 
 namespace impl_ptr_policy
 {
-    template<typename, typename> struct onstack;
+    template<typename, typename, typename =void> struct onstack;
 }
 
-template<typename impl_type, typename size_type>
+template<typename impl_type, typename size_type, typename align_type>
 struct impl_ptr_policy::onstack // Proof of concept
 {
     template<typename T =void> struct allocator : std::allocator<T>
@@ -21,8 +23,41 @@ struct impl_ptr_policy::onstack // Proof of concept
 
         template<typename Y> struct rebind { using other = allocator<Y>; };
     };
+
+    template <typename _size_type, typename _align_type = void>
+    struct aligned_storage
+    {
+        using type = boost::aligned_storage<sizeof(_size_type), alignof(_align_type)>;
+    };
+
+    template <typename _size_type>
+    struct aligned_storage<_size_type, void>
+    {
+        // void: explicitly ask for default alignment for this size
+        using type = boost::aligned_storage<sizeof(_size_type)>;
+    };
+
+    template <typename SizeInteger, SizeInteger size, typename AlignInteger, AlignInteger align>
+    struct aligned_storage<std::integral_constant<SizeInteger, size>, std::integral_constant<AlignInteger, align>>
+    {
+        using type = boost::aligned_storage<size, align>;
+    };
+
+    template <typename SizeInteger, SizeInteger size, typename _align_type>
+    struct aligned_storage<std::integral_constant<SizeInteger, size>, std::alignment_of<_align_type>>
+    {
+        using type = boost::aligned_storage<size, alignof(_align_type)>;
+    };
+
+    template <typename SizeInteger, SizeInteger size>
+    struct aligned_storage<std::integral_constant<SizeInteger, size>, void>
+    {
+        // void: explicitly ask for default alignment for this size
+        using type = boost::aligned_storage<size>;
+    };
+
     using    this_type = onstack;
-    using storage_type = boost::aligned_storage<sizeof(size_type)>;
+    using storage_type = typename aligned_storage<size_type, align_type>::type;
     using  traits_type = detail::traits::copyable<impl_type, allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 

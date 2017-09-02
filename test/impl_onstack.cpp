@@ -25,6 +25,9 @@ template<> struct boost::impl_ptr<OnStack>::implementation
     mutable string trace_;
 };
 
+static_assert(sizeof(OnStack) == sizeof(boost::impl_ptr<OnStack>::implementation) + sizeof(void*),
+        "onstack, with a properly chosen size and alignment, should add only the size of a pointer to the implementation");
+
 OnStack::OnStack ()      : impl_ptr_type(in_place) {}
 OnStack::OnStack (int k) : impl_ptr_type(in_place, k) {}
 
