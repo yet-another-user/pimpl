@@ -60,7 +60,7 @@ struct detail::traits::base
     virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(0); return nullptr; }
     virtual impl_type* construct (void* p, impl_type&& from) const { return construct(p, from); }
 
-    operator pointer()
+    static pointer singleton()
     {
         static_assert(!std::is_same<this_type, traits_type>::value, "");
         static_assert(std::is_base_of<this_type, traits_type>::value, "");

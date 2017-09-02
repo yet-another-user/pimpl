@@ -33,7 +33,7 @@ struct impl_ptr_policy::unique
         alloc_traits::construct(a, impl, std::forward<arg_types>(args)...);
 
         tmp.impl_   = impl;
-        tmp.traits_ = traits_type();
+        tmp.traits_ = traits_type::singleton();
 
         tmp.swap(*this);
     }

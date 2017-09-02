@@ -66,7 +66,7 @@ template<typename impl_type> struct impl_ptr_policy::always_storage<s, a>::type
                 "Attempting to construct type in storage area that does not have an integer multiple of the type's alignment requirement.");
 
         ::new (storage_.address()) derived_type(std::forward<arg_types>(args)...);
-        set_traits(traits_type());
+        set_traits(traits_type::singleton());
     }
 
     private:
@@ -90,7 +90,7 @@ template<typename impl_type> struct impl_ptr_policy::storage<s, a>::type
     void emplace(arg_types&&... args)
     {
         base::template emplace<derived_type>(std::forward<arg_types>(args)...);
-        set_traits(traits_type());
+        set_traits(traits_type::singleton());
     }
 
     private:
