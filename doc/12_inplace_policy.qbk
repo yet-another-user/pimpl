@@ -40,7 +40,7 @@ and then to
 
 with minimal or no disruption to the existing code. 
 
-A restricted version of this policy can be used through ['policy::always_storage]:
+Then, a restricted version of this policy can be used through ['policy::always_storage]:
 
  struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::always_storage<64>> { ... };
 
@@ -49,14 +49,14 @@ to make sure of the following:
  // The line below won't compile. InPlace does not have an uninitialized state.
  InPlace s13 = boost::impl_ptr<InPlace>::null();
 
-Additionally this takes advantage of the removed uninitialized state to remove all memory overhead associated with that:
+An important property of such ['policy::inplace] deployment is that it creates a ['Pimpl]-enabled value-semantics class with ['no Pimpl-related memory overhead]:
 
- template<> struct boost::impl_ptr<OnStack>::implementation
+ template<> struct boost::impl_ptr<InPlace>::implementation
  {
    int data[16];
  };
  
- static_assert(sizeof(OnStack) == sizeof(boost::impl_ptr<OnStack>::implementation),
+ static_assert(sizeof(InPlace) == sizeof(boost::impl_ptr<InPlace>::implementation),
      "Memory overhead where none was expected!");
 
 [endsect] 

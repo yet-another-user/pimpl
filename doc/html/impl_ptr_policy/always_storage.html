@@ -1,0 +1,65 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Struct template always_storage</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
+<link rel="up" href="../header/detail/inplace_hpp.html" title="Header &lt;detail/inplace.hpp&gt;">
+<link rel="prev" href="../header/detail/inplace_hpp.html" title="Header &lt;detail/inplace.hpp&gt;">
+<link rel="next" href="always_storage/type.html" title="Struct template type">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../header/detail/inplace_hpp.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../header/detail/inplace_hpp.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="always_storage/type.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="impl_ptr_policy.always_storage"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Struct template always_storage</span></h2>
+<p>impl_ptr_policy::always_storage</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../header/detail/inplace_hpp.html" title="Header &lt;detail/inplace.hpp&gt;">detail/inplace.hpp</a>&gt;
+
+</span><span class="keyword">template</span><span class="special">&lt;</span><span class="identifier">size_t</span> s<span class="special">,</span> <span class="identifier">size_t</span> a <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">(</span><span class="special">-</span><span class="number">1</span><span class="special">)</span><span class="special">&gt;</span> 
+<span class="keyword">struct</span> <a class="link" href="always_storage.html" title="Struct template always_storage">always_storage</a> <span class="special">{</span>
+  <span class="comment">// member classes/structs/unions</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> impl_type<span class="special">&gt;</span> 
+  <span class="keyword">struct</span> <a class="link" href="always_storage/type.html" title="Struct template type">type</a> <span class="special">{</span>
+    <span class="comment">// types</span>
+    <span class="keyword">typedef</span> <span class="identifier">detail</span><span class="special">::</span><span class="identifier">traits</span><span class="special">::</span><span class="identifier">copyable</span><span class="special">&lt;</span> <span class="identifier">impl_type</span><span class="special">,</span> <a class="link" href="inplace_allocator.html" title="Struct template inplace_allocator">inplace_allocator</a><span class="special">&lt;</span><span class="special">&gt;&gt;</span> <a class="link" href="always_storage/type.html#impl_ptr_policy.always_storage.type.traits_type"><span class="identifier">traits_type</span></a><span class="special">;</span> 
+    <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">traits_type</span><span class="special">::</span><span class="identifier">pointer</span>                             <a class="link" href="always_storage/type.html#impl_ptr_policy.always_storage.type.traits_ptr"><span class="identifier">traits_ptr</span></a><span class="special">;</span>  
+    <span class="keyword">typedef</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">aligned_storage</span><span class="special">&lt;</span> <span class="identifier">s</span><span class="special">,</span> <span class="identifier">a</span> <span class="special">&gt;</span>                            <a class="link" href="always_storage/type.html#impl_ptr_policy.always_storage.type.storage_type"><span class="identifier">storage_type</span></a><span class="special">;</span>
+
+    <span class="comment">// <a class="link" href="always_storage/type.html#idm139710453392832-bb">public member functions</a></span>
+    <span class="identifier">traits_ptr</span> <a class="link" href="always_storage/type.html#idm139710453392272-bb"><span class="identifier">get_traits</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="identifier">traits_ptr</span> <a class="link" href="always_storage/type.html#idm139710453391152-bb"><span class="identifier">set_traits</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">traits_ptr</span> <span class="special">=</span> <span class="keyword">nullptr</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="always_storage/type.html#idm139710453389328-bb"><span class="identifier">address</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="always_storage/type.html#idm139710453388208-bb"><span class="identifier">address</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+      <span class="keyword">void</span> <a class="link" href="always_storage/type.html#idm139710453387360-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="special">}</span><span class="special">;</span>
+
+  <span class="comment">// public data members</span>
+  <span class="keyword">static</span> <span class="identifier">size_t</span> <span class="keyword">constexpr</span> <span class="identifier">size</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="identifier">size_t</span> <span class="keyword">constexpr</span> <span class="identifier">alignment</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">has_null_state</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="idm139396026050256"></a><h2>Description</h2>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2008-2018 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0 (<a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>).
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../header/detail/inplace_hpp.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../header/detail/inplace_hpp.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="always_storage/type.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

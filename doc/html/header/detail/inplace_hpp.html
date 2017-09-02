@@ -7,17 +7,19 @@
 <link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
 <link rel="up" href="../../reference.html" title="Reference">
 <link rel="prev" href="../../impl_ptr_policy/copied.html" title="Struct template copied">
-<link rel="next" href="../../impl_ptr_policy/inplace.html" title="Struct template inplace">
+<link rel="next" href="../../impl_ptr_policy/always_storage.html" title="Struct template always_storage">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="../../impl_ptr_policy/copied.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../reference.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../../impl_ptr_policy/inplace.html"><img src="../../images/next.png" alt="Next"></a>
+<a accesskey="p" href="../../impl_ptr_policy/copied.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../reference.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../../impl_ptr_policy/always_storage.html"><img src="../../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="header.detail.inplace_hpp"></a>Header &lt;<a href="../../../../../../detail/inplace.hpp" target="_top">detail/inplace.hpp</a>&gt;</h3></div></div></div>
 <pre class="synopsis"><span class="keyword">namespace</span> <span class="identifier">impl_ptr_policy</span> <span class="special">{</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="identifier">size_t</span> s<span class="special">,</span> <span class="identifier">size_t</span> a <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">(</span><span class="special">-</span><span class="number">1</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">struct</span> <a class="link" href="../../impl_ptr_policy/always_storage.html" title="Struct template always_storage">always_storage</a><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> impl_type<span class="special">,</span> <span class="keyword">typename</span> size_type<span class="special">&gt;</span> <span class="keyword">struct</span> <a class="link" href="../../impl_ptr_policy/inplace.html" title="Struct template inplace">inplace</a><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T <span class="special">=</span> <span class="keyword">void</span><span class="special">&gt;</span> <span class="keyword">struct</span> <a class="link" href="../../impl_ptr_policy/inplace_allocator.html" title="Struct template inplace_allocator">inplace_allocator</a><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="identifier">size_t</span> s<span class="special">,</span> <span class="identifier">size_t</span> a <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">(</span><span class="special">-</span><span class="number">1</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">struct</span> <a class="link" href="../../impl_ptr_policy/storage.html" title="Struct template storage">storage</a><span class="special">;</span>
 <span class="special">}</span></pre>
 </div>
@@ -30,7 +32,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../../impl_ptr_policy/copied.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../reference.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../../impl_ptr_policy/inplace.html"><img src="../../images/next.png" alt="Next"></a>
+<a accesskey="p" href="../../impl_ptr_policy/copied.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../reference.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../../impl_ptr_policy/always_storage.html"><img src="../../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

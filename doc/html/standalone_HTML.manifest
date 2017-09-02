@@ -16,10 +16,12 @@ impl_ptr/applications/run_time_polymorphic_class_hiera.html
 reference.html
 impl_ptr_policy/copied.html
 header/detail/inplace_hpp.html
+impl_ptr_policy/always_storage.html
+impl_ptr_policy/always_storage/type.html
 impl_ptr_policy/inplace.html
-impl_ptr_policy/inplace/allocator.html
-impl_ptr_policy/inplace/allocator/rebind.html
+impl_ptr_policy/inplace_allocator.html
 impl_ptr_policy/storage.html
+impl_ptr_policy/storage/type.html
 header/detail/shared_hpp.html
 impl_ptr_policy/shared.html
 header/detail/unique_hpp.html
@@ -27,7 +29,7 @@ impl_ptr_policy/unique.html
 header/impl_ptr_hpp.html
 impl_ptr.html
 boost/is_impl_ptr.html
-boost/is_impl_idm140045734973456.html
+boost/is_impl_idm139710446676288.html
 impl_ptr/bibliography.html
 impl_ptr/acknowledgements.html
 index/s13.html

@@ -30,21 +30,32 @@
 </header>
 <header name="detail/inplace.hpp">
 <namespace name="impl_ptr_policy">
-<struct name="inplace"><template>
+<struct name="always_storage"><template>
+      <template-nontype-parameter name="s"><type>size_t</type></template-nontype-parameter>
+      <template-nontype-parameter name="a"><type>size_t</type><default>std::size_t(-1)</default></template-nontype-parameter>
+    </template><struct name="type"><template>
+      <template-type-parameter name="impl_type"/>
+    </template><typedef name="traits_type"><type>detail::traits::copyable&lt; impl_type, <classname>inplace_allocator</classname>&lt;&gt;&gt;</type></typedef>
+<typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
+<typedef name="storage_type"><type>boost::aligned_storage&lt; s, a &gt;</type></typedef>
+<method-group name="public member functions">
+<method name="get_traits" cv="const"><type>traits_ptr</type></method>
+<method name="set_traits"><type>traits_ptr</type><parameter name="ptr"><paramtype>const traits_ptr</paramtype><default>nullptr</default></parameter></method>
+<method name="address" cv="const"><type>void const *</type></method>
+<method name="address"><type>void *</type></method>
+<method name="emplace"><type>void</type><template>
+          <template-type-parameter name="derived_type"/>
+          <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
+        </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></method>
+</method-group>
+</struct><data-member name="size" specifiers="static"><type>size_t constexpr</type></data-member>
+<data-member name="alignment" specifiers="static"><type>size_t constexpr</type></data-member>
+<data-member name="has_null_state" specifiers="static"><type>bool constexpr</type></data-member>
+</struct><struct name="inplace"><template>
       <template-type-parameter name="impl_type"/>
       <template-type-parameter name="size_type"/>
-    </template><struct name="allocator"><template>
-      <template-type-parameter name="T"><default>void</default></template-type-parameter>
-    </template><inherit access="public">std::allocator&lt; T &gt;</inherit><struct name="rebind"><template>
-      <template-type-parameter name="Y"/>
-    </template><typedef name="other"><type><classname>allocator</classname>&lt; Y &gt;</type></typedef>
-</struct><method-group name="public member functions">
-<method name="deallocate"><type>void</type><parameter name=""><paramtype>T *</paramtype></parameter><parameter name=""><paramtype>size_t</paramtype></parameter></method>
-</method-group>
-</struct><typedef name="this_type"><type><classname>inplace</classname></type></typedef>
-<typedef name="storage_type"><type>boost::aligned_storage&lt; size_type::size, size_type::alignment &gt;</type></typedef>
-<typedef name="traits_type"><type>detail::traits::copyable&lt; impl_type, <classname>allocator</classname>&lt;&gt;&gt;</type></typedef>
-<typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
+    </template><typedef name="this_type"><type><classname>inplace</classname></type></typedef>
+<typedef name="storage_type"><type>typename size_type::template type&lt; impl_type &gt;</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>
           <template-type-parameter name="derived_type"/>
@@ -61,11 +72,34 @@
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype>detail::in_place_type</paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
+</struct><struct name="inplace_allocator"><template>
+      <template-type-parameter name="T"><default>void</default></template-type-parameter>
+    </template><typedef name="value_type"><type>T</type></typedef>
+<method-group name="public member functions">
+<method name="deallocate" cv="const noexcept"><type>void</type><parameter name=""><paramtype>T *</paramtype></parameter><parameter name=""><paramtype>size_t</paramtype></parameter></method>
+<method name="allocate" cv="const"><type>T *</type><parameter name=""><paramtype>std::size_t</paramtype></parameter></method>
+<method name="operator==" cv="const noexcept"><type>bool</type><parameter name=""><paramtype>const <classname>inplace_allocator</classname> &amp;</paramtype></parameter></method>
+<method name="operator!=" cv="const noexcept"><type>bool</type><parameter name=""><paramtype>const <classname>inplace_allocator</classname> &amp;</paramtype></parameter></method>
+</method-group>
 </struct><struct name="storage"><template>
       <template-nontype-parameter name="s"><type>size_t</type></template-nontype-parameter>
       <template-nontype-parameter name="a"><type>size_t</type><default>std::size_t(-1)</default></template-nontype-parameter>
-    </template><data-member name="size" specifiers="static"><type>size_t constexpr</type></data-member>
+    </template><struct name="type"><template>
+      <template-type-parameter name="impl_type"/>
+    </template><inherit access="private">always_storage::template type&lt; impl_type &gt;</inherit><typedef name="base"><type>typename <classname>always_storage</classname>&lt; s, a &gt;::template <classname>type</classname>&lt; impl_type &gt;</type></typedef>
+<typedef name="traits_type"><type>typename base::traits_type</type></typedef>
+<typedef name="traits_ptr"><type>typename base::traits_ptr</type></typedef>
+<method-group name="public member functions">
+<method name="get_traits" cv="const"><type>traits_ptr</type></method>
+<method name="set_traits"><type>void</type><parameter name="traits"><paramtype>const traits_ptr</paramtype></parameter></method>
+<method name="emplace"><type>void</type><template>
+          <template-type-parameter name="derived_type"/>
+          <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
+        </template><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></method>
+</method-group>
+</struct><data-member name="size" specifiers="static"><type>size_t constexpr</type></data-member>
 <data-member name="alignment" specifiers="static"><type>size_t constexpr</type></data-member>
+<data-member name="has_null_state" specifiers="static"><type>bool constexpr</type></data-member>
 </struct></namespace>
 </header>
 <header name="detail/shared.hpp">
@@ -74,7 +108,7 @@
       <template-type-parameter name="impl_type"/>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
     </template><inherit access="public">std::shared_ptr&lt; impl_type &gt;</inherit><typedef name="allocator"><type>typename std::conditional&lt; 1&lt;=sizeof...(more_types), typename detail::types&lt; more_types... &gt;::first_type, std::allocator&lt; impl_type &gt;&gt;::type</type></typedef>
-<typedef name="alloc_type"><type>typename allocator::template rebind&lt; impl_type &gt;::other</type></typedef>
+<typedef name="alloc_type"><type>typename std::allocator_traits&lt; allocator &gt;::template rebind_alloc&lt; impl_type &gt;</type></typedef>
 <typedef name="base_ref"><type>std::shared_ptr&lt; impl_type &gt; &amp;</type></typedef>
 <method-group name="public member functions">
 <method name="emplace"><type>void</type><template>

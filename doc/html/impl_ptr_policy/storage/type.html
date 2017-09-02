@@ -1,0 +1,65 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Struct template type</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
+<link rel="up" href="../storage.html#idm139396025642848" title="Description">
+<link rel="prev" href="../storage.html" title="Struct template storage">
+<link rel="next" href="../../header/detail/shared_hpp.html" title="Header &lt;detail/shared.hpp&gt;">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../storage.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../storage.html#idm139396025642848"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../../header/detail/shared_hpp.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="impl_ptr_policy.storage.type"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Struct template type</span></h2>
+<p>impl_ptr_policy::storage::type</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../../header/detail/inplace_hpp.html" title="Header &lt;detail/inplace.hpp&gt;">detail/inplace.hpp</a>&gt;
+
+</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> impl_type<span class="special">&gt;</span> 
+<span class="keyword">struct</span> <a class="link" href="type.html" title="Struct template type">type</a> <span class="special">:</span> <span class="keyword">private</span> <span class="identifier">always_storage</span><span class="special">::</span><span class="keyword">template</span> <span class="identifier">type</span><span class="special">&lt;</span> <span class="identifier">impl_type</span> <span class="special">&gt;</span> <span class="special">{</span>
+  <span class="comment">// types</span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="link" href="../always_storage.html" title="Struct template always_storage">always_storage</a><span class="special">&lt;</span> <span class="identifier">s</span><span class="special">,</span> <span class="identifier">a</span> <span class="special">&gt;</span><span class="special">::</span><span class="keyword">template</span> <a class="link" href="type.html" title="Struct template type">type</a><span class="special">&lt;</span> <span class="identifier">impl_type</span> <span class="special">&gt;</span> <a name="impl_ptr_policy.storage.type.base"></a><span class="identifier">base</span><span class="special">;</span>       
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">base</span><span class="special">::</span><span class="identifier">traits_type</span>                                  <a name="impl_ptr_policy.storage.type.traits_type"></a><span class="identifier">traits_type</span><span class="special">;</span>
+  <span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="identifier">base</span><span class="special">::</span><span class="identifier">traits_ptr</span>                                   <a name="impl_ptr_policy.storage.type.traits_ptr"></a><span class="identifier">traits_ptr</span><span class="special">;</span> 
+
+  <span class="comment">// <a class="link" href="type.html#idm139710446767552-bb">public member functions</a></span>
+  <span class="identifier">traits_ptr</span> <a class="link" href="type.html#idm139710446767056-bb"><span class="identifier">get_traits</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="type.html#idm139710446766064-bb"><span class="identifier">set_traits</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">traits_ptr</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+    <span class="keyword">void</span> <a class="link" href="type.html#idm139710446764688-bb"><span class="identifier">emplace</span></a><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="idm139396025585744"></a><h2>Description</h2>
+<div class="refsect2">
+<a name="idm139396025585328"></a><h3>
+<a name="idm139710446767552-bb"></a><code class="computeroutput">type</code> public member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><pre class="literallayout"><span class="identifier">traits_ptr</span> <a name="idm139710446767056-bb"></a><span class="identifier">get_traits</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idm139710446766064-bb"></a><span class="identifier">set_traits</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">traits_ptr</span> traits<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> derived_type<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> arg_types<span class="special">&gt;</span> 
+  <span class="keyword">void</span> <a name="idm139710446764688-bb"></a><span class="identifier">emplace</span><span class="special">(</span><span class="identifier">arg_types</span> <span class="special">&amp;&amp;</span><span class="special">...</span> args<span class="special">)</span><span class="special">;</span></pre></li>
+</ol></div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2008-2018 Vladimir Batov<p>
+        Distributed under the Boost Software License, Version 1.0 (<a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>).
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../storage.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../storage.html#idm139396025642848"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="../../header/detail/shared_hpp.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
