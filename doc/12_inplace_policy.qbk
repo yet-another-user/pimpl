@@ -40,23 +40,24 @@ and then to
 
 with minimal or no disruption to the existing code. 
 
-Then, a restricted custom policy (suggested by Giel van Schijndel) might be a further extension of ['policy::inplace]:
+A restricted version of this policy can be used through ['policy::always_storage]:
 
- template<typename impl_type, typename size_type>
- struct inplace_no_null : policy::inplace<impl_type, size_type>
- {
-     using policy::inplace<impl_type, size_type>::inplace;
-
-     // Disable the null-state construction.
-     inplace_no_null(std::nullptr_t) =delete;
- };
- ...
- struct InPlace : boost::impl_ptr<InPlace, inplace_no_null, policy::storage<64>> { ... };
+ struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::always_storage<64>> { ... };
 
 to make sure of the following:
 
  // The line below won't compile. InPlace does not have an uninitialized state.
  InPlace s13 = boost::impl_ptr<InPlace>::null();
+
+Additionally this takes advantage of the removed uninitialized state to remove all memory overhead associated with that:
+
+ template<> struct boost::impl_ptr<OnStack>::implementation
+ {
+   int data[16];
+ };
+ 
+ static_assert(sizeof(OnStack) == sizeof(boost::impl_ptr<OnStack>::implementation),
+     "Memory overhead where none was expected!");
 
 [endsect] 
 

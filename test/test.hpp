@@ -83,6 +83,20 @@ struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::storage<64>>
     int    value () const;
 };
 
+struct AlwaysInPlace : boost::impl_ptr<AlwaysInPlace, policy::inplace, policy::always_storage<sizeof(void*) * 2, alignof(void*)>>
+{
+    AlwaysInPlace ();
+    AlwaysInPlace (int);
+
+    // Value-semantics Pimpl must explicitly define comparison operators
+    // if it wants to be comparable. The same as normal classes do.
+    bool operator==(AlwaysInPlace const& o) const;
+    bool operator!=(AlwaysInPlace const& o) const { return !operator==(o); }
+
+    string trace () const;
+    int    value () const;
+};
+
 struct Base : boost::impl_ptr<Base>::shared
 {
     Base (int);
