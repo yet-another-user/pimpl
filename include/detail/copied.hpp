@@ -19,7 +19,7 @@ struct impl_ptr_policy::copied
     void
     emplace(arg_types&&... args)
     {
-        using   alloc_type = typename allocator::template rebind<derived_type>::other;
+        using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
         alloc_type       a;

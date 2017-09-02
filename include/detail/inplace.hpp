@@ -5,6 +5,7 @@
 #ifndef IMPL_PTR_DETAIL_INPLACE_HPP
 #define IMPL_PTR_DETAIL_INPLACE_HPP
 
+#include <new>
 #include "./detail.hpp"
 
 namespace impl_ptr_policy
@@ -15,20 +16,22 @@ namespace impl_ptr_policy
         static size_t constexpr size = s;
         static size_t constexpr alignment = a;
     };
+    template<typename T =void> struct inplace_allocator
+    {
+        using value_type = T;
+        void deallocate(T*, size_t) const noexcept {}
+        T* allocate(std::size_t) const { throw std::bad_alloc(); }
+        bool operator==(const inplace_allocator&) const noexcept { return true; }
+        bool operator!=(const inplace_allocator&) const noexcept { return false; }
+    };
 }
 
 template<typename impl_type, typename size_type>
 struct impl_ptr_policy::inplace // Proof of concept
 {
-    template<typename T =void> struct allocator : std::allocator<T>
-    {
-        void deallocate(T*, size_t) {}
-
-        template<typename Y> struct rebind { using other = allocator<Y>; };
-    };
     using    this_type = inplace;
     using storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
-    using  traits_type = detail::traits::copyable<impl_type, allocator<>>;
+    using  traits_type = detail::traits::copyable<impl_type, inplace_allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
    ~inplace () { if (traits_) traits_->destroy(get()); }

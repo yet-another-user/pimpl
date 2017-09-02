@@ -72,21 +72,22 @@ struct detail::traits::base
 template<typename impl_type, typename allocator>
 struct detail::traits::unique : base<unique<impl_type, allocator>, impl_type>
 {
-    using   alloc_type = typename allocator::template rebind<impl_type>::other;
+    using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
 
     void destroy(impl_type* p) const override
     {
         alloc_type a;
 
-        alloc_traits::destroy(a, p), a.deallocate(p, 1);
+        alloc_traits::destroy(a, p);
+        alloc_traits::deallocate(a, p, 1);
     }
 };
 
 template<typename impl_type, typename allocator>
 struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type>
 {
-    using   alloc_type = typename allocator::template rebind<impl_type>::other;
+    using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
 
     void
@@ -94,7 +95,8 @@ struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type
     {
         alloc_type a;
 
-        alloc_traits::destroy(a, p), a.deallocate(p, 1);
+        alloc_traits::destroy(a, p);
+        alloc_traits::deallocate(a, p, 1);
     }
     impl_type*
     construct(void* vp, impl_type const& from) const override
@@ -102,7 +104,7 @@ struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type
         alloc_type  a;
         impl_type* ip = vp
                       ? static_cast<impl_type*>(vp)
-                      : boost::to_address(a.allocate(1));
+                      : boost::to_address(alloc_traits::allocate(a, 1));
 
         alloc_traits::construct(a, ip, from);
 
@@ -114,7 +116,7 @@ struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type
         alloc_type  a;
         impl_type* ip = vp
                       ? static_cast<impl_type*>(vp)
-                      : boost::to_address(a.allocate(1));
+                      : boost::to_address(alloc_traits::allocate(a, 1));
 
         alloc_traits::construct(a, ip, std::move(from));
 

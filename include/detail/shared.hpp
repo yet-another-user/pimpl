@@ -19,7 +19,7 @@ struct impl_ptr_policy::shared : std::shared_ptr<impl_type>
                        1 <= sizeof...(more_types),
                        typename detail::types<more_types...>::first_type,
                        std::allocator<impl_type>>::type;
-    using alloc_type = typename allocator::template rebind<impl_type>::other;
+    using alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using   base_ref = std::shared_ptr<impl_type>&;
 
     template<typename derived_type, typename... arg_types>
