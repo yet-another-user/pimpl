@@ -2,7 +2,7 @@
 !scan ../include/detail/shared.hpp
 !scan ../include/detail/unique.hpp
 !scan ../include/detail/copied.hpp
-!scan ../include/detail/onstack.hpp
+!scan ../include/detail/inplace.hpp
 !scan ../include/detail/is_allocator.hpp
 !scan ../include/detail/detail.hpp
 

@@ -28,9 +28,9 @@
 <copy-assignment><type><classname>this_type</classname> &amp;</type><parameter name="o"><paramtype><classname>this_type</classname> const &amp;</paramtype></parameter></copy-assignment>
 </struct></namespace>
 </header>
-<header name="detail/onstack.hpp">
+<header name="detail/inplace.hpp">
 <namespace name="impl_ptr_policy">
-<struct name="onstack"><template>
+<struct name="inplace"><template>
       <template-type-parameter name="impl_type"/>
       <template-type-parameter name="size_type"/>
     </template><struct name="allocator"><template>
@@ -41,8 +41,8 @@
 </struct><method-group name="public member functions">
 <method name="deallocate"><type>void</type><parameter name=""><paramtype>T *</paramtype></parameter><parameter name=""><paramtype>size_t</paramtype></parameter></method>
 </method-group>
-</struct><typedef name="this_type"><type><classname>onstack</classname></type></typedef>
-<typedef name="storage_type"><type>boost::aligned_storage&lt; sizeof(size_type)&gt;</type></typedef>
+</struct><typedef name="this_type"><type><classname>inplace</classname></type></typedef>
+<typedef name="storage_type"><type>boost::aligned_storage&lt; size_type::size, size_type::alignment &gt;</type></typedef>
 <typedef name="traits_type"><type>detail::traits::copyable&lt; impl_type, <classname>allocator</classname>&lt;&gt;&gt;</type></typedef>
 <typedef name="traits_ptr"><type>typename traits_type::pointer</type></typedef>
 <method-group name="public member functions">
@@ -61,6 +61,11 @@
 <constructor><template>
           <template-nontype-parameter name="arg_types"><type>typename...</type></template-nontype-parameter>
         </template><parameter name=""><paramtype>detail::in_place_type</paramtype></parameter><parameter name="args"><paramtype>arg_types &amp;&amp;...</paramtype></parameter></constructor>
+</struct><struct name="storage"><template>
+      <template-nontype-parameter name="s"><type>size_t</type></template-nontype-parameter>
+      <template-nontype-parameter name="a"><type>size_t</type><default>std::size_t(-1)</default></template-nontype-parameter>
+    </template><data-member name="size" specifiers="static"><type>size_t constexpr</type></data-member>
+<data-member name="alignment" specifiers="static"><type>size_t constexpr</type></data-member>
 </struct></namespace>
 </header>
 <header name="detail/shared.hpp">
@@ -117,7 +122,7 @@
       <template-type-parameter name="user_type"/>
       <template-nontype-parameter name="PT"><type>template&lt; typename, typename... &gt; class</type><default>detail::no_policy</default></template-nontype-parameter>
       <template-nontype-parameter name="more_types"><type>typename...</type></template-nontype-parameter>
-    </template><typedef name="onstack"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::onstack</classname>, MT... &gt;</type></typedef>
+    </template><typedef name="inplace"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::inplace</classname>, MT... &gt;</type></typedef>
 <typedef name="shared"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::shared</classname> &gt;</type></typedef>
 <typedef name="unique"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::unique</classname> &gt;</type></typedef>
 <typedef name="copied"><type><classname>impl_ptr</classname>&lt; user_type, <classname>impl_ptr_policy::copied</classname> &gt;</type></typedef>

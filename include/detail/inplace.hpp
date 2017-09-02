@@ -2,18 +2,23 @@
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
-#ifndef IMPL_PTR_DETAIL_ONSTACK_HPP
-#define IMPL_PTR_DETAIL_ONSTACK_HPP
+#ifndef IMPL_PTR_DETAIL_INPLACE_HPP
+#define IMPL_PTR_DETAIL_INPLACE_HPP
 
 #include "./detail.hpp"
 
 namespace impl_ptr_policy
 {
-    template<typename, typename> struct onstack;
+    template<typename, typename> struct inplace;
+    template<size_t s, size_t a =std::size_t(-1)> struct storage
+    {
+        static size_t constexpr size = s;
+        static size_t constexpr alignment = a;
+    };
 }
 
 template<typename impl_type, typename size_type>
-struct impl_ptr_policy::onstack // Proof of concept
+struct impl_ptr_policy::inplace // Proof of concept
 {
     template<typename T =void> struct allocator : std::allocator<T>
     {
@@ -21,19 +26,19 @@ struct impl_ptr_policy::onstack // Proof of concept
 
         template<typename Y> struct rebind { using other = allocator<Y>; };
     };
-    using    this_type = onstack;
-    using storage_type = boost::aligned_storage<sizeof(size_type)>;
+    using    this_type = inplace;
+    using storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
     using  traits_type = detail::traits::copyable<impl_type, allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
-   ~onstack () { if (traits_) traits_->destroy(get()); }
-    onstack (std::nullptr_t) {}
-    onstack (this_type const& o) : traits_(o.traits_)
+   ~inplace () { if (traits_) traits_->destroy(get()); }
+    inplace (std::nullptr_t) {}
+    inplace (this_type const& o) : traits_(o.traits_)
     {
         if (traits_)
             traits_->construct(storage_.address(), *o.get());
     }
-    onstack (this_type&& o) : traits_(o.traits_)
+    inplace (this_type&& o) : traits_(o.traits_)
     {
         if (traits_)
             traits_->construct(storage_.address(), std::move(*o.get()));
@@ -62,7 +67,7 @@ struct impl_ptr_policy::onstack // Proof of concept
     }
 
     template<typename... arg_types>
-    onstack(detail::in_place_type, arg_types&&... args)
+    inplace(detail::in_place_type, arg_types&&... args)
     {
         emplace<impl_type>(std::forward<arg_types>(args)...);
     }
@@ -87,4 +92,4 @@ struct impl_ptr_policy::onstack // Proof of concept
     traits_ptr    traits_ = nullptr;
 };
 
-#endif // IMPL_PTR_DETAIL_ONSTACK_HPP
+#endif // IMPL_PTR_DETAIL_INPLACE_HPP

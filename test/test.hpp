@@ -6,9 +6,10 @@
 #include <string>
 
 using string = std::string;
+namespace policy = impl_ptr_policy;
 
 //struct Book : boost::impl_ptr<Book>::shared
-struct Book : boost::impl_ptr<Book, impl_ptr_policy::shared>
+struct Book : boost::impl_ptr<Book, policy::shared>
 {
     Book(string const& title, string const& author);
 
@@ -67,16 +68,16 @@ struct Copied : boost::impl_ptr<Copied>::copied // Pure interface.
     int    value () const;
 };
 
-//struct OnStack : boost::impl_ptr<OnStack>::onstack<int[16]>
-struct OnStack : boost::impl_ptr<OnStack, impl_ptr_policy::onstack, int[16]>
+//struct InPlace : boost::impl_ptr<InPlace>::onstack<int[16]>
+struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::storage<64>>
 {
-    OnStack ();
-    OnStack (int);
+    InPlace ();
+    InPlace (int);
 
     // Value-semantics Pimpl must explicitly define comparison operators
     // if it wants to be comparable. The same as normal classes do.
-    bool operator==(OnStack const& o) const;
-    bool operator!=(OnStack const& o) const { return !operator==(o); }
+    bool operator==(InPlace const& o) const;
+    bool operator!=(InPlace const& o) const { return !operator==(o); }
 
     string trace () const;
     int    value () const;

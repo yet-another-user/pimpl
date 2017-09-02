@@ -8,7 +8,7 @@
 #include "./detail/shared.hpp"
 #include "./detail/unique.hpp"
 #include "./detail/copied.hpp"
-#include "./detail/onstack.hpp"
+#include "./detail/inplace.hpp"
 
 // C1. Always use the impl_ptr<user_type>::implementation specialization.
 //     That allows the developer to only declare/define one implementation:
@@ -33,10 +33,10 @@ template<
 struct impl_ptr
 {
     template<typename... MT>
-    using onstack = impl_ptr<user_type, impl_ptr_policy::onstack, MT...>;
-    using  shared = impl_ptr<user_type, impl_ptr_policy:: shared>;
-    using  unique = impl_ptr<user_type, impl_ptr_policy:: unique>;
-    using  copied = impl_ptr<user_type, impl_ptr_policy:: copied>;
+    using inplace = impl_ptr<user_type, impl_ptr_policy::inplace, MT...>;
+    using  shared = impl_ptr<user_type, impl_ptr_policy::shared>;
+    using  unique = impl_ptr<user_type, impl_ptr_policy::unique>;
+    using  copied = impl_ptr<user_type, impl_ptr_policy::copied>;
 
     struct implementation;
 

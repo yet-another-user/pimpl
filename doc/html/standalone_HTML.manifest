@@ -5,7 +5,7 @@ impl_ptr/pimpl_with_exclusive_ownership_p.html
 impl_ptr/behind_the_interface.html
 impl_ptr/construction_and_impl_ptr_null.html
 impl_ptr/customization.html
-impl_ptr/on_stack_implementation_policy.html
+impl_ptr/in_place_implementation_policy.html
 impl_ptr/applications.html
 impl_ptr/applications/lazy_instantiation_optimization.html
 impl_ptr/applications/singleton.html
@@ -15,10 +15,11 @@ impl_ptr/applications/internal_implementation_only_run.html
 impl_ptr/applications/run_time_polymorphic_class_hiera.html
 reference.html
 impl_ptr_policy/copied.html
-header/detail/onstack_hpp.html
-impl_ptr_policy/onstack.html
-impl_ptr_policy/onstack/allocator.html
-impl_ptr_policy/onstack/allocator/rebind.html
+header/detail/inplace_hpp.html
+impl_ptr_policy/inplace.html
+impl_ptr_policy/inplace/allocator.html
+impl_ptr_policy/inplace/allocator/rebind.html
+impl_ptr_policy/storage.html
 header/detail/shared_hpp.html
 impl_ptr_policy/shared.html
 header/detail/unique_hpp.html
@@ -26,7 +27,7 @@ impl_ptr_policy/unique.html
 header/impl_ptr_hpp.html
 impl_ptr.html
 boost/is_impl_ptr.html
-boost/is_impl_idm139885910461536.html
+boost/is_impl_idm138881368728336.html
 impl_ptr/bibliography.html
 impl_ptr/acknowledgements.html
 index/s13.html

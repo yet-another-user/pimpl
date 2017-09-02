@@ -37,7 +37,7 @@ doxygen 99_reference
     $(here)/../include/detail/shared.hpp
     $(here)/../include/detail/unique.hpp
     $(here)/../include/detail/copied.hpp
-    $(here)/../include/detail/onstack.hpp
+    $(here)/../include/detail/inplace.hpp
   : 
     <doxygen:param>PROJECT_NAME="IMPL_PTR"
     <doxygen:param>PROJECT_NUMBER=3

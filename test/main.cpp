@@ -224,9 +224,9 @@ static
 void
 test_onstack()
 {
-    OnStack s11 (3); BOOST_TEST(s11.value() == 3);
-    OnStack s12 (5); BOOST_TEST(s12.value() == 5);
-    OnStack s13 = boost::impl_ptr<OnStack>::null();
+    InPlace s11 (3); BOOST_TEST(s11.value() == 3);
+    InPlace s12 (5); BOOST_TEST(s12.value() == 5);
+    InPlace s13 = boost::impl_ptr<InPlace>::null();
 
     // Check that implementation is allocated on the stack.
     BOOST_TEST((void*) &s11 == (void*) &*s11);
@@ -234,7 +234,7 @@ test_onstack()
     BOOST_TEST(!s13);       // Test op!()
 
     s11 = s12;          BOOST_TEST(s11.value() == 5);
-    s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
+    s11 = InPlace(6);   BOOST_TEST(s11.value() == 6);
 }
 
 static
