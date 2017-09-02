@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2018 Vladimir Batov.
+// Copyright (c) 2008 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
@@ -23,7 +23,7 @@ struct impl_ptr_policy::unique
     void
     emplace(arg_types&&... args)
     {
-        using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
+        using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
         alloc_type       a;

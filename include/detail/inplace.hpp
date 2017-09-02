@@ -1,5 +1,5 @@
-// Copyright (c) 2008-2018 Vladimir Batov.
-// Copyright (c) 2017      Giel van Schijndel.
+// Copyright (c) 2008 Vladimir Batov.
+// Copyright (c) 2017 Giel van Schijndel.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
