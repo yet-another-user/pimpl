@@ -95,7 +95,8 @@ struct detail::basic_inplace // Proof of concept
 
    ~basic_inplace ()
     {
-        if (const auto traits = traits_storage_.get_traits())
+        const auto traits = traits_storage_.get_traits();
+        if (!has_null_state || traits)
             traits->destroy(get());
     }
     basic_inplace (std::nullptr_t)
@@ -105,14 +106,14 @@ struct detail::basic_inplace // Proof of concept
     basic_inplace (this_type const& o)
     {
         const auto traits = o.traits_storage_.get_traits();
-        if (traits)
+        if (!has_null_state || traits)
             traits->construct(traits_storage_.address(), *o.get());
         traits_storage_.set_traits(traits);
     }
     basic_inplace (this_type&& o)
     {
         const auto traits = o.traits_storage_.get_traits();
-        if (traits)
+        if (!has_null_state || traits)
             traits->construct(traits_storage_.address(), std::move(*o.get()));
         traits_storage_.set_traits(traits);
     }
@@ -121,8 +122,9 @@ struct detail::basic_inplace // Proof of concept
         const auto traits = traits_storage_.get_traits();
         const auto o_traits = o.traits_storage_.get_traits();
 
-        /**/ if (!traits && !o_traits);
-        else if ( traits &&  o_traits) traits->assign(get(), *o.get());
+        /**/ if (!has_null_state
+             ||  (traits &&  o_traits)) traits->assign(get(), *o.get());
+        else if (!traits && !o_traits);
         else if ( traits && !o_traits) traits->destroy(get());
         else if (!traits &&  o_traits) o_traits->construct(traits_storage_.address(), *o.get());
 
@@ -135,8 +137,9 @@ struct detail::basic_inplace // Proof of concept
         const auto traits = traits_storage_.get_traits();
         const auto o_traits = o.traits_storage_.get_traits();
 
-        /**/ if (!traits && !o_traits);
-        else if ( traits &&  o_traits) traits->assign(get(), std::move(*o.get()));
+        /**/ if (!has_null_state
+             ||  (traits &&  o_traits)) traits->assign(get(), std::move(*o.get()));
+        else if (!traits && !o_traits);
         else if ( traits && !o_traits) traits->destroy(get());
         else if (!traits &&  o_traits) o_traits->construct(traits_storage_.address(), std::move(*o.get()));
 
@@ -163,7 +166,7 @@ struct detail::basic_inplace // Proof of concept
         return _construct<derived_type>(std::forward<arg_types>(args)...);
     }
 
-    impl_type* get () const { return traits_storage_.get_traits() ? (impl_type*) traits_storage_.address() : nullptr; }
+    impl_type* get () const { return (!has_null_state || traits_storage_.get_traits()) ? (impl_type*) traits_storage_.address() : nullptr; }
 
     private:
     template<typename derived_type, typename... arg_types>
