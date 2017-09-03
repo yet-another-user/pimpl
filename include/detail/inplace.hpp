@@ -7,6 +7,7 @@
 #define IMPL_PTR_DETAIL_INPLACE_HPP
 
 #include <boost/assert.hpp>
+#include <boost/core/ignore_unused.hpp>
 #include <new>
 #include "./detail.hpp"
 
@@ -50,18 +51,21 @@ struct detail::static_traits
     using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
-    void construct_traits ()       { set_traits(traits_type::singleton()); }
-    traits_ptr get_traits () const { return const_cast<static_traits&>(*this).set_traits(); }
-    traits_ptr set_traits (const traits_ptr ptr = nullptr)
+    void construct_traits ()       { traits_ = traits_type::singleton(); }
+    traits_ptr get_traits () const { return traits_; }
+    void set_traits (const traits_ptr ptr)
     {
-        static traits_ptr traits;
-        // Assuming any non-null instance lives at least as long as any instance of this policy
-        if (ptr)
-            traits = ptr;
-        BOOST_ASSERT(traits != nullptr);
-        return traits;
+        boost::ignore_unused(ptr);
+        BOOST_ASSERT(ptr == traits_);
     }
+
+    private:
+    static traits_ptr traits_;
 };
+
+template<typename impl_type, typename storage_type>
+typename detail::static_traits<impl_type, storage_type>::traits_ptr
+detail::static_traits<impl_type, storage_type>::traits_ = nullptr;
 
 template<typename impl_type, typename storage_type>
 struct detail::local_traits
