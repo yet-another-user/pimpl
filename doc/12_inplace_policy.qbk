@@ -40,13 +40,14 @@ and then to
 
 with minimal or no disruption to the existing code. 
 
-Then, a restricted version of this policy can be used through ['policy::always_storage]:
+More so, if necessary, a restricted version of this policy can be deployed using ['policy::always_storage]:
 
  struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::always_storage<64>> { ... };
 
 to make sure of the following:
 
- // The line below won't compile. InPlace does not have an uninitialized state.
+ // The line below won't compile. 
+ // InPlace does not have an uninitialized 'null' state.
  InPlace s13 = boost::impl_ptr<InPlace>::null();
 
 An important property of such ['policy::inplace] deployment is that it creates a ['Pimpl]-enabled value-semantics class with ['no Pimpl-related memory overhead]:

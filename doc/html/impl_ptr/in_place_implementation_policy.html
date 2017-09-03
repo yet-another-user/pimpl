@@ -67,14 +67,16 @@
       with minimal or no disruption to the existing code.
     </p>
 <p>
-      Then, a restricted version of this policy can be used through <span class="emphasis"><em>policy::always_storage</em></span>:
+      More so, if necessary, a restricted version of this policy can be deployed
+      using <span class="emphasis"><em>policy::always_storage</em></span>:
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">InPlace</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">inplace</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">always_storage</span><span class="special">&lt;</span><span class="number">64</span><span class="special">&gt;&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
       to make sure of the following:
     </p>
-<pre class="programlisting"><span class="comment">// The line below won't compile. InPlace does not have an uninitialized state.</span>
+<pre class="programlisting"><span class="comment">// The line below won't compile. </span>
+<span class="comment">// InPlace does not have an uninitialized 'null' state.</span>
 <span class="identifier">InPlace</span> <span class="identifier">s13</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">();</span>
 </pre>
 <p>
