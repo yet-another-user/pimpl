@@ -6,7 +6,6 @@
 #ifndef IMPL_PTR_DETAIL_INPLACE_HPP
 #define IMPL_PTR_DETAIL_INPLACE_HPP
 
-#include <boost/assert.hpp>
 #include <boost/core/ignore_unused.hpp>
 #include <new>
 #include "./detail.hpp"

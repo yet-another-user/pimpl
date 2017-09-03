@@ -57,10 +57,8 @@ struct detail::traits::base
     virtual void         destroy (impl_type*) const =0;
     virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); }
     virtual void          assign (impl_type* p, impl_type&& from) const { assign(p, from); }
-    virtual void       construct (void*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); }
-    virtual void       construct (void* p, impl_type&& from) const { return construct(p, from); }
-    virtual impl_type*      make (impl_type const&) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
-    virtual impl_type*      make (impl_type&& from) const { return make(from); }
+    virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
+    virtual impl_type* construct (void* p, impl_type&& from) const { return construct(p, from); }
 
     static pointer singleton()
     {
@@ -92,64 +90,57 @@ struct detail::traits::copyable final : base<copyable<impl_type, allocator>, imp
     using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
 
-    void destroy(impl_type* p) const override
+    void
+    destroy(impl_type* p) const override
     {
         alloc_type a;
 
         alloc_traits::destroy(a, p);
         alloc_traits::deallocate(a, p, 1);
     }
-    void construct(void* vp, impl_type const& from) const override
-    {
-        alloc_type        a;
-        impl_type* const ip = static_cast<impl_type*>(vp);
-        alloc_traits::construct(a, ip, from);
-    }
-    void construct(void* vp, impl_type&& from) const override
-    {
-        alloc_type        a;
-        impl_type* const ip = static_cast<impl_type*>(vp);
-        alloc_traits::construct(a, ip, std::move(from));
-    }
-    impl_type* make(impl_type const& from) const override
+    impl_type*
+    construct(void* vp, impl_type const& from) const override
     {
         alloc_type  a;
-        const auto ip = alloc_traits::allocate(a, 1);
+        impl_type* ap = vp ? nullptr : alloc_traits::allocate(a, 1);
+        impl_type* ip = vp ? static_cast<impl_type*>(vp) : boost::to_address(ap);
 
         try
         {
-            alloc_traits::construct(a, boost::to_address(ip), from);
+            alloc_traits::construct(a, ip, from);
         }
         catch (...)
         {
-            alloc_traits::deallocate(a, ip, 1);
+            if (ap) alloc_traits::deallocate(a, ap, 1);
             throw;
         }
-
-        return boost::to_address(ip);
+        return ip;
     }
-    impl_type* make(impl_type&& from) const override
+    impl_type*
+    construct(void* vp, impl_type&& from) const override
     {
         alloc_type  a;
-        const auto ip = alloc_traits::allocate(a, 1);
+        impl_type* ap = vp ? nullptr : alloc_traits::allocate(a, 1);
+        impl_type* ip = vp ? static_cast<impl_type*>(vp) : boost::to_address(ap);
 
         try
         {
-            alloc_traits::construct(a, boost::to_address(ip), std::move(from));
+            alloc_traits::construct(a, ip, std::move(from));
         }
         catch (...)
         {
-            alloc_traits::deallocate(a, ip, 1);
+            if (ap) alloc_traits::deallocate(a, ap, 1);
             throw;
         }
-
-        return boost::to_address(ip);
+        return ip;
     }
-    void assign(impl_type* p, impl_type const& from) const override
+    void
+    assign(impl_type* p, impl_type const& from) const override
     {
         *p = from;
     }
-    void assign(impl_type* p, impl_type&& from) const override
+    void
+    assign(impl_type* p, impl_type&& from) const override
     {
         *p = std::move(from);
     }

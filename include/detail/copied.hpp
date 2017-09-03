@@ -22,23 +22,21 @@ struct impl_ptr_policy::copied
         using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type    a;
-        this_type   tmp (nullptr);
-        const auto impl (alloc_traits::allocate(a, 1));
+        alloc_type     a;
+        derived_type* ap = alloc_traits::allocate(a, 1);
+        derived_type* ip = boost::to_address(ap);
 
         try
         {
-            alloc_traits::construct(a, boost::to_address(impl), std::forward<arg_types>(args)...);
-            tmp.traits_ = traits_type::singleton();
+            alloc_traits::construct(a, ip, std::forward<arg_types>(args)...);
+
+            this_type(ip).swap(*this);
         }
         catch (...)
         {
-            alloc_traits::deallocate(a, impl, 1);
+            alloc_traits::deallocate(a, ap, 1);
+            throw;
         }
-
-        tmp.impl_   = boost::to_address(impl);
-
-        tmp.swap(*this);
     }
 
     template<typename... arg_types>
@@ -49,11 +47,12 @@ struct impl_ptr_policy::copied
 
    ~copied () { if (traits_) traits_->destroy(impl_); }
     copied (std::nullptr_t) {}
+    copied (impl_type* p) : impl_(p), traits_(traits_type::singleton()) {}
     copied (this_type&& o) { swap(o); }
     copied (this_type const& o) : traits_(o.traits_)
     {
         if (traits_)
-            impl_ = traits_->make(*o.impl_);
+            impl_ = traits_->construct(nullptr, *o.impl_);
     }
 
     bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
@@ -63,7 +62,7 @@ struct impl_ptr_policy::copied
         /**/ if ( impl_ ==  o.impl_);
         else if ( impl_ &&  o.impl_) traits_->assign(impl_, *o.impl_);
         else if ( impl_ && !o.impl_) traits_->destroy(impl_);
-        else if (!impl_ &&  o.impl_) impl_ = o.traits_->make(*o.impl_);
+        else if (!impl_ &&  o.impl_) impl_ = o.traits_->construct(nullptr, *o.impl_);
 
         traits_ = o.traits_;
 

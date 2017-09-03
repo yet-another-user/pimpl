@@ -67,26 +67,28 @@
       with minimal or no disruption to the existing code.
     </p>
 <p>
-      More so, if necessary, a restricted version of this policy can be deployed
-      using <span class="emphasis"><em>policy::always_storage</em></span>:
+      The <span class="emphasis"><em>policy::storage&lt;64&gt;</em></span> argument specifies the memory
+      size to be allocated, in bytes, and, optionally, the alignment as in <span class="emphasis"><em>policy::storage&lt;64,
+      alignof(void*)&gt;</em></span>. The default alignment is at least the strictest
+      alignment for any type of the given size.
     </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">InPlace</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">inplace</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">always_storage</span><span class="special">&lt;</span><span class="number">64</span><span class="special">&gt;&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
-</pre>
 <p>
-      to make sure of the following:
+      Then, if necessary, a restricted <span class="emphasis"><em>policy::always_inplace</em></span>
+      version of this policy can be deployed to create a <span class="emphasis"><em>Pimpl</em></span>-enabled
+      value-semantics class with <span class="emphasis"><em>no uninitialized state</em></span> and
+      <span class="emphasis"><em>no Pimpl-related memory overhead</em></span>:
     </p>
-<pre class="programlisting"><span class="comment">// The line below won't compile. </span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">InPlace</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">always_inplace</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">storage</span><span class="special">&lt;</span><span class="number">64</span><span class="special">&gt;&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+
+<span class="comment">// The line below won't compile. </span>
 <span class="comment">// InPlace does not have an uninitialized 'null' state.</span>
 <span class="identifier">InPlace</span> <span class="identifier">s13</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">&gt;::</span><span class="identifier">null</span><span class="special">();</span>
-</pre>
-<p>
-      An important property of such <span class="emphasis"><em>policy::inplace</em></span> deployment
-      is that it creates a <span class="emphasis"><em>Pimpl</em></span>-enabled value-semantics class
-      with <span class="emphasis"><em>no Pimpl-related memory overhead</em></span>:
-    </p>
-<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
+
+<span class="special">...</span>
+
+<span class="keyword">template</span><span class="special">&lt;&gt;</span> <span class="keyword">struct</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">&gt;::</span><span class="identifier">implementation</span>
 <span class="special">{</span>
-  <span class="keyword">int</span> <span class="identifier">data</span><span class="special">[</span><span class="number">16</span><span class="special">];</span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">int32_t</span> <span class="identifier">data</span><span class="special">[</span><span class="number">16</span><span class="special">];</span>
 <span class="special">};</span>
 
 <span class="keyword">static_assert</span><span class="special">(</span><span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">InPlace</span><span class="special">)</span> <span class="special">==</span> <span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">InPlace</span><span class="special">&gt;::</span><span class="identifier">implementation</span><span class="special">),</span>

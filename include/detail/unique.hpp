@@ -26,24 +26,21 @@ struct impl_ptr_policy::unique
         using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type    a;
-        this_type   tmp (nullptr);
-        const auto impl (alloc_traits::allocate(a, 1));
+        alloc_type     a;
+        derived_type* ap = alloc_traits::allocate(a, 1);
+        derived_type* ip = boost::to_address(ap);
 
         try
         {
-            alloc_traits::construct(a, boost::to_address(impl), std::forward<arg_types>(args)...);
-            tmp.traits_ = traits_type::singleton();
+            alloc_traits::construct(a, ip, std::forward<arg_types>(args)...);
+
+            this_type(ip).swap(*this);
         }
         catch (...)
         {
-            alloc_traits::deallocate(a, impl, 1);
+            alloc_traits::deallocate(a, ap, 1);
             throw;
         }
-
-        tmp.impl_   = boost::to_address(impl);
-
-        tmp.swap(*this);
     }
 
     template<typename... arg_types>
@@ -54,6 +51,7 @@ struct impl_ptr_policy::unique
 
    ~unique () { if (traits_) traits_->destroy(impl_); }
     unique (std::nullptr_t) {}
+    unique (impl_type* p) : impl_(p), traits_(traits_type::singleton()) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }
