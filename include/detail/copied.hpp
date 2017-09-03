@@ -46,7 +46,7 @@ struct impl_ptr_policy::copied
     copied (this_type const& o) : traits_(o.traits_)
     {
         if (traits_)
-            impl_ = traits_->construct(nullptr, *o.impl_);
+            impl_ = traits_->make(*o.impl_);
     }
 
     bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
@@ -56,7 +56,7 @@ struct impl_ptr_policy::copied
         /**/ if ( impl_ ==  o.impl_);
         else if ( impl_ &&  o.impl_) traits_->assign(impl_, *o.impl_);
         else if ( impl_ && !o.impl_) traits_->destroy(impl_);
-        else if (!impl_ &&  o.impl_) impl_ = o.traits_->construct(nullptr, *o.impl_);
+        else if (!impl_ &&  o.impl_) impl_ = o.traits_->make(*o.impl_);
 
         traits_ = o.traits_;
 
