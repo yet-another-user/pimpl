@@ -113,21 +113,37 @@ struct detail::traits::copyable final : base<copyable<impl_type, allocator>, imp
     }
     impl_type* make(impl_type const& from) const override
     {
-        alloc_type        a;
-        impl_type* const ip = boost::to_address(alloc_traits::allocate(a, 1));
+        alloc_type  a;
+        const auto ip = alloc_traits::allocate(a, 1);
 
-        alloc_traits::construct(a, ip, from);
+        try
+        {
+            alloc_traits::construct(a, boost::to_address(ip), from);
+        }
+        catch (...)
+        {
+            alloc_traits::deallocate(a, ip, 1);
+            throw;
+        }
 
-        return ip;
+        return boost::to_address(ip);
     }
     impl_type* make(impl_type&& from) const override
     {
-        alloc_type        a;
-        impl_type* const ip = boost::to_address(alloc_traits::allocate(a, 1));
+        alloc_type  a;
+        const auto ip = alloc_traits::allocate(a, 1);
 
-        alloc_traits::construct(a, ip, std::move(from));
+        try
+        {
+            alloc_traits::construct(a, boost::to_address(ip), std::move(from));
+        }
+        catch (...)
+        {
+            alloc_traits::deallocate(a, ip, 1);
+            throw;
+        }
 
-        return ip;
+        return boost::to_address(ip);
     }
     void assign(impl_type* p, impl_type const& from) const override
     {

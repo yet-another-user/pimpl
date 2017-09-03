@@ -22,14 +22,21 @@ struct impl_ptr_policy::copied
         using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type       a;
-        this_type      tmp (nullptr);
-        derived_type* impl (boost::to_address(a.allocate(1)));
+        alloc_type    a;
+        this_type   tmp (nullptr);
+        const auto impl (alloc_traits::allocate(a, 1));
 
-        alloc_traits::construct(a, impl, std::forward<arg_types>(args)...);
+        try
+        {
+            alloc_traits::construct(a, boost::to_address(impl), std::forward<arg_types>(args)...);
+            tmp.traits_ = traits_type::singleton();
+        }
+        catch (...)
+        {
+            alloc_traits::deallocate(a, impl, 1);
+        }
 
-        tmp.impl_   = impl;
-        tmp.traits_ = traits_type::singleton();
+        tmp.impl_   = boost::to_address(impl);
 
         tmp.swap(*this);
     }
