@@ -34,10 +34,10 @@ namespace detail
     template<typename T =void> struct inplace_allocator
     {
         using value_type = T;
-        void deallocate(T*, size_t) const noexcept {}
-        T* allocate(std::size_t) const { throw std::bad_alloc(); }
-        bool operator==(const inplace_allocator&) const noexcept { return true; }
-        bool operator!=(const inplace_allocator&) const noexcept { return false; }
+        [[noreturn]] T* allocate(std::size_t) const { throw std::bad_alloc(); }
+        constexpr void deallocate(T*, size_t) const noexcept {}
+        constexpr bool operator==(const inplace_allocator&) const noexcept { return true; }
+        constexpr bool operator!=(const inplace_allocator&) const noexcept { return false; }
     };
     template<typename, typename> struct static_traits;
     template<typename, typename> struct local_traits;
