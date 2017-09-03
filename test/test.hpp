@@ -83,7 +83,7 @@ struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::storage<64>>
     int    value () const;
 };
 
-struct AlwaysInPlace : boost::impl_ptr<AlwaysInPlace, policy::inplace, policy::always_storage<sizeof(void*) * 2, alignof(void*)>>
+struct AlwaysInPlace : boost::impl_ptr<AlwaysInPlace, policy::always_inplace, policy::storage<sizeof(void*) * 2, alignof(void*)>>
 {
     AlwaysInPlace ();
     AlwaysInPlace (int);

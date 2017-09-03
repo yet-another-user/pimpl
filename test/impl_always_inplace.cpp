@@ -26,9 +26,9 @@ template<> struct boost::impl_ptr<AlwaysInPlace>::implementation
 };
 
 static_assert(sizeof(AlwaysInPlace) == sizeof(boost::impl_ptr<AlwaysInPlace>::implementation),
-        "No memory size overhead for always_storage is permitted");
+        "No memory size overhead for always_inplace is permitted");
 static_assert(alignof(AlwaysInPlace) == alignof(boost::impl_ptr<AlwaysInPlace>::implementation),
-        "No memory alignment overhead for always_storage is permitted");
+        "No memory alignment overhead for always_inplace is permitted");
 
 AlwaysInPlace::AlwaysInPlace ()      : impl_ptr_type(in_place) {}
 AlwaysInPlace::AlwaysInPlace (int k) : impl_ptr_type(in_place, k) {}

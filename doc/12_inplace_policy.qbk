@@ -40,9 +40,13 @@ and then to
 
 with minimal or no disruption to the existing code. 
 
-More so, if necessary, a restricted version of this policy can be deployed using ['policy::always_storage]:
+Note that it is necessary to specify the size, in bytes, with an extra ['policy::storage] argument.
+This is a template class which' first argument specifies the size and its optional second argument specifies alignment.
+The default alignment is at least the strictest alignment for any type of the given size.
 
- struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::always_storage<64>> { ... };
+More so, if necessary, a restricted version of this policy can be deployed: ['policy::always_inplace]:
+
+ struct InPlace : boost::impl_ptr<InPlace, policy::always_inplace, policy::storage<64>> { ... };
 
 to make sure of the following:
 
@@ -50,11 +54,11 @@ to make sure of the following:
  // InPlace does not have an uninitialized 'null' state.
  InPlace s13 = boost::impl_ptr<InPlace>::null();
 
-An important property of such ['policy::inplace] deployment is that it creates a ['Pimpl]-enabled value-semantics class with ['no Pimpl-related memory overhead]:
+An important property of such ['policy::always_inplace] deployment is that it creates a ['Pimpl]-enabled value-semantics class with ['no Pimpl-related memory overhead]:
 
  template<> struct boost::impl_ptr<InPlace>::implementation
  {
-   int data[16];
+   std::int32_t data[16];
  };
  
  static_assert(sizeof(InPlace) == sizeof(boost::impl_ptr<InPlace>::implementation),
