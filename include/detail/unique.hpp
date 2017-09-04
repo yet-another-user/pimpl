@@ -51,7 +51,7 @@ struct impl_ptr_policy::unique
 
    ~unique () = default;
     unique (std::nullptr_t) {}
-    unique (impl_type* p) : impl_(p, del_type()) {}
+    unique (impl_type* p) : impl_(p) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }
