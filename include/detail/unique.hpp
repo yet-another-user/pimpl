@@ -25,14 +25,7 @@ struct impl_ptr_policy::unique
     void
     emplace(arg_types&&... args)
     {
-        using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
-        using alloc_traits = std::allocator_traits<alloc_type>;
-
-        alloc_type                         a;
-        detail::dealloc_guard<alloc_type> ap(a, alloc_traits::allocate(a, 1));
-
-        traits_type::emplace(a, ap.get(), std::forward<arg_types>(args)...);
-        impl_.reset(ap.release());
+        impl_.reset(traits_type::template make<derived_type>(std::forward<arg_types>(args)...));
     }
 
     template<typename... arg_types>

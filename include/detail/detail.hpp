@@ -114,6 +114,19 @@ struct detail::traits::base
         alloc_traits::construct(alloc, p, std::forward<arg_types>(args)...);
     }
 
+    template<typename derived_type, typename... arg_types>
+    static pointer make(arg_types&&... args)
+    {
+        using   alloc_type = typename alloc_traits::template rebind_alloc<derived_type>;
+        using alloc_traits = std::allocator_traits<alloc_type>;
+
+        alloc_type                         a;
+        detail::dealloc_guard<alloc_type> ap(a, alloc_traits::allocate(a, 1));
+
+        emplace(a, ap.get(), std::forward<arg_types>(args)...);
+        return ap.release();
+    }
+
     static void       destroy (pointer p                       ) { return traits_->do_destroy  (p                 ); }
     static void        assign (pointer p, impl_type const& from) { return traits_->do_assign   (p,           from ); }
     static void        assign (pointer p, impl_type     && from) { return traits_->do_assign   (p, std::move(from)); }
