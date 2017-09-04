@@ -1,0 +1,64 @@
+[section In-Place-Implementation Policy]
+
+ ...
+ using policy = impl_ptr_policy;
+
+ struct InPlace : boost::impl_ptr<InPlace, policy::inplace, policy::storage<64>> { ... };
+
+Then ['InPlace] could be used no differently from other ['Pimpl]-based classes:
+
+ InPlace s11 (3); BOOST_TEST(s11.value() == 3);
+ InPlace s12 (5); BOOST_TEST(s12.value() == 5);
+ InPlace s13 = boost::impl_ptr<InPlace>::null();
+
+ // Check that implementation is allocated on the stack.
+ BOOST_TEST((void*) &s11 == (void*) &*s11);
+ BOOST_TEST(!s13);
+
+ s11 = s12;          BOOST_TEST(s11.value() == 5);
+ s11 = InPlace(6);   BOOST_TEST(s11.value() == 6);
+
+Then, due to efficiency requirements or heap constraints, we might decide to switch from
+
+ // std::allocator-based implementation allocation
+ struct Book : boost::impl_ptr<Book>::copied { ... };
+
+or
+
+ // std::allocator-based implementation allocation
+ struct Book : boost::impl_ptr<Book, policy::copied> { ... };
+
+to
+
+ // Custom-allocator-based implementation allocation
+ struct Book : boost::impl_ptr<Book, policy::copied, my_allocator> { ... };
+
+and then to
+
+ // Stack-based implementation allocation
+ struct Book : boost::impl_ptr<Book, policy::inplace, policy::storage<64>> { ... };
+
+with minimal or no disruption to the existing code. 
+
+The ['policy::storage<64>] argument specifies the memory size to be allocated, in bytes, and, optionally, the alignment as in ['policy::storage<64, alignof(void*)>]. The default alignment is at least the strictest alignment for any type of the given size.
+
+Then, if necessary, a restricted ['policy::always_inplace] version of this policy can be deployed to create a ['Pimpl]-enabled value-semantics class with ['no uninitialized state] and ['no Pimpl-related memory overhead]:
+
+ struct InPlace : boost::impl_ptr<InPlace, policy::always_inplace, policy::storage<64>> { ... };
+
+ // The line below won't compile. 
+ // InPlace does not have an uninitialized 'null' state.
+ InPlace s13 = boost::impl_ptr<InPlace>::null();
+
+ ...
+
+ template<> struct boost::impl_ptr<InPlace>::implementation
+ {
+   std::int32_t data[16];
+ };
+ 
+ static_assert(sizeof(InPlace) == sizeof(boost::impl_ptr<InPlace>::implementation),
+     "Memory overhead where none was expected!");
+
+[endsect] 
+

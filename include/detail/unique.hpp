@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2018 Vladimir Batov.
+// Copyright (c) 2008 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
@@ -17,25 +17,31 @@ struct impl_ptr_policy::unique
 {
     using   this_type = unique;
     using traits_type = detail::traits::unique<impl_type, allocator>;
-    using  traits_ptr = typename traits_type::pointer;
+    using    del_type = typename traits_type::deleter;
+    using    ptr_type = std::unique_ptr<impl_type, del_type>;
 
     template<typename derived_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        using   alloc_type = typename allocator::template rebind<derived_type>::other;
+        using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type       a;
-        this_type      tmp (nullptr);
-        derived_type* impl (boost::to_address(a.allocate(1)));
+        alloc_type     a;
+        derived_type* ap = alloc_traits::allocate(a, 1);
+        derived_type* ip = boost::to_address(ap);
 
-        alloc_traits::construct(a, impl, std::forward<arg_types>(args)...);
+        try
+        {
+            alloc_traits::construct(a, ip, std::forward<arg_types>(args)...);
 
-        tmp.impl_   = impl;
-        tmp.traits_ = traits_type();
-
-        tmp.swap(*this);
+            impl_ = ptr_type(ip, traits_type::singleton());
+        }
+        catch (...)
+        {
+            alloc_traits::deallocate(a, ap, 1);
+            throw;
+        }
     }
 
     template<typename... arg_types>
@@ -44,7 +50,7 @@ struct impl_ptr_policy::unique
         emplace<impl_type>(std::forward<arg_types>(args)...);
     }
 
-   ~unique () { if (traits_) traits_->destroy(impl_); }
+   ~unique () = default;
     unique (std::nullptr_t) {}
 
     unique (this_type&& o) { swap(o); }
@@ -54,14 +60,11 @@ struct impl_ptr_policy::unique
     this_type& operator= (this_type const&) =delete;
 
     bool operator< (this_type const& o) const { return impl_ < o.impl_; }
-    void      swap (this_type& o) { std::swap(impl_, o.impl_), std::swap(traits_, o.traits_); }
-    impl_type* get () const { return impl_; }
+    void      swap (this_type& o) { std::swap(impl_, o.impl_); }
+    impl_type* get () const { return const_cast<impl_type*>(impl_.get()); }
     long use_count () const { return 1; }
 
-    private:
-
-    impl_type*   impl_ = nullptr;
-    traits_ptr traits_ = nullptr;
+    private: ptr_type impl_;
 };
 
 #endif // IMPL_PTR_DETAIL_UNIQUE_HPP

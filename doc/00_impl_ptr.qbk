@@ -31,7 +31,7 @@
 [include  05_behind_interface.qbk]
 [include  07_construction.qbk]
 [include  11_customization.qbk]
-[include  12_onstack_policy.qbk]
+[include  12_inplace_policy.qbk]
 [include  20_applications.qbk]
 [include  21_delegating_constructors.qbk]
 [include  26_lazy_instantiation.qbk]

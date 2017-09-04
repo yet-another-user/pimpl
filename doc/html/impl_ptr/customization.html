@@ -7,36 +7,37 @@
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Pimpl C++11">
 <link rel="prev" href="construction_and_impl_ptr_null.html" title="Construction and impl_ptr::null()">
-<link rel="next" href="on_stack_implementation_policy.html" title="On-Stack Implementation Policy">
+<link rel="next" href="in_place_implementation_policy.html" title="In-Place-Implementation Policy">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="on_stack_implementation_policy.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="in_place_implementation_policy.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="impl_ptr.customization"></a><a class="link" href="customization.html" title="Customization">Customization</a>
 </h2></div></div></div>
 <p>
-      Previously shown definitions
+      Previously mentioned <span class="emphasis"><em>Pimpl</em></span> class definitions
     </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">shared</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">unique</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">&gt;::</span><span class="identifier">copied</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-      deploy <span class="emphasis"><em>shared, unique, copied</em></span> base classes. Those are,
-      in fact, convenience short-hand aliases to satisfy the basic default deployment
-      of the respective policies. When those policies are specified explicitly, the
-      definitions look as follows:
+      use <span class="emphasis"><em>shared, unique, copied</em></span> as base classes. Those are,
+      in fact, shorthand aliases to abbreviate the basic default deployment of the
+      respective policies. When specified explicitly, the definitions look as follows:
     </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">impl_ptr_policy</span><span class="special">::</span><span class="identifier">shared</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
-<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">impl_ptr_policy</span><span class="special">::</span><span class="identifier">unique</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
-<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">impl_ptr_policy</span><span class="special">::</span><span class="identifier">copied</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<pre class="programlisting"><span class="keyword">using</span> <span class="identifier">policy</span> <span class="special">=</span> <span class="identifier">impl_ptr_policy</span><span class="special">;</span>
+
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">shared</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">unique</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">copied</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-      That declaration form allows far greater flexibility and policy configurability.
-      In particular, custom policies are easily deployed. For example,
+      That direct form allows far greater flexibility, policy customization and configurability.
+      Now custom policies are easily deployed:
     </p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">impl_type</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">more_types</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">my_policy</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
@@ -44,11 +45,12 @@
 <span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">my_policy</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 <p>
-      Or policies additionally configured to, say, use <span class="emphasis"><em>my_allocator</em></span>:
+      Then, policies are easily configured:
     </p>
-<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">impl_ptr_policy</span><span class="special">::</span><span class="identifier">shared</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
-<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">impl_ptr_policy</span><span class="special">::</span><span class="identifier">unique</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
-<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">impl_ptr_policy</span><span class="special">::</span><span class="identifier">copied</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">shared</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">unique</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">copied</span><span class="special">,</span> <span class="identifier">my_allocator</span><span class="special">&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
+<span class="keyword">struct</span> <span class="identifier">Book</span> <span class="special">:</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">impl_ptr</span><span class="special">&lt;</span><span class="identifier">Book</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">inplace</span><span class="special">,</span> <span class="identifier">policy</span><span class="special">::</span><span class="identifier">storage</span><span class="special">&lt;</span><span class="number">64</span><span class="special">&gt;&gt;</span> <span class="special">{</span> <span class="special">...</span> <span class="special">};</span>
 </pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
@@ -60,7 +62,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="on_stack_implementation_policy.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="construction_and_impl_ptr_null.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="in_place_implementation_policy.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

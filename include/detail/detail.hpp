@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2018 Vladimir Batov.
+// Copyright (c) 2008 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
@@ -52,15 +52,23 @@ struct detail::traits::base
     using this_type = base<traits_type, impl_type>;
     using   pointer = this_type const*;
 
+    struct deleter
+    {
+        deleter(pointer tp = nullptr) : traits_(tp) {}
+        void operator()(impl_type* ip) const { traits_->destroy(ip); }
+
+        private: pointer traits_;
+    };
+
     virtual ~base() =default;
 
     virtual void         destroy (impl_type*) const =0;
-    virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(0); }
+    virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); }
     virtual void          assign (impl_type* p, impl_type&& from) const { assign(p, from); }
-    virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(0); return nullptr; }
+    virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
     virtual impl_type* construct (void* p, impl_type&& from) const { return construct(p, from); }
 
-    operator pointer()
+    static pointer singleton()
     {
         static_assert(!std::is_same<this_type, traits_type>::value, "");
         static_assert(std::is_base_of<this_type, traits_type>::value, "");
@@ -70,23 +78,24 @@ struct detail::traits::base
 };
 
 template<typename impl_type, typename allocator>
-struct detail::traits::unique : base<unique<impl_type, allocator>, impl_type>
+struct detail::traits::unique final : base<unique<impl_type, allocator>, impl_type>
 {
-    using   alloc_type = typename allocator::template rebind<impl_type>::other;
+    using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
 
     void destroy(impl_type* p) const override
     {
         alloc_type a;
 
-        alloc_traits::destroy(a, p), a.deallocate(p, 1);
+        alloc_traits::destroy(a, p);
+        alloc_traits::deallocate(a, p, 1);
     }
 };
 
 template<typename impl_type, typename allocator>
-struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type>
+struct detail::traits::copyable final : base<copyable<impl_type, allocator>, impl_type>
 {
-    using   alloc_type = typename allocator::template rebind<impl_type>::other;
+    using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
 
     void
@@ -94,30 +103,43 @@ struct detail::traits::copyable : base<copyable<impl_type, allocator>, impl_type
     {
         alloc_type a;
 
-        alloc_traits::destroy(a, p), a.deallocate(p, 1);
+        alloc_traits::destroy(a, p);
+        alloc_traits::deallocate(a, p, 1);
     }
     impl_type*
     construct(void* vp, impl_type const& from) const override
     {
         alloc_type  a;
-        impl_type* ip = vp
-                      ? static_cast<impl_type*>(vp)
-                      : boost::to_address(a.allocate(1));
+        impl_type* ap = vp ? nullptr : alloc_traits::allocate(a, 1);
+        impl_type* ip = vp ? static_cast<impl_type*>(vp) : boost::to_address(ap);
 
-        alloc_traits::construct(a, ip, from);
-
+        try
+        {
+            alloc_traits::construct(a, ip, from);
+        }
+        catch (...)
+        {
+            if (ap) alloc_traits::deallocate(a, ap, 1);
+            throw;
+        }
         return ip;
     }
     impl_type*
     construct(void* vp, impl_type&& from) const override
     {
         alloc_type  a;
-        impl_type* ip = vp
-                      ? static_cast<impl_type*>(vp)
-                      : boost::to_address(a.allocate(1));
+        impl_type* ap = vp ? nullptr : alloc_traits::allocate(a, 1);
+        impl_type* ip = vp ? static_cast<impl_type*>(vp) : boost::to_address(ap);
 
-        alloc_traits::construct(a, ip, std::move(from));
-
+        try
+        {
+            alloc_traits::construct(a, ip, std::move(from));
+        }
+        catch (...)
+        {
+            if (ap) alloc_traits::deallocate(a, ap, 1);
+            throw;
+        }
         return ip;
     }
     void

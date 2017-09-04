@@ -129,6 +129,8 @@ test_null()
 {
     Shared s01 = boost::impl_ptr<Shared>::null(); BOOST_TEST(s01.trace() == "null");
     Shared s02 (boost::impl_ptr<Shared>::null()); BOOST_TEST(s02.trace() == "null");
+    Unique u01 = boost::impl_ptr<Unique>::null(); BOOST_TEST(u01.trace() == "null");
+    Unique u02 (boost::impl_ptr<Unique>::null()); BOOST_TEST(u02.trace() == "null");
     Copied c01 = boost::impl_ptr<Copied>::null(); BOOST_TEST(c01.trace() == "null");
     Copied c02 (boost::impl_ptr<Copied>::null()); BOOST_TEST(c02.trace() == "null");
 
@@ -222,11 +224,11 @@ test_unique()
 
 static
 void
-test_onstack()
+test_inplace()
 {
-    OnStack s11 (3); BOOST_TEST(s11.value() == 3);
-    OnStack s12 (5); BOOST_TEST(s12.value() == 5);
-    OnStack s13 = boost::impl_ptr<OnStack>::null();
+    InPlace s11 (3); BOOST_TEST(s11.value() == 3);
+    InPlace s12 (5); BOOST_TEST(s12.value() == 5);
+    InPlace s13 = boost::impl_ptr<InPlace>::null();
 
     // Check that implementation is allocated on the stack.
     BOOST_TEST((void*) &s11 == (void*) &*s11);
@@ -234,7 +236,24 @@ test_onstack()
     BOOST_TEST(!s13);       // Test op!()
 
     s11 = s12;          BOOST_TEST(s11.value() == 5);
-    s11 = OnStack(6);   BOOST_TEST(s11.value() == 6);
+    s11 = InPlace(6);   BOOST_TEST(s11.value() == 6);
+}
+
+static
+void
+test_always_inplace()
+{
+    AlwaysInPlace s11 (3); BOOST_TEST(s11.value() == 3);
+    AlwaysInPlace s12 (5); BOOST_TEST(s12.value() == 5);
+    AlwaysInPlace s13;
+
+    // Check that implementation is allocated on the stack.
+    BOOST_TEST((void*) &s11 == (void*) &*s11);
+    BOOST_TEST(bool(s13)); // Test op bool()
+    BOOST_TEST(!!s13);     // Test op!()
+
+    s11 = s12;                BOOST_TEST(s11.value() == 5);
+    s11 = AlwaysInPlace(6);   BOOST_TEST(s11.value() == 6);
 }
 
 static
@@ -270,7 +289,8 @@ main(int argc, char const* argv[])
     test_shared();
     test_copied();
     test_unique();
-    test_onstack();
+    test_inplace();
+    test_always_inplace();
     test_bool_conversions();
     test_runtime_polymorphic_behavior();
     test_swap();

@@ -19,19 +19,24 @@ struct impl_ptr_policy::copied
     void
     emplace(arg_types&&... args)
     {
-        using   alloc_type = typename allocator::template rebind<derived_type>::other;
+        using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type       a;
-        this_type      tmp (nullptr);
-        derived_type* impl (boost::to_address(a.allocate(1)));
+        alloc_type     a;
+        derived_type* ap = alloc_traits::allocate(a, 1);
+        derived_type* ip = boost::to_address(ap);
 
-        alloc_traits::construct(a, impl, std::forward<arg_types>(args)...);
+        try
+        {
+            alloc_traits::construct(a, ip, std::forward<arg_types>(args)...);
 
-        tmp.impl_   = impl;
-        tmp.traits_ = traits_type();
-
-        tmp.swap(*this);
+            this_type(ip).swap(*this);
+        }
+        catch (...)
+        {
+            alloc_traits::deallocate(a, ap, 1);
+            throw;
+        }
     }
 
     template<typename... arg_types>
@@ -42,6 +47,7 @@ struct impl_ptr_policy::copied
 
    ~copied () { if (traits_) traits_->destroy(impl_); }
     copied (std::nullptr_t) {}
+    copied (impl_type* p) : impl_(p), traits_(traits_type::singleton()) {}
     copied (this_type&& o) { swap(o); }
     copied (this_type const& o) : traits_(o.traits_)
     {
