@@ -129,6 +129,8 @@ test_null()
 {
     Shared s01 = boost::impl_ptr<Shared>::null(); BOOST_TEST(s01.trace() == "null");
     Shared s02 (boost::impl_ptr<Shared>::null()); BOOST_TEST(s02.trace() == "null");
+    Unique u01 = boost::impl_ptr<Unique>::null(); BOOST_TEST(u01.trace() == "null");
+    Unique u02 (boost::impl_ptr<Unique>::null()); BOOST_TEST(u02.trace() == "null");
     Copied c01 = boost::impl_ptr<Copied>::null(); BOOST_TEST(c01.trace() == "null");
     Copied c02 (boost::impl_ptr<Copied>::null()); BOOST_TEST(c02.trace() == "null");
 
