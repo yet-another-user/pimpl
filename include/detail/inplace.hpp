@@ -50,21 +50,13 @@ struct detail::static_traits
     using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
-    void construct_traits ()       { traits_ = traits_type::singleton(); }
-    traits_ptr get_traits () const { return traits_; }
+    traits_ptr get_traits () const { return &traits_type::traits(); }
     void set_traits (const traits_ptr ptr)
     {
         boost::ignore_unused(ptr);
-        BOOST_ASSERT(ptr == traits_);
+        BOOST_ASSERT(ptr == &traits_type::traits());
     }
-
-    private:
-    static traits_ptr traits_;
 };
-
-template<typename impl_type, typename storage_type>
-typename detail::static_traits<impl_type, storage_type>::traits_ptr
-detail::static_traits<impl_type, storage_type>::traits_ = nullptr;
 
 template<typename impl_type, typename storage_type>
 struct detail::local_traits
@@ -74,7 +66,6 @@ struct detail::local_traits
     using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
     using   traits_ptr = typename traits_type::pointer;
 
-    void construct_traits ()                     { set_traits(traits_type::singleton()); }
     traits_ptr get_traits () const               { return traits_; }
     void       set_traits (const traits_ptr ptr) { traits_ = ptr; }
 
@@ -91,12 +82,13 @@ struct detail::basic_inplace // Proof of concept
                                     , local_traits <impl_type, storage_type>
                                     , static_traits<impl_type, storage_type>
                                     >::type;
+    using         traits_type = typename traits_storage_type::traits_type;
 
    ~basic_inplace ()
     {
         const auto traits = traits_storage_.get_traits();
         if (!has_null_state || traits)
-            traits->destroy(get());
+            traits_type::traits().destroy(get());
     }
     basic_inplace (std::nullptr_t)
     {
@@ -106,14 +98,14 @@ struct detail::basic_inplace // Proof of concept
     {
         const auto traits = o.traits_storage_.get_traits();
         if (!has_null_state || traits)
-            traits->construct(traits_storage_.address(), *o.get());
+            traits_type::traits().construct(traits_storage_.address(), *o.get());
         traits_storage_.set_traits(traits);
     }
     basic_inplace (this_type&& o)
     {
         const auto traits = o.traits_storage_.get_traits();
         if (!has_null_state || traits)
-            traits->construct(traits_storage_.address(), std::move(*o.get()));
+            traits_type::traits().construct(traits_storage_.address(), std::move(*o.get()));
         traits_storage_.set_traits(traits);
     }
     this_type& operator=(this_type const& o)
@@ -122,10 +114,10 @@ struct detail::basic_inplace // Proof of concept
         const auto o_traits = o.traits_storage_.get_traits();
 
         /**/ if (!has_null_state
-             ||  (traits &&  o_traits)) traits->assign(get(), *o.get());
+             ||  (traits &&  o_traits)) traits_type::traits().assign(get(), *o.get());
         else if (!traits && !o_traits);
-        else if ( traits && !o_traits) traits->destroy(get());
-        else if (!traits &&  o_traits) o_traits->construct(traits_storage_.address(), *o.get());
+        else if ( traits && !o_traits) traits_type::traits().destroy(get());
+        else if (!traits &&  o_traits) traits_type::traits().construct(traits_storage_.address(), *o.get());
 
         traits_storage_.set_traits(o_traits);
 
@@ -137,10 +129,10 @@ struct detail::basic_inplace // Proof of concept
         const auto o_traits = o.traits_storage_.get_traits();
 
         /**/ if (!has_null_state
-             ||  (traits &&  o_traits)) traits->assign(get(), std::move(*o.get()));
+             ||  (traits &&  o_traits)) traits_type::traits().assign(get(), std::move(*o.get()));
         else if (!traits && !o_traits);
-        else if ( traits && !o_traits) traits->destroy(get());
-        else if (!traits &&  o_traits) o_traits->construct(traits_storage_.address(), std::move(*o.get()));
+        else if ( traits && !o_traits) traits_type::traits().destroy(get());
+        else if (!traits &&  o_traits) traits_type::traits().construct(traits_storage_.address(), std::move(*o.get()));
 
         traits_storage_.set_traits(o_traits);
 
@@ -159,7 +151,7 @@ struct detail::basic_inplace // Proof of concept
         static_assert(has_null_state, "Emplacing to storage that doesn't support null-state is prohibited.");
         if (const auto traits = traits_storage_.get_traits())
         {
-            traits->destroy(get());
+            traits_type::traits().destroy(get());
             traits_storage_.set_traits(nullptr);
         }
         return _construct<derived_type>(std::forward<arg_types>(args)...);
@@ -176,8 +168,9 @@ struct detail::basic_inplace // Proof of concept
         static_assert((alignof(storage_type) % alignof(derived_type)) == 0,
                 "Attempting to construct type in storage area that does not have an integer multiple of the type's alignment requirement.");
 
-        ::new (traits_storage_.address()) derived_type(std::forward<arg_types>(args)...);
-        traits_storage_.construct_traits();
+        inplace_allocator<derived_type> a;
+        traits_type::emplace(a, static_cast<derived_type*>(traits_storage_.address()), std::forward<arg_types>(args)...);
+        traits_storage_.set_traits(&traits_type::traits());
     }
 
     traits_storage_type traits_storage_;

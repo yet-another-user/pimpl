@@ -27,15 +27,13 @@ struct impl_ptr_policy::unique
         using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type     a;
-        derived_type* ap = alloc_traits::allocate(a, 1);
-        derived_type* ip = boost::to_address(ap);
+        alloc_type  a;
+        const auto ap = alloc_traits::allocate(a, 1);
 
         try
         {
-            alloc_traits::construct(a, ip, std::forward<arg_types>(args)...);
-
-            impl_ = ptr_type(ip, traits_type::singleton());
+            traits_type::emplace(a, ap, std::forward<arg_types>(args)...);
+            impl_.reset(ap);
         }
         catch (...)
         {
@@ -53,7 +51,7 @@ struct impl_ptr_policy::unique
    ~unique () = default;
     unique (std::nullptr_t) {}
 
-    unique (this_type&& o) { swap(o); }
+    unique (this_type&& o) = default;
     this_type& operator= (this_type&& o) { swap(o); return *this; }
 
     unique (this_type const&) =delete;

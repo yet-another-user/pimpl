@@ -54,10 +54,7 @@ struct detail::traits::base
 
     struct deleter
     {
-        deleter(pointer tp = nullptr) : traits_(tp) {}
-        void operator()(impl_type* ip) const { traits_->destroy(ip); }
-
-        private: pointer traits_;
+        void operator()(impl_type* ip) const { traits().destroy(ip); }
     };
 
     virtual ~base() =default;
@@ -68,14 +65,35 @@ struct detail::traits::base
     virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
     virtual impl_type* construct (void* p, impl_type&& from) const { return construct(p, from); }
 
-    static pointer singleton()
+    template<typename alloctor, typename... arg_types>
+    static void emplace(alloctor&& a
+            , typename std::allocator_traits<typename std::decay<alloctor>::type>::pointer p
+            , arg_types&&... args)
+    {
+        using alloc_traits = std::allocator_traits<typename std::decay<alloctor>::type>;
+
+        construct_singleton();
+        alloc_traits::construct(a, boost::to_address(p), std::forward<arg_types>(args)...);
+    }
+
+    static const base& traits()
+    {
+        return *traits_;
+    }
+    private:
+    static void construct_singleton()
     {
         static_assert(!std::is_same<this_type, traits_type>::value, "");
         static_assert(std::is_base_of<this_type, traits_type>::value, "");
 
-        static traits_type const traits; return &traits;
+        static traits_type const traits = ((traits_ = &traits), traits_type{});
     }
+    private: static pointer traits_;
 };
+
+template<typename traits_type, typename impl_type>
+typename detail::traits::base<traits_type, impl_type>::pointer
+detail::traits::base<traits_type, impl_type>::traits_;
 
 template<typename impl_type, typename allocator>
 struct detail::traits::unique final : base<unique<impl_type, allocator>, impl_type>
