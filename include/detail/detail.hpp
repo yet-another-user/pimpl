@@ -54,11 +54,9 @@ struct detail::traits::base
 
     struct deleter
     {
-        deleter(pointer traits = nullptr) : traits_(traits) {}
-        void operator()(impl_type* impl) const
-        {
-            traits_->destroy(impl);
-        }
+        deleter(pointer tp = nullptr) : traits_(tp) {}
+        void operator()(impl_type* ip) const { traits_->destroy(ip); }
+
         private: pointer traits_;
     };
 
