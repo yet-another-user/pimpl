@@ -48,7 +48,7 @@ struct impl_ptr_policy::copied
     copied (this_type const& o)
     {
         if (o.impl_)
-            impl_.reset(traits_type::traits().construct(nullptr, *o.impl_));
+            impl_.reset(traits_type::construct(nullptr, *o.impl_));
     }
 
     bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
@@ -56,9 +56,9 @@ struct impl_ptr_policy::copied
     this_type& operator= (this_type const& o)
     {
         /**/ if ( impl_ ==  o.impl_);
-        else if ( impl_ &&  o.impl_) traits_type::traits().assign(impl_.get(), *o.impl_);
+        else if ( impl_ &&  o.impl_) traits_type::assign(impl_.get(), *o.impl_);
         else if ( impl_ && !o.impl_) impl_.reset();
-        else if (!impl_ &&  o.impl_) impl_.reset(traits_type::traits().construct(nullptr, *o.impl_));
+        else if (!impl_ &&  o.impl_) impl_.reset(traits_type::construct(nullptr, *o.impl_));
 
         return *this;
     }

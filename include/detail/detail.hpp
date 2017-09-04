@@ -54,16 +54,10 @@ struct detail::traits::base
 
     struct deleter
     {
-        void operator()(impl_type* ip) const { traits().destroy(ip); }
+        void operator()(impl_type* ip) const { base::destroy(ip); }
     };
 
     virtual ~base() =default;
-
-    virtual void         destroy (impl_type*) const =0;
-    virtual void          assign (impl_type*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); }
-    virtual void          assign (impl_type* p, impl_type&& from) const { assign(p, from); }
-    virtual impl_type* construct (void*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
-    virtual impl_type* construct (void* p, impl_type&& from) const { return construct(p, from); }
 
     template<typename alloctor, typename... arg_types>
     static void emplace(alloctor&& a
@@ -76,11 +70,19 @@ struct detail::traits::base
         alloc_traits::construct(a, boost::to_address(p), std::forward<arg_types>(args)...);
     }
 
-    static const base& traits()
-    {
-        return *traits_;
-    }
+    static void         destroy (impl_type* p                       ) { return traits_->do_destroy  (p                 ); }
+    static void          assign (impl_type* p, impl_type const& from) { return traits_->do_assign   (p,           from ); }
+    static void          assign (impl_type* p, impl_type     && from) { return traits_->do_assign   (p, std::move(from)); }
+    static impl_type* construct (void*      p, impl_type const& from) { return traits_->do_construct(p,           from ); }
+    static impl_type* construct (void*      p, impl_type     && from) { return traits_->do_construct(p, std::move(from)); }
+
     private:
+    virtual void         do_destroy (impl_type*                         ) const =0;
+    virtual void          do_assign (impl_type*  , impl_type const&     ) const { BOOST_ASSERT(!"not implemented"); }
+    virtual void          do_assign (impl_type* p, impl_type     && from) const { return do_assign(p, from); }
+    virtual impl_type* do_construct (void*       , impl_type const&     ) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
+    virtual impl_type* do_construct (void*      p, impl_type     && from) const { return do_construct(p, from); }
+
     static void construct_singleton()
     {
         static_assert(!std::is_same<this_type, traits_type>::value, "");
@@ -101,7 +103,7 @@ struct detail::traits::unique final : base<unique<impl_type, allocator>, impl_ty
     using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
 
-    void destroy(impl_type* p) const override
+    void do_destroy(impl_type* p) const override
     {
         alloc_type a;
 
@@ -117,7 +119,7 @@ struct detail::traits::copyable final : base<copyable<impl_type, allocator>, imp
     using alloc_traits = std::allocator_traits<alloc_type>;
 
     void
-    destroy(impl_type* p) const override
+    do_destroy(impl_type* p) const override
     {
         alloc_type a;
 
@@ -125,7 +127,7 @@ struct detail::traits::copyable final : base<copyable<impl_type, allocator>, imp
         alloc_traits::deallocate(a, p, 1);
     }
     impl_type*
-    construct(void* vp, impl_type const& from) const override
+    do_construct(void* vp, impl_type const& from) const override
     {
         alloc_type  a;
         impl_type* ap = vp ? nullptr : alloc_traits::allocate(a, 1);
@@ -143,7 +145,7 @@ struct detail::traits::copyable final : base<copyable<impl_type, allocator>, imp
         return ip;
     }
     impl_type*
-    construct(void* vp, impl_type&& from) const override
+    do_construct(void* vp, impl_type&& from) const override
     {
         alloc_type  a;
         impl_type* ap = vp ? nullptr : alloc_traits::allocate(a, 1);
@@ -161,12 +163,12 @@ struct detail::traits::copyable final : base<copyable<impl_type, allocator>, imp
         return ip;
     }
     void
-    assign(impl_type* p, impl_type const& from) const override
+    do_assign(impl_type* p, impl_type const& from) const override
     {
         *p = from;
     }
     void
-    assign(impl_type* p, impl_type&& from) const override
+    do_assign(impl_type* p, impl_type&& from) const override
     {
         *p = std::move(from);
     }
