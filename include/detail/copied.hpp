@@ -18,13 +18,13 @@ struct impl_ptr_policy::copied
 {
     using   this_type = copied;
     using traits_type = detail::traits::copyable<impl_type, allocator>;
-    using     pointer = std::unique_ptr<impl_type, typename traits_type::deleter>;
+    using    ptr_type = typename traits_type::ptr_type;
 
     template<typename derived_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        impl_.reset(traits_type::template make<derived_type>(std::forward<arg_types>(args)...));
+        impl_ = traits_type::template make<derived_type>(detail::in_place_type(), std::forward<arg_types>(args)...);
     }
 
     template<typename... arg_types>
@@ -38,7 +38,7 @@ struct impl_ptr_policy::copied
     copied (this_type const& o)
     {
         if (o.impl_)
-            impl_.reset(traits_type::construct(nullptr, *o.impl_));
+            impl_ = traits_type::make(*o.impl_);
     }
 
     bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
@@ -48,7 +48,7 @@ struct impl_ptr_policy::copied
         /**/ if ( impl_ ==  o.impl_);
         else if ( impl_ &&  o.impl_) traits_type::assign(impl_.get(), *o.impl_);
         else if ( impl_ && !o.impl_) impl_.reset();
-        else if (!impl_ &&  o.impl_) impl_.reset(traits_type::construct(nullptr, *o.impl_));
+        else if (!impl_ &&  o.impl_) impl_ = traits_type::make(*o.impl_);
 
         return *this;
     }
@@ -57,7 +57,7 @@ struct impl_ptr_policy::copied
     impl_type* get () const { return boost::to_address(impl_.get()); }
     long use_count () const { return 1; }
 
-    private: pointer impl_;
+    private: ptr_type impl_;
 };
 
 #endif // IMPL_PTR_DETAIL_COPIED_HPP

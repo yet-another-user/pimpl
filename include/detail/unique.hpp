@@ -18,14 +18,13 @@ struct impl_ptr_policy::unique
 {
     using   this_type = unique;
     using traits_type = detail::traits::unique<impl_type, allocator>;
-    using    del_type = typename traits_type::deleter;
-    using    ptr_type = std::unique_ptr<impl_type, del_type>;
+    using    ptr_type = typename traits_type::ptr_type;
 
     template<typename derived_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        impl_.reset(traits_type::template make<derived_type>(std::forward<arg_types>(args)...));
+        impl_ = traits_type::template make<derived_type>(detail::in_place_type(), std::forward<arg_types>(args)...);
     }
 
     template<typename... arg_types>
