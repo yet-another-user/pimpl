@@ -6,13 +6,16 @@
 #ifndef IMPL_PTR_DETAIL_INPLACE_HPP
 #define IMPL_PTR_DETAIL_INPLACE_HPP
 
+#include <boost/compressed_pair.hpp>
+#include <boost/config.hpp>
 #include <boost/core/ignore_unused.hpp>
 #include <new>
 #include "./detail.hpp"
 
 namespace detail
 {
-    template<typename, typename, bool> struct basic_inplace;
+    template<typename, typename, typename> struct basic_inplace;
+    struct exists_always;
 }
 
 namespace impl_ptr_policy
@@ -23,9 +26,9 @@ namespace impl_ptr_policy
         static size_t constexpr alignment = a;
     };
     template<typename impl_type, typename size_type>
-    using        inplace = detail::basic_inplace<impl_type, size_type, /* has_null_state = */ true>;
+    using        inplace = detail::basic_inplace<impl_type, size_type, /* exists_type = */ bool>;
     template<typename impl_type, typename size_type>
-    using always_inplace = detail::basic_inplace<impl_type, size_type, /* has_null_state = */ false>;
+    using always_inplace = detail::basic_inplace<impl_type, size_type, /* exists_type = */ detail::exists_always>;
 }
 
 namespace detail
@@ -38,105 +41,54 @@ namespace detail
         constexpr bool operator==(const inplace_allocator&) const noexcept { return true; }
         constexpr bool operator!=(const inplace_allocator&) const noexcept { return false; }
     };
-    template<typename, typename> struct static_traits;
-    template<typename, typename> struct local_traits;
 }
 
-template<typename impl_type, typename storage_type>
-struct detail::static_traits
-    // Inheriting from storage_type to ensure that starts at offset 0 in this struct
-    : storage_type
+struct detail::exists_always
 {
-    using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
-    using   traits_ptr = typename traits_type::pointer;
-
-    traits_ptr get_traits () const { return &traits_type::traits(); }
-    void set_traits (const traits_ptr ptr)
+    constexpr explicit exists_always(bool) {}
+    constexpr operator bool() const { return true; }
+    constexpr const exists_always& operator=(bool exists) const
     {
-        boost::ignore_unused(ptr);
-        BOOST_ASSERT(ptr == &traits_type::traits());
+        return exists
+            ? *this
+            : throw std::invalid_argument("exists_always: setting to non-existent prohibited")
+            ;
     }
 };
 
-template<typename impl_type, typename storage_type>
-struct detail::local_traits
-    // Inheriting from storage_type to ensure that starts at offset 0 in this struct
-    : storage_type
-{
-    using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
-    using   traits_ptr = typename traits_type::pointer;
+static_assert(std::is_empty<detail::exists_always>::value, "detail::exists_always causes memory overhead");
 
-    traits_ptr get_traits () const               { return traits_; }
-    void       set_traits (const traits_ptr ptr) { traits_ = ptr; }
-
-    private:
-    traits_ptr traits_ = nullptr;
-};
-
-template<typename impl_type, typename size_type, bool has_null_state>
+template<typename impl_type, typename size_type, typename exists_type>
 struct detail::basic_inplace // Proof of concept
 {
-    using           this_type = basic_inplace;
-    using        storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
-    using traits_storage_type = typename std::conditional<has_null_state
-                                    , local_traits <impl_type, storage_type>
-                                    , static_traits<impl_type, storage_type>
-                                    >::type;
-    using         traits_type = typename traits_storage_type::traits_type;
+    using    this_type = basic_inplace;
+    using storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
+    using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
 
    ~basic_inplace ()
     {
-        const auto traits = traits_storage_.get_traits();
-        if (!has_null_state || traits)
+        if (exists())
             traits_type::traits().destroy(get());
     }
-    basic_inplace (std::nullptr_t)
+    BOOST_CXX14_CONSTEXPR basic_inplace (std::nullptr_t)
     {
-        static_assert(has_null_state, "Constructing null-state is prohibited.");
+        static_assert(exists_type(false) == false, "Constructing null-state is prohibited.");
     }
-    basic_inplace (this_type const& o)
+    BOOST_CXX14_CONSTEXPR basic_inplace (this_type const& o)
     {
-        const auto traits = o.traits_storage_.get_traits();
-        if (!has_null_state || traits)
-            traits_type::traits().construct(traits_storage_.address(), *o.get());
-        traits_storage_.set_traits(traits);
+        _assign(o);
     }
-    basic_inplace (this_type&& o)
+    BOOST_CXX14_CONSTEXPR basic_inplace (this_type&& o)
     {
-        const auto traits = o.traits_storage_.get_traits();
-        if (!has_null_state || traits)
-            traits_type::traits().construct(traits_storage_.address(), std::move(*o.get()));
-        traits_storage_.set_traits(traits);
+        _assign(std::move(o));
     }
-    this_type& operator=(this_type const& o)
+    BOOST_CXX14_CONSTEXPR this_type& operator=(this_type const& o)
     {
-        const auto traits = traits_storage_.get_traits();
-        const auto o_traits = o.traits_storage_.get_traits();
-
-        /**/ if (!has_null_state
-             ||  (traits &&  o_traits)) traits_type::traits().assign(get(), *o.get());
-        else if (!traits && !o_traits);
-        else if ( traits && !o_traits) traits_type::traits().destroy(get());
-        else if (!traits &&  o_traits) traits_type::traits().construct(traits_storage_.address(), *o.get());
-
-        traits_storage_.set_traits(o_traits);
-
-        return *this;
+        return _assign(o);
     }
-    this_type& operator=(this_type&& o)
+    BOOST_CXX14_CONSTEXPR this_type& operator=(this_type&& o)
     {
-        const auto traits = traits_storage_.get_traits();
-        const auto o_traits = o.traits_storage_.get_traits();
-
-        /**/ if (!has_null_state
-             ||  (traits &&  o_traits)) traits_type::traits().assign(get(), std::move(*o.get()));
-        else if (!traits && !o_traits);
-        else if ( traits && !o_traits) traits_type::traits().destroy(get());
-        else if (!traits &&  o_traits) traits_type::traits().construct(traits_storage_.address(), std::move(*o.get()));
-
-        traits_storage_.set_traits(o_traits);
-
-        return *this;
+        return _assign(std::move(o));
     }
 
     template<typename... arg_types>
@@ -148,16 +100,16 @@ struct detail::basic_inplace // Proof of concept
     template<typename derived_type, typename... arg_types>
     void emplace(arg_types&&... args)
     {
-        static_assert(has_null_state, "Emplacing to storage that doesn't support null-state is prohibited.");
-        if (const auto traits = traits_storage_.get_traits())
+        static_assert(exists_type(false) == false, "Emplacing to storage that doesn't support null-state is prohibited.");
+        if (exists())
         {
             traits_type::traits().destroy(get());
-            traits_storage_.set_traits(nullptr);
+            set_exists(false);
         }
         return _construct<derived_type>(std::forward<arg_types>(args)...);
     }
 
-    impl_type* get () const { return (!has_null_state || traits_storage_.get_traits()) ? (impl_type*) traits_storage_.address() : nullptr; }
+    impl_type* get () const { return exists() ? (impl_type*) storage().address() : nullptr; }
 
     private:
     template<typename derived_type, typename... arg_types>
@@ -169,11 +121,55 @@ struct detail::basic_inplace // Proof of concept
                 "Attempting to construct type in storage area that does not have an integer multiple of the type's alignment requirement.");
 
         inplace_allocator<derived_type> a;
-        traits_type::emplace(a, static_cast<derived_type*>(traits_storage_.address()), std::forward<arg_types>(args)...);
-        traits_storage_.set_traits(&traits_type::traits());
+        traits_type::emplace(a, static_cast<derived_type*>(storage().address()), std::forward<arg_types>(args)...);
+        set_exists(true);
     }
 
-    traits_storage_type traits_storage_;
+    template<typename T>
+    BOOST_CXX14_CONSTEXPR
+    typename std::enable_if<std::is_same<typename std::decay<T>::type, this_type>::value, this_type&>::type
+    _assign(T&& o)
+    {
+        using uref = typename std::conditional<std::is_lvalue_reference<T>::value, const impl_type&, impl_type>::type;
+
+        const bool   exists = this->exists();
+        const bool o_exists =     o.exists();
+
+        /**/ if (!exists && !o_exists);
+        else if ( exists &&  o_exists) traits_type::traits().assign(get(), std::forward<uref>(*o.get()));
+        else if ( exists && !o_exists) traits_type::traits().destroy(get());
+        else if (!exists &&  o_exists) traits_type::traits().construct(storage().address(), std::forward<uref>(*o.get()));
+
+        set_exists(o_exists);
+
+        return *this;
+    }
+
+    BOOST_CXX14_CONSTEXPR storage_type& storage()
+    {
+        return storage_and_state_.first();
+    }
+
+    constexpr const storage_type& storage() const
+    {
+        return storage_and_state_.first();
+    }
+
+    constexpr bool exists() const
+    {
+        return storage_and_state_.second();
+    }
+
+    BOOST_CXX14_CONSTEXPR void set_exists(bool exists)
+    {
+        storage_and_state_.second() = exists;
+    }
+
+    boost::compressed_pair<
+        // storage_type must be the first here to ensure it starts at offset 0 in this struct
+        storage_type
+      , exists_type
+      > storage_and_state_ { exists_type(false) };
 };
 
 #endif // IMPL_PTR_DETAIL_INPLACE_HPP
