@@ -13,7 +13,7 @@ struct impl_ptr_policy::copied
 {
     using   this_type = copied;
     using traits_type = detail::traits::copyable<impl_type, allocator>;
-    using  traits_ptr = typename traits_type::pointer;
+    using     pointer = std::unique_ptr<impl_type, typename traits_type::deleter>;
 
     template<typename derived_type, typename... arg_types>
     void
@@ -22,15 +22,13 @@ struct impl_ptr_policy::copied
         using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type     a;
-        derived_type* ap = alloc_traits::allocate(a, 1);
-        derived_type* ip = boost::to_address(ap);
+        alloc_type  a;
+        const auto ap = alloc_traits::allocate(a, 1);
 
         try
         {
-            traits_type::emplace(a, ip, std::forward<arg_types>(args)...);
-
-            this_type(ip).swap(*this);
+            traits_type::emplace(a, ap, std::forward<arg_types>(args)...);
+            impl_.reset(ap);
         }
         catch (...)
         {
@@ -45,14 +43,12 @@ struct impl_ptr_policy::copied
         emplace<impl_type>(std::forward<arg_types>(args)...);
     }
 
-   ~copied () { if (impl_) traits_type::traits().destroy(impl_); }
     copied (std::nullptr_t) {}
-    copied (impl_type* p) : impl_(p) {}
-    copied (this_type&& o) { swap(o); }
+    copied (this_type&& o) = default;
     copied (this_type const& o)
     {
         if (o.impl_)
-            impl_ = traits_type::traits().construct(nullptr, *o.impl_);
+            impl_.reset(traits_type::traits().construct(nullptr, *o.impl_));
     }
 
     bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
@@ -60,20 +56,18 @@ struct impl_ptr_policy::copied
     this_type& operator= (this_type const& o)
     {
         /**/ if ( impl_ ==  o.impl_);
-        else if ( impl_ &&  o.impl_) traits_type::traits().assign(impl_, *o.impl_);
-        else if ( impl_ && !o.impl_) { traits_type::traits().destroy(impl_); impl_ = nullptr; }
-        else if (!impl_ &&  o.impl_) impl_ = traits_type::traits().construct(nullptr, *o.impl_);
+        else if ( impl_ &&  o.impl_) traits_type::traits().assign(impl_.get(), *o.impl_);
+        else if ( impl_ && !o.impl_) impl_.reset();
+        else if (!impl_ &&  o.impl_) impl_.reset(traits_type::traits().construct(nullptr, *o.impl_));
 
         return *this;
     }
 
     void      swap (this_type& o) { std::swap(impl_, o.impl_); }
-    impl_type* get () const { return impl_; }
+    impl_type* get () const { return impl_.get(); }
     long use_count () const { return 1; }
 
-    private:
-
-    impl_type*   impl_ = nullptr;
+    private: pointer impl_;
 };
 
 #endif // IMPL_PTR_DETAIL_COPIED_HPP
