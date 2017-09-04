@@ -54,11 +54,12 @@ struct detail::traits::base
 
     struct deleter
     {
+        deleter(pointer traits = nullptr) : traits_(traits) {}
         void operator()(impl_type* impl) const
         {
             traits_->destroy(impl);
         }
-        private: pointer traits_ = this_type::singleton();
+        private: pointer traits_;
     };
 
     virtual ~base() =default;

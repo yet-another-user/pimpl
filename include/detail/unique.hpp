@@ -18,6 +18,7 @@ struct impl_ptr_policy::unique
     using   this_type = unique;
     using traits_type = detail::traits::unique<impl_type, allocator>;
     using    del_type = typename traits_type::deleter;
+    using     pointer = std::unique_ptr<impl_type, del_type>;
 
     template<typename derived_type, typename... arg_types>
     void
@@ -34,7 +35,7 @@ struct impl_ptr_policy::unique
         {
             alloc_traits::construct(a, ip, std::forward<arg_types>(args)...);
 
-            this_type(ip).swap(*this);
+            impl_ = pointer(ip, traits_type::singleton());
         }
         catch (...)
         {
@@ -51,7 +52,6 @@ struct impl_ptr_policy::unique
 
    ~unique () = default;
     unique (std::nullptr_t) {}
-    unique (impl_type* p) : impl_(p) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }
@@ -64,7 +64,7 @@ struct impl_ptr_policy::unique
     impl_type* get () const { return const_cast<impl_type*>(impl_.get()); }
     long use_count () const { return 1; }
 
-    private: std::unique_ptr<impl_type, del_type> impl_;
+    private: pointer impl_;
 };
 
 #endif // IMPL_PTR_DETAIL_UNIQUE_HPP
