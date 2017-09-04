@@ -52,6 +52,15 @@ struct detail::traits::base
     using this_type = base<traits_type, impl_type>;
     using   pointer = this_type const*;
 
+    struct deleter
+    {
+        void operator()(impl_type* impl) const
+        {
+            traits_->destroy(impl);
+        }
+        private: pointer traits_ = this_type::singleton();
+    };
+
     virtual ~base() =default;
 
     virtual void         destroy (impl_type*) const =0;

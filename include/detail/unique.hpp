@@ -17,7 +17,7 @@ struct impl_ptr_policy::unique
 {
     using   this_type = unique;
     using traits_type = detail::traits::unique<impl_type, allocator>;
-    using  traits_ptr = typename traits_type::pointer;
+    using    del_type = typename traits_type::deleter;
 
     template<typename derived_type, typename... arg_types>
     void
@@ -49,9 +49,9 @@ struct impl_ptr_policy::unique
         emplace<impl_type>(std::forward<arg_types>(args)...);
     }
 
-   ~unique () { if (traits_) traits_->destroy(impl_); }
+   ~unique () = default;
     unique (std::nullptr_t) {}
-    unique (impl_type* p) : impl_(p), traits_(traits_type::singleton()) {}
+    unique (impl_type* p) : impl_(p, del_type()) {}
 
     unique (this_type&& o) { swap(o); }
     this_type& operator= (this_type&& o) { swap(o); return *this; }
@@ -60,14 +60,11 @@ struct impl_ptr_policy::unique
     this_type& operator= (this_type const&) =delete;
 
     bool operator< (this_type const& o) const { return impl_ < o.impl_; }
-    void      swap (this_type& o) { std::swap(impl_, o.impl_), std::swap(traits_, o.traits_); }
-    impl_type* get () const { return impl_; }
+    void      swap (this_type& o) { std::swap(impl_, o.impl_); }
+    impl_type* get () const { return const_cast<impl_type*>(impl_.get()); }
     long use_count () const { return 1; }
 
-    private:
-
-    impl_type*   impl_ = nullptr;
-    traits_ptr traits_ = nullptr;
+    private: std::unique_ptr<impl_type, del_type> impl_;
 };
 
 #endif // IMPL_PTR_DETAIL_UNIQUE_HPP
