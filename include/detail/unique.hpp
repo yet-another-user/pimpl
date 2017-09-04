@@ -60,7 +60,7 @@ struct impl_ptr_policy::unique
 
     bool operator< (this_type const& o) const { return impl_ < o.impl_; }
     void      swap (this_type& o) { std::swap(impl_, o.impl_); }
-    impl_type* get () const { return const_cast<impl_type*>(impl_.get()); }
+    impl_type* get () const { return const_cast<impl_type*>(boost::to_address(impl_.get())); }
     long use_count () const { return 1; }
 
     private: ptr_type impl_;

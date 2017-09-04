@@ -69,7 +69,7 @@ struct impl_ptr_policy::copied
     }
 
     void      swap (this_type& o) { std::swap(impl_, o.impl_); }
-    impl_type* get () const { return impl_.get(); }
+    impl_type* get () const { return boost::to_address(impl_.get()); }
     long use_count () const { return 1; }
 
     private: pointer impl_;
