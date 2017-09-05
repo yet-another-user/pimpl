@@ -40,17 +40,22 @@ namespace detail
     // is originally by Peter Dimov.
     struct traits
     {
-        template<typename, typename> struct     base;
+        template<template<typename, typename> class, typename, typename> struct base;
+
         template<typename, typename> struct   unique;
         template<typename, typename> struct copyable;
     };
 }
 
-template<typename traits_type, typename impl_type>
+template<template<typename, typename> class TT, typename IT, typename AT>
 struct detail::traits::base
 {
-    using this_type = base<traits_type, impl_type>;
-    using   pointer = this_type const*;
+    using    this_type = base<TT, IT, AT>;
+    using  traits_type = TT<IT, AT>;
+    using    impl_type = IT;
+    using   alloc_type = typename std::allocator_traits<AT>::template rebind_alloc<impl_type>;
+    using alloc_traits = std::allocator_traits<alloc_type>;
+    using      pointer = this_type const*;
 
     struct deleter
     {
@@ -59,12 +64,12 @@ struct detail::traits::base
 
     virtual ~base() =default;
 
-    template<typename alloctor, typename... arg_types>
-    static void emplace(alloctor&& a
-            , typename std::allocator_traits<typename std::decay<alloctor>::type>::pointer p
+    template<typename allocator, typename... arg_types>
+    static void emplace(allocator&& a
+            , typename std::allocator_traits<typename std::decay<allocator>::type>::pointer p
             , arg_types&&... args)
     {
-        using alloc_traits = std::allocator_traits<typename std::decay<alloctor>::type>;
+        using alloc_traits = std::allocator_traits<typename std::decay<allocator>::type>;
 
         construct_singleton();
         alloc_traits::construct(a, boost::to_address(p), std::forward<arg_types>(args)...);
@@ -76,7 +81,18 @@ struct detail::traits::base
     static impl_type* construct (void*      p, impl_type const& from) { return traits_->do_construct(p,           from ); }
     static impl_type* construct (void*      p, impl_type     && from) { return traits_->do_construct(p, std::move(from)); }
 
+    protected:
+
+    void destroy_(impl_type* p) const
+    {
+        alloc_type a;
+
+        alloc_traits::destroy(a, p);
+        alloc_traits::deallocate(a, p, 1);
+    }
+
     private:
+
     virtual void         do_destroy (impl_type*                         ) const =0;
     virtual void          do_assign (impl_type*  , impl_type const&     ) const { BOOST_ASSERT(!"not implemented"); }
     virtual void          do_assign (impl_type* p, impl_type     && from) const { return do_assign(p, from); }
@@ -93,39 +109,25 @@ struct detail::traits::base
     private: static pointer traits_;
 };
 
-template<typename traits_type, typename impl_type>
-typename detail::traits::base<traits_type, impl_type>::pointer
-detail::traits::base<traits_type, impl_type>::traits_;
+template<template<typename, typename> class traits_type, typename impl_type, typename alloc_type>
+typename detail::traits::base<traits_type, impl_type, alloc_type>::pointer
+detail::traits::base<traits_type, impl_type, alloc_type>::traits_;
 
 template<typename impl_type, typename allocator>
-struct detail::traits::unique final : base<unique<impl_type, allocator>, impl_type>
+struct detail::traits::unique final : base<unique, impl_type, allocator>
 {
-    using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
-    using alloc_traits = std::allocator_traits<alloc_type>;
-
-    void do_destroy(impl_type* p) const override
-    {
-        alloc_type a;
-
-        alloc_traits::destroy(a, p);
-        alloc_traits::deallocate(a, p, 1);
-    }
+    void do_destroy(impl_type* p) const override { this->destroy_(p); }
 };
 
 template<typename impl_type, typename allocator>
-struct detail::traits::copyable final : base<copyable<impl_type, allocator>, impl_type>
+struct detail::traits::copyable final : base<copyable, impl_type, allocator>
 {
-    using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
-    using alloc_traits = std::allocator_traits<alloc_type>;
+    using    base_type = base<copyable, impl_type, allocator>;
+    using   alloc_type = typename base_type::alloc_type;
+    using alloc_traits = typename base_type::alloc_traits;
 
-    void
-    do_destroy(impl_type* p) const override
-    {
-        alloc_type a;
+    void do_destroy(impl_type* p) const override { this->destroy_(p); }
 
-        alloc_traits::destroy(a, p);
-        alloc_traits::deallocate(a, p, 1);
-    }
     impl_type*
     do_construct(void* vp, impl_type const& from) const override
     {
