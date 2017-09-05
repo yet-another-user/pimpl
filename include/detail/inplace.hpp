@@ -51,7 +51,7 @@ struct detail::exists_always
     {
         return exists
             ? *this
-            : throw std::invalid_argument("exists_always: setting to non-existent prohibited")
+            : (throw std::invalid_argument("exists_always: setting to non-existent prohibited"), *this)
             ;
     }
 };
