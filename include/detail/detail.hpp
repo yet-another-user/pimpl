@@ -93,11 +93,11 @@ struct detail::traits::base
 
     private:
 
-    virtual void         do_destroy (impl_type*                         ) const =0;
-    virtual void          do_assign (impl_type*  , impl_type const&     ) const { BOOST_ASSERT(!"not implemented"); }
-    virtual void          do_assign (impl_type* p, impl_type     && from) const { return do_assign(p, from); }
-    virtual impl_type* do_construct (void*       , impl_type const&     ) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
-    virtual impl_type* do_construct (void*      p, impl_type     && from) const { return do_construct(p, from); }
+    virtual void         do_destroy (impl_type*) const =0;
+    virtual void          do_assign (impl_type*, impl_type const&) const =0;
+    virtual void          do_assign (impl_type*, impl_type&&) const =0;
+    virtual impl_type* do_construct (void*, impl_type const&) const =0;
+    virtual impl_type* do_construct (void*, impl_type&& ) const =0;
 
     static void construct_singleton()
     {
@@ -116,7 +116,11 @@ detail::traits::base<traits_type, impl_type, alloc_type>::traits_;
 template<typename impl_type, typename allocator>
 struct detail::traits::unique final : base<unique, impl_type, allocator>
 {
-    void do_destroy(impl_type* p) const override { this->destroy_(p); }
+    void         do_destroy (impl_type* p) const override { this->destroy_(p); }
+    void          do_assign (impl_type*, impl_type const&) const { BOOST_ASSERT(!"not implemented"); }
+    void          do_assign (impl_type* p, impl_type&& from) const { return do_assign(p, from); }
+    impl_type* do_construct (void*  , impl_type const&) const { BOOST_ASSERT(!"not implemented"); return nullptr; }
+    impl_type* do_construct (void* p, impl_type&& from) const { return do_construct(p, from); }
 };
 
 template<typename impl_type, typename allocator>
