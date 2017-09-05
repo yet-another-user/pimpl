@@ -22,8 +22,8 @@ struct impl_ptr_policy::copied
         using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type  a;
-        const auto ap = alloc_traits::allocate(a, 1);
+        alloc_type     a;
+        derived_type* ap = alloc_traits::allocate(a, 1);
 
         try
         {
