@@ -21,6 +21,7 @@ struct impl_ptr_policy::copied
     using    traits_type = detail::traits::copyable<impl_type, allocator>;
     using       ptr_type = typename traits_type::ptr_type;
     using allocator_type = typename traits_type::alloc_type;
+    using   alloc_traits = typename traits_type::alloc_traits;
 
     template<typename derived_type, typename alloc_arg, typename... arg_types>
     void
@@ -37,26 +38,68 @@ struct impl_ptr_policy::copied
     copied (std::nullptr_t, const allocator_type& a) : impl_(nullptr, a) {}
     copied (this_type&& o) = default;
     copied (this_type const& o)
-        : impl_(nullptr, o.get_allocator())
+        : impl_(nullptr, alloc_traits::select_on_container_copy_construction(o.get_allocator()))
     {
         if (o.impl_)
             impl_ = traits_type::make(get_allocator(), *o.impl_);
     }
 
     bool       operator< (this_type const& o) const { return impl_ < o.impl_; }
-    this_type& operator= (this_type&& o) { swap(o); return *this; }
+    this_type& operator= (this_type&& o)
+    {
+        if (typename alloc_traits::propagate_on_container_move_assignment()
+         || o.get_allocator() == get_allocator())
+        {
+            ptr_type tmp(nullptr, get_allocator());
+            tmp.reset(this->impl_.release());
+            this->impl_.reset(o.impl_.release());
+            if (alloc_traits::propagate_on_container_move_assignment::value)
+                get_allocator() = std::move(o.get_allocator());
+        }
+	else
+        {
+            // The rvalue's allocator cannot be moved and is not equal,
+            // so we need to move the implementation itself.
+            /**/ if ( impl_ ==  o.impl_);
+            else if ( impl_ &&  o.impl_) traits_type::assign(impl_.get(), std::move(*o.impl_));
+            else if ( impl_ && !o.impl_) impl_.reset();
+            else if (!impl_ &&  o.impl_) impl_ = traits_type::make(get_allocator(), std::move(*o.impl_));
+            o.impl_.reset();
+        }
+        return *this;
+    }
     this_type& operator= (this_type const& o)
     {
-        allocator_type a(o.get_allocator());
+        if (alloc_traits::propagate_on_container_copy_assignment::value)
+        {
+            if (get_allocator() != o.get_allocator())
+            {
+                // replacement allocator cannot free existing storage
+                impl_.reset();
+            }
+            get_allocator() = o.get_allocator();
+        }
+
         /**/ if ( impl_ ==  o.impl_);
         else if ( impl_ &&  o.impl_) traits_type::assign(impl_.get(), *o.impl_);
         else if ( impl_ && !o.impl_) impl_.reset();
-        else if (!impl_ &&  o.impl_) impl_ = traits_type::make(a, *o.impl_);
+        else if (!impl_ &&  o.impl_) impl_ = traits_type::make(get_allocator(), *o.impl_);
 
         return *this;
     }
 
-    void      swap (this_type& o) { std::swap(impl_, o.impl_); }
+    void      swap (this_type& o)
+    {
+        using std::swap;
+
+        ptr_type tmp(nullptr, get_allocator());
+        tmp.reset(this->impl_.release());
+        this->impl_.reset(o.impl_.release());
+        o.impl_.reset(tmp.release());
+
+        if (alloc_traits::propagate_on_container_swap::value)
+            swap(get_allocator(), o.get_allocator());
+    }
     impl_type* get () const { return boost::to_address(impl_.get()); }
     long use_count () const { return 1; }
 

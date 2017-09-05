@@ -3,8 +3,9 @@
 template<> struct boost::impl_ptr<AlwaysInPlace>::implementation
 {
     using this_type = implementation;
+    using allocator_type = std::allocator<void>;
 
-    implementation ()           : int_(0), trace_("AlwaysInPlace()"          ) {}
+    implementation (const std::allocator<void>&) : int_(0), trace_("AlwaysInPlace()"          ) {}
     implementation (int k)      : int_(k), trace_("AlwaysInPlace(int)"       ) {}
     implementation (int k, int) : int_(k), trace_("AlwaysInPlace(int, int)"  ) {}
     implementation (Foo&)       : int_(0), trace_("AlwaysInPlace(Foo&)"      ) {}
@@ -30,7 +31,7 @@ static_assert(sizeof(AlwaysInPlace) == sizeof(boost::impl_ptr<AlwaysInPlace>::im
 static_assert(alignof(AlwaysInPlace) == alignof(boost::impl_ptr<AlwaysInPlace>::implementation),
         "No memory alignment overhead for always_inplace is permitted");
 
-AlwaysInPlace::AlwaysInPlace ()      : impl_ptr_type(in_place) {}
+AlwaysInPlace::AlwaysInPlace ()      : impl_ptr_type(in_place, std::allocator<void>{}) {}
 AlwaysInPlace::AlwaysInPlace (int k) : impl_ptr_type(in_place, k) {}
 
 string AlwaysInPlace::trace () const { return *this ? (*this)->trace_ : "null"; }

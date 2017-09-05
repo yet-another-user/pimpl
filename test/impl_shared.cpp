@@ -36,7 +36,7 @@ int    Shared::value () const { return (*this)->int_; }
 Shared::Shared ()             : impl_ptr_type(in_place) {}
 Shared::Shared (int k)        : impl_ptr_type(in_place, k) {}
 Shared::Shared (int k, int l) : impl_ptr_type(in_place, k, l) {}
-Shared::Shared (Foo&       f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
+Shared::Shared (Foo&       f) : impl_ptr_type(std::allocator_arg, std::allocator<void>(), f) {} // Testing that 'const' handled properly
 Shared::Shared (Foo const& f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
 Shared::Shared (Foo*       f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
 Shared::Shared (Foo const* f) : impl_ptr_type(in_place, f) {} // Testing that 'const' handled properly
