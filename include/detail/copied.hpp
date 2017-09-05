@@ -1,3 +1,8 @@
+// Copyright (c) 2008 Vladimir Batov.
+// Copyright (c) 2017 Giel van Schijndel.
+// Use, modification and distribution are subject to the Boost Software License,
+// Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
+
 #ifndef IMPL_PTR_DETAIL_COPIED_HPP
 #define IMPL_PTR_DETAIL_COPIED_HPP
 
