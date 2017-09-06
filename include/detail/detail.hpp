@@ -46,6 +46,38 @@ namespace detail
         template<typename, typename> struct   unique;
         template<typename, typename> struct copyable;
     };
+
+    // Helper class to ensure memory gets deallocated regardless of whether construction/destruction throws
+    template<typename AT>
+    struct dealloc_guard
+    {
+        using alloc_traits = std::allocator_traits<AT>;
+        using      pointer = typename alloc_traits::pointer;
+        using   value_type = typename alloc_traits::value_type;
+
+        // take ownership of memory
+        constexpr dealloc_guard(AT& a, pointer ptr) noexcept : alloc_(a), ptr_(std::move(ptr)) {}
+
+        dealloc_guard(const dealloc_guard&) = delete;
+        dealloc_guard(dealloc_guard&&) = delete;
+        dealloc_guard& operator=(const dealloc_guard&) = delete;
+        dealloc_guard& operator=(dealloc_guard&&) = delete;
+
+        // give access to raw pointer, e.g. for calling the constructor
+        BOOST_CXX14_CONSTEXPR value_type* get() noexcept { return boost::to_address(ptr_); }
+        // transfer ownership to caller
+        BOOST_CXX14_CONSTEXPR pointer release() noexcept { pointer r = ptr_; ptr_ = nullptr; return r; }
+
+        ~dealloc_guard()
+        {
+            if (ptr_)
+                alloc_traits::deallocate(alloc_, ptr_, 1);
+        }
+
+        private:
+        AT& alloc_;
+        pointer ptr_;
+    };
 }
 
 template<template<typename, typename> class TT, typename IT, typename AT>
@@ -93,9 +125,8 @@ struct detail::traits::base
     void destroy_(pointer p) const
     {
         alloc_type a;
-
-        alloc_traits::destroy(a, boost::to_address(p));
-        alloc_traits::deallocate(a, p, 1);
+        dealloc_guard<alloc_type> ap(a, std::move(p));
+        alloc_traits::destroy(a, ap.get());
     }
 
     private:
@@ -141,42 +172,28 @@ struct detail::traits::copyable final : base<copyable, impl_type, allocator>
     using alloc_traits = typename base_type::alloc_traits;
     using      pointer = typename base_type::pointer;
 
-    void do_destroy(pointer p) const override { this->destroy_(p); }
+    void do_destroy(impl_type* p) const override { this->destroy_(p); }
 
     pointer
     do_construct(void* vp, impl_type const& from) const override
     {
-        alloc_type  a;
-        pointer    ap = vp ? nullptr : alloc_traits::allocate(a, 1);
-        impl_type* ip = vp ? static_cast<impl_type*>(vp) : boost::to_address(ap);
+        alloc_type                 a;
+        dealloc_guard<alloc_type> ap(a, vp ? nullptr : alloc_traits::allocate(a, 1));
+        impl_type*                ip = vp ? static_cast<impl_type*>(vp) : ap.get();
 
-        try
-        {
-            alloc_traits::construct(a, ip, from);
-        }
-        catch (...)
-        {
-            alloc_traits::deallocate(a, ap, 1);
-            throw;
-        }
+        alloc_traits::construct(a, ip, from);
+        ap.release();
         return std::pointer_traits<pointer>::pointer_to(*ip);
     }
     pointer
     do_construct(void* vp, impl_type&& from) const override
     {
-        alloc_type  a;
-        pointer    ap = vp ? nullptr : alloc_traits::allocate(a, 1);
-        impl_type* ip = vp ? static_cast<impl_type*>(vp) : boost::to_address(ap);
+        alloc_type                 a;
+        dealloc_guard<alloc_type> ap(a, vp ? nullptr : alloc_traits::allocate(a, 1));
+        impl_type*                ip = vp ? static_cast<impl_type*>(vp) : ap.get();
 
-        try
-        {
-            alloc_traits::construct(a, ip, std::move(from));
-        }
-        catch (...)
-        {
-            if (ap) alloc_traits::deallocate(a, ap, 1);
-            throw;
-        }
+        alloc_traits::construct(a, ip, std::move(from));
+        ap.release();
         return std::pointer_traits<pointer>::pointer_to(*ip);
     }
     void

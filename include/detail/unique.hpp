@@ -28,19 +28,11 @@ struct impl_ptr_policy::unique
         using   alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<derived_type>;
         using alloc_traits = std::allocator_traits<alloc_type>;
 
-        alloc_type a;
-        auto      ap = alloc_traits::allocate(a, 1);
+        alloc_type                         a;
+        detail::dealloc_guard<alloc_type> ap(a, alloc_traits::allocate(a, 1));
 
-        try
-        {
-            traits_type::emplace(a, boost::to_address(ap), std::forward<arg_types>(args)...);
-            impl_.reset(ap);
-        }
-        catch (...)
-        {
-            alloc_traits::deallocate(a, ap, 1);
-            throw;
-        }
+        traits_type::emplace(a, ap.get(), std::forward<arg_types>(args)...);
+        impl_.reset(ap.release());
     }
 
     template<typename... arg_types>
