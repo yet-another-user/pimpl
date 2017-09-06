@@ -195,7 +195,7 @@ struct detail::traits::copyable final : base<copyable, impl_type, allocator>
     using      pointer = typename base_type::pointer;
     using     ptr_type = typename base_type::ptr_type;
 
-    void do_destroy(impl_type* p) const override { this->destroy_(p); }
+    void do_destroy(pointer p) const override { this->destroy_(p); }
 
     void
     do_construct(void* vp, impl_type const& from) const override
