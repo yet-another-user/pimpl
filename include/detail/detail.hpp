@@ -56,7 +56,6 @@ struct detail::traits::base
     using    impl_type = IT;
     using   alloc_type = typename std::allocator_traits<AT>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
-    using      pointer = this_type const*;
 
     struct deleter
     {
@@ -107,11 +106,11 @@ struct detail::traits::base
 
         static traits_type const traits = ((traits_ = &traits), traits_type{});
     }
-    private: static pointer traits_;
+    private: static base const* traits_;
 };
 
 template<template<typename, typename> class traits_type, typename impl_type, typename alloc_type>
-typename detail::traits::base<traits_type, impl_type, alloc_type>::pointer
+typename detail::traits::base<traits_type, impl_type, alloc_type> const*
 detail::traits::base<traits_type, impl_type, alloc_type>::traits_;
 
 template<typename impl_type, typename allocator>
