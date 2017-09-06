@@ -33,7 +33,7 @@ struct impl_ptr_policy::unique
 
         try
         {
-            traits_type::emplace(a, ap, std::forward<arg_types>(args)...);
+            traits_type::emplace(a, boost::to_address(ap), std::forward<arg_types>(args)...);
             impl_.reset(ap);
         }
         catch (...)

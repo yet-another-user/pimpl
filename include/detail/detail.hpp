@@ -64,15 +64,19 @@ struct detail::traits::base
 
     virtual ~base() =default;
 
-    template<typename allocator, typename... arg_types>
-    static void emplace(allocator&& a
-            , typename std::allocator_traits<typename std::decay<allocator>::type>::pointer p
-            , arg_types&&... args)
+    template<typename derived_type, typename... arg_types>
+    static void emplace(
+            typename alloc_traits::
+                template rebind_alloc<
+                    typename std::remove_cv<derived_type>::type
+            >& alloc
+          , derived_type* p
+          , arg_types&&... args)
     {
-        using alloc_traits = std::allocator_traits<typename std::decay<allocator>::type>;
+        using alloc_traits = typename alloc_traits::template rebind_traits<typename std::remove_cv<derived_type>::type>;
 
         construct_singleton();
-        alloc_traits::construct(a, boost::to_address(p), std::forward<arg_types>(args)...);
+        alloc_traits::construct(alloc, p, std::forward<arg_types>(args)...);
     }
 
     static void         destroy (impl_type* p                       ) { return traits_->do_destroy  (p                 ); }
