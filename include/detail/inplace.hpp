@@ -64,6 +64,7 @@ struct detail::basic_inplace // Proof of concept
     using    this_type = basic_inplace;
     using storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
     using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
+    using   alloc_type = typename traits_type::alloc_type;
 
    ~basic_inplace ()
     {
@@ -120,7 +121,8 @@ struct detail::basic_inplace // Proof of concept
         static_assert((alignof(storage_type) % alignof(derived_type)) == 0,
                 "Attempting to construct type in storage area that does not have an integer multiple of the type's alignment requirement.");
 
-        inplace_allocator<derived_type> a;
+        using alloc_type = typename std::allocator_traits<basic_inplace::alloc_type>::template rebind_alloc<derived_type>;
+        alloc_type a;
         traits_type::emplace(a, static_cast<derived_type*>(storage().address()), std::forward<arg_types>(args)...);
         set_exists(true);
     }
