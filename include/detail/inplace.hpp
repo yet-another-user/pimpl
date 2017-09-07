@@ -14,7 +14,7 @@
 
 namespace detail
 {
-    template<typename, typename, typename> struct basic_inplace;
+    template<typename, typename, typename, typename> struct basic_inplace;
     struct exists_always;
 }
 
@@ -25,21 +25,68 @@ namespace impl_ptr_policy
         static size_t constexpr size = s;
         static size_t constexpr alignment = a;
     };
-    template<typename impl_type, typename size_type>
-    using        inplace = detail::basic_inplace<impl_type, size_type, /* exists_type = */ bool>;
-    template<typename impl_type, typename size_type>
-    using always_inplace = detail::basic_inplace<impl_type, size_type, /* exists_type = */ detail::exists_always>;
+    template<typename impl_type, typename size_type, typename allocator =std::allocator<void>>
+    using        inplace = detail::basic_inplace<impl_type, size_type, allocator, /* exists_type = */ bool>;
+    template<typename impl_type, typename size_type, typename allocator =std::allocator<void>>
+    using always_inplace = detail::basic_inplace<impl_type, size_type, allocator, /* exists_type = */ detail::exists_always>;
 }
 
 namespace detail
 {
-    template<typename T =void> struct inplace_allocator
+    template<typename T, typename inner_alloc> struct inplace_allocator
     {
-        using value_type = T;
+        using           value_type = T;
+        using inner_allocator_type = inner_alloc;
+
         [[noreturn]] T* allocate(std::size_t) const { throw std::bad_alloc(); }
         BOOST_CXX14_CONSTEXPR void deallocate(T*, size_t) const noexcept {}
         constexpr bool operator==(const inplace_allocator&) const noexcept { return true; }
         constexpr bool operator!=(const inplace_allocator&) const noexcept { return false; }
+
+        template<typename derived_type, typename... arg_types>
+        void construct(derived_type* p, arg_types&&... args)
+        {
+            construct_with_inner_allocator(use_alloc<derived_type, inner_alloc, arg_types...>{},
+              p, std::forward<arg_types>(args)...);
+        }
+
+        private:
+        struct construct_without_alloc {};
+        struct construct_with_alloc_tag {};
+        struct construct_with_alloc_last {};
+
+        template <typename TT, typename Alloc, typename... Args>
+        using use_alloc = typename std::conditional<
+            std::uses_allocator<TT, Alloc>::value && std::is_constructible<TT, std::allocator_arg_t, Alloc, Args...>::value
+          , construct_with_alloc_tag
+          , typename std::conditional<
+                std::uses_allocator<TT, Alloc>::value && std::is_constructible<TT, Args..., Alloc>::value
+              , construct_with_alloc_last
+              , construct_without_alloc
+              >::type
+          >::type;
+
+        template<typename derived_type, typename... arg_types>
+        void construct_with_inner_allocator(construct_without_alloc, derived_type* p, arg_types&&... args)
+        {
+            ::new (static_cast<void*>(p)) derived_type(std::forward<arg_types>(args)...);
+        }
+
+        template<typename derived_type, typename... arg_types>
+        void construct_with_inner_allocator(construct_with_alloc_last, derived_type* p, arg_types&&... args)
+        {
+            ::new (static_cast<void*>(p)) derived_type(
+                std::forward<arg_types>(args)...
+              , inner_allocator_type());
+        }
+
+        template<typename derived_type, typename... arg_types>
+        void construct_with_inner_allocator(construct_with_alloc_tag, derived_type* p, arg_types&&... args)
+        {
+            ::new (static_cast<void*>(p)) derived_type(
+                std::allocator_arg, inner_allocator_type()
+              , std::forward<arg_types>(args)...);
+        }
     };
 }
 
@@ -58,12 +105,12 @@ struct detail::exists_always
 
 static_assert(std::is_empty<detail::exists_always>::value, "detail::exists_always causes memory overhead");
 
-template<typename impl_type, typename size_type, typename exists_type>
+template<typename impl_type, typename size_type, typename allocator, typename exists_type>
 struct detail::basic_inplace // Proof of concept
 {
     using    this_type = basic_inplace;
     using storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
-    using  traits_type = traits::copyable<impl_type, inplace_allocator<>>;
+    using  traits_type = traits::copyable<impl_type, inplace_allocator<impl_type, allocator>>;
     using   alloc_type = typename traits_type::alloc_type;
 
    ~basic_inplace ()
