@@ -1,0 +1,12 @@
+sugar_files(TEST_SOURCES
+        allocator.hpp
+        impl.cpp
+        impl_always_inplace.cpp
+        impl_copied.cpp
+        impl_inplace.cpp
+        impl_poly.cpp
+        impl_shared.cpp
+        impl_unique.cpp
+        main.cpp
+        test.hpp
+        )
