@@ -37,7 +37,7 @@ namespace detail
     {
         using value_type = T;
         [[noreturn]] T* allocate(std::size_t) const { throw std::bad_alloc(); }
-        constexpr void deallocate(T*, size_t) const noexcept {}
+        void deallocate(T*, size_t) const noexcept {}
         constexpr bool operator==(const inplace_allocator&) const noexcept { return true; }
         constexpr bool operator!=(const inplace_allocator&) const noexcept { return false; }
     };

@@ -41,7 +41,7 @@ namespace detail
     // is originally by Peter Dimov.
     struct traits
     {
-        template<template<typename, typename> class, typename, typename> struct base;
+        template<typename, typename, typename> struct base;
 
         template<typename, typename> struct   unique;
         template<typename, typename> struct copyable;
@@ -80,12 +80,10 @@ namespace detail
     };
 }
 
-template<template<typename, typename> class TT, typename IT, typename AT>
+template<typename traits_type, typename impl_type, typename AT>
 struct detail::traits::base
 {
-    using    this_type = base<TT, IT, AT>;
-    using  traits_type = TT<IT, AT>;
-    using    impl_type = IT;
+    using    this_type = base<traits_type, impl_type, AT>;
     using   alloc_type = typename std::allocator_traits<AT>::template rebind_alloc<impl_type>;
     using alloc_traits = std::allocator_traits<alloc_type>;
     using      pointer = typename alloc_traits::pointer;
@@ -119,11 +117,12 @@ struct detail::traits::base
     template<typename derived_type, typename... arg_types>
     static ptr_type make(detail::in_place_type, arg_types&&... args)
     {
-        using   alloc_type = typename alloc_traits::template rebind_alloc<derived_type>;
-        using alloc_traits = std::allocator_traits<alloc_type>;
+        using    alloc_type = typename alloc_traits::template rebind_alloc<derived_type>;
+        using  alloc_traits = std::allocator_traits<alloc_type>;
+        using dealloc_guard = detail::dealloc_guard<alloc_type>;
 
-        alloc_type                         a;
-        detail::dealloc_guard<alloc_type> ap(a, alloc_traits::allocate(a, 1));
+        alloc_type     a;
+        dealloc_guard ap(a, alloc_traits::allocate(a, 1));
 
         emplace(a, ap.get(), std::forward<arg_types>(args)...);
         return ptr_type(ap.release());
@@ -166,16 +165,17 @@ struct detail::traits::base
     private: static base const* traits_;
 };
 
-template<template<typename, typename> class traits_type, typename impl_type, typename alloc_type>
+template<typename traits_type, typename impl_type, typename alloc_type>
 detail::traits::base<traits_type, impl_type, alloc_type> const*
 detail::traits::base<traits_type, impl_type, alloc_type>::traits_;
 
 template<typename impl_type, typename allocator>
-struct detail::traits::unique final : base<unique, impl_type, allocator>
+struct detail::traits::unique final : base<unique<impl_type, allocator>, impl_type, allocator>
 {
-    using    base_type = base<unique, impl_type, allocator>;
-    using      pointer = typename base_type::pointer;
-    using     ptr_type = typename base_type::ptr_type;
+    using this_type = unique<impl_type, allocator>;
+    using base_type = base<this_type, impl_type, allocator>;
+    using   pointer = typename base_type::pointer;
+    using  ptr_type = typename base_type::ptr_type;
 
     void       do_destroy (pointer p                  ) const override { this->destroy_(p); }
     void        do_assign (pointer  , impl_type const&) const override { BOOST_ASSERT(!"not implemented"); }
@@ -187,9 +187,10 @@ struct detail::traits::unique final : base<unique, impl_type, allocator>
 };
 
 template<typename impl_type, typename allocator>
-struct detail::traits::copyable final : base<copyable, impl_type, allocator>
+struct detail::traits::copyable final : base<copyable<impl_type, allocator>, impl_type, allocator>
 {
-    using    base_type = base<copyable, impl_type, allocator>;
+    using    this_type = copyable<impl_type, allocator>;
+    using    base_type = base<this_type, impl_type, allocator>;
     using   alloc_type = typename base_type::alloc_type;
     using alloc_traits = typename base_type::alloc_traits;
     using      pointer = typename base_type::pointer;
