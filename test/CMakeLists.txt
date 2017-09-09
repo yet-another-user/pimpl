@@ -2,7 +2,7 @@
 # this file is used if the developer has opted not to use Hunter cmake extensions
 #
 
-sugar_files(TEST_FILES
+set(TEST_FILES
         allocator.hpp
         impl.cpp
         impl_always_inplace.cpp
