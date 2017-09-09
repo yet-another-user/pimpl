@@ -20,4 +20,10 @@ Release/
 *.sdf
 *.opensdf
 
+#################
+# CLion
+#################
+
+.idea/
+cmake-build-*/
 
