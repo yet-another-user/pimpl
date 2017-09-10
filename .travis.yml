@@ -1,0 +1,55 @@
+language: cpp
+sudo: false
+dist: trusty
+os:
+  - linux
+  - osx
+compiler:
+  - clang
+  - gcc
+env:
+  global:
+    - CTEST_OUTPUT_ON_FAILURE=ON
+  matrix:
+    - BOOST_VERSION=1.65.1 CXX_STD=14
+    - BOOST_VERSION=1.65.1 CXX_STD=11
+    - BOOST_VERSION=1.57.0 CXX_STD=14
+    - BOOST_VERSION=1.57.0 CXX_STD=11
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-5       # We cannot build with GCC 4.8 (nor 4.9) due to our void_type alias template
+      - libc++-dev  # Clang has problems with libstdc++-dev 4.8 when building for C++14
+      - ninja-build # Faster than make and less noisy output (in combination with CMake)
+
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/deps/boost-1.57.0
+    - ${TRAVIS_BUILD_DIR}/deps/boost-1.65.1
+
+install:
+  - if [[ "${TRAVIS_OS_NAME}" = "osx" ]]; then brew update && brew install ninja; fi
+  - |
+    if [[ "${TRAVIS_OS_NAME}" = "linux" ]]; then
+      # Fetch Boost
+      export BOOST_ROOT="${TRAVIS_BUILD_DIR}/deps/boost-${BOOST_VERSION}"
+      if [[ ! -f "${BOOST_ROOT}/boost/version.hpp" ]]; then
+        mkdir -p "${BOOST_ROOT}"
+        travis_retry wget -O - http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//\./_}.tar.gz | tar --strip-components=1 -x -z -C "${BOOST_ROOT}"
+      fi
+      # Select our compiler
+      if [[ "${CXX}" =~ "g++" ]] && which g++-5 > /dev/null; then
+        export CXX=g++-5
+      elif [[ "${CXX}" =~ "clang" ]]; then
+        export CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"
+      fi
+    fi
+
+script:
+ - cmake -E make_directory build
+ - cmake -E chdir build cmake -G Ninja -DCMAKE_CXX_STANDARD="${CXX_STD}" ..
+ - cmake --build build
+ - cmake --build build --target test
