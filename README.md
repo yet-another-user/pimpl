@@ -16,4 +16,14 @@ This header-only library provides a deployment pattern and the supporting infras
 * to minimize the deployment and maintenance hassle and the potential for error,
 * to formalize the deployment of the idiom.
 
+To build and run the tests coming with this library you can use CMake.
+Just execute this sequence of commands:
+
+```console
+$ mkdir build
+$ cmake -E chdir build cmake ..
+$ cmake --build build
+$ cmake --build build --target test
+```
+
 **HTML documentation is available [here](http://yet-another-user.github.io/pimpl).**
