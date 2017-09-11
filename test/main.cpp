@@ -14,17 +14,17 @@ static
 void
 test_is_pimpl()
 {
-    BOOST_TEST(false == boost::is_impl_ptr<Foo>::value);
-    BOOST_TEST(false == boost::is_impl_ptr<int>::value);
-    BOOST_TEST(false == boost::is_impl_ptr<int*>::value);
-    BOOST_TEST(true  == boost::is_impl_ptr<Shared>::value);
-    BOOST_TEST(true  == boost::is_impl_ptr<Shared const>::value);
-    BOOST_TEST(false == boost::is_impl_ptr<Shared*>::value);
-    BOOST_TEST(true  == boost::is_impl_ptr<Copied>::value);
-    BOOST_TEST(true  == boost::is_impl_ptr<Base>::value);
-    BOOST_TEST(true  == boost::is_impl_ptr<Derived1>::value);
-    BOOST_TEST(true  == boost::is_impl_ptr<Derived1 const>::value);
-    BOOST_TEST(true  == boost::is_impl_ptr<Derived2>::value);
+    static_assert(false == boost::is_impl_ptr<Foo>::value, "");
+    static_assert(false == boost::is_impl_ptr<int>::value, "");
+    static_assert(false == boost::is_impl_ptr<int*>::value, "");
+    static_assert(true  == boost::is_impl_ptr<Shared>::value, "");
+    static_assert(true  == boost::is_impl_ptr<Shared const>::value, "");
+    static_assert(false == boost::is_impl_ptr<Shared*>::value, "");
+    static_assert(true  == boost::is_impl_ptr<Copied>::value, "");
+    static_assert(true  == boost::is_impl_ptr<Base>::value, "");
+    static_assert(true  == boost::is_impl_ptr<Derived1>::value, "");
+    static_assert(true  == boost::is_impl_ptr<Derived1 const>::value, "");
+    static_assert(true  == boost::is_impl_ptr<Derived2>::value, "");
 }
 
 static
