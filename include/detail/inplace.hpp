@@ -115,8 +115,9 @@ struct detail::basic_inplace // Proof of concept
 
    ~basic_inplace ()
     {
+        alloc_type a;
         if (exists())
-            traits_type::destroy(get());
+            traits_type::destroy(a, get());
     }
     BOOST_CXX14_CONSTEXPR basic_inplace (std::nullptr_t)
     {
@@ -151,8 +152,9 @@ struct detail::basic_inplace // Proof of concept
         static_assert(exists_type(false) == false, "Emplacing to storage that doesn't support null-state is prohibited.");
         if (exists())
         {
+            alloc_type a;
             set_exists(false);
-            traits_type::destroy(get());
+            traits_type::destroy(a, get());
         }
         return _construct<derived_type>(std::forward<arg_types>(args)...);
     }
@@ -184,10 +186,11 @@ struct detail::basic_inplace // Proof of concept
         const bool   exists = this->exists();
         const bool o_exists =     o.exists();
 
+        alloc_type a;
         /**/ if (!exists && !o_exists);
         else if ( exists &&  o_exists) traits_type::assign(get(), std::forward<uref>(*o.get()));
-        else if ( exists && !o_exists) { set_exists(false); traits_type::destroy(get()); }
-        else if (!exists &&  o_exists) { traits_type::construct(storage().address(), std::forward<uref>(*o.get())); set_exists(true); }
+        else if ( exists && !o_exists) { set_exists(false); traits_type::destroy(a, get()); }
+        else if (!exists &&  o_exists) { traits_type::construct(a, storage().address(), std::forward<uref>(*o.get())); set_exists(true); }
 
         return *this;
     }
