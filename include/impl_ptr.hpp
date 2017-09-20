@@ -112,7 +112,10 @@ struct impl_ptr
 
     template<typename, template<typename, typename...> class, typename...> friend struct impl_ptr;
 
-    impl_ptr(std::nullptr_t) : impl_(nullptr) {}
+    impl_ptr(std::nullptr_t) : impl_(nullptr, typename policy_type::allocator_type()) {}
+
+    template <typename allocator, typename = typename std::enable_if<std::uses_allocator<policy_type, allocator>::value>::type>
+    impl_ptr(std::nullptr_t, allocator&& a) : impl_(nullptr, std::forward<allocator>(a)) {}
 
     template<typename allocator, typename... arg_types
         , typename = typename std::enable_if<std::uses_allocator<policy_type, allocator>::value>::type>

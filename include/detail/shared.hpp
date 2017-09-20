@@ -25,7 +25,7 @@ struct impl_ptr_policy::shared : std::shared_ptr<impl_type>
         base_ref(*this) = std::allocate_shared<derived_type>(std::forward<alloc_arg>(a), std::forward<arg_types>(args)...);
     }
 
-    shared(std::nullptr_t) {}
+    shared(std::nullptr_t, const allocator_type&) {}
 
     template<typename alloc_arg, typename... arg_types>
     shared(std::allocator_arg_t, alloc_arg&& a, arg_types&&... args)

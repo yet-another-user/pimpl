@@ -31,11 +31,10 @@ struct impl_ptr_policy::unique
 
     template<typename alloc_arg, typename... arg_types>
     unique(std::allocator_arg_t, alloc_arg&& a, arg_types&&... args)
-    {
-        emplace<impl_type>(std::allocator_arg, std::forward<alloc_arg>(a), std::forward<arg_types>(args)...);
-    }
+        : impl_(traits_type::template make<impl_type>(std::allocator_arg, std::forward<alloc_arg>(a), std::forward<arg_types>(args)...))
+    {}
 
-    unique (std::nullptr_t) {}
+    unique (std::nullptr_t, const allocator_type& a) : impl_(nullptr, a) {}
 
     unique (this_type&& o) = default;
     this_type& operator= (this_type&& o) { swap(o); return *this; }

@@ -98,7 +98,6 @@ struct detail::traits::base
 
         void operator()(pointer ip) { base::destroy(get_allocator(), ip); }
 
-        deleter() = default;
         constexpr deleter(const allocator_type& a) : allocator_type(a) {}
         constexpr             allocator_type const& get_allocator() const { return *this; }
         BOOST_CXX14_CONSTEXPR allocator_type      & get_allocator()       { return *this; }

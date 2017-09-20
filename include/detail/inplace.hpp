@@ -135,7 +135,7 @@ struct detail::basic_inplace // Proof of concept
         if (exists())
             traits_type::destroy(a, get());
     }
-    BOOST_CXX14_CONSTEXPR basic_inplace (std::nullptr_t)
+    BOOST_CXX14_CONSTEXPR basic_inplace (std::nullptr_t, const allocator_type&)
     {
         static_assert(exists_type(false) == false, "Constructing null-state is prohibited.");
     }
