@@ -90,11 +90,18 @@ struct detail::traits::base
     struct deleter;
     using     ptr_type = std::unique_ptr<impl_type, deleter>;
 
-    struct deleter
+    struct deleter : private alloc_type
     {
         // type used by unique_ptr as replacement for T*
-        using pointer = base::pointer;
-        void operator()(pointer ip) const { alloc_type a; base::destroy(a, ip); }
+        using        pointer = base::pointer;
+        using allocator_type = alloc_type;
+
+        void operator()(pointer ip) { base::destroy(get_allocator(), ip); }
+
+        deleter() = default;
+        constexpr deleter(const allocator_type& a) : allocator_type(a) {}
+        constexpr             allocator_type const& get_allocator() const { return *this; }
+        BOOST_CXX14_CONSTEXPR allocator_type      & get_allocator()       { return *this; }
     };
 
     virtual ~base() =default;
@@ -125,7 +132,7 @@ struct detail::traits::base
         dealloc_guard ap(a, alloc_traits::allocate(a, 1));
 
         emplace(a, ap.get(), std::forward<arg_types>(args)...);
-        return ptr_type(ap.release());
+        return ptr_type(ap.release(), std::move(a));
     }
 
     static void       destroy (alloc_type& a, pointer p                       ) { return traits_->do_destroy  (a, p                 ); }
@@ -182,8 +189,8 @@ struct detail::traits::unique final : base<unique<impl_type, allocator>, impl_ty
     void        do_assign (               pointer  , impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); }
     void     do_construct (alloc_type&  , void*    , impl_type const&) const override { BOOST_ASSERT(!"not implemented"); }
     void     do_construct (alloc_type&  , void*    , impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); }
-    ptr_type      do_make (alloc_type&  ,            impl_type const&) const override { BOOST_ASSERT(!"not implemented"); return nullptr; }
-    ptr_type      do_make (alloc_type&  ,            impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); return nullptr; }
+    ptr_type      do_make (alloc_type& a,            impl_type const&) const override { BOOST_ASSERT(!"not implemented"); return ptr_type(nullptr, a); }
+    ptr_type      do_make (alloc_type& a,            impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); return ptr_type(nullptr, a); }
 };
 
 template<typename impl_type, typename allocator>
