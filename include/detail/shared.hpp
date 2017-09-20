@@ -9,16 +9,12 @@
 
 namespace impl_ptr_policy
 {
-    template<typename, typename...> struct shared;
+    template<typename, typename =std::allocator<void>> struct shared;
 }
 
-template<typename impl_type, typename... more_types>
+template<typename impl_type, typename allocator>
 struct impl_ptr_policy::shared : std::shared_ptr<impl_type>
 {
-    using  allocator = typename std::conditional<
-                       1 <= sizeof...(more_types),
-                       typename detail::types<more_types...>::first_type,
-                       std::allocator<impl_type>>::type;
     using alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
     using   base_ref = std::shared_ptr<impl_type>&;
 
