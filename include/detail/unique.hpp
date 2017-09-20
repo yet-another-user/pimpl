@@ -6,6 +6,7 @@
 #ifndef IMPL_PTR_DETAIL_UNIQUE_HPP
 #define IMPL_PTR_DETAIL_UNIQUE_HPP
 
+#include <memory>
 #include "./detail.hpp"
 
 namespace impl_ptr_policy
@@ -16,22 +17,22 @@ namespace impl_ptr_policy
 template<typename impl_type, typename allocator>
 struct impl_ptr_policy::unique
 {
-    using   this_type = unique;
-    using traits_type = detail::traits::unique<impl_type, allocator>;
-    using    ptr_type = typename traits_type::ptr_type;
-    using  alloc_type = typename traits_type::alloc_type;
+    using      this_type = unique;
+    using    traits_type = detail::traits::unique<impl_type, allocator>;
+    using       ptr_type = typename traits_type::ptr_type;
+    using allocator_type = typename traits_type::alloc_type;
 
-    template<typename derived_type, typename... arg_types>
+    template<typename derived_type, typename alloc_arg, typename... arg_types>
     void
-    emplace(arg_types&&... args)
+    emplace(std::allocator_arg_t, alloc_arg&& a, arg_types&&... args)
     {
-        impl_ = traits_type::template make<derived_type>(std::allocator_arg, alloc_type(), std::forward<arg_types>(args)...);
+        impl_ = traits_type::template make<derived_type>(std::allocator_arg, std::forward<alloc_arg>(a), std::forward<arg_types>(args)...);
     }
 
-    template<typename... arg_types>
-    unique(detail::in_place_type, arg_types&&... args)
+    template<typename alloc_arg, typename... arg_types>
+    unique(std::allocator_arg_t, alloc_arg&& a, arg_types&&... args)
     {
-        emplace<impl_type>(std::forward<arg_types>(args)...);
+        emplace<impl_type>(std::allocator_arg, std::forward<alloc_arg>(a), std::forward<arg_types>(args)...);
     }
 
     unique (std::nullptr_t) {}

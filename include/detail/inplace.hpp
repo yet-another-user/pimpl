@@ -108,14 +108,14 @@ static_assert(std::is_empty<detail::exists_always>::value, "detail::exists_alway
 template<typename impl_type, typename size_type, typename allocator, typename exists_type>
 struct detail::basic_inplace // Proof of concept
 {
-    using    this_type = basic_inplace;
-    using storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
-    using  traits_type = traits::copyable<impl_type, inplace_allocator<impl_type, allocator>>;
-    using   alloc_type = typename traits_type::alloc_type;
+    using      this_type = basic_inplace;
+    using   storage_type = boost::aligned_storage<size_type::size, size_type::alignment>;
+    using    traits_type = traits::copyable<impl_type, inplace_allocator<impl_type, allocator>>;
+    using allocator_type = typename traits_type::alloc_type;
 
    ~basic_inplace ()
     {
-        alloc_type a;
+        allocator_type a;
         if (exists())
             traits_type::destroy(a, get());
     }
@@ -140,38 +140,38 @@ struct detail::basic_inplace // Proof of concept
         return _assign(std::move(o));
     }
 
-    template<typename... arg_types>
-    basic_inplace(detail::in_place_type, arg_types&&... args)
+    template<typename alloc_arg, typename... arg_types>
+    basic_inplace(std::allocator_arg_t, alloc_arg&& a, arg_types&&... args)
     {
-        _construct<impl_type>(std::forward<arg_types>(args)...);
+        _construct<impl_type>(std::forward<alloc_arg>(a), std::forward<arg_types>(args)...);
     }
 
-    template<typename derived_type, typename... arg_types>
-    void emplace(arg_types&&... args)
+    template<typename derived_type, typename alloc_arg, typename... arg_types>
+    void emplace(std::allocator_arg_t, alloc_arg&& a, arg_types&&... args)
     {
         static_assert(exists_type(false) == false, "Emplacing to storage that doesn't support null-state is prohibited.");
         if (exists())
         {
-            alloc_type a;
+            allocator_type d(a);
             set_exists(false);
-            traits_type::destroy(a, get());
+            traits_type::destroy(d, get());
         }
-        return _construct<derived_type>(std::forward<arg_types>(args)...);
+        return _construct<derived_type>(std::forward<alloc_arg>(a), std::forward<arg_types>(args)...);
     }
 
     impl_type* get () const { return exists() ? (impl_type*) storage().address() : nullptr; }
 
     private:
-    template<typename derived_type, typename... arg_types>
-    void _construct(arg_types&&... args)
+    template<typename derived_type, typename alloc_arg, typename... arg_types>
+    void _construct(alloc_arg&& a0, arg_types&&... args)
     {
         static_assert(sizeof(derived_type) <= sizeof(storage_type),
                 "Attempting to construct type larger than storage area");
         static_assert((alignof(storage_type) % alignof(derived_type)) == 0,
                 "Attempting to construct type in storage area that does not have an integer multiple of the type's alignment requirement.");
 
-        using alloc_type = typename std::allocator_traits<basic_inplace::alloc_type>::template rebind_alloc<derived_type>;
-        alloc_type a;
+        using alloc_type = typename std::allocator_traits<basic_inplace::allocator_type>::template rebind_alloc<derived_type>;
+        alloc_type a(std::forward<alloc_arg>(a0));
         traits_type::emplace(a, static_cast<derived_type*>(storage().address()), std::forward<arg_types>(args)...);
         set_exists(true);
     }
@@ -186,7 +186,7 @@ struct detail::basic_inplace // Proof of concept
         const bool   exists = this->exists();
         const bool o_exists =     o.exists();
 
-        alloc_type a;
+        allocator_type a;
         /**/ if (!exists && !o_exists);
         else if ( exists &&  o_exists) traits_type::assign(get(), std::forward<uref>(*o.get()));
         else if ( exists && !o_exists) { set_exists(false); traits_type::destroy(a, get()); }
