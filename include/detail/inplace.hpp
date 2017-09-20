@@ -36,18 +36,32 @@ namespace detail
     template<typename T, typename inner_alloc> struct inplace_allocator
     {
         using           value_type = T;
-        using inner_allocator_type = inner_alloc;
 
         [[noreturn]] T* allocate(std::size_t) const { throw std::bad_alloc(); }
         BOOST_CXX14_CONSTEXPR void deallocate(T*, size_t) const noexcept {}
-        constexpr bool operator==(const inplace_allocator&) const noexcept { return true; }
-        constexpr bool operator!=(const inplace_allocator&) const noexcept { return false; }
+        constexpr bool operator==(const inplace_allocator& o) const noexcept
+        {
+            return !inner_allocator
+                ? !o.inner_allocator
+                : !o.inner_allocator
+                ? !inner_allocator
+                : *inner_allocator == *o.inner_allocator
+                ;
+        }
+        constexpr bool operator!=(const inplace_allocator& o) const noexcept { return !(*this == o); }
+
+        constexpr inplace_allocator() noexcept : inner_allocator(nullptr) {}
+        constexpr inplace_allocator(const inner_alloc& a) noexcept : inner_allocator(&a) {}
 
         template<typename derived_type, typename... arg_types>
         void construct(derived_type* p, arg_types&&... args)
         {
-            construct_with_inner_allocator(use_alloc<derived_type, inner_alloc, arg_types...>{},
-              p, std::forward<arg_types>(args)...);
+            if (inner_allocator)
+                construct_with_inner_allocator(use_alloc<derived_type, inner_alloc, arg_types...>{},
+                  p, std::forward<arg_types>(args)...);
+            else
+                construct_with_inner_allocator(construct_without_alloc{},
+                  p, std::forward<arg_types>(args)...);
         }
 
         private:
@@ -77,16 +91,18 @@ namespace detail
         {
             ::new (static_cast<void*>(p)) derived_type(
                 std::forward<arg_types>(args)...
-              , inner_allocator_type());
+              , *inner_allocator);
         }
 
         template<typename derived_type, typename... arg_types>
         void construct_with_inner_allocator(construct_with_alloc_tag, derived_type* p, arg_types&&... args)
         {
             ::new (static_cast<void*>(p)) derived_type(
-                std::allocator_arg, inner_allocator_type()
+                std::allocator_arg, *inner_allocator
               , std::forward<arg_types>(args)...);
         }
+
+        const inner_alloc* inner_allocator;
     };
 }
 
@@ -152,7 +168,7 @@ struct detail::basic_inplace // Proof of concept
         static_assert(exists_type(false) == false, "Emplacing to storage that doesn't support null-state is prohibited.");
         if (exists())
         {
-            allocator_type d(a);
+            allocator_type d;
             set_exists(false);
             traits_type::destroy(d, get());
         }
