@@ -6,7 +6,7 @@ template<> struct boost::impl_ptr<Unique>::implementation
 
     implementation () : int_(0)             { trace_ = "Unique::implementation()"; }
     implementation (int k) : int_(k)        { trace_ = "Unique::implementation(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "Unique::implementation(int, int)"; }
+    implementation (int k, int) : int_(k)   { trace_ = "Unique::implementation(int, int)"; }
     implementation (Foo&) : int_(0)         { trace_ = "Unique::implementation(Foo&)"; }
     implementation (Foo const&) : int_(0)   { trace_ = "Unique::implementation(Foo const&)"; }
 

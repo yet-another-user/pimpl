@@ -6,7 +6,7 @@ template<> struct boost::impl_ptr<Copied>::implementation
 
     implementation () : int_(0)             { trace_ = "Copied()"; }
     implementation (int k) : int_(k)        { trace_ = "Copied(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "Copied(int, int)"; }
+    implementation (int k, int) : int_(k)   { trace_ = "Copied(int, int)"; }
     implementation (Foo&) : int_(0)         { trace_ = "Copied(Foo&)"; }
     implementation (Foo const&) : int_(0)   { trace_ = "Copied(Foo const&)"; }
 

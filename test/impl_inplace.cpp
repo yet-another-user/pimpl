@@ -6,7 +6,7 @@ template<> struct boost::impl_ptr<InPlace>::implementation
 
     implementation () : int_(0)             { trace_ = "InPlace()"; }
     implementation (int k) : int_(k)        { trace_ = "InPlace(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "InPlace(int, int)"; }
+    implementation (int k, int) : int_(k)   { trace_ = "InPlace(int, int)"; }
     implementation (Foo&) : int_(0)         { trace_ = "InPlace(Foo&)"; }
     implementation (Foo const&) : int_(0)   { trace_ = "InPlace(Foo const&)"; }
 

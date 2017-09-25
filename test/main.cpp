@@ -281,7 +281,7 @@ test_bool_conversions()
 }
 
 int
-main(int argc, char const* argv[])
+main()
 {
     test_basics();
     test_null();

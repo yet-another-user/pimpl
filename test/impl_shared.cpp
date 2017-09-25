@@ -7,7 +7,7 @@ template<> struct boost::impl_ptr<Shared>::implementation
 
     implementation ()                       { trace_ = "Shared()"; }
     implementation (int k) : int_(k)        { trace_ = "Shared(int)"; }
-    implementation (int k, int l) : int_(k) { trace_ = "Shared(int, int)"; }
+    implementation (int k, int) : int_(k)   { trace_ = "Shared(int, int)"; }
     implementation (Foo&)                   { trace_ = "Shared(Foo&)"; }
     implementation (Foo const&)             { trace_ = "Shared(Foo const&)"; }
     implementation (Foo*)                   { trace_ = "Shared(Foo*)"; }
