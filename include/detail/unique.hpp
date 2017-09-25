@@ -33,7 +33,6 @@ struct impl_ptr_policy::unique
         emplace<impl_type>(std::forward<arg_types>(args)...);
     }
 
-   ~unique () = default;
     unique (std::nullptr_t) {}
 
     unique (this_type&& o) = default;
