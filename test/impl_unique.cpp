@@ -17,7 +17,7 @@ template<> struct boost::impl_ptr<Unique>::implementation
     mutable string trace_;
 };
 
-Unique::Unique ()      : impl_ptr_type(in_place) {}
+Unique::Unique ()      : impl_ptr_type(std::allocator_arg, std::allocator<void>()) {}
 Unique::Unique (int k) : impl_ptr_type(in_place, k) {}
 
 string Unique::trace () const { return *this ? (*this)->trace_ : "null"; }

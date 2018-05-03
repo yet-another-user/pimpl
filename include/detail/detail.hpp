@@ -90,11 +90,17 @@ struct detail::traits::base
     struct deleter;
     using     ptr_type = std::unique_ptr<impl_type, deleter>;
 
-    struct deleter
+    struct deleter : private alloc_type
     {
         // type used by unique_ptr as replacement for T*
-        using pointer = base::pointer;
-        void operator()(pointer ip) const { base::destroy(ip); }
+        using        pointer = base::pointer;
+        using allocator_type = alloc_type;
+
+        void operator()(pointer ip) { base::destroy(get_allocator(), ip); }
+
+        constexpr deleter(const allocator_type& a) : allocator_type(a) {}
+        constexpr             allocator_type const& get_allocator() const { return *this; }
+        BOOST_CXX14_CONSTEXPR allocator_type      & get_allocator()       { return *this; }
     };
 
     virtual ~base() =default;
@@ -114,46 +120,45 @@ struct detail::traits::base
         alloc_traits::construct(alloc, p, std::forward<arg_types>(args)...);
     }
 
-    template<typename derived_type, typename... arg_types>
-    static ptr_type make(detail::in_place_type, arg_types&&... args)
+    template<typename derived_type, typename allocator, typename... arg_types>
+    static ptr_type make(std::allocator_arg_t, allocator&& a0, arg_types&&... args)
     {
-        using    alloc_type = typename alloc_traits::template rebind_alloc<derived_type>;
+        using    alloc_type = typename std::allocator_traits<typename std::decay<allocator>::type>::template rebind_alloc<derived_type>;
         using  alloc_traits = std::allocator_traits<alloc_type>;
         using dealloc_guard = detail::dealloc_guard<alloc_type>;
 
-        alloc_type     a;
+        alloc_type     a(std::forward<allocator>(a0));
         dealloc_guard ap(a, alloc_traits::allocate(a, 1));
 
         emplace(a, ap.get(), std::forward<arg_types>(args)...);
-        return ptr_type(ap.release());
+        return ptr_type(ap.release(), std::move(a));
     }
 
-    static void       destroy (pointer p                       ) { return traits_->do_destroy  (p                 ); }
-    static void        assign (pointer p, impl_type const& from) { return traits_->do_assign   (p,           from ); }
-    static void        assign (pointer p, impl_type     && from) { return traits_->do_assign   (p, std::move(from)); }
-    static void     construct (void*   p, impl_type const& from) { return traits_->do_construct(p,           from ); }
-    static void     construct (void*   p, impl_type     && from) { return traits_->do_construct(p, std::move(from)); }
-    static ptr_type      make (           impl_type const& from) { return traits_->do_make     (             from ); }
-    static ptr_type      make (           impl_type     && from) { return traits_->do_make     (   std::move(from)); }
+    static void       destroy (alloc_type& a, pointer p                       ) { return traits_->do_destroy  (a, p                 ); }
+    static void        assign (               pointer p, impl_type const& from) { return traits_->do_assign   (   p,           from ); }
+    static void        assign (               pointer p, impl_type     && from) { return traits_->do_assign   (   p, std::move(from)); }
+    static void     construct (alloc_type& a, void*   p, impl_type const& from) { return traits_->do_construct(a, p,           from ); }
+    static void     construct (alloc_type& a, void*   p, impl_type     && from) { return traits_->do_construct(a, p, std::move(from)); }
+    static ptr_type      make (alloc_type& a,            impl_type const& from) { return traits_->do_make     (a,              from ); }
+    static ptr_type      make (alloc_type& a,            impl_type     && from) { return traits_->do_make     (a,    std::move(from)); }
 
     protected:
 
-    void destroy_(pointer p) const
+    void destroy_(alloc_type& a, pointer p) const
     {
-        alloc_type a;
         dealloc_guard<alloc_type> ap(a, std::move(p));
         alloc_traits::destroy(a, ap.get());
     }
 
     private:
 
-    virtual void       do_destroy (pointer) const =0;
+    virtual void       do_destroy (alloc_type&, pointer) const =0;
     virtual void        do_assign (pointer, impl_type const&) const =0;
     virtual void        do_assign (pointer, impl_type&&) const =0;
-    virtual void     do_construct (void*, impl_type const&) const =0;
-    virtual void     do_construct (void*, impl_type&& ) const =0;
-    virtual ptr_type      do_make (impl_type const&) const =0;
-    virtual ptr_type      do_make (impl_type&& ) const =0;
+    virtual void     do_construct (alloc_type&, void*, impl_type const&) const =0;
+    virtual void     do_construct (alloc_type&, void*, impl_type&& ) const =0;
+    virtual ptr_type      do_make (alloc_type&, impl_type const&) const =0;
+    virtual ptr_type      do_make (alloc_type&, impl_type&& ) const =0;
 
     static void construct_singleton()
     {
@@ -172,18 +177,19 @@ detail::traits::base<traits_type, impl_type, alloc_type>::traits_;
 template<typename impl_type, typename allocator>
 struct detail::traits::unique final : base<unique<impl_type, allocator>, impl_type, allocator>
 {
-    using this_type = unique<impl_type, allocator>;
-    using base_type = base<this_type, impl_type, allocator>;
-    using   pointer = typename base_type::pointer;
-    using  ptr_type = typename base_type::ptr_type;
+    using  this_type = unique<impl_type, allocator>;
+    using  base_type = base<this_type, impl_type, allocator>;
+    using alloc_type = typename base_type::alloc_type;
+    using    pointer = typename base_type::pointer;
+    using   ptr_type = typename base_type::ptr_type;
 
-    void       do_destroy (pointer p                  ) const override { this->destroy_(p); }
-    void        do_assign (pointer  , impl_type const&) const override { BOOST_ASSERT(!"not implemented"); }
-    void        do_assign (pointer  , impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); }
-    void     do_construct (void*    , impl_type const&) const override { BOOST_ASSERT(!"not implemented"); }
-    void     do_construct (void*    , impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); }
-    ptr_type      do_make (           impl_type const&) const override { BOOST_ASSERT(!"not implemented"); return nullptr; }
-    ptr_type      do_make (           impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); return nullptr; }
+    void       do_destroy (alloc_type& a, pointer p                  ) const override { this->destroy_(a, p); }
+    void        do_assign (               pointer  , impl_type const&) const override { BOOST_ASSERT(!"not implemented"); }
+    void        do_assign (               pointer  , impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); }
+    void     do_construct (alloc_type&  , void*    , impl_type const&) const override { BOOST_ASSERT(!"not implemented"); }
+    void     do_construct (alloc_type&  , void*    , impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); }
+    ptr_type      do_make (alloc_type& a,            impl_type const&) const override { BOOST_ASSERT(!"not implemented"); return ptr_type(nullptr, a); }
+    ptr_type      do_make (alloc_type& a,            impl_type&&     ) const override { BOOST_ASSERT(!"not implemented"); return ptr_type(nullptr, a); }
 };
 
 template<typename impl_type, typename allocator>
@@ -196,29 +202,27 @@ struct detail::traits::copyable final : base<copyable<impl_type, allocator>, imp
     using      pointer = typename base_type::pointer;
     using     ptr_type = typename base_type::ptr_type;
 
-    void do_destroy(pointer p) const override { this->destroy_(p); }
+    void do_destroy(alloc_type& a, pointer p) const override { this->destroy_(a, p); }
 
     void
-    do_construct(void* vp, impl_type const& from) const override
+    do_construct(alloc_type& a, void* vp, impl_type const& from) const override
     {
-        alloc_type a;
         this->emplace(a, static_cast<impl_type*>(vp), from);
     }
     void
-    do_construct(void* vp, impl_type&& from) const override
+    do_construct(alloc_type& a, void* vp, impl_type&& from) const override
     {
-        alloc_type a;
         this->emplace(a, static_cast<impl_type*>(vp), std::move(from));
     }
     ptr_type
-    do_make(impl_type const& from) const override
+    do_make(alloc_type& a, impl_type const& from) const override
     {
-        return this->template make<impl_type>(in_place_type(), from);
+        return this->template make<impl_type>(std::allocator_arg, a, from);
     }
     ptr_type
-    do_make(impl_type&& from) const override
+    do_make(alloc_type& a, impl_type&& from) const override
     {
-        return this->template make<impl_type>(in_place_type(), std::move(from));
+        return this->template make<impl_type>(std::allocator_arg, a, std::move(from));
     }
     void
     do_assign(pointer p, impl_type const& from) const override

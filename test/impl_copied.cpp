@@ -34,7 +34,7 @@ template<> struct boost::impl_ptr<Copied>::implementation
     mutable string trace_;
 };
 
-Copied::Copied ()      : impl_ptr_type(in_place) {}
+Copied::Copied ()      : impl_ptr_type(std::allocator_arg, std::allocator<void>()) {}
 Copied::Copied (int k) : impl_ptr_type(in_place, k) {}
 
 string Copied::trace () const { return *this ? (*this)->trace_ : "null"; }

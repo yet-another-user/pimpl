@@ -15,22 +15,24 @@ namespace impl_ptr_policy
 template<typename impl_type, typename allocator>
 struct impl_ptr_policy::shared : std::shared_ptr<impl_type>
 {
-    using alloc_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
-    using   base_ref = std::shared_ptr<impl_type>&;
+    using allocator_type = typename std::allocator_traits<allocator>::template rebind_alloc<impl_type>;
+    using       base_ref = std::shared_ptr<impl_type>&;
 
-    template<typename derived_type, typename... arg_types>
+    template<typename derived_type, typename alloc_arg, typename... arg_types>
     void
-    emplace(arg_types&&... args)
+    emplace(std::allocator_arg_t, alloc_arg&& a0, arg_types&&... args)
     {
-        base_ref(*this) = std::allocate_shared<derived_type>(alloc_type(), std::forward<arg_types>(args)...);
+        using alloc_type = typename std::allocator_traits<allocator_type>::template rebind_alloc<derived_type>;
+        alloc_type a(std::forward<alloc_arg>(a0));
+        base_ref(*this) = std::allocate_shared<derived_type>(a, std::forward<arg_types>(args)...);
     }
 
-    shared(std::nullptr_t) {}
+    shared(std::nullptr_t, const allocator_type&) {}
 
-    template<typename... arg_types>
-    shared(detail::in_place_type, arg_types&&... args)
+    template<typename alloc_arg, typename... arg_types>
+    shared(std::allocator_arg_t, alloc_arg&& a, arg_types&&... args)
     {
-        emplace<impl_type>(std::forward<arg_types>(args)...);
+        emplace<impl_type>(std::allocator_arg, std::forward<alloc_arg>(a), std::forward<arg_types>(args)...);
     }
 };
 

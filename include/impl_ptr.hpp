@@ -71,19 +71,33 @@ struct impl_ptr
     void      swap (user_type& that) { impl_.swap(that.impl_); }
     long use_count () const { return impl_.use_count(); }
 
+    template<typename derived_impl_type, typename allocator, typename... arg_types
+        , typename = typename std::enable_if<std::uses_allocator<policy_type, allocator>::value>::type>
+    void
+    emplace(std::allocator_arg_t, allocator&& a, arg_types&&... args)
+    {
+        static_assert(std::is_base_of<impl_type, derived_impl_type>::value, "");
+
+        impl_.template emplace<derived_impl_type>(std::allocator_arg, std::forward<allocator>(a), std::forward<arg_types>(args)...);
+    }
+    template<typename allocator, typename... arg_types
+        , typename = typename std::enable_if<std::uses_allocator<policy_type, allocator>::value>::type>
+    void
+    emplace(std::allocator_arg_t, allocator&& a, arg_types&&... args)
+    {
+        impl_.template emplace<impl_type>(std::allocator_arg, std::forward<allocator>(a), std::forward<arg_types>(args)...);
+    }
     template<typename derived_impl_type, typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        static_assert(std::is_base_of<impl_type, derived_impl_type>::value, "");
-
-        impl_.template emplace<derived_impl_type>(std::forward<arg_types>(args)...);
+        return emplace<derived_impl_type>(std::allocator_arg, typename policy_type::allocator_type(), std::forward<arg_types>(args)...);
     }
     template<typename... arg_types>
     void
     emplace(arg_types&&... args)
     {
-        impl_.template emplace<impl_type>(std::forward<arg_types>(args)...);
+        return emplace(std::allocator_arg, typename policy_type::allocator_type(), std::forward<arg_types>(args)...);
     }
 
     // Access To the Implementation.
@@ -98,12 +112,22 @@ struct impl_ptr
 
     template<typename, template<typename, typename...> class, typename...> friend struct impl_ptr;
 
-    impl_ptr(std::nullptr_t) : impl_(nullptr) {}
+    impl_ptr(std::nullptr_t) : impl_(nullptr, typename policy_type::allocator_type()) {}
+
+    template <typename allocator, typename = typename std::enable_if<std::uses_allocator<policy_type, allocator>::value>::type>
+    impl_ptr(std::nullptr_t, allocator&& a) : impl_(nullptr, std::forward<allocator>(a)) {}
+
+    template<typename allocator, typename... arg_types
+        , typename = typename std::enable_if<std::uses_allocator<policy_type, allocator>::value>::type>
+    impl_ptr(std::allocator_arg_t, allocator&& a, arg_types&&... args)
+    :
+        impl_(std::allocator_arg, std::forward<allocator>(a), std::forward<arg_types>(args)...)
+    {}
 
     template<typename... arg_types>
     impl_ptr(detail::in_place_type, arg_types&&... args)
     :
-        impl_(in_place, std::forward<arg_types>(args)...)
+        impl_ptr(std::allocator_arg, typename policy_type::allocator_type(), std::forward<arg_types>(args)...)
     {}
 
     private: policy_type impl_;
